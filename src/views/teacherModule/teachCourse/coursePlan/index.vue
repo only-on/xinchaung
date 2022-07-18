@@ -36,316 +36,314 @@
         >
       </div>
     </div>
-    <a-spin :spinning="loading" size="large" tip="Loading...">
-      <div class="table">
-        <a-row type="flex">
-          <a-col
-            class="table-td table-title flex-center"
-            flex="100px"
-            justify="center"
-            align="center"
-          >
-            <span class="iconfont icon-shijian"></span>
-          </a-col>
-          <a-col
-            class="table-td table-title flex-center"
-            flex="auto"
-            justify="center"
-            align="top"
-            v-for="(item, index) in tableWeekName"
-            :key="item"
-          >
-            <div class="flex-center table-th">
-              <span
-                class="table-week-name"
-                :class="
-                  currentDate.getFullYear() == new Date(weekTime).getFullYear() &&
-                  currentDate.getMonth() == new Date(weekTime).getMonth() &&
-                  toDayList(index) == moment(currentDate).format('MM.DD')
-                    ? 'active'
-                    : ''
-                "
-                >{{ item }}</span
-              >
-              <span class="table-week-date">{{ toDayList(index) }}</span>
-            </div>
-          </a-col>
-        </a-row>
-        <div class="table-main setscrollbar2">
-          <div class="table-content">
-            <div class="table-time-col">
-              <div
-                class="table-time-list table-td flex-center table-left"
-                :class="{ 'table-time-hover': role == 2 }"
-                v-for="(item, index) in dayTimes"
-                :key="item.id"
-              >
-                <div class="table-time-title flex-center" v-if="item.newTime">
-                  <div class="table-time-index flex-center">
-                    <i>{{ index + 1 }}</i>
-                  </div>
-                </div>
-                <div class="table-time-title flex-center" v-else>
-                  <div class="table-time-index flex-center">
-                    <i>{{ index + 1 }}</i>
-                  </div>
-                  <div class="table-time-value">
-                    {{ moment(item.start, "HH:mm").format("HH:mm") }}
-                  </div>
-                  <div class="table-time-value">
-                    {{ moment(item.end, "HH:mm").format("HH:mm") }}
-                  </div>
-                </div>
-                <div v-if="role == 2" class="table-time-operate flex-center">
-                  <span class="time-edit" @click="openSettingTimeModal(index)">编辑</span>
-                  <span
-                    class="time-delete"
-                    @click="deleteSettingTime(index)"
-                    v-if="dayTimes.length === index + 1"
-                  >
-                    删除
-                  </span>
+    <div class="table">
+      <a-row type="flex">
+        <a-col
+          class="table-td table-title flex-center"
+          flex="100px"
+          justify="center"
+          align="center"
+        >
+          <span class="iconfont icon-shijian"></span>
+        </a-col>
+        <a-col
+          class="table-td table-title flex-center"
+          flex="auto"
+          justify="center"
+          align="top"
+          v-for="(item, index) in tableWeekName"
+          :key="item"
+        >
+          <div class="flex-center table-th">
+            <span
+              class="table-week-name"
+              :class="
+                currentDate.getFullYear() == new Date(weekTime).getFullYear() &&
+                currentDate.getMonth() == new Date(weekTime).getMonth() &&
+                toDayList(index) == moment(currentDate).format('MM.DD')
+                  ? 'active'
+                  : ''
+              "
+              >{{ item }}</span
+            >
+            <span class="table-week-date">{{ toDayList(index) }}</span>
+          </div>
+        </a-col>
+      </a-row>
+      <div class="table-main setscrollbar2">
+        <div class="table-content">
+          <div class="table-time-col">
+            <div
+              class="table-time-list table-td flex-center table-left"
+              :class="{ 'table-time-hover': role == 2 }"
+              v-for="(item, index) in dayTimes"
+              :key="item.id"
+            >
+              <div class="table-time-title flex-center" v-if="item.newTime">
+                <div class="table-time-index flex-center">
+                  <i>{{ index + 1 }}</i>
                 </div>
               </div>
-            </div>
-            <a-row type="flex" class="table-body">
-              <a-col
-                type="flex"
-                class="table-col flex-center"
-                v-for="(weekVal, weekKey, weekIndex) in datas.tableList"
-                flex="1"
-                justify="center"
-                align="top"
-                :key="weekKey"
-              >
-                <div
-                  class="table-td flex-center"
-                  v-for="(classVal, classKey, classIndex) in weekVal"
-                  :key="classKey"
+              <div class="table-time-title flex-center" v-else>
+                <div class="table-time-index flex-center">
+                  <i>{{ index + 1 }}</i>
+                </div>
+                <div class="table-time-value">
+                  {{ moment(item.start, "HH:mm").format("HH:mm") }}
+                </div>
+                <div class="table-time-value">
+                  {{ moment(item.end, "HH:mm").format("HH:mm") }}
+                </div>
+              </div>
+              <div v-if="role == 2" class="table-time-operate flex-center">
+                <span class="time-edit" @click="openSettingTimeModal(index)">编辑</span>
+                <span
+                  class="time-delete"
+                  @click="deleteSettingTime(index)"
+                  v-if="dayTimes.length === index + 1"
                 >
-                  <!-- 新增时间段 -->
-                  <div v-if="classVal.NoData" class="course-no-data flex-center"></div>
-                  <!-- 过期 -->
-                  <div
-                    v-else-if="compareTime(weekIndex, classIndex)"
-                    class="course-overdue flex-center"
-                  >
-                    已过期
+                  删除
+                </span>
+              </div>
+            </div>
+          </div>
+          <a-row type="flex" class="table-body">
+            <a-col
+              type="flex"
+              class="table-col flex-center"
+              v-for="(weekVal, weekKey, weekIndex) in datas.tableList"
+              flex="1"
+              justify="center"
+              align="top"
+              :key="weekKey"
+            >
+              <div
+                class="table-td flex-center"
+                v-for="(classVal, classKey, classIndex) in weekVal"
+                :key="classKey"
+              >
+                <!-- 新增时间段 -->
+                <div v-if="classVal.NoData" class="course-no-data flex-center"></div>
+                <!-- 过期 -->
+                <div
+                  v-else-if="compareTime(weekIndex, classIndex)"
+                  class="course-overdue flex-center"
+                >
+                  已过期
+                </div>
+                <!-- 管理端当前时间段 -->
+                <div
+                  v-else-if="compareTime(weekIndex, classIndex, true)"
+                  class="current-box flex-center"
+                >
+                  <div class="flex-center top">
+                    <div class="on-line-text">{{ classVal.total_students }}</div>
+                    <div class="on-line-number">当前上课人数</div>
                   </div>
-                  <!-- 管理端当前时间段 -->
-                  <div
-                    v-else-if="compareTime(weekIndex, classIndex, true)"
-                    class="current-box flex-center"
-                  >
-                    <div class="flex-center top">
-                      <div class="on-line-text">{{ classVal.total_students }}</div>
-                      <div class="on-line-number">当前上课人数</div>
+                  <div class="flex-center bottom">
+                    <div class="on-line-text">{{ classVal.free_onlinenum }}</div>
+                    <div class="on-line-number">自由学习人数</div>
+                  </div>
+                </div>
+                <!-- 有当前教师 -->
+                <div
+                  v-else-if="classVal.belongs_to_currentteacher&&role!=2"
+                  class="teacher-current hover-edit teacher-no"
+                > 
+                  <div class="edit-wrap flex-center">
+                    <div
+                      @click="
+                        editTeachingSchedule(
+                          classVal.arrangements[0].cid,
+                          classVal.arrangements[0].start
+                        )
+                      "
+                    >
+                      编辑
                     </div>
-                    <div class="flex-center bottom">
-                      <div class="on-line-text">{{ classVal.free_onlinenum }}</div>
-                      <div class="on-line-number">自由学习人数</div>
+                    <div
+                      @click="cancelScheduleConfirm(classVal.arrangements[0].cid)"
+                    >
+                      删除
                     </div>
                   </div>
-                  <!-- 有当前教师 -->
-                  <div
-                    v-else-if="classVal.belongs_to_currentteacher&&role!=2"
-                    class="teacher-current hover-edit teacher-no"
-                  > 
-                    <div class="edit-wrap flex-center">
-                      <div
-                        @click="
-                          editTeachingSchedule(
-                            classVal.arrangements[0].cid,
-                            classVal.arrangements[0].start
+                  <div class="course-name flex-center">
+                    {{ classVal.arrangements[0].course_name }}
+                  </div>
+                  <div class="teacher-course-info flex-center">
+                    <div class="stu-number">
+                      <div class="label">已预约人数</div>
+                      <div class="number">{{ classVal.arrangements[0].stu_num }}</div>
+                    </div>
+                    <div
+                      v-if="Number(classVal.arrangements[0].week_recycle) === 1"
+                      class="circulate"
+                    >
+                      每周循环至
+                      {{ classVal.arrangements[0].end }}
+                    </div>
+                  </div>
+                </div>
+                <!-- 无当前教师 -->
+                <div class="teacher-no flex-center" v-else>
+                  <!-- 约满 -->
+                  <div v-if="classVal.full" class="course-full flex-center">
+                    <div class="course-full-leave">
+                      <div>已约满</div>
+                      <!-- <div style="font-size: 12px">如有冲突可联系管理员</div> -->
+                    </div>
+                    <div v-if="role == 2" class="course-full-hover">
+                      <div class="make-base-list">
+                        <div
+                          class="make-item-item"
+                          v-for="(mit, aindex) in classVal.arrangements" :key="aindex"
+                        >
+                          <span class="teacherName single_ellipsis" :title="classVal.arrangements[aindex].teacher_name">{{ classVal.arrangements[aindex].teacher_name }}</span>
+                          <span class='subscribe'
+                            >共预约{{ classVal.arrangements[aindex].stu_num }}人
+                            <span class="edit-del-btn-wrap">
+                              <i
+                                v-if="classVal.arrangements[aindex].teacher_name=='管理员'"
+                                @click="adminEdit(classVal.arrangements[aindex])"
+                                class="icon-bianji iconfont"
+                              ></i>
+                              <i
+                                @click="adminDel(classVal.arrangements[aindex])"
+                                class="icon-shanchu admin-shanchu iconfont"
+                              ></i>
+                            </span>
+                          </span>
+                        </div>
+                      </div>
+                      <div class="make-create-btn" @click="classVal.belongs_to_currentteacher||classVal.left_stunum<=0?'':
+                          createTeachingSchedule(
+                            classVal.left_stunum,
+                            weekIndex,
+                            classIndex
                           )
+                        ">创建排课</div>
+                    </div>
+                  </div>
+                  <!-- 未约满      classVal.full则已约满  -->
+                  <div v-else class="course-info flex-center">
+                    <div class="make-statistics-wrap">
+                      <template
+                        v-if="
+                          role != 2 &&
+                          classVal.arrangements &&
+                          classVal.arrangements.length
                         "
                       >
-                        编辑
-                      </div>
-                      <div
-                        @click="cancelScheduleConfirm(classVal.arrangements[0].cid)"
-                      >
-                        删除
-                      </div>
-                    </div>
-                    <div class="course-name flex-center">
-                      {{ classVal.arrangements[0].course_name }}
-                    </div>
-                    <div class="teacher-course-info flex-center">
-                      <div class="stu-number">
-                        <div class="label">已预约人数</div>
-                        <div class="number">{{ classVal.arrangements[0].stu_num }}</div>
-                      </div>
-                      <div
-                        v-if="Number(classVal.arrangements[0].week_recycle) === 1"
-                        class="circulate"
-                      >
-                        每周循环至
-                        {{ classVal.arrangements[0].end }}
-                      </div>
-                    </div>
-                  </div>
-                  <!-- 无当前教师 -->
-                  <div class="teacher-no flex-center" v-else>
-                    <!-- 约满 -->
-                    <div v-if="classVal.full" class="course-full flex-center">
-                      <div class="course-full-leave">
-                        <div>已约满</div>
-                        <!-- <div style="font-size: 12px">如有冲突可联系管理员</div> -->
-                      </div>
-                      <div v-if="role == 2" class="course-full-hover">
-                        <div class="make-base-list">
                           <div
-                            class="make-item-item"
-                            v-for="(mit, aindex) in classVal.arrangements" :key="aindex"
-                          >
-                            <span class="teacherName single_ellipsis" :title="classVal.arrangements[aindex].teacher_name">{{ classVal.arrangements[aindex].teacher_name }}</span>
-                            <span class='subscribe'
-                              >共预约{{ classVal.arrangements[aindex].stu_num }}人
-                              <span class="edit-del-btn-wrap">
-                                <i
-                                  v-if="classVal.arrangements[aindex].teacher_name=='管理员'"
-                                  @click="adminEdit(classVal.arrangements[aindex])"
-                                  class="icon-bianji iconfont"
-                                ></i>
-                                <i
-                                  @click="adminDel(classVal.arrangements[aindex])"
-                                  class="icon-shanchu admin-shanchu iconfont"
-                                ></i>
-                              </span>
-                            </span>
-                          </div>
-                        </div>
-                        <div class="make-create-btn" @click="classVal.belongs_to_currentteacher||classVal.left_stunum<=0?'':
-                            createTeachingSchedule(
-                              classVal.left_stunum,
-                              weekIndex,
-                              classIndex
-                            )
-                          ">创建排课</div>
-                      </div>
-                    </div>
-                    <!-- 未约满      classVal.full则已约满  -->
-                    <div v-else class="course-info flex-center">
-                      <div class="make-statistics-wrap">
-                        <template
-                          v-if="
-                            role != 2 &&
-                            classVal.arrangements &&
-                            classVal.arrangements.length
-                          "
-                        >
-                            <div
-                            class="course-info-title"
-                            :class="!classVal.full ? 'course-info-title-active' : ''"
-                          >
-                            <span class="course-info-text">剩余可预约人数</span>
-                            <span class="course-info-num">{{ classVal.left_stunum>0?classVal.left_stunum:0 }}</span>
-                          </div>
-                        </template>
-                        <div
-                          v-else
                           class="course-info-title"
                           :class="!classVal.full ? 'course-info-title-active' : ''"
                         >
                           <span class="course-info-text">剩余可预约人数</span>
                           <span class="course-info-num">{{ classVal.left_stunum>0?classVal.left_stunum:0 }}</span>
                         </div>
-                      </div>
+                      </template>
                       <div
-                        v-if="!classVal.full && role != 2"
-                        class="create-button flex-center"
+                        v-else
+                        class="course-info-title"
+                        :class="!classVal.full ? 'course-info-title-active' : ''"
                       >
-                        <div
-                          :class="classVal.belongs_to_currentteacher||classVal.left_stunum<=0?'noclick':'create-btn'"
-                          @click="
-                          classVal.belongs_to_currentteacher||classVal.left_stunum<=0?'':
-                            createTeachingSchedule(
-                              classVal.left_stunum,
-                              weekIndex,
-                              classIndex
-                            )
-                          "
-                          v-if="!classVal.belongs_to_currentteacher&&classVal.left_stunum>0"
-                        >
-                          创建排课
-                        </div>
-                        <div v-else :class="classVal.left_stunum>0?'edit-delete-wrap':'cannot_click'">
-                          <span
-                            @click="classVal.left_stunum>0?
-                              editTeachingSchedule(
-                                classVal.arrangements[0].cid,
-                                classVal.arrangements[0].start
-                              ):''
-                            "
-                            >编辑</span
-                          >
-                          <span @click="classVal.left_stunum>0?cancelScheduleConfirm(classVal.arrangements[0].cid):''"
-                            >删除</span
-                          >
-                        </div>
+                        <span class="course-info-text">剩余可预约人数</span>
+                        <span class="course-info-num">{{ classVal.left_stunum>0?classVal.left_stunum:0 }}</span>
                       </div>
-                      <div v-else class="course-make-wrap">
-                        <div v-if="role == 2" class="course-full-hover">
-                          <template v-if="classVal.arrangements.length > 0">
-                            <div class="make-base-list">
-                              <div
-                                class="make-item-item"
-                                v-for="(mit, aindex) in classVal.arrangements" :key="aindex"
-                              >
-                              <div>
-                                <span :title="classVal.arrangements[aindex].teacher_name" class="teacher_name">
-                                {{classVal.arrangements[aindex].teacher_name}}
-                                </span>
-                              </div>
-                              
-                                <span
-                                  class='subscribe'
-                                  >共预约
-                                  {{ classVal.arrangements[aindex].stu_num }}人
-                                  <span class="edit-del-btn-wrap">
-                                    <i
-                                    v-if="classVal.arrangements[aindex].teacher_name=='管理员'"
-                                      @click="adminEdit(classVal.arrangements[aindex])"
-                                      class="icon-bianji iconfont"
-                                    ></i>
-                                    <i
-                                      @click="adminDel(classVal.arrangements[aindex])"
-                                      class="icon-shanchu admin-shanchu iconfont"
-                                    ></i>
-                                  </span>
-                                </span>
-                              </div>
-                            </div>
-                            <div :class="classVal.belongs_to_currentteacher||classVal.left_stunum<=0?'noclick':'make-create-btn'" 
-                            @click="classVal.belongs_to_currentteacher||classVal.left_stunum<=0?'':
-                            createTeachingSchedule(
-                              classVal.left_stunum,
-                              weekIndex,
-                              classIndex
-                            )
-                          ">创建排课</div>
-                          </template>
-                          <div v-else class="a-create-wrap">
-                            <div :class="classVal.left_stunum>0?'make-create-btn':'no-make-create-btn'" @click="classVal.left_stunum>0?
-                            createTeachingSchedule(
-                              classVal.left_stunum,
-                              weekIndex,
-                              classIndex
+                    </div>
+                    <div
+                      v-if="!classVal.full && role != 2"
+                      class="create-button flex-center"
+                    >
+                      <div
+                        :class="classVal.belongs_to_currentteacher||classVal.left_stunum<=0?(classVal.left_stunum==0?'nopower_click':'noclick'):'create-btn'"
+                        @click="
+                        classVal.belongs_to_currentteacher||classVal.left_stunum<=0?'':
+                          createTeachingSchedule(
+                            classVal.left_stunum,
+                            weekIndex,
+                            classIndex
+                          )
+                        "
+                        v-if="!classVal.belongs_to_currentteacher&&classVal.left_stunum>=0"
+                      >
+                        创建排课
+                      </div>
+                      <div v-else :class="classVal.left_stunum>0?'edit-delete-wrap':'cannot_click'">
+                        <span
+                          @click="classVal.left_stunum>0?
+                            editTeachingSchedule(
+                              classVal.arrangements[0].cid,
+                              classVal.arrangements[0].start
                             ):''
-                          ">创建排课</div>
+                          "
+                          >编辑</span
+                        >
+                        <span @click="classVal.left_stunum>0?cancelScheduleConfirm(classVal.arrangements[0].cid):''"
+                          >删除</span
+                        >
+                      </div>
+                    </div>
+                    <div v-else class="course-make-wrap">
+                      <div v-if="role == 2" class="course-full-hover">
+                        <template v-if="classVal.arrangements.length > 0">
+                          <div class="make-base-list">
+                            <div
+                              class="make-item-item"
+                              v-for="(mit, aindex) in classVal.arrangements" :key="aindex"
+                            >
+                            <div>
+                              <span :title="classVal.arrangements[aindex].teacher_name" class="teacher_name">
+                              {{classVal.arrangements[aindex].teacher_name}}
+                              </span>
+                            </div>
+                             
+                              <span
+                                class='subscribe'
+                                >共预约
+                                {{ classVal.arrangements[aindex].stu_num }}人
+                                <span class="edit-del-btn-wrap">
+                                  <i
+                                  v-if="classVal.arrangements[aindex].teacher_name=='管理员'"
+                                    @click="adminEdit(classVal.arrangements[aindex])"
+                                    class="icon-bianji iconfont"
+                                  ></i>
+                                  <i
+                                    @click="adminDel(classVal.arrangements[aindex])"
+                                    class="icon-shanchu admin-shanchu iconfont"
+                                  ></i>
+                                </span>
+                              </span>
+                            </div>
                           </div>
+                          <div :class="classVal.belongs_to_currentteacher||classVal.left_stunum<=0?'noclick':'make-create-btn'" 
+                          @click="classVal.belongs_to_currentteacher||classVal.left_stunum<=0?'':
+                          createTeachingSchedule(
+                            classVal.left_stunum,
+                            weekIndex,
+                            classIndex
+                          )
+                        ">创建排课</div>
+                        </template>
+                        <div v-else class="a-create-wrap">
+                          <div :class="classVal.left_stunum>0?'make-create-btn':'no-make-create-btn'" @click="classVal.left_stunum>0?
+                          createTeachingSchedule(
+                            classVal.left_stunum,
+                            weekIndex,
+                            classIndex
+                          ):''
+                        ">创建排课</div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </a-col>
-            </a-row>
-          </div>
+              </div>
+            </a-col>
+          </a-row>
         </div>
       </div>
-    </a-spin>
+    </div>
   </div>
   <setting-time-modal ref="settingTimeModalRef" />
 </template>
@@ -469,17 +467,16 @@ function getLeftTime() {
     dayTimes.value.push(...res.data);
   });
 }
-var loading: Ref<boolean> = ref(false);
 function getTimeTable(data: string) {
   const param = {
     date: data,
   };
   // datas.tableList = {};
-console.log("2222");
-  loading.value=true
+  // console.log("2222");
+
   http.getTimeTable({ param }).then((res: any) => {
     console.log(res);
-    loading.value=false
+
     datas.tableList = res.data;
   });
 }
@@ -1342,6 +1339,15 @@ onMounted(() => {
   line-height: 24px;
   margin: auto auto 10px auto;
   margin-top: auto;
+}
+.nopower_click{
+  cursor: not-allowed;
+  color: #828282;
+  width: 112px;
+  height: 24px;
+  background: #f5f5f5;
+  border: 1px solid #d9d9d9;
+  border-radius: 13px;
 }
 .cannot_click{
   cursor: not-allowed;
