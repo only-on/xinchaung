@@ -440,6 +440,7 @@ function studyHandle(a: any, studyType: string) {
     return
   }
   prepareEnv(param).then(() =>{
+    connectStatus.value = 1
     a.startup=2
   })
 }
@@ -498,8 +499,7 @@ function prepare(a:any, i: number) {
 }
 // 进入
 const openVm = (a: any, opType: string) => {
-  a.startup=2
-  isOpen.value = true
+  a.startup=1
   const { id } = a
   const task_type = a.is_webssh ? 2 : a.is_webide ? 3 : a.task_type
   const param: any = {
@@ -540,7 +540,11 @@ const openVm = (a: any, opType: string) => {
     return
   }
   toVmConnect(router, param, routeQuery).then((res: any) => {
-    // a.startup=3
+    a.startup=2
+    connectStatus.value = 1
+    // if (a.studys&&Number(a.studys[0].status)===1&&a.studys[0].topoinst_id || (role===3||role===5)&&a.topoinst_id) {
+    isOpen.value = true
+    // }
   })
 }
 
