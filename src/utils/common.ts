@@ -218,7 +218,8 @@ function urlSearch() {
 
 const readFile = (file: any) => {
   return new Promise((resolve: any, reject: any) => {
-    const suffix = (file && file.name).split(".")[1];
+    let arr = (file && file.name).split('.')
+    const suffix = arr[arr.length-1];
     if (suffix !== "md") {
       message.warn("请上传 .md 格式文件");
       return false;

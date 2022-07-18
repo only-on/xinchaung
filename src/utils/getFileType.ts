@@ -108,7 +108,8 @@ import {message } from "ant-design-vue";
 
 export const readFile = (file: any,format:string = 'md') => {
   return new Promise((resolve: any, reject: any) => {
-    const suffix = (file && file.name).split(".")[1];
+    let arr = (file && file.name).split('.')
+    const suffix = arr[arr.length-1];
     if (suffix !== format) {
       message.warn(`请上传 .${format}格式文件`)
       return false;
