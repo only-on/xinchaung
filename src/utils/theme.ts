@@ -184,7 +184,7 @@ function setTheme () {
   }
   if (!systemInfo || !Object.keys(systemInfo).length) return
   for (let key in systemInfo) {
-    console.log(systemInfo);
+    // console.log(systemInfo);
     if (key === 'theme') {
       let bodyEle = document.getElementsByTagName('body')[0]
       bodyEle.style.setProperty('--primary-color', themeData.primary) // 主题色

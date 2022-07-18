@@ -56,7 +56,7 @@ export default defineComponent({
       showContent: false, //  是否需要内容区盒子   不需要则 layout只带顶部导航
     });
     function updataNav(val: config) {
-      console.log(val)
+      // console.log(val)
       // if(!val.activeMenuName){
       //   configuration.activeMenuName=''
       // }

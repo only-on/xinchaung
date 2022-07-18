@@ -41,6 +41,7 @@ import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch";
 import extStorage from "src/utils/extStorage";
 import { useStore } from "vuex";
+import menusFn from 'src/routers/menuConfig'
 export default defineComponent({
   name: "MenuBar",
   props: {
@@ -60,67 +61,10 @@ export default defineComponent({
     const route = useRoute();
     const { lStorage } = extStorage;
     const store = useStore();
-    const renderItem = function (item: MenuItem, level: number): VNode {
-      if (level % 2 === 0) {
-        let items: VNode | null = null;
-        if (item.children) {
-          level += 1;
-          let tmpChildren: Array<VNode> = [];
-          for (let i in item.children) {
-            tmpChildren.push(renderItem(item.children[i], level));
-          }
-          items = <a-menu class="menu__group">{tmpChildren}</a-menu>;
-        }
-        // select
-        return (
-          <a-dropdown
-            v-slots={{
-              overlay() {
-                return items;
-              },
-            }}
-          >
-            <div
-              // class={item.name === activeName.value ? "menu__top-item" : "menu__top-item"}
-              class={
-                item.name === activeName.value
-                  ? "menu__top-item active"
-                  : "menu__top-item"
-              }
-              onClick={(e: Event) => {
-                if (item.children && item.children.length) {
-                  // console.log(item.items)
-                } else {
-                  select("Parent", item);
-                }
-              }}
-            >
-              {item.name}
-            </div>
-          </a-dropdown>
-        );
-      }
-      return (
-        <a-menu-item class="menu__item">
-          <div
-            onClick={(e: Event) => {
-              select("Children", item);
-            }}
-          >
-            {item.name}
-          </div>
-        </a-menu-item>
-      );
-    };
     // var menus:MenuItem[]=reactive([])
-    var menus: any[] = props.menus;
-    var children: Array<VNode> = reactive([]);
-    const renderMenu = function (menuData: MenuItem[]) {
-      menuData.forEach((item) => {
-        children.push(renderItem(item, 0));
-      });
-      return <div class="nav__menu">{children}</div>;
-    };
+    var menus: any[] = menusFn();
+    console.log(menus);
+    
     var activeName: Ref<string> = ref(lStorage.get("menuActiveName") || "");
 
     function select(level: string, val: MenuItem){
