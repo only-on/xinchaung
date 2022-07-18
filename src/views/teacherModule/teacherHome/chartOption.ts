@@ -51,7 +51,7 @@ export const pieOptions = (data: IpieData) => {
 // 课程成绩分布
 export const radarOptions = (data: any) => {
   const {systemColor} = getThemeData()
-  console.log(systemColor)
+  // console.log(systemColor)
   // let datas: any[] = [data["0"], data.D, data.C, data.B, data.A]
   let datas: any[] = [data["0"], data.D, data.C, data.B, data.A]
   var assmax = Math.max.apply(null, datas);
@@ -343,24 +343,26 @@ function setTagData(knowledge_map: IknowledgeMap) {
         target: item.contentvia.id,
       })
       item.contentvia.knowledages.forEach((knowledage: any) => {
-        data.push({
-          name: knowledage.knowledgeMap.knowledge_map_name,
-          id: item.contentvia.id + "->" + knowledage.knowledgeMap.id,
-          symbolSize: 15,
-          draggable: true,
-          itemStyle: {
-            borderColor: systemColor.Tcolor2,
-            borderWidth: 6,
-            shadowBlur: 20,
-            shadowColor: systemColor.Tcolor2,
-            color: '#b0ccfe'
-          },
-          category: 1,
-        })
-        links.push({
-          source: item.contentvia.id,
-          target: item.contentvia.id + "->" + knowledage.knowledgeMap.id,
-        })
+        if(knowledage?.length>0&&knowledage!==null){
+          data.push({
+            name: knowledage.knowledgeMap.knowledge_map_name,
+            id: item.contentvia.id + "->" + knowledage.knowledgeMap.id,
+            symbolSize: 15,
+            draggable: true,
+            itemStyle: {
+              borderColor: systemColor.Tcolor2,
+              borderWidth: 6,
+              shadowBlur: 20,
+              shadowColor: systemColor.Tcolor2,
+              color: '#b0ccfe'
+            },
+            category: 1,
+          })
+          links.push({
+            source: item.contentvia.id,
+            target: item.contentvia.id + "->" + knowledage.knowledgeMap.id,
+          })
+        }
       })
     }
   })

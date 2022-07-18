@@ -11,10 +11,9 @@
         :slides-per-view="5"
         :space-between="33"
         :slideToClickedSlide="true"
-        @slideChange="slideChangeTransitionEnd"
+        @slideChangeTransitionEnd="slideChangeTransitionEnd"
         @setTranslate="setTranslate"
       >
-      <!-- @slideChangeTransitionEnd="slideChangeTransitionEnd" -->
         <swiper-slide v-for="item in courseLists" :key="item.id" :style="`background-image: url(${systemImages.ThomeLunbo.bannerlunBo});`">
           {{ item.name }}
         </swiper-slide>
@@ -180,6 +179,7 @@ interface Ilists {
       showNav: false,
     });
     const slideChangeTransitionEnd = (swiper: any) => {
+      console.log(courseLists[swiper.realIndex].id,'courseLists[swiper.realIndex].id')
       getData(courseLists[swiper.realIndex].id);
       getErrorRoate(courseLists[swiper.realIndex].id)
     };
