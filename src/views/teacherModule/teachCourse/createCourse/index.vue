@@ -20,7 +20,7 @@
               <a-form-item label="起始时间" name="date">
                 <a-range-picker @change="dateChange" v-model:value="formState.date" valueFormat="YYYY-MM-DD" format="YYYY-MM-DD" :disabledDate="disabledDate">
                   <template #suffixIcon>
-                    <SmileOutlined />
+                    <calendar-outlined />
                   </template>
                 </a-range-picker>
               </a-form-item>
@@ -73,7 +73,7 @@
                 <a-input v-model:value="formState.content_duration" placeholder="请输入实验时长" />分钟
               </a-form-item>
               <a-form-item label="课程简介" name="introduce">
-                <a-textarea v-model:value="formState.introduce" :auto-size="{ minRows: 6, maxRows: 8 }" placeholder="请输入课程简介" />
+                <a-textarea v-model:value="formState.introduce" :auto-size="{ minRows: 6, maxRows: 8 }" :maxlength="100" placeholder="请输入课程简介" />
               </a-form-item>
             </div>
           </div>
@@ -128,7 +128,7 @@ import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
 import LabelList from 'src/components/LabelList.vue'
-import { SmileOutlined } from '@ant-design/icons-vue';
+import { CalendarOutlined  } from '@ant-design/icons-vue';
 import SetupChapter from '../courseDetail/components/Chapter/SetupChapter.vue'
 import { ColumnProps } from "ant-design-vue/es/table/interface";
 import customerInfor from "./stup3/index.vue";

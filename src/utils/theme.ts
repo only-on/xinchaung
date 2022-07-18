@@ -69,7 +69,7 @@ const themeColorList:any = [
     menuBg: '#192843',
     menuText: 'rgba(255, 255, 255, 0.45)',
     menuActive: '#fff',
-    primary1: '#FAFAFB',
+    primary1: '#FFFBF6',
     primary2: '#FFF2D9',
     primary3: '#FFE1B4',
     primary4: '#FFCB8E',
@@ -96,7 +96,7 @@ const themeColorList:any = [
     menuBg: '#fff',
     menuText: 'rgba(0, 0, 0, 0.65)',
     menuActive: '#FFB849',
-    primary1: '#FCFAF0', // 较浅主题颜色
+    primary1: '#FCFAF0', // 较浅主题颜色 
     primary2: '#FFF7E7', // 浅主题颜色
     primary3: '#F8EDDC',
     primary5: '#FAAD14', // 主色鼠标移入颜色

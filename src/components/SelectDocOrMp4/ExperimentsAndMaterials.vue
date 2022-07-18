@@ -122,8 +122,9 @@ const selectSourceMaterialFile=(val:any)=>{
 .ExperimentsAndMaterials {
   .select{
     justify-content:space-between;
+    margin-bottom:24px;
+    border-bottom: 1px solid #E8E8E8;
     .type{
-      margin-bottom:24px;
       span{
         border-bottom: 4px solid transparent;
         margin-right: 50px;

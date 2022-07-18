@@ -214,9 +214,11 @@ onMounted(()=>{
   }
 }
 .Exhibition{
-  padding:0px 1rem 10px;
+  padding:10px 18px;
   margin-bottom: 20px;
   justify-content:space-between;
+  border: 1px solid var(--primary-color);
+  background: var(--primary-1);
   .left{
     .num{
       color:var(--primary-color);
@@ -276,7 +278,7 @@ onMounted(()=>{
         }
       }
       .item:hover {
-        background: #ffeed8;
+        background: var(--primary-1);
         // border: 1px solid #ffcaa1;
         cursor: pointer;
         .tags{

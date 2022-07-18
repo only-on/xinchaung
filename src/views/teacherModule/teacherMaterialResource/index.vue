@@ -33,8 +33,8 @@
         @click="detail(list)"
       >
         <div class="item-top" :style="list.cover?`background-image: url('${encodeURI(list.cover)}');`:defaultCover">
-          <div class="labels">
-            <span>{{(list.tags && list.tags.length)?`${list.tags.join(' / ')}`:''}}</span>
+          <div class="labels single_ellipsis" v-if="list.tags && list.tags.length">
+            <span :title="(list.tags && list.tags.length)?`${list.tags.join(' / ')}`:''">{{(list.tags && list.tags.length)?`${list.tags.join(' / ')}`:''}}</span>
           </div>
         </div>
         <div class="item-content">
@@ -340,10 +340,12 @@ const getTypeList = () => {
       align-items: flex-end;
       .labels {
         width: 100%;
-        padding: 1px 6px;
         background: var(--black-5);
         font-size: var(--font-size-sm);
         color: var(--white-85);
+        &>span{
+          padding: 1px 6px;
+        }
       }
     }
     &-content {
@@ -388,6 +390,7 @@ const getTypeList = () => {
           height: 20px;
           // background-color: pink;
           margin-right: 4px;
+          border-radius: 50%;
         }
         .name {
           display: inline-block;

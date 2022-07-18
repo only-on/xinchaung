@@ -509,6 +509,7 @@ onMounted(() => {
     .img{
       width: 270px;
       height: 150px;
+      border-radius: 6px;
       background: url("src/assets/images/cover2.png") no-repeat;
       background-size: 100% 100%;
       justify-content: center;
@@ -583,6 +584,7 @@ onMounted(() => {
     .title{
 
       justify-content: space-between;
+      border-bottom: 1px solid #e8e8e8;
       .tab{
         // width: 300px;
         .item{
@@ -595,6 +597,7 @@ onMounted(() => {
           cursor: pointer;
           border-bottom: 2px solid transparent;
           text-align: left;
+          font-size: 16px;
         }
         .active{
           border-bottom: 2px solid var(--primary-color);
@@ -631,8 +634,9 @@ onMounted(() => {
           flex:1;
           padding-left: 2rem;
           .fileItem{
-            padding: 9px 0;
+            padding: 15px 24px;
             justify-content: space-between;
+            background: #f9f9f9;
             .img{
               width: 40px;
               height: 40px;

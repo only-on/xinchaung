@@ -110,8 +110,7 @@ const selectFile=(val:any)=>{
   }
 }
 .CategoryActive{
-  opacity: 0.56;
-  background-color: #ffeed8;
+  background-color: rgba(255,238,216,0.56);
 }
 .upper{
   display: flex;
