@@ -50,9 +50,6 @@ export default defineComponent({
       // type: Array as PropType<MenuItem>,
       default: () => [],
     },
-    activeMenu: {
-      default: ''
-    }
   },
   setup(props, context) {
     const renderFlag: Ref<boolean> = ref(true);
@@ -149,12 +146,7 @@ export default defineComponent({
       // console.log(newVal);
       activeName.value = newVal
       lStorage.set("menuActiveName", activeName.value);
-    })
-    watch(()=>props.activeMenu, newVal => {
-      // console.log(newVal);
-      activeName.value = newVal
-      lStorage.set("menuActiveName", activeName.value);
-    })
+    },{immediate: true })
     const http = (request as any).common;
 
     const visibleChange=(val:any)=>{

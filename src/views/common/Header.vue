@@ -106,7 +106,6 @@ export default defineComponent({
   components: { MenuBar },
   setup() {
     const env = process.env.NODE_ENV == "development" ? true : false;
-    const activeMenu = ref<string>('')
     const router = useRouter();
     const store = useStore()
     const { lStorage,sStorage } = extStorage;
@@ -687,13 +686,11 @@ export default defineComponent({
       // console.log(newVal);
       // menus.forEach((item:any) => {
       //   if(item.url && item.url.includes(newVal)){
-      //     activeMenu.value = item.name
       //     lStorage.set("menuActiveName", item.name);
       //   }
       //   if (item.children.length) {
       //     item.children.forEach((childItem:any) => {
       //       if(childItem.url && childItem.url.includes(newVal)){
-      //         activeMenu.value = item.name
       //         lStorage.set("menuActiveName", item.name);
       //       }
       //     })
