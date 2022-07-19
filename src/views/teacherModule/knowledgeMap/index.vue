@@ -28,7 +28,8 @@
   
 </template>
 <script lang="ts">
-import { defineComponent,ref, onMounted, reactive, inject, nextTick,Ref } from 'vue'
+import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
+import { defineComponent,ref, onMounted, reactive, inject, nextTick,Ref, createVNode } from 'vue'
 import { useRouter } from 'vue-router'
 import 'jsmind/style/jsmind.css'
 import jsMind from 'jsmind/js/jsmind.js'
@@ -39,6 +40,7 @@ import message, {MessageApi} from "ant-design-vue/lib/message"
 import {screenshot} from 'src/utils/manipulatePicture'
 import { theme } from 'src/utils/theme'
 import {lStorage} from 'src/utils/extStorage'
+import { Modal } from 'ant-design-vue';
 interface IpageInfo{
   count: number,
   index: number,
@@ -154,19 +156,18 @@ export default defineComponent({
       }, 400);
     }
     const handleClick = (event:any)=>{
-      console.log('点击； ',event.type)
       setMenuStatus(false)
       if (event.target.nodeName == "DIV" || event.target.nodeName == "JMEXPANDER" || event.button == 2) {
           return;
-      }
-      if (event.type === 'dblclick') {
-        handleBlur('edit')
       }
       selectNode = jm.get_selected_node()
       if (selectNode) {
         pageInfo.index = 1
         pageInfo.knowledge_map_id = selectNode.id
         getSelectedNodeData()
+        if (event.type === 'dblclick') {
+          handleBlur('edit')
+        }
       }
     }
     // 鼠标右击事件
@@ -257,12 +258,20 @@ export default defineComponent({
           jm.select_clear();
           return false;
       }
-      http.delKnowledgeMap({urlParams: {nodeID: selectNode.id}}).then((res:IBusinessResp) => {
-        jm.remove_node(selectNode.id)
-        message.success('删除成功')
-        contentList.length = 0
-        getMapdata()
-      })
+      Modal.confirm({
+        title: '确定要删除这个知识点吗？',
+        icon: createVNode(ExclamationCircleOutlined),
+        okText: '确认',
+        cancelText: '取消',
+        onOk(){
+          http.delKnowledgeMap({urlParams: {nodeID: selectNode.id}}).then((res:IBusinessResp) => {
+            jm.remove_node(selectNode.id)
+            message.success('删除成功')
+            contentList.length = 0
+            getMapdata()
+          })
+        }
+      });
     }
     const getSelectedNodeData = () => {
       isShow.value = true
