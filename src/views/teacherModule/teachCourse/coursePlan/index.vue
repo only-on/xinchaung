@@ -255,21 +255,8 @@
                       v-if="!classVal.full && role != 2"
                       class="create-button flex-center"
                     >
-                      <div
-                        :class="classVal.belongs_to_currentteacher||classVal.left_stunum<=0?(classVal.left_stunum==0?'nopower_click':'noclick'):'create-btn'"
-                        @click="
-                        classVal.belongs_to_currentteacher||classVal.left_stunum<=0?'':
-                          createTeachingSchedule(
-                            classVal.left_stunum,
-                            weekIndex,
-                            classIndex
-                          )
-                        "
-                        v-if="!classVal.belongs_to_currentteacher&&classVal.left_stunum>=0"
-                      >
-                        创建排课
-                      </div>
-                      <div v-else :class="classVal.left_stunum>0?'edit-delete-wrap':'cannot_click'">
+                      
+                      <div v-if="classVal.belongs_to_currentteacher&&classVal.total_students>0" :class="classVal.left_stunum>0?'edit-delete-wrap':'cannot_click'">
                         <span
                           @click="classVal.left_stunum>0?
                             editTeachingSchedule(
@@ -282,6 +269,21 @@
                         <span @click="classVal.left_stunum>0?cancelScheduleConfirm(classVal.arrangements[0].cid):''"
                           >删除</span
                         >
+                      </div>
+                      <div
+                        :class="classVal.belongs_to_currentteacher||classVal.left_stunum<=0?(classVal.left_stunum==0?'nopower_click':'noclick'):'create-btn'"
+                        @click="
+                        classVal.belongs_to_currentteacher||classVal.left_stunum<=0?'':
+                          createTeachingSchedule(
+                            classVal.left_stunum,
+                            weekIndex,
+                            classIndex
+                          )
+                        "
+                        v-else
+                      >
+                      <!-- &&classVal.left_stunum>=0 -->
+                        创建排课
                       </div>
                     </div>
                     <div v-else class="course-make-wrap">
@@ -1293,7 +1295,7 @@ onMounted(() => {
     // border-radius: 50%;
     // background: #FF9D00;
     width: 100%;
-    height: 100%;
+    // height: 100%;
     background-color: var(--white-100);
     display: none;
     cursor: pointer;
