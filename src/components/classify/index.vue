@@ -121,7 +121,7 @@ defineExpose({
   .labelBox{
     flex:1;
     // line-height: 44px;
-    max-height: 28px;
+    max-height:30px;
     overflow: hidden;
     margin-right: 50px;
     &.open{

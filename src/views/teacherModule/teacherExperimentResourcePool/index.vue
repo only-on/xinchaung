@@ -442,6 +442,7 @@ const getDirection = () => {
   overflow: hidden;
   .labelSearchBox {
     margin-top: 10px;
+    // background-color: #f2f2f3;
   }
 }
 .mainBox {

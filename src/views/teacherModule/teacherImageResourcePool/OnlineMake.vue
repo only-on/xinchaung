@@ -456,6 +456,7 @@ async function init() {
     width: 384px;
     // height: 224px;
     color: var(--white);
+    box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.07);
     .top {
       display: flex;
       justify-content: space-between;

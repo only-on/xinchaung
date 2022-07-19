@@ -531,6 +531,7 @@ export default defineComponent({
   }
   .ant-btn-primary {
     box-shadow: none;
+    border-radius: 17px;
   }
   .ant-drawer-content-wrapper {
     width: 100% !important;
