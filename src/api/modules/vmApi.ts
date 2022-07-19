@@ -63,6 +63,8 @@ export default {
     getPrepareEnv: {url: '/api/operate/operates/prepares', method:"POST",dataType: 'json'},
     // 测试ssh服务
     testSSHServe: {url: `/wssh/sniff?hostname={hostname}&port={port}`, method:"POST", dataType: 'json'},
+    // 获取webssh连接id
+    getWsshId: {url: '/wssh?hostname={hostname}&port={port}', method: 'POST', dataType: 'json'},
 }
 
 // 
@@ -107,6 +109,7 @@ export interface IvmApi {
     updateReadStatusApi:TFHttpSend
     getPrepareEnv:TFHttpSend
     testSSHServe:TFHttpSend
+    getWsshId:TFHttpSend
 }
 
 export const MODULE_NAME = "vmApi"
