@@ -14,7 +14,7 @@
   </div>
   <div class="experiment-content">
     <common-video
-      style="width: 100%; height: 650px"
+      style="width: 100%; height: 570px"
       controls="true"
       :src="fileInfo.tusdVideoUrl"
       v-if="fileInfo.tusdVideoUrl"

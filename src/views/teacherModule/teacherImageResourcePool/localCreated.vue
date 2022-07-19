@@ -2,7 +2,7 @@
   <div class="create-image-box">
     <a-form layout="vertical" ref="formRef" :model="image" :rules="rules">
       <a-form-item label="镜像文件" name="fileName">
-        <upload-image @upload-imageinfo="uploadImageinfo" @upload-percentage="uploadPercentage"></upload-image>
+        <upload-image class="imageColor" @upload-imageinfo="uploadImageinfo" @upload-percentage="uploadPercentage"></upload-image>
       </a-form-item>
       <div class="create-img-middle">
         <div>
@@ -262,6 +262,9 @@ onMounted(() => {
   //           padding: 40px;
   //       }
   //   }
+  .imageColor{
+    background-color: white;
+  }
   .ant-input-desc {
     height: 115px;
     min-height: 115px;

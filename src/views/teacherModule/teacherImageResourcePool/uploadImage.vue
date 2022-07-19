@@ -246,6 +246,7 @@ export default defineComponent({
   .upload {
     .ant-upload.ant-upload-drag .ant-upload-btn {
       padding: 40px;
+      background-color:white;
     }
     .ant-upload-list-item-card-actions {
       display: none;
