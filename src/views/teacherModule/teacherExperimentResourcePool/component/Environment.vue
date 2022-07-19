@@ -246,6 +246,9 @@ h3 {
           cursor: pointer;
           color: var(--black-65);
         }
+        span:hover{
+          color: var(--black-85);
+        }
       }
     }
   }
@@ -259,7 +262,7 @@ h3 {
     .limit {
       color: var(--black-25);
       font-size: 12px;
-      padding-top: 10px;
+      padding-top:6px;
     }
   }
   .not-allowed {

@@ -45,7 +45,7 @@
                   <!-- v-if="params.common === 1" -->
                   <div class="flexCenter imgBox" v-if="params.common === 1">
                     <span class="img"></span>
-                    <span class="text">{{item.username}}</span>
+                    <span class="text username" :title="item.username">{{item.username}}</span>
                   </div>
                   <div class="tags flexCenter">
                     <!-- <span>{{`${item.tags.join('/')}`}}</span> -->
@@ -361,6 +361,7 @@ export default defineComponent({
       &:hover {
         // box-shadow: 0 3px 6px 0 var(--black-0-7);
         box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16); 
+        border-color: var(--primary-color);
         .caozuo{
           .iconfont{
             display: block;
@@ -465,6 +466,13 @@ export default defineComponent({
     color: var(--black-45);
     font-size: var(--font-size-sm);
   }
+  .username{
+    display: inline-block;
+    width:62px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
   .portrait{
     line-height: 22px;
     .imgBox{
@@ -480,6 +488,7 @@ export default defineComponent({
       margin-right: 6px;
     }
     .tags{
+      width: 400px;
       span{
         color: var(--primary-color);
         font-size: var(--font-size-sm);

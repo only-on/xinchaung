@@ -131,7 +131,7 @@
           <div class="osd-mode">
             <!-- <span @click="openScreen()"> 进入同屏模式 </span> -->
             <!-- <a-button type="link" @click.stop="openScreen()" :loading="openScreenLoading">{{openScreenLoading?'连接中...':'进入同屏模式'}}</a-button> -->
-            <span type="link" @click.stop="openScreen()" :loading="openScreenLoading">{{openScreenLoading?'连接中...':'进入同屏模式'}}</span>
+            <span class="screen" type="link" @click.stop="openScreen()" :loading="openScreenLoading">{{openScreenLoading?'连接中...':'进入同屏模式'}}</span>
           </div>
         </div>
       </div>
@@ -1121,7 +1121,7 @@ onMounted(()=>{
     // margin-right: 1rem;
   }
   .add-data-set-btn {
-    width: 100px;
+    // width: 100px;
     font-size: var(--base-font-size);
     border: 1px solid var(--primary-color);
     // margin-bottom: 1rem;
@@ -1178,6 +1178,10 @@ onMounted(()=>{
       .icon-shanchu {
         margin-left: 1rem;
         cursor: pointer;
+        color: var(--black-65);
+      }
+      .icon-shanchu:hover{
+        color: var(--black-85);
       }
       .icon-fujian{
         padding: 0 4px;
@@ -1214,7 +1218,8 @@ onMounted(()=>{
     .upload-box {
       .upload {
         button {
-          margin: 0 16px;
+          // margin: 0 16px;
+          margin-left: 16px;
         }
       }
     }
@@ -1386,5 +1391,8 @@ onMounted(()=>{
 }
 .submitBox {
   margin: 24px 0;
+}
+.screen:hover{
+  color:var( --cyan-100);
 }
 </style>
