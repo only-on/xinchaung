@@ -36,11 +36,10 @@ import jsMind from 'jsmind/js/jsmind.js'
 import request from "src/api/index";
 import { Ihttp } from "./typings";
 import { IBusinessResp } from "src/typings/fetch.d";
-import message, {MessageApi} from "ant-design-vue/lib/message"
 import {screenshot} from 'src/utils/manipulatePicture'
 import { theme } from 'src/utils/theme'
 import {lStorage} from 'src/utils/extStorage'
-import { Modal } from 'ant-design-vue';
+import { Modal, message } from "ant-design-vue";
 interface IpageInfo{
   count: number,
   index: number,
@@ -73,7 +72,6 @@ export default defineComponent({
   },
   setup(props,{emit}) {
     const http = (request as any).TeachingResourceManagement
-    const $message:MessageApi = inject('$message')!
     const router = useRouter()
     var jm = ref<any>(null)
     var selectNode = reactive<any>({})

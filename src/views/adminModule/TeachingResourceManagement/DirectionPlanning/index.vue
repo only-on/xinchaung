@@ -107,8 +107,10 @@ import {
   reactive,
   inject,
   UnwrapRef,
-  computed
+  computed,
+  createVNode
 } from "vue";
+import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { useRouter, useRoute } from "vue-router";
 import { SelectTypes } from "ant-design-vue/es/select";
 import request from "src/api/index";
@@ -293,10 +295,10 @@ const cancelSave=(key: number)=>{
 }
 const onDelete = (id: number) => {
   Modal.confirm({
-    title: "删除",
-    content: "确定删除该项吗",
-    okText: "确认",
-    cancelText: "取消",
+    title: '确定要删除该项吗？',
+    icon: createVNode(ExclamationCircleOutlined),
+    okText: '确认',
+    cancelText: '取消',
     onOk: () => {
       if (!id) return
       let newhttp = http[obj[activeKey.value]["delete"]]({
