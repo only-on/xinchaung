@@ -40,7 +40,7 @@
           v-for="item in replyList" 
           :key="item.id" 
           :list="item" 
-          :replyUserName="list.user?.username"
+          :replyUserName="list.user_profile?.name"
         ></reply-list>
         <!-- <reply-list></reply-list> -->
         <div class="reply-all" v-if="totalReply !== replyList.length && replyList.length" @click="clickLoadingMore(list)">

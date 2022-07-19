@@ -215,15 +215,15 @@ export default defineComponent({
               const iamgeSaveStatus = storage.lStorage.get("iamgeSaveStatus")
                 ? storage.lStorage.get("iamgeSaveStatus")
                 : [];
-              if (_.some(iamgeSaveStatus, { id: reactiveData.id })) {
+              if (_.some(iamgeSaveStatus, { id: Number(reactiveData.id) })) {
                 iamgeSaveStatus.forEach((item: any, index: number) => {
-                  if (reactiveData.id === item.id) {
+                  if (reactiveData.id == item.id) {
                     iamgeSaveStatus[index].beginIime = new Date();
                   }
                 });
               } else {
                 iamgeSaveStatus.push({
-                  id: reactiveData.id,
+                  id: Number(reactiveData.id),
                   beginIime: new Date(),
                 });
               }
@@ -275,9 +275,9 @@ export default defineComponent({
         var iamgeSaveStatus = storage.lStorage.get("iamgeSaveStatus")
           ? storage.lStorage.get("iamgeSaveStatus")
           : [];
-        if (_.some(iamgeSaveStatus, { id: reactiveData.id })) {
+        if (_.some(iamgeSaveStatus, { id: Number(reactiveData.id) })) {
           iamgeSaveStatus.forEach((item: any, index: number) => {
-            if (reactiveData.id === item.id) {
+            if (reactiveData.id == item.id) {
               // 10分钟秒数
               /* eslint-disable */
               var time =

@@ -137,6 +137,7 @@ import { Modal, message } from "ant-design-vue";
 import { ExclamationCircleOutlined,LoadingOutlined } from "@ant-design/icons-vue";
 import { getWorkbenchInfoApi, deleteWorkbenchApi } from "./api";
 import Submit from "src/components/submit/index.vue";
+import _ from "lodash";
 const router = useRouter();
 const route = useRoute();
 const { editId } = route.query;
@@ -347,6 +348,22 @@ const saveImage=()=>{
       saveVisible.value=false
       list[saveIndex.value].generateLoad=false
       saveImageLoad.value=false
+      const iamgeSaveStatus = storage.lStorage.get("iamgeSaveStatus")
+        ? storage.lStorage.get("iamgeSaveStatus")
+        : [];
+      if (_.some(iamgeSaveStatus, { id: imageid.value })) {
+        iamgeSaveStatus.forEach((item: any, index: number) => {
+          if (imageid.value == item.id) {
+            iamgeSaveStatus[index].beginIime = new Date();
+          }
+        });
+      } else {
+        iamgeSaveStatus.push({
+          id: imageid.value,
+          beginIime: new Date(),
+        });
+      }
+      storage.lStorage.set("iamgeSaveStatus", JSON.stringify(iamgeSaveStatus));
     })
     .catch(() => {
       saveImageLoad.value=false
