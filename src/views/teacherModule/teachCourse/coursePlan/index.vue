@@ -1007,13 +1007,13 @@ onMounted(() => {
             text-align: center;
           }
           &:hover {
-            // background: white;
-            // .course-full-hover {
-            //   display: flex;
-            // }
-            // .course-full-leave {
-            //   display: none;
-            // }
+            background: white;
+            .course-full-hover {
+              display: flex;
+            }
+            .course-full-leave {
+              display: none;
+            }
           }
         }
         .course-info {
