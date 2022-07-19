@@ -130,7 +130,8 @@
           </div>
           <div class="osd-mode">
             <!-- <span @click="openScreen()"> 进入同屏模式 </span> -->
-            <a-button type="link" @click.stop="openScreen()" :loading="openScreenLoading">{{openScreenLoading?'连接中...':'进入同屏模式'}}</a-button>
+            <!-- <a-button type="link" @click.stop="openScreen()" :loading="openScreenLoading">{{openScreenLoading?'连接中...':'进入同屏模式'}}</a-button> -->
+            <span type="link" @click.stop="openScreen()" :loading="openScreenLoading">{{openScreenLoading?'连接中...':'进入同屏模式'}}</span>
           </div>
         </div>
       </div>
@@ -1144,8 +1145,9 @@ onMounted(()=>{
   padding:  24px;
   // padding-bottom: 30px;
   background-color: var(--white);
+  padding-top: 0px;
   .title {
-    padding: 15px 0;
+    // padding: 15px 0;
     border-bottom: 1px solid #e8e8e8;
     margin-bottom: 16px;
   }
@@ -1204,9 +1206,9 @@ onMounted(()=>{
 .zhuomian {
   padding: 24px;
   background-color: var(--white);
-  h3 {
-    margin-left: 24px;
-  }
+  // h3 {
+  //   margin-left: 24px;
+  // }
   .guide-top {
     display: flex;
     .upload-box {
@@ -1230,7 +1232,7 @@ onMounted(()=>{
   }
   .markdown__editor {
     height: 400px;
-    padding: 1rem 24px 0;
+    // padding: 1rem 24px 0;
   }
 }
 .markdown__editor {
@@ -1253,6 +1255,7 @@ onMounted(()=>{
   padding:  24px;
   background: var(--white);
   overflow: auto;
+  padding-top: 0px;
   .top {
     justify-content: space-between;
   }

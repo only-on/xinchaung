@@ -65,7 +65,7 @@
             </a-tooltip>
           </div>
         </div>
-        <Empty v-if="!experimentList.length && !loading" :type="EmptyType"/>
+        <Empty class="epmty"  v-if="!experimentList.length && !loading" :type="EmptyType"/>
           <!-- -->
         <a-pagination 
           v-if="totalCount > 10&&!loading"
@@ -534,5 +534,12 @@ const getDirection = () => {
       background: var(--primary-2);
     }
   }
+}
+.epmty{
+  height: 570px;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 </style>

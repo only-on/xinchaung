@@ -504,7 +504,7 @@ interface IExperimentDetail {
         right: 18px;
         font-size: 14px;
         padding-bottom: 1px;
-        border-bottom: 1px solid var(--primary-color);
+        // border-bottom: 1px solid var(--primary-color);
         .iconfont {
           vertical-align: middle;
           margin-right: 4px;
@@ -512,7 +512,7 @@ interface IExperimentDetail {
       }
       .edit {
         color: var(--cyan-100);
-        border-bottom: 1px solid var(--cyan-100);
+        // border-bottom: 1px solid var(--cyan-100);
         right: 175px;
       }
       .save{
