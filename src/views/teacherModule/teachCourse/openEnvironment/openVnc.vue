@@ -522,6 +522,7 @@ export default defineComponent({
   width: 100%;
   height: 100%;
   background: #ffffff;
+  z-index: 2;
 }
 .vm-environment-drawer {
   z-index: 1111 !important;

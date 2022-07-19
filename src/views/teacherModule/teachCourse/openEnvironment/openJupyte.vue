@@ -428,6 +428,7 @@ export default defineComponent({
   padding-top: 4px;
   display: flex;
   flex-direction: column;
+  z-index: 2;
 
   .jupyte-detail-info {
     display: flex;

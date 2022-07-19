@@ -325,6 +325,7 @@ function createTopo() {
     opType: opType,
     taskId: taskId,
   };
+  recommendType ? params.recommendType = recommendType : ''
   return new Promise((resolve: any, reject: any) => {
     createTopoApi(params)
       .then((res:any) => {
