@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-drawer :visible="true" :closable="false" class="vm-environment-drawer">
+    <!-- <a-drawer :visible="true" :closable="false" class="vm-environment-drawer"> -->
       <div class="vm-environment-setting">
         <a-row>
           <a-col :span="6" class="vm-info-list">
@@ -84,7 +84,7 @@
             </div>
             <div class="text-center">
               <a-space>
-                <a-button :disabled="loading || !isSaveImage" type="primary" @click="stop"
+                <a-button :disabled="loading || !isSaveImage" @click="stop" :class="isSaveImage?'stopenv':''"
                   >停止环境</a-button
                 >
                 <a-button
@@ -131,7 +131,7 @@
           </template>
         </a-modal>
       </div>
-    </a-drawer>
+    <!-- </a-drawer> -->
   </div>
 </template>
 
@@ -338,15 +338,15 @@ export default defineComponent({
             const iamgeSaveStatus = storage.lStorage.get("iamgeSaveStatus")
               ? storage.lStorage.get("iamgeSaveStatus")
               : [];
-            if (_.some(iamgeSaveStatus, { id: reactiveData.id })) {
+            if (_.some(iamgeSaveStatus, { id: Number(reactiveData.id) })) {
               iamgeSaveStatus.forEach((item: any, index: number) => {
-                if (reactiveData.id === item.id) {
+                if (reactiveData.id == item.id) {
                   iamgeSaveStatus[index].beginIime = new Date();
                 }
               });
             } else {
               iamgeSaveStatus.push({
-                id: reactiveData.id,
+                id: Number(reactiveData.id),
                 beginIime: new Date(),
               });
             }
@@ -449,9 +449,9 @@ export default defineComponent({
         var iamgeSaveStatus = storage.lStorage.get("iamgeSaveStatus")
           ? storage.lStorage.get("iamgeSaveStatus")
           : [];
-        if (_.some(iamgeSaveStatus, { id: reactiveData.id })) {
+        if (_.some(iamgeSaveStatus, { id: Number(reactiveData.id) })) {
           iamgeSaveStatus.forEach((item: any, index: number) => {
-            if (reactiveData.id === item.id) {
+            if (reactiveData.id == item.id) {
               // 10分钟秒数
               /* eslint-disable */
               var time = new Date().getTime() - new Date(item.beginIime).getTime();
@@ -514,7 +514,15 @@ export default defineComponent({
 });
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
+.vm-environment-setting {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+}
 .vm-environment-drawer {
   z-index: 1111 !important;
   .ant-btn > span {
@@ -660,6 +668,14 @@ export default defineComponent({
     margin-top: 40px;
     display: flex;
     justify-content: center;
+    .ant-btn {
+      &.stopenv {
+        background: #eee;
+        color: #535353;
+        border-color: #eee;
+      }
+
+    }
   }
 }
 .ant-modal {
