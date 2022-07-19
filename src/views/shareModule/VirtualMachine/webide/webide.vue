@@ -387,6 +387,7 @@ function getVersionListData() {
     opType: opType,
     taskId: taskId,
   };
+  recommendType ? params.recommendType = recommendType : ''
   return new Promise((resolve: any, reject: any) => {
     getVersionList(params)
       .then((res:any) => {
@@ -407,6 +408,7 @@ function getFileListData() {
     version_id: version_id.value,
     file_name: file_name,
   };
+  recommendType ? params.recommendType = recommendType : ''
   return new Promise((resolve: any, reject: any) => {
     getFileList(params)
       .then((res: any) => {
@@ -427,6 +429,7 @@ function createVersionData() {
     taskId: taskId,
     version_name: version_name.value,
   };
+  recommendType ? params.recommendType = recommendType : ''
   return new Promise((resolve: any, reject: any) => {
     createVersion(params)
       .then((res:any) => {
@@ -446,7 +449,7 @@ function getCurrentSWitchFile() {
     taskId: taskId,
     file_id: file_id,
   };
-
+  recommendType ? params.recommendType = recommendType : ''
   switchFile(params).then((res:any) => {
     content.value = res?.data.file_content;
     detailLoading.value = true;
@@ -472,6 +475,7 @@ function saveFileData() {
     file_id: file_id,
     file_content: content.value,
   };
+  recommendType ? params.recommendType = recommendType : ''
   saveFile(params).then((res: any) => {
     if (res.status === 1) {
       message.success("保存成功");
@@ -488,6 +492,7 @@ function switchVersion(v_id: number, is_return: number) {
     version_id: v_id,
     is_return: is_return,
   };
+  recommendType ? params.recommendType = recommendType : ''
   return new Promise((resolve: any, reject: any) => {
     switchVersionApi(params).then((res:any) => {
       fileListData.value = res?.data.file_list;
@@ -598,6 +603,7 @@ function runCode() {
     version_id: version_id.value,
     vm_uuid: currentUuid.value,
   };
+  recommendType ? params.recommendType = recommendType : ''
   isRunning.value = true
   runCodeApi(params)
     .then((res: any) => {
