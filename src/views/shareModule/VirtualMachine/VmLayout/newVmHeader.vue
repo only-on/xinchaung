@@ -1297,7 +1297,7 @@ function shareDesktop() {
       tempVmUrl.value = "";
       shareVisible.value = true;
       let env = process.env.NODE_ENV === "development" ? true : false;
-      tempVmUrl.value = `${window.location.protocol}//${window.location.host}/#/vm/vm?wsUrl=${currentOption.value.wsUrl}`;
+      tempVmUrl.value = `${window.location.protocol}//${window.location.host}/vm/vm?wsUrl=${currentOption.value.wsUrl}`;
     },
   });
 }
