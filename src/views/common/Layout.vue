@@ -57,9 +57,6 @@ export default defineComponent({
     });
     function updataNav(val: config) {
       console.log(val)
-      // if(!val.activeMenuName){
-      //   configuration.activeMenuName=''
-      // }
       Object.assign(configuration, val);
     }
     provide("configuration", configuration);

@@ -158,6 +158,7 @@ const login = (repeat?: boolean) => {
           lStorage.set("username", res!.data.username);
           lStorage.set("portrait", res!.data.portrait);
           if (res!.data.role === 2) {
+            
             router.replace("/admin");
           } else if (res!.data.role === 3) {
             router.replace("/teacher");
@@ -167,6 +168,8 @@ const login = (repeat?: boolean) => {
             router.replace("/teacher/teacherCourse");
             getTeacherInfo();
           }
+          const emenuActiveName=res!.data.role === 5?'教学过程':'首页'
+          store.commit("changemenuActiveName",emenuActiveName)
           store.commit("saveTheme");
           submitLoading.value = false;
         })

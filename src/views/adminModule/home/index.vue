@@ -282,7 +282,6 @@
     const productInfo:any=ref([])
     const enterInfo:any=ref([])
     const aboutData:any=ref([])
-    const activeMenu = ref<string>('')
     productInfo.value=[
         {name:'产品名称'},
         {name:'版本信息'},
