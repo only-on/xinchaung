@@ -1296,9 +1296,9 @@ onMounted(() => {
     // background: #FF9D00;
     width: 100%;
     // height: 100%;
-    background-color: var(--white-100);
+    // background-color: var(--white-100);
     display: none;
-    cursor: pointer;
+    // cursor: pointer;
     position: absolute;
     & > div.create-btn {
       color: var(--white-100);
@@ -1309,6 +1309,7 @@ onMounted(() => {
       background: var(--primary-color);
       border-radius:20px;
       box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.14); 
+      cursor: pointer;
     }
   }
   .a-create-wrap{
