@@ -10,7 +10,7 @@ const proxyTarget={
   221:'http://192.168.101.123'
 }
 export default defineConfig({
-  base: "./",
+  base: "/",
   plugins: [
     vue(),
     vueJsx(),
@@ -117,7 +117,7 @@ export default defineConfig({
               switch (arr[0]) {
               case "ant-design-vue":
               case "ace-builds":
-              case "lodash":  
+              case "lodash":
               case "@novnc":
                 return '_'+arr[0]
                 break;
@@ -126,7 +126,7 @@ export default defineConfig({
                 break;
               }
             }
-            
+
             // return arr[0].toString();
           }
         },
