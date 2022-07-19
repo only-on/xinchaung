@@ -32,7 +32,7 @@ const routes: Array<RouteRecordRaw> = [
   ...[RoutesStudentSide],
 ];
 const router = createRouter({
-  history: createWebHashHistory(), // createWebHistory(process.env.BASE_URL),  
+  history: createWebHistory(), // createWebHistory(process.env.BASE_URL),
   routes,
 });
 // console.log(routes);
@@ -100,7 +100,7 @@ router.afterEach(
         };
         // console.log('routeTuple:=',routeTuple)
         // 学生端推荐实验面包屑显示
-        routeSegment.path==='/teacher/teacherExperimentResourcePool'&&role===4 ? 
+        routeSegment.path==='/teacher/teacherExperimentResourcePool'&&role===4 ?
         '' : breadcrumbs.push(routeTuple);
         processedPath.push(routeSegment.path);
       }
