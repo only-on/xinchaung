@@ -225,9 +225,11 @@ const initData = () => {
   http.dataSets({ param }).then((res: any) => {
     if (!res) return
     const { list, page } = res.data;
-    // list.forEach((v: any) => {
-    //   // v.item_size = bytesToSize(v.item_size)
-    // })
+    list.forEach((v: any) => {
+      if(v.type==1){
+        v.cover = `${v.cover}?data-time=${new Date().getTime()}`
+      }
+    })
     materialList.push(...list);
     pageTotal.value = page.totalCount;
     loading.value=false

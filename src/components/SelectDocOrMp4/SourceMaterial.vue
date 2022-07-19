@@ -62,7 +62,7 @@
                 <div class="flexCenter fileLeft">
                   <!-- <span class="fileIcon" :style="`background-image: url(${iconList[props.docOrMp4Type === 1?'ppt':'mp4']});`"></span> -->
                   <span class="fileIcon" :style="`background-image: url(${getFileTypeIcon(v.file_name)});`"></span>
-                  <span class="single_ellipsis">{{i.file_name}}</span>
+                  <span class="single_ellipsis" :title="i.file_name">{{i.file_name}}</span>
                 </div>
                 <div class="flexCenter fileRight">
                   <span>{{bytesToSize(i.size)}}</span>

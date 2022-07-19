@@ -45,7 +45,7 @@ watch(()=>{return props.coverUrl.cover},(val:any)=>{
   // console.log(props.coverUrl)
   if ((imageUrl.value as any) instanceof Blob) {
     getBase64(imageUrl.value, (base64Url: string) => {
-      imageUrl.value = base64Url;
+      imageUrl.value = `${base64Url}?data-time=${new Date().getTime()}`;       // 
     });
   }
 },{immediate:true})

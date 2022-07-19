@@ -448,7 +448,8 @@ function detailed(){
       ...res.data
     }
     //common
-
+    state.coverTime=new Date().getTime()
+    state.detail.cover=`${state.detail.cover}?data-time=${state.coverTime}`
     state.detail.is_public=String(res.data.common)
     state.detail.categoryText=res.data.categorys[0].name
     state.detail.item_count=res.data.amount
@@ -463,7 +464,8 @@ function detailed(){
       })
     }
     // name:state.detail.name,description:state.detail.description,tags:state.detail.tags,is_public:state.detail.is_public,cover:state.detail.cover
-
+    console.log(state);
+    
     oldCommon.value=res.data.common
   })
 }

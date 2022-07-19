@@ -25,22 +25,6 @@
       </a-form-item>
       <a-form-item label="封面图" class="cover">
         <upload-cover :coverUrl="formState" :isUpload="props.materialType === '数据集'" @uploadCoverHandle="uploadCoverHandle"></upload-cover>
-        <!-- <img v-if="imageUrl" :src="imageUrl" alt="" srcset="">
-        <a-upload
-          v-model:file-list="fileList"
-          list-type="picture"
-          class="uploader"
-          :show-upload-list="false"
-          :before-upload="beforeUpload"
-          @change="handleChange"
-        >
-          <div class="upload">
-            <div class="cover">
-              <img src="src/assets/images/teacherMaterialResource/cover.png" alt="">
-            </div>
-            <loading-outlined v-if="loading"></loading-outlined>
-          </div>
-        </a-upload> -->
       </a-form-item>
     </div>
   </div>
