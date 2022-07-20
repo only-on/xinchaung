@@ -97,6 +97,7 @@
             </div>
           </a-col>
           <a-col :span="18" class="envronment-setting-container">
+            <vm-loading v-if="vncLoading || loading"></vm-loading>
             <vue-no-vnc
               background="rgb(40,40,40)"
               :options="vmOptions"
@@ -162,6 +163,7 @@ import storage from "src/utils/extStorage";
 import _ from "lodash";
 import VueNoVnc from "src/components/noVnc/noVnc.vue";
 import uploadFile from "src/request/uploadFile";
+import vmLoading from "src/components/noVnc/vmLoading.vue"
 import request from "src/api/index";
 const http = (request as any).teacherImageResourcePool;
 type TreactiveData = {
@@ -189,7 +191,8 @@ export default defineComponent({
   components: {
     "vue-no-vnc": VueNoVnc,
     LabelList,
-    Submit
+    Submit,
+    vmLoading,
   },
   setup() {
     const env = process.env.NODE_ENV == "development" ? true : false;
@@ -508,7 +511,8 @@ export default defineComponent({
       novncEl,
       recommend,
       selectTag,
-      saveImageLoad
+      saveImageLoad,
+      vncLoading,
     };
   },
 });
@@ -523,6 +527,7 @@ export default defineComponent({
   height: 100%;
   background: #ffffff;
   z-index: 2;
+  overflow: hidden;
 }
 .vm-environment-drawer {
   z-index: 1111 !important;

@@ -14,6 +14,7 @@
           </div>
         </div>
         <div class="iframe" ref="jupyteIframe">
+          <vm-loading v-if="isLoading"></vm-loading>
           <iframe id="image-jupyter-iframe" v-show="showIframe" :src="jupyteUrl" frameborder="0"></iframe>
         </div>
         <a-modal class="save-image-modal" :visible="saveVisible"  :closable="false">
@@ -68,6 +69,7 @@ import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
 import { message } from "ant-design-vue";
 import LabelList from 'src/components/LabelList.vue'
 import Submit from "src/components/submit/index.vue";
+import vmLoading from "src/components/noVnc/vmLoading.vue"
 import request from "src/api/index";
 const http = (request as any).teacherImageResourcePool;
 type TreactiveData = {
@@ -91,7 +93,8 @@ type TreactiveData = {
 export default defineComponent({
   components: {
     LabelList,
-    Submit
+    Submit,
+    vmLoading,
   },
   setup() {
     const env = process.env.NODE_ENV == "development" ? true : false;
@@ -333,6 +336,7 @@ export default defineComponent({
       (jupyteIframe.value as any).appendChild(frm);
     }
     const showIframe = ref(true)
+    let isLoading = ref(true)
     let TimerIframe: NodeJS.Timeout | null = null;
     function loadIframe() {
       const iframe: any = document.querySelector('#image-jupyter-iframe')
@@ -342,11 +346,17 @@ export default defineComponent({
         iframe.attachEvent('onload', () => {
           clearInterval(Number(TimerIframe));
           onloadIframe = true
+          setTimeout(() =>{
+            isLoading.value = false
+          }, 2000)
         })
       } else {
         iframe.onload = () => {
           clearInterval(Number(TimerIframe));
           onloadIframe = true
+          setTimeout(() =>{
+            isLoading.value = false
+          }, 2000)
         }
       }
       TimerIframe = setInterval(() => {
@@ -392,6 +402,7 @@ export default defineComponent({
       selectTag,
       saveImageLoad,
       showIframe,
+      isLoading,
     };
   },
 });
@@ -429,6 +440,7 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   z-index: 2;
+  overflow: hidden;
 
   .jupyte-detail-info {
     display: flex;
