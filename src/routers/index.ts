@@ -63,11 +63,11 @@ router.beforeEach((to: RouteLocationNormalized,from: RouteLocationNormalized,nex
       }
     })
     if(CanPass){
-      next();
+      // next();
     }else{
-      next("/NotFound")
+      // next("/NotFound")
     }
-    // next();
+    next();
     // 检查是否为公开页面（如登陆页面）
     // if (to.meta && to.meta.outward) {
     //   // 登录状态访问登陆页面，跳转到登录后的首页无需再次登录，其它页面无论是否登录直接进入

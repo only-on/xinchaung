@@ -771,7 +771,7 @@ const studentColumns = [
       const isDev = process.env.NODE_ENV == "development" ? true : false;
       let url = isDev
         ? "./public/template/Student.xlsx"
-        : "api/template/Student.xlsx";
+        : "/api/template/Student.xlsx";
       const a = document.createElement("a");
       a.href = url;
       a.download = "学生模板.xlsx";
