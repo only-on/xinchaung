@@ -746,7 +746,8 @@ onMounted(() => {
       justify-content: center;
       position: absolute;
       width: 100%;
-      height: 100%;
+      height: 150px;
+      border-radius: 6px 6px 0 0;
       top: 0;
       transition: 0.3s;
       transform: rotateY(90deg);

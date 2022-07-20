@@ -21,7 +21,7 @@
   <a-spin :spinning="docOrMp4Drawer.loading" size="large" tip="Loading...">
     <div class="dataList setScrollbar">
       <div class="list" v-if="docOrMp4Drawer.list.length">
-        <div class="item flexCenter" v-for="v in docOrMp4Drawer.list" :key="v" :class="docOrMp4Drawer.activeFile.id === v.id ? 'active' : ''">
+        <div class="item flexCenter" v-for="v in docOrMp4Drawer.list" :key="v" :class="docOrMp4Drawer.activeFile.id === v.id || docOrMp4Drawer.selectListIds.includes(v.id) ? 'active' : ''">
           <div class="flexCenter left">
             <!-- <a-checkbox v-model:checked="v.checked"></a-checkbox> -->
             <div class="task_type" :style="{ color: v.type_obj.color}">{{v.type_obj.name}}</div>
@@ -286,9 +286,16 @@ onMounted(()=>{
         }
       }
       .active {
-        background: #fffbf6;
-        border: 1px solid #ffcaa1;
+        background: var(--primary-1);
+        // border: 1px solid var(--primary-5);
       }
     }
   }
+  
+.ant-pagination{
+
+  :deep(.ant-select-selector){
+    border-radius: 20px;
+  }
+}
 </style>

@@ -128,7 +128,9 @@ const docOrMp4Drawer: any = reactive({
   totalCount: 0,
   loading: false,
   file_name: "",
-  activeFile: {}, //  选择或上传的文档、视频
+  activeFile: {
+    id: props.activeFile.id
+  }, //  选择或上传的文档、视频
 });
 console.log(props.activeFile)
 var is_public:Ref<number>=ref(1)
@@ -334,11 +336,10 @@ onMounted(()=>{
             }
           }
           .fileItem:hover{
-            background: var(--primary-1)
+            background: var(--primary-1);
           }
           .activeFileItem{
-            background: #fffbf6;
-            border: 1px solid #ffcaa1;
+            background: var(--primary-1);
           }
         }
         .openFile{
@@ -384,4 +385,11 @@ onMounted(()=>{
       }
     }
   }
+  
+.ant-pagination{
+
+  :deep(.ant-select-selector){
+    border-radius: 20px;
+  }
+}
 </style>

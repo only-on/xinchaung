@@ -42,7 +42,7 @@ export default defineComponent({
     let defaultText={
       empty:'暂无数据！',
       searchEmpty:'抱歉，未搜到相关数据！',
-      tableEmpty:'抱歉。该表格暂无数据！',
+      tableEmpty:'抱歉，暂无数据！',
       tableSearchEmpty:'抱歉。未搜到相关数据！',
       drawerEmpty:'抱歉，暂无数据！',
       drawerSearchEmpty:'抱歉。未搜到相关数据！',
@@ -68,25 +68,7 @@ export default defineComponent({
 </script>
 
 <style scoped lang="less">
-  .empty{
-    background-image: url('src/assets/images/empty/empty.png');
-  }
-  .searchEmpty{
-    background-image: url('src/assets/images/empty/searchEmpty.png');    
-  }
-  .tableEmpty,.drawerEmpty{
-    background-image: url('src/assets/images/empty/tableEmpty.png');    
-  }
-  .tableSearchEmpty,.drawerSearchEmpty{
-    background-image: url('src/assets/images/empty/tableSearchEmpty.png');    
-  }
-  .filePreview{
-    background-image: url('src/assets/images/empty/file.png'); 
-  }
-  .emptyContent{
-    width: 100%;
-    padding: 20px;
-  }
+
   .no-data {
     width: 100%;
     height: 100%;
@@ -98,11 +80,35 @@ export default defineComponent({
     align-items: center;
     background-repeat: no-repeat;
     background-position: center;
-    background-size: auto 100%;
+    // background-size: auto 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+  }
+  .empty{
+    height: 226px;
+    background-image: url('src/assets/images/empty/empty.png');
+  }
+  .searchEmpty{
+    height: 226px;
+    background-image: url('src/assets/images/empty/searchEmpty.png');    
+  }
+  .tableEmpty,.drawerEmpty{
+    height: 126px;
+    background-image: url('src/assets/images/empty/tableEmpty.png');    
+  }
+  .tableSearchEmpty,.drawerSearchEmpty{
+    height: 126px;
+    background-image: url('src/assets/images/empty/tableSearchEmpty.png');    
+  }
+  .filePreview{
+    height: 198px;
+    background-image: url('src/assets/images/empty/file.png'); 
+  }
+  .emptyContent{
+    width: 100%;
+    padding: 20px;
   }
   .emptyCon {
     // margin-top: 20px;
