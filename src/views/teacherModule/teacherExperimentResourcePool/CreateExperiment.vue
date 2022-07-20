@@ -1124,7 +1124,7 @@ onMounted(()=>{
   .add-data-set-btn {
     // width: 100px;
     font-size: var(--base-font-size);
-    border: 1px solid var(--primary-color);
+    // border: 1px solid var(--primary-color);
     // margin-bottom: 1rem;
   }
 }
