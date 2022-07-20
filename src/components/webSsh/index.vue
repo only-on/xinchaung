@@ -12,7 +12,7 @@ import "xterm/css/xterm.css";
 const props = defineProps<{
   wsshServerWsUrl?: string; // webssh服务ws地址前缀
   host?: string; // 虚拟主机ip
-  port?: number; // 虚拟主机ssh端口，一般是22，但是这里不作设置，因为虚拟机的一般都是代理出来的
+  port?: number | string; // 虚拟主机ssh端口，一般是22，但是这里不作设置，因为虚拟机的一般都是代理出来的
   bgColor?: string; // 终端背景颜色
   fontColor?: string; // 终端字体颜色
   reconnect?: boolean; // 是否重新连接
@@ -163,7 +163,7 @@ const connect = () => {
   emit("sniffing");
   console.log("[WebSsh] connecting...");
   http.vmApi
-    .getWsshId({ urlParams: { hostname: props.host, port: props.port } })
+    .getWsshId({ urlParams: { hostname: props.host, port: props.port }, baseUrl: 'http://192.168.101.221:2230' })
     .then((res: any) => {
       console.log("[WebSsh] index: ", res);
       if (res.data.id) {

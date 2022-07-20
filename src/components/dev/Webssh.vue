@@ -44,7 +44,7 @@ const SNIFF_FAILED = 2; // ssh检测失败
 const SNIFF_NO_WORKER = 3; // ssh服务worker不足
 const SNIFF_SUCCESSFUL = 4; // ssh服务检测成功
 
-const wsshServerWsUrl = "127.0.0.1:8888";
+const wsshServerWsUrl = "192.168.101.221:2230";
 const vmHost = ref("192.168.101.221");
 const vmPort = ref(21457);
 const reconnect = ref(false);
@@ -97,7 +97,7 @@ const handleReconnect = () => {
 
 const handleConnect = () => {
   if (wsState.value !== WS_INIT) {
-    message.warn("只能在ws初始未连接状态下连接！");
+    message.warning("只能在ws初始未连接状态下连接！");
     return;
   }
   createXterm.value = true;
