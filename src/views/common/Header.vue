@@ -8,7 +8,7 @@
       </div>
     </div>
     <div class="header-middle">
-      <menu-bar :menus="menus" />
+      <menu-bar />
     </div>
     <div class="header-right">
       <a-popover title="" trigger="click" placement="bottom">
@@ -17,28 +17,20 @@
             {{ assistText }}
           </template>
           <template v-else>
-            <div class="help-question-warp textScrollbar">
+            <div class="help-question-warp setScrollbar">
               <div
                 v-for="(item, index) in helpInfoList"
+                class="help-item"
+                @click="toHelp(item, index)"
                 :key="item.id"
-                class="help-question-item"
               >
-                <div
-                  class="help-item pointer"
-                  @click="toHelp(item, index)"
-                  :class="{'help-item-loading': jumpLoading&&item.id!=currentHelpId, 'current-help': item.id==currentHelpId}"
-                >
-                  <div class="help-base-info">
-                    <span>{{ item.user }}</span>
-                    <span class="time">{{ item.created_at }}</span>
-                  </div>
-                  <p class="assist" :title="item.question">
-                    {{ item.question }}
-                  </p>
+                <div class="help-base-info">
+                  <span>{{ item.user }}</span>
+                  <span class="time">{{ item.created_at }}</span>
                 </div>
-                <div v-if="jumpLoading&&item.id==currentHelpId" class="help-loading">
-                  <a-spin />链接中，请稍后...
-                </div>
+                <p class="assist" :title="item.question">
+                  {{ item.question }}
+                </p>
               </div>
             </div>
           </template>
@@ -98,9 +90,7 @@ import { createExamples } from "src/utils/vncInspect";
 import {clearAllCookies} from "src/utils/cookieHelper";
 import i18nWebMsg from 'src/i18n/zh_CN/webmsg';
 import {IWmc} from "src/typings/wmc";
-import api from "src/api";
 import logoImg from "src/assets/images/user/logo.png"
-
 export default defineComponent({
   name: "Header",
   components: { MenuBar },
@@ -119,7 +109,7 @@ export default defineComponent({
     };
     const userImg = lStorage.get("portrait") || List[Number(role)];
     const http = (request as any).common;
-    const assistText: Ref<string> = ref("您暂时还未收到远程协助请求！");
+    const assistText: Ref<string> = ref("您暂时还未收到远程协助请求！")
     const homePath = computed(() => {
       let obj = {
         1: "/init-course/init", // 初始端
@@ -168,311 +158,16 @@ export default defineComponent({
       // })
     }
     const route = useRoute();
-    var menus: any[] = reactive([]);
-    // 教师首页
-    let teacherHome={
-      icon: "icon-shouye1",
-      id: 189,
-      name: "首页",
-      parent_id: 0,
-      sort: 89,
-      url: "/teacher/home",
-      children: [],
-    };
-     //论坛
-    let forum={
-      children: [],
-      icon: "icon-jiaoliu1",
-      id: 169,
-      // name: "论坛",
-      name:['','交流问答','学习问答','学习交流',''][role-1],
-      parent_id: 0,
-      sort: 9,
-      url: "/teacher/teacherForum?currentTab=0",
-    }
-    // 实验中心
-    let center = {
-      icon: "icon-shiyan2",
-      id: 170,
-      name: "实验中心",
-      parent_id: 0,
-      sort: 3,
-      url: "",
-      children: [
-        {
-          children: [],
-          icon: "",
-          id: 1148,
-          name: "实验资源库",
-          parent_id: 161,
-          sort: 1,
-          url: "/teacher/teacherExperimentResourcePool?currentTab=0",
-        },
-        {
-          children: [],
-          icon: "",
-          id: 1149,
-          name: "镜像资源库",
-          parent_id: 161,
-          sort: 2,
-          url: "/teacher/teacherImageResourcePool",
-        },
-      ],
-    };
-    // 素材资源
-    let material = {
-      icon:'icon-sucai1',
-      id: 170,
-      name: "素材资源",
-      parent_id: 0,
-      sort: 3,
-      url: "/teacher/teacherMaterialResource?currentTab=0",
-      children: [],
-    };
-    // 教师课程
-    let teacherCourse={
-      icon: "icon-jiaoxue",
-      id: 180,
-      name: "教学过程",
-      parent_id: 0,
-      sort: 3,
-      url: "",
-      children:[
-        {
-          children: [],
-          icon: "",
-          id: 1148,
-          name: "我的教学",
-          parent_id: 161,
-          sort: 1,
-          url: "/teacher/teacherCourse?currentTab=0",
-        },
-        {
-          children: [],
-          icon: "",
-          id: 1148,
-          name: "公开课程",
-          parent_id: 161,
-          sort: 1,
-          url: "/teacher/teacherCourse?currentTab=1",
-        },
-        {
-          children: [],
-          icon: "",
-          id: 1148,
-          name: "课程安排",
-          parent_id: 161,
-          sort: 1,
-          url: "/teacher/coursePlan",
-        },
-        {
-          children: [],
-          icon: "",
-          id: 1148,
-          name: "教学质量",
-          parent_id: 161,
-          sort: 1,
-          url: "/teacher/teachingQuality",
-        }
-      ]
-    }
-    // 管理端首页
-    let adminHome={
-      icon: "icon-shouye1",
-      id: 119,
-      name: "首页",
-      parent_id: 0,
-      sort: 89,
-      url: "/admin/home",
-      children: [],
-    }
-    //管理端 教学资源管理
-    let TeachingResourceManagement={
-      icon: "icon-jiaoxue",
-      id: 175,
-      name: "教学资源管理",
-      parent_id: 0,
-      sort: 5,
-      url: "",
-      children: [
-        {
-          children: [],
-          icon: "",
-          id: 1148,
-          name: "方向规划",
-          parent_id: 162,
-          sort: 1,
-          url: "/admin/TeachingResourceManagement/DirectionPlanning",
-        },
-        {
-          children: [],
-          icon: "",
-          id: 1148,
-          name: "课程管理",
-          parent_id: 162,
-          sort: 1,
-          url: "/admin/TeachingResourceManagement/courseManagement",
-        },
-        {
-          children: [],
-          icon: "",
-          id: 1148,
-          name: "实验管理",
-          parent_id: 162,
-          sort: 1,
-          url: "/admin/TeachingResourceManagement/experimentManagement",
-        },
-        {
-          children: [],
-          icon: "",
-          id: 1148,
-          name: "素材资源管理",
-          parent_id: 162,
-          sort: 1,
-          url: "/admin/TeachingResourceManagement/resourcesManagement",
-        },
-        {
-          children: [],
-          icon: "",
-          id: 1148,
-          name: "镜像管理",
-          parent_id: 162,
-          sort: 1,
-          url: "/admin/TeachingResourceManagement/mirrorImageManagement",
-        },
-      ],
-    }
-    // 管理端系统维护
-    let systemMaintenance={
-      icon: "icon-weihu",
-      id: 135,
-      name: "系统维护",
-      parent_id: 0,
-      sort: 5,
-      url: "",
-      children:[
-        {
-          children: [],
-          icon: "",
-          id: 1135,
-          name: "磁盘管理",
-          parent_id: 131,
-          sort: 1,
-          url: "/admin/systemMaintenance/diskManagement",
-        },
-        {
-          children: [],
-          icon: "",
-          id: 1136,
-          name: "系统授权",
-          parent_id: 132,
-          sort: 1,
-          url: "/admin/systemMaintenance/systemAuthorization",
-        },
-        {
-          children: [],
-          icon: "",
-          id: 1137,
-          name: "个性化设置",
-          parent_id: 133,
-          sort: 1,
-          url: "/admin/systemMaintenance/personalization",
-        },
-        {
-          children: [],
-          icon: "",
-          id: 1138,
-          name: "用户登录信息",
-          parent_id: 162,
-          sort: 1,
-          url: "/admin/systemMaintenance/userloginInformation",
-        },
-      ]
-    }
-    //管理端用户管理
-    let adminUserManagement={
-      icon: "icon-yonghuguanli",
-      id: 135,
-      name: "用户管理",
-      parent_id: 0,
-      sort: 5,
-      url: "",
-      children:[
-        {
-          children: [],
-          icon: "",
-          id: 1135,
-          name: "教师管理",
-          parent_id: 131,
-          sort: 1,
-          url: "/admin/adminUserManagement/teacherManagement",
-        },
-        {
-          children: [],
-          icon: "",
-          id: 1135,
-          name: "学生管理",
-          parent_id: 131,
-          sort: 1,
-          url: "/admin/adminUserManagement/studentManagement",
-        },
-      ]
-    }
-    //管理管资源预约-排课
-    let coursePlan={
-      icon: "icon-zuoyekaoshi1",
-      id: 135,
-      name: "资源预约",
-      parent_id: 0,
-      sort: 5,
-      url: "/teacher/coursePlan",
-      children: [],
-    }
-    //  学生课程
-    let studentCourse={
-      icon: "icon-jiaoxue",
-      id: 188,
-      name: "学生课程",
-      parent_id: 0,
-      sort: 88,
-      url: "/student/studentCourse",
-      children: [],
-    }
-    // 学生首页
-    let statistics={
-      icon: "icon-shouye1",
-      id: 189,
-      name: "首页",
-      parent_id: 0,
-      sort: 89,
-      url: "/student/statistics",
-      children: [],
-    }
-    if(role === 5){
-      teacherCourse.children.splice(3,1)
-    }
-    let arr:any={
-      1:[],
-      2:[adminHome,systemMaintenance,TeachingResourceManagement,adminUserManagement,coursePlan,forum],
-      3:[teacherHome,center,material,teacherCourse,forum],
-      4:[statistics,forum,studentCourse],
-      5:[center,material,teacherCourse]
-    }[role]
-    menus.push(...arr)
     var systemBaseInfo: any = reactive({
       login_logo: "",
     });
     var activeName: Ref<string> = ref(lStorage.get("menuActiveName") || "");
     function goHome() {
       console.log("回首页");
-      // router.push(`${homePath}`);
       if (role == 3) {
-        // return "/teacher" // 教师端首页
-        store.commit("changemenuActiveName",'首页')
         router.push("/teacher");
       }
       if (role == 4) {
-        store.commit("changemenuActiveName",'首页')
         router.push("/student");
       }
       if (role == 1) {
@@ -480,15 +175,13 @@ export default defineComponent({
         // router.push("/teacher");
       }
       if (role == 2) {
-        store.commit("changemenuActiveName",'首页')
-        // return "/admin" // 管理端
         router.push("/admin");
       }
       if (role == 5) {
-        store.commit("changemenuActiveName",'教学过程')
         router.push("/teacher/teacherCourse?currentTab=0"); // 助教端
-        // router.push("/");
       }
+      const menuActiveName=role == 5?'教学过程':'首页'
+      store.commit("changemenuActiveName",menuActiveName)
     }
     window.XC_ROLE=2
 
@@ -509,7 +202,7 @@ export default defineComponent({
         longWs1.value = null as any
       }
       if (!wsConfig) {
-        api.common.getFileConfig().then((res: IBusinessResp | null) => {
+        http.getFileConfig().then((res: IBusinessResp | null) => {
           console.log('[App] getFileConfig: ', res);
           wsConfig = JSON.stringify({"host":res?.data.webmsg_ip,"port":res?.data.webmsg_port});
           lStorage.set('ws_config', wsConfig);
@@ -621,16 +314,11 @@ export default defineComponent({
       })
     }
 
-    const jumpLoading = ref(false)
-    const currentHelpId = ref(0)
     function toHelp(val: any, index: any) {
-      // if(jumpLoading.value) return
       let params: any = {
         opType: "help",
         study_id: val.study_id,
       };
-      jumpLoading.value = true
-      currentHelpId.value = val.id
       vmApi.updateReadStatusApi({
         param: {
           action: "read",
@@ -640,10 +328,7 @@ export default defineComponent({
         },
       })
       .then(() => {
-        // helpInfoList.value.splice(index, 1);
-      }).catch(() => {
-        jumpLoading.value = false
-        currentHelpId.value = 0
+        helpInfoList.value.splice(index, 1);
       });
       vmApi.createExamples({ param: params }).then((res: any) => {
         if (res.status === 1) {
@@ -660,13 +345,7 @@ export default defineComponent({
               experType: 1
             },
           });
-        } else {
-          jumpLoading.value = false
-          currentHelpId.value = 0
         }
-      }).catch(() => {
-        jumpLoading.value = false
-        currentHelpId.value = 0
       })
     }
     onBeforeRouteLeave(()=>{
@@ -710,8 +389,6 @@ export default defineComponent({
     },{immediate: true,deep:true})
     onUnmounted(() => {
       closeWs()
-      jumpLoading.value = false
-      currentHelpId.value = 0
     })
     return {
       env,
@@ -724,7 +401,6 @@ export default defineComponent({
       helpMessage,
       modifyPassword,
       assistText,
-      menus,
       activeName,
       handImg,
       userImg,
@@ -735,8 +411,6 @@ export default defineComponent({
       store,
       logoImg,
       getLogoUrl,
-      jumpLoading,
-      currentHelpId,
     };
   },
 });
@@ -880,76 +554,42 @@ export default defineComponent({
   max-height: 292px;
   overflow: auto;
   padding: 0 8px;
-  .help-question-item {
-    position: relative;
+  .help-item {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    border-bottom: 1px dashed var(--black-15);
+    padding-top: 10px;
+    padding-bottom: 10px;
     &:last-child {
       border-bottom: none;
     }
-    .help-loading {
-      position: absolute;
-      top: 0;
-      right: 0;
-      background: linear-gradient(90deg,rgba(255,255,255,0.00), #ffffff 13%, #ffffff);
-      width: 183px;
-      height: 61px;
-      text-align: center;
-      line-height: 62px;
+  }
+  .help-item:hover {
+    .assist {
       color: var(--primary-color);
-      padding-left: 16px;
-      .ant-spin {
-        :deep(.ant-spin-dot) {
-          margin-right: 8px;
-        }
-      }
     }
-    .help-item {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-      border-bottom: 1px dashed var(--black-15);
-      padding-top: 10px;
-      padding-bottom: 10px;
-      &:hover {
-        .assist {
-          color: var(--primary-color);
-        }
-      }
-      &.current-help {
-        cursor: auto;
-        pointer-events: none;
-        .assist {
-          color: var(--black-65);
-        }
-      }
-      &.help-item-loading {
-        cursor: auto;
-        pointer-events: none;
-        .assist, .help-base-info {
-          color: var(--black-25);
-        }
-      }
-      .help-base-info {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        width: 100%;
-        color: var(--black-45);
-        font-size: var(--font-size-sm);
-        .time {
-          color: var(--black-25);
-        }
-      }
-      p {
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        overflow-x: hidden;
-        // cursor: pointer;
-        width: 100%;
-        color: var(--black-65);
-        margin-bottom: 0;
-      }
+  }
+  .help-base-info {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 100%;
+    color: var(--black-45);
+    font-size: var(--font-size-sm);
+    .time {
+      color: var(--black-25);
     }
+  }
+  p {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow-x: hidden;
+    cursor: pointer;
+    width: 100%;
+    color: var(--black-65);
+    margin-bottom: 0;
   }
 }
 </style>
