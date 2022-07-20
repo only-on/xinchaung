@@ -372,7 +372,12 @@ function initWs() {
           } else {
             layoutRef.value.vmHeaderRef.finishingExperimentVisible = true
             sendDisconnect();
-            baseInfo.value?.current?.is_teamed==1 && baseInfo.value?.current?.is_lead==0 ? router.go(historyLength - history.length - 1) : '';
+            // baseInfo.value?.current?.is_teamed==1 && baseInfo.value?.current?.is_lead==1 ? '' : router.go(historyLength - history.length - 1);
+            if (opType === 'help' && route.query.isClose) {
+              window.close();
+            } else {
+              baseInfo.value?.current?.is_teamed==1 && baseInfo.value?.current?.is_lead==1 ? '' : router.go(historyLength - history.length - 1);
+            }
           }
         }else if (wsJsonData.type=="recommends") {
           // 推荐
@@ -407,7 +412,12 @@ function initWs() {
               message.warn(wsJsonData.data)
             }
           }
-          router.go(-1)
+          layoutRef.value.vmHeaderRef.finishingExperimentVisible = true
+          if (opType === 'help' && route.query.isClose) {
+            window.close();
+          } else {
+            router.go(historyLength - history.length - 1)
+          }
         }
       }
     },

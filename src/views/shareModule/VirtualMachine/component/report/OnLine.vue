@@ -179,6 +179,13 @@ export default defineComponent({
     text-align: center;
     font-size: 16px;
   }
+  :deep(.mark__container--fullscreen) {
+    .mark__body {
+      .mark__editor, .mark__preview {
+        max-height: 100%;
+      }
+    }
+  }
   :deep(.mark__body) {
     .mark__editor, .mark__preview {
       max-height: 200px;
