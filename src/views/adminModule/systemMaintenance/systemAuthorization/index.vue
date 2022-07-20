@@ -202,6 +202,7 @@ function settingAutoKey() {
       http.settingAutoKeyApi().then((res: any) => {
         authorizationData.authorization_code = res.data?.auth_key;
         // authorizationData.authorization_code ='34c9d5719cc75b75330df7b34a490b07ed1316bedae365966538766e22cb554e.d84e1e8e0a064bd62a858ad3b7dbf475'
+       getPowerList()
   });
 }
 function copyCode(e: Event) {
