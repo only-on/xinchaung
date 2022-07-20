@@ -476,7 +476,7 @@ export default defineComponent({
     align-items: center;
     cursor: pointer;
     .help-message {
-      color: var(--white-75);
+      color: var(--menu-text);
       margin-right: 53px;
       position: relative;
       img {
@@ -485,7 +485,7 @@ export default defineComponent({
         margin-right: 7px;
       }
       .iconfont {
-        color: var(--white-75);
+        color: var(--menu-text);
         margin-right: 5px;
         font-size: 18px;
         vertical-align: middle;
