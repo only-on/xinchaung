@@ -343,9 +343,10 @@ function setTagData(knowledge_map: IknowledgeMap) {
         target: item.contentvia.id,
       })
       item.contentvia.knowledages.forEach((knowledage: any) => {
+        if(knowledage.knowledgeMap!==null){
           data.push({
-            name: knowledage.knowledgeMap.knowledge_map_name,
-            id: item.contentvia.id + "->" + knowledage.knowledgeMap.id,
+            name: knowledage.knowledgeMap?.knowledge_map_name,
+            id: item.contentvia.id + "->" + knowledage.knowledgeMap?.id,
             symbolSize: 15,
             draggable: true,
             itemStyle: {
@@ -359,8 +360,9 @@ function setTagData(knowledge_map: IknowledgeMap) {
           })
           links.push({
             source: item.contentvia.id,
-            target: item.contentvia.id + "->" + knowledage.knowledgeMap.id,
+            target: item.contentvia.id + "->" + knowledage.knowledgeMap?.id,
           })
+        }
       })
     }
   })
