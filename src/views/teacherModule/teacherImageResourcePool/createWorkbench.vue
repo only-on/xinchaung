@@ -30,7 +30,9 @@
             </a-select>
           <!-- </iconInput> -->
         </a-form-item>
-        <div class="configs">镜像配置</div>
+        <div class="configs">
+          <span style="color:red">*</span>
+          镜像配置</div>
         <ImageConfig
           v-if="!AddedSuccessfully"
           @change="configChange"

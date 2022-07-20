@@ -32,7 +32,7 @@
         />
       </div>
     </div>
-    <div class="data-set-base-box setScrollbar">
+    <div class="data-set-base-box">
       <a-spin :spinning="loading" size="large" tip="Loading...">
       
         <template v-if="dataSetList.length > 0 && !loading">
@@ -345,7 +345,7 @@ export default defineComponent({
   .data-set-base-box {
     // flex: 1;
     height: calc(100% - 150px);
-    overflow: auto;
+    // overflow: auto;
     // padding-top: 25px;
     // padding-right: 24px;
     // padding-left: 24px;
