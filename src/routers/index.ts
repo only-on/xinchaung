@@ -15,6 +15,7 @@ import RoutesTeacherSide from "./teacherSide";
 import RoutesAdminSide from "./adminSide";
 import RoutesStudentSide from "./studentSide";
 import storage from "src/utils/extStorage";
+import menusFn from 'src/routers/menuConfig'
 const PathList = {
   1: "",
   2: "/admin/home",
@@ -26,33 +27,47 @@ const PathList = {
 import { IRouteTuple } from "src/types";
 const routes: Array<RouteRecordRaw> = [
   ...RouterModule,
-  ...RouterCommon,
   ...[RoutesTeacherSide],
   ...[RoutesAdminSide],
   ...[RoutesStudentSide],
+  ...RouterCommon,
 ];
 const router = createRouter({
   history: createWebHistory(), // createWebHistory(process.env.BASE_URL),
   routes,
 });
 // console.log(routes);
-router.beforeEach(
-  (
-    to: RouteLocationNormalized,
-    from: RouteLocationNormalized,
-    next: NavigationGuardNext
-  ) => {
+router.beforeEach((to: RouteLocationNormalized,from: RouteLocationNormalized,next: NavigationGuardNext) => {
     const isLogged = store.getters.isLogged;
+    var menus: any[] = menusFn();
+    console.log(to);
+    console.log(from);
+    
+    menus.forEach((item:any) => {
+      if( item.url && item.url.split('?')[0] === to.path){
+        next();
+      }else{
+
+      }
+      if (item.children.length) {
+        item.children.forEach((childItem:any) => {
+          if(childItem.url && childItem.url.split('?')[0] === to.path){
+            next();
+          }
+        })
+      }
+    })
+    // next();
     // 检查是否为公开页面（如登陆页面）
-    if (to.meta && to.meta.outward) {
-      // 登录状态访问登陆页面，跳转到登录后的首页无需再次登录，其它页面无论是否登录直接进入
-      // isLogged && to.name === "Login" ? next("/") : next();
-      next();
-    } else {
-      // 如果不是，判断是否登录，登录则直接进入，否则跳转到登录页面
-      // isLogged ? next() : next("/login");
-      next();
-    }
+    // if (to.meta && to.meta.outward) {
+    //   // 登录状态访问登陆页面，跳转到登录后的首页无需再次登录，其它页面无论是否登录直接进入
+    //   // isLogged && to.name === "Login" ? next("/") : next();
+    //   next();
+    // } else {
+    //   // 如果不是，判断是否登录，登录则直接进入，否则跳转到登录页面
+    //   // isLogged ? next() : next("/login");
+    //   next();
+    // }
   }
 );
 

@@ -110,16 +110,6 @@ export default defineComponent({
     const userImg = lStorage.get("portrait") || List[Number(role)];
     const http = (request as any).common;
     const assistText: Ref<string> = ref("您暂时还未收到远程协助请求！")
-    const homePath = computed(() => {
-      let obj = {
-        1: "/init-course/init", // 初始端
-        2: "/admin", // 管理端
-        3: "/teacher", // 教师端首页
-        4: "/student", // 学生端首页
-        5: "/teacher", // 助教端
-      };
-      return obj[role];
-    });
     const isOperation = computed(() => {
       // 教师有远程协助消息提醒
       return role === 3 || role===5;
@@ -164,22 +154,14 @@ export default defineComponent({
     var activeName: Ref<string> = ref(lStorage.get("menuActiveName") || "");
     function goHome() {
       console.log("回首页");
-      if (role == 3) {
-        router.push("/teacher");
+      const obj={
+        1:'',
+        2:'/admin',
+        3:'/teacher',
+        4:'/student',
+        5:'/teacher/teacherCourse?currentTab=0'
       }
-      if (role == 4) {
-        router.push("/student");
-      }
-      if (role == 1) {
-        // return "/init-course/init" // 初始端
-        // router.push("/teacher");
-      }
-      if (role == 2) {
-        router.push("/admin");
-      }
-      if (role == 5) {
-        router.push("/teacher/teacherCourse?currentTab=0"); // 助教端
-      }
+      router.push(obj[role])
       const menuActiveName=role == 5?'教学过程':'首页'
       store.commit("changemenuActiveName",menuActiveName)
     }
@@ -404,7 +386,6 @@ export default defineComponent({
       activeName,
       handImg,
       userImg,
-      homePath,
       goHome,
       helpInfoList,
       toHelp,
