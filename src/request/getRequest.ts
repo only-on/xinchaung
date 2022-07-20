@@ -44,9 +44,6 @@ GetRequest.prototype.sendServe = function (
 
   // let url = this.baseUrl + init.url; // 接口地址
   let url = init.url; // 接口地址
-  if (config.baseUrl) {
-    url = config.baseUrl + url;
-  }
   if (config.urlParams) {
     url = pupa(url, config.urlParams)
   }

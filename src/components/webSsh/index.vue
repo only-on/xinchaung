@@ -163,7 +163,7 @@ const connect = () => {
   emit("sniffing");
   console.log("[WebSsh] connecting...");
   http.vmApi
-    .getWsshId({ urlParams: { hostname: props.host, port: props.port }, baseUrl: 'http://192.168.101.221:2230' })
+    .getWsshId({ urlParams: { hostname: props.host, port: props.port } })
     .then((res: any) => {
       console.log("[WebSsh] index: ", res);
       if (res.data.id) {

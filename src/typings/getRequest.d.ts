@@ -21,5 +21,4 @@ export interface IRequestConfig {
     urlParams?: object;
     success?: (resp: IBusinessResp) => void;
     silent?: boolean;
-    baseUrl?: string
 }
