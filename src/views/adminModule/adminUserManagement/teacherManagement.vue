@@ -571,7 +571,7 @@ const teacherColumns = [
     }
     function batchResetPassword(){
       if (!state.selectedRowKeys.length) {
-        message.warn("请选择要删除的数据");
+        message.warn("请选择要重置密码的数据");
         return;
       }
       Modal.confirm({

@@ -78,6 +78,8 @@ const change = (v: any, i: any) => {
 
 watch(() => props.list, (val) => {
   labelObj = {}
+  isOpen.length = 0
+  showFold.length = 0
   for(let i =0; i < val.length; i++) {
     isOpen[i]=false
     showFold[i] = false

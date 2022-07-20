@@ -751,7 +751,7 @@ onMounted(() => {
       transition: 0.3s;
       transform: rotateY(90deg);
       background: rgba(0, 0, 0, 0.7);
-      border-radius: 6px 6px 0px 0px;
+      border-radius: 6px;
       .text,
       .ant-btn-link {
         color: var(--white);
