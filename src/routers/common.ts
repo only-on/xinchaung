@@ -42,9 +42,6 @@ export default [
     },
   },
   {
-
-  },
-  {
     path: "/:pathMatch(.*)*",
     name: "NotFound",
     // redirect: '/NotFound',
