@@ -946,7 +946,8 @@ const docBeforeUpload =(file: any) => {
   // docOrMp4Type === 1  文档    docOrMp4Type === 2  视频
   // console.log(file)
   upDoc.docFileList[0]={status: 'done'}
-  const postfix = (file && file.name).split(".")[1];
+  const arr = (file && file.name).split(".")
+  const postfix = arr[arr.length - 1];
   if(postfix === "md" && docOrMp4Type.value === 1){
     // let obj:any={
     //   uid: file.uid,    // ant  渲染的key
