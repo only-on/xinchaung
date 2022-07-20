@@ -135,7 +135,7 @@ export default defineComponent({
     const userName = ref<string>(lStorage.get("username"));
 
     function information() {
-      router.push("/teacher/personalInformation");
+      router.push("/personalInformation");
     }
     function loginOut() {
       http.loginOut().then((res: IBusinessResp) => {
@@ -150,7 +150,7 @@ export default defineComponent({
     }
     function helpMessage() {}
     function modifyPassword() {
-      router.push("/teacher/personalInformation");
+      router.push("/personalInformation");
       // http.resetPassword({param:{}}).then((res:IBusinessResp)=>{
       //   console.log(res)
       // })

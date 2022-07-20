@@ -1,4 +1,4 @@
-import Layout from "../../views/common/Layout.vue";
+import Layout from "src/views/common/Layout.vue";
 export default {
   path: "/dev",
   component: Layout,

@@ -11,6 +11,7 @@ import {
 import store from "../store/index";
 import RouterModule from "./shareModule"; // 引入公用逻辑模块
 import RouterCommon from "./common"; // 引入通用模块
+import testModule from "./testModule"; // 引入测试路由
 import RoutesTeacherSide from "./teacherSide";
 import RoutesAdminSide from "./adminSide";
 import RoutesStudentSide from "./studentSide";
@@ -27,6 +28,7 @@ const PathList = {
 import { IRouteTuple } from "src/types";
 const routes: Array<RouteRecordRaw> = [
   ...RouterModule,
+  ...testModule,
   ...[RoutesTeacherSide],
   ...[RoutesAdminSide],
   ...[RoutesStudentSide],
@@ -39,9 +41,9 @@ const router = createRouter({
 console.log(routes);
 router.beforeEach((to: RouteLocationNormalized,from: RouteLocationNormalized,next: NavigationGuardNext) => {
     const isLogged = store.getters.isLogged;
-    var menus: any[] = menusFn();
-    console.log(to);
-    console.log(from);
+    const menus: any[] = menusFn();
+    // console.log(to);
+    // console.log(RouterCommon);
     var CanPass:boolean=false
     menus.forEach((item:any) => {  
       if( item.url && item.url.split('?')[0] === to.path){
@@ -54,12 +56,18 @@ router.beforeEach((to: RouteLocationNormalized,from: RouteLocationNormalized,nex
         })
       }
     })
+    const CommonRouter:any=[...RouterModule,RouterCommon[0],RouterCommon[1],{path:'/NotFound'}]
+    CommonRouter.forEach((val:any)=>{
+      if(val.path === to.path){
+        CanPass=true
+      }
+    })
     if(CanPass){
-      // next();
+      next();
     }else{
-      // next("/NotFound")
+      next("/NotFound")
     }
-    next();
+    // next();
     // 检查是否为公开页面（如登陆页面）
     // if (to.meta && to.meta.outward) {
     //   // 登录状态访问登陆页面，跳转到登录后的首页无需再次登录，其它页面无论是否登录直接进入
