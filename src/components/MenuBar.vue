@@ -43,9 +43,6 @@ import { useStore } from "vuex";
 import menusFn from 'src/routers/menuConfig'
 export default defineComponent({
   name: "MenuBar",
-  props: {
-
-  },
   setup(props, context) {
     const renderFlag: Ref<boolean> = ref(true);
     const router = useRouter();
@@ -54,25 +51,22 @@ export default defineComponent({
     const store = useStore();
     // var menus:MenuItem[]=reactive([])
     var menus: any[] = menusFn();
-    console.log(menus);
+    // console.log(menus);
     
     var activeName: Ref<string> = ref(lStorage.get("menuActiveName") || "");
 
-    function select(level: string, val: MenuItem){
-      // console.log(val)
+    function select(level: string, val: MenuItem){ // MenuItem
       console.log("to：path：" + val.url);
       router.replace(String(val.url));
       if (level === "Parent") {
         activeName.value = val.name;
       } else {
         menus.forEach((v: MenuItem) => {
-          v.children
-            ? v.children.forEach((i: MenuItem) => {
+          v.children? v.children.forEach((i: MenuItem) => {
                 if (i.name === val.name) {
                   activeName.value = v.name;
                   return;
-                }
-              })
+                } })
             : "";
         });
       }
@@ -86,7 +80,6 @@ export default defineComponent({
       lStorage.set("menuActiveName", activeName.value);
     },{immediate: true })
     const http = (request as any).common;
-
     const visibleChange=(val:any)=>{
       // console.log(val);
       nextTick(()=>{

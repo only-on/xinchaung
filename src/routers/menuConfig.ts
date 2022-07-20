@@ -351,6 +351,6 @@ export default function menusFn(){
     4:[statistics,forum,studentCourse],
     5:[center,material,teacherCourse]
   }
-  console.log(role)
+  // console.log(role)
   return menus[role]
 }
