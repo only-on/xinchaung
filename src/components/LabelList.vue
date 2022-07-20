@@ -119,7 +119,7 @@ function changeLabel() {
   > span {
     margin: 0px 5px 0px 0px;
     padding: 5px 15px;
-    background: #ebebeb;
+    // background: #ebebeb;
     margin-bottom: 5px;
     position: relative;
     border-radius: 5px;
@@ -148,7 +148,7 @@ function changeLabel() {
   .edit-box {
     margin: 0px 5px 0px 0px;
     padding: 0px 0px;
-    background: #ebebeb;
+    // background: #ebebeb;
     margin-bottom: 5px;
     position: relative;
     width: 120px;
