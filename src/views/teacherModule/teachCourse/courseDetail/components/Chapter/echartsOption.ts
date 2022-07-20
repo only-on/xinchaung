@@ -673,25 +673,27 @@ function setTagData(knowledge_map: any,size:number) {
         // const {id}=knowledage.knowledge_map
         // knowledage.id=content_id
         // var id=knowledage.id
-        data.push({
-          name: knowledge_map_name,
-          id: String(item.contentvia.id + "->" +id),
-          symbolSize: size,
-          draggable: true,
-          itemStyle: {
-            // borderColor: theme.themeColor,
-            // borderWidth: 6,
-            // shadowBlur: 10,
-            // shadowColor: theme.themeColor,
-            color: '#758AEE'
-            // color: 'red'
-          },
-          category: 1,
-        })
-        links.push({
-          source: item.contentvia.id,
-          target: item.contentvia.id + "->" + id,
-        })
+        if(knowledage.knowledge_map!==null){
+          data.push({
+            name: knowledge_map_name,
+            id: String(item.contentvia.id + "->" +id),
+            symbolSize: size,
+            draggable: true,
+            itemStyle: {
+              // borderColor: theme.themeColor,
+              // borderWidth: 6,
+              // shadowBlur: 10,
+              // shadowColor: theme.themeColor,
+              color: '#758AEE'
+              // color: 'red'
+            },
+            category: 1,
+          })
+          links.push({
+            source: item.contentvia.id,
+            target: item.contentvia.id + "->" + id,
+          })
+        }
       }):''
     }
   })
