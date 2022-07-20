@@ -576,6 +576,7 @@ function deleteVersion(val: any) {
     taskId: taskId,
     version_id: val.id,
   };
+  recommendType ? param.recommendType = recommendType : ''
   Modal.confirm({
     title: "提示",
     content: "版本删除后不可恢复，确定要删除？",
