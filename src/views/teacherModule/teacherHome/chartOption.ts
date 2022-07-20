@@ -340,11 +340,9 @@ function setTagData(knowledge_map: IknowledgeMap) {
       })
       links.push({
         source: knowledge_map.parentNode,
-        // target: item.contentvia.id,
         target: item.contentvia.id,
       })
       item.contentvia.knowledages.forEach((knowledage: any) => {
-        if(knowledage?.length>0&&knowledage!==null){
           data.push({
             name: knowledage.knowledgeMap.knowledge_map_name,
             id: item.contentvia.id + "->" + knowledage.knowledgeMap.id,
@@ -361,30 +359,36 @@ function setTagData(knowledge_map: IknowledgeMap) {
           })
           links.push({
             source: item.contentvia.id,
-            // target: item.contentvia.id + "->" + knowledage.knowledgeMap.id,
-            target: item.contentvia.name + "->" + knowledage.knowledgeMap.name,
+            target: item.contentvia.id + "->" + knowledage.knowledgeMap.id,
           })
-        }
       })
     }
   })
   return { data, links}
 }
+function getNameFromId(id:any,datas:any){
+  const filterdata1=datas.data.filter((item:any)=>{
+    return item.id==id
+  })
+  return filterdata1[0]?.name
+}
 export const graphOptions = (data: any) => {
   let datas = setTagData(data)
   let options = {
     tooltip: {
-      formatter: function (val: any) {
-        if(val.dataType=="edge"){
-          const filterdata=datas.data.filter((item:any)=>{
-            return item.id==val.data.target
-          })
-          const chiName=filterdata[0].name
-          return val.data.source+'>'+chiName
-        }else{
-          return val.name
+        formatter: function (val: any) {
+          if(val.dataType=="edge"){
+              if(val.data.target.split('->').length>1){
+                let id1=val.data.target.split('->')[0]
+                let id2=val.data.target
+                return getNameFromId(id1,datas)+'->'+getNameFromId(id2,datas)
+              }else{
+                return val.data.source+'->'+getNameFromId(val.data.target,datas)
+              }
+          }else{
+            return val.name
+          }
         }
-      }
     },
     animationDurationUpdate: 1500,
     animationEasingUpdate: 'quinticInOut',

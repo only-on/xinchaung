@@ -697,13 +697,29 @@ function setTagData(knowledge_map: any,size:number) {
   })
   return { data, links}
 }
+function getNameFromId(id:any,datas:any){
+  const filterdata1=datas.data.filter((item:any)=>{
+    return item.id==id
+  })
+  return filterdata1[0]?.name
+}
 export const graphOptions = (data: any,size:number) => {
   let datas = setTagData(data,size)
   // console.log(data)
   let options = {
     tooltip: {
       formatter: function (val: any) {
-        return val.name
+        if(val.dataType=="edge"){
+            if(val.data.target.split('->').length>1){
+              let id1=val.data.target.split('->')[0]
+              let id2=val.data.target
+              return getNameFromId(id1,datas)+'->'+getNameFromId(id2,datas)
+            }else{
+              return val.data.source+'->'+getNameFromId(val.data.target,datas)
+            }
+        }else{
+          return val.name
+        }
       }
     },
     animationDurationUpdate: 1500,
