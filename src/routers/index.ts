@@ -38,19 +38,18 @@ const router = createRouter({
   history: createWebHistory(), // createWebHistory(process.env.BASE_URL),
   routes,
 });
-console.log(routes);
+// console.log(routes);
 router.beforeEach((to: RouteLocationNormalized,from: RouteLocationNormalized,next: NavigationGuardNext) => {
     const isLogged = store.getters.isLogged;
     const menus: any[] = menusFn();
-    // console.log(to);
-    // console.log(RouterCommon);
+    // console.log('前去：'+to.path);
     var CanPass:boolean=false
-    menus.forEach((item:any) => {  
-      if( item.url && item.url.split('?')[0] === to.path){
+    menus.forEach((item:any) => { //to.path.includes(item.url.split('?')[0])  item.url.split('?')[0].includes()
+      if( item.url && to.path.includes(item.url.split('?')[0])){
         CanPass=true
       }else if(item.children.length){
-        item.children.forEach((childItem:any) => {
-          if(childItem.url && childItem.url.split('?')[0] === to.path){
+        item.children.forEach((childItem:any) => { // to.path.includes(childItem.url.split('?')[0])   childItem.url.split('?')[0] === to.path
+          if(childItem.url && to.path.includes(childItem.url.split('?')[0])){
             CanPass=true
           }
         })
@@ -63,11 +62,11 @@ router.beforeEach((to: RouteLocationNormalized,from: RouteLocationNormalized,nex
       }
     })
     if(CanPass){
-      // next();
+      next();
     }else{
-      // next("/NotFound")
+      next("/NotFound")
     }
-    next();
+    // next();
     // 检查是否为公开页面（如登陆页面）
     // if (to.meta && to.meta.outward) {
     //   // 登录状态访问登陆页面，跳转到登录后的首页无需再次登录，其它页面无论是否登录直接进入
