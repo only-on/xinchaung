@@ -979,6 +979,6 @@ watch(
     }
   }
   .chapterEmpty.emptyContent{
-    margin-top: 156px;
+    margin-top: 122px;
   }
 </style>
