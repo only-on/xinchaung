@@ -114,17 +114,14 @@
           </td>
         </tr>
         <tr v-if="item.type === 'w8'" class="editable-markdown">
-          <td class="title-text" style="height: 30px" :align="item.fields[0].align">
+          <td class="title-text" style="height: 30px" :align="item.fields[0].align" colspan="6">
             <div class="title">{{ item.fields[0].value }}</div>
           </td>
-          <td class="editable-markdown" colspan="5">
+        </tr>
+        <tr v-if="item.type === 'w8'" class="editable-markdown">
+          <td class="editable-markdown" colspan="6">
             <div>
               <markdown v-model="item.fields[1].value" :preview="true" />
-              <!-- <markdown
-                v-else
-                :preview="true"
-                v-model="item.fields[1].value"
-              /> -->
             </div>
           </td>
         </tr>
