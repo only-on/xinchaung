@@ -1,6 +1,7 @@
 import Layout from 'src/views/common/Layout.vue';
 import { LocationQuery, RouteParams } from 'vue-router';
 import extStorage from "src/utils/extStorage";
+import RouterViews from "src/components/RouterView.vue";
 const { lStorage } = extStorage;
 const role = Number(lStorage.get("role"));
 export default {
@@ -47,9 +48,19 @@ export default {
       path: "Detail",
       name:'课程详情',
       component: () => import("src/views/teacherModule/teachCourse/courseDetail/index.vue"),
+      // component: RouterViews,
       meta: {
         title: "课程详情",
         authCode: 'Detail'
+      },
+    },
+    {
+      path: "CourseExperimentDetail",
+      name: "CourseExperimentDetail",
+      component: () =>import("src/views/teacherModule/teacherExperimentResourcePool/experimentDetail.vue"),
+      meta: {
+        title: "推荐实验详情",
+        icon: "",
       },
     },
     {

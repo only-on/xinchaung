@@ -123,9 +123,6 @@ router.afterEach(
           }).fullPath,
         };
         // console.log('routeTuple:=',routeTuple)
-        // 学生端推荐实验面包屑显示
-        routeSegment.path==='/teacher/teacherExperimentResourcePool'&&role===4 ?
-        '' : breadcrumbs.push(routeTuple);
         processedPath.push(routeSegment.path);
       }
     });
