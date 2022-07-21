@@ -179,13 +179,16 @@ a {
   }
 }
 /*统一修一个antd默认样式*/
-#app {
+// #app {
   .ant-btn-text {
     color: var(--black-65);
   }
   .ant-pagination {
     width: 100%;
     text-align: center;
+    .ant-pagination-options .ant-select-selector{
+      border-radius: 20px;
+    }
   }
   .demo__container .ant-btn {
     border-radius: 3px;
@@ -253,7 +256,7 @@ a {
   .ant-spin-container{
     height: 100%;
   }
-}
+// }
 .meanBarOverlay{
   min-width: 86px;
   border-radius: 4px;
@@ -346,10 +349,6 @@ a {
   }
 }
 .ant-drawer-body{
-  .ant-pagination {
-    width: 100%;
-    text-align: center;
-  }
   .ant-input-password,.ant-select-selector,.ant-input-search{
     border-radius: 20px;
   }

@@ -203,14 +203,14 @@ onMounted(()=>{
     width: 260px;
   }
   .baocun{
-    .ant-btn-primary{
-      font-size: 14px;
-      box-shadow: none;
-      text-shadow: none;
-      height: 34px;
-      border-radius: 17px;
-      padding: 4px 27px;
-    }
+    // .ant-btn-primary{
+    //   font-size: 14px;
+    //   box-shadow: none;
+    //   text-shadow: none;
+    //   height: 34px;
+    //   border-radius: 17px;
+    //   // padding: 4px 27px;
+    // }
   }
 }
 .Exhibition{
