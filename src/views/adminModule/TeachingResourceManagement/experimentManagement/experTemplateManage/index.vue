@@ -18,50 +18,52 @@
                 <a-button type="primary" @click="batchDelete">批量删除</a-button>
             </div>
     </div>
-    <a-config-provider>
-      <a-table
-      :columns="columns"
-      :data-source="listdata"
-      rowKey='id'
-      :pagination="
-        total > 10
-          ? {
-              hideOnSinglePage: false,
-              showSizeChanger:true,
-              total:total,
-              current: params.page,
-              pageSize: params.pageSize,
-              onChange: onChange,
-              onShowSizeChange: onShowSizeChange,
-            }
-          : false
-      "
-      :row-selection="{
-        selectedRowKeys: tableData.selectedRowKeys,
-        onChange: onSelectChange,
-        getCheckboxProps: getCheckboxProps,
-      }"
-    >
-    <template #templateName='{record}'>
-      <div class="detail" :title="record.templateName" @click="detail(record.id,record.templateType,record.pdfPath)">
-        {{record.templateName}}
-      </div>
-    </template>
-        <template #action="{record}">
-            <div class="flexCenter">
-              <a-button type="link" @click="dleDelete(record)" :disabled="record.is_init">删除</a-button>
-              <a-button type="link" @click="downLoad(record)" v-if="record.templateType=='离线'">下载</a-button>
-            </div>
-            <!-- <span class="action action-delete" @click="dleDelete(record)">删除</span> -->
-            <!-- <span @click="downLoad(record)" v-if="record.templateType=='离线'" class="action action-download">
-                下载
-            </span> -->
-        </template>
-    </a-table>
-      <template #renderEmpty>
-          <div><Empty :height='80' :text='ifSearch?"抱歉，未搜到相关数据！":"抱歉，暂无数据！"' type="tableEmpty" /></div>
+    <a-spin :spinning="loading" size="large" tip="Loading...">
+      <a-config-provider>
+        <a-table
+        :columns="columns"
+        :data-source="listdata"
+        rowKey='id'
+        :pagination="
+          total > 10
+            ? {
+                hideOnSinglePage: false,
+                showSizeChanger:true,
+                total:total,
+                current: params.page,
+                pageSize: params.pageSize,
+                onChange: onChange,
+                onShowSizeChange: onShowSizeChange,
+              }
+            : false
+        "
+        :row-selection="{
+          selectedRowKeys: tableData.selectedRowKeys,
+          onChange: onSelectChange,
+          getCheckboxProps: getCheckboxProps,
+        }"
+      >
+      <template #templateName='{record}'>
+        <div class="detail" :title="record.templateName" @click="detail(record.id,record.templateType,record.pdfPath)">
+          {{record.templateName}}
+        </div>
       </template>
-    </a-config-provider>
+          <template #action="{record}">
+              <div class="flexCenter">
+                <a-button type="link" @click="dleDelete(record)" :disabled="record.is_init">删除</a-button>
+                <a-button type="link" @click="downLoad(record)" v-if="record.templateType=='离线'">下载</a-button>
+              </div>
+              <!-- <span class="action action-delete" @click="dleDelete(record)">删除</span> -->
+              <!-- <span @click="downLoad(record)" v-if="record.templateType=='离线'" class="action action-download">
+                  下载
+              </span> -->
+          </template>
+      </a-table>
+        <template #renderEmpty>
+            <div v-if="!loading"><Empty :height='80' :text='ifSearch?"抱歉，未搜到相关数据！":"抱歉，暂无数据！"' type="tableEmpty" /></div>
+        </template>
+      </a-config-provider>
+    </a-spin>
      <!-- 在线制作 预览实验模板 -->
     <a-modal :destroyOnClose="true" v-model:visible="template.templateVisble" :title="template.reportTitle" class="report" :width="1080" @cancel="cancelTemplate(1)">
       <div class="pdfBox" v-if="template.pdfUrl">
@@ -96,10 +98,12 @@ import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
     interface Props {
       listdata: any[]; 
       total:any;
+      loading:boolean;
     }
     const props = withDefaults(defineProps<Props>(), {
       listdata: () => [],
-      total:()=>{}
+      total:()=>{},
+      loading:false
     });
     const template:any=reactive({
       templateVisble:false,

@@ -12,10 +12,10 @@
     <div class="tabsTable">
      <a-tabs v-model:activeKey="activeKey" @change='callBack'>
         <a-tab-pane key="1" tab="实验管理">
-          <experManage v-if="activeKey==1"   :total='tableData.total' :listdata='tableData.data' @updateData='updateData'></experManage>
+          <experManage v-if="activeKey==1" :loading='loading'   :total='tableData.total' :listdata='tableData.data' @updateData='updateData'></experManage>
         </a-tab-pane>
         <a-tab-pane key="2" tab="实验报告模版管理">
-          <experTemplateManage v-if="activeKey==2"  :total='tableData.total' :listdata='tableData.data' @updateData='updateData'></experTemplateManage>
+          <experTemplateManage v-if="activeKey==2" :loading='loading'   :total='tableData.total' :listdata='tableData.data' @updateData='updateData'></experTemplateManage>
         </a-tab-pane>
       </a-tabs>
     </div>
@@ -76,6 +76,7 @@ const echartsData:any=reactive({
     numbers:[]
   }
 })
+const loading:any=ref(false)
 function daWithdata(res:any){
     echartsData.experType={
       names:[],
@@ -185,7 +186,11 @@ onMounted(()=>{
     page:experParams.page,
     limit:experParams.limit
   }
+  echartsBar('experType',echartsData.experType)
+  HotWords('directPoints',doHotData(echartsData.hotLabelList))
+  loading.value=true;
   http.experList({param:param}).then((res:any)=>{
+    loading.value=false;
     echartsData.experType={
       names:[],
       numbers:[]

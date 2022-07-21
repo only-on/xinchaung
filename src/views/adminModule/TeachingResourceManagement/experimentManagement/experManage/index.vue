@@ -48,50 +48,52 @@
           <a-button type="primary" @click="batchDelete">批量删除</a-button>
         </div>
     </div>
-    <a-config-provider>
-      <a-table
-      :columns="columns"
-      :data-source="listdata"
-      rowKey='id'
-      :pagination="
-        total > 10
-          ? {
-              hideOnSinglePage: false,
-              showSizeChanger:true,
-              total:total,
-              current: params.page,
-              pageSize: params.pageSize,
-              onChange: onChange,
-              onShowSizeChange: onShowSizeChange,
-            }
-          : false
-      "
-      :row-selection="{
-        selectedRowKeys: tableData.selectedRowKeys,
-        onChange: onSelectChange,
-        getCheckboxProps: getCheckboxProps,
-      }"
-    >
-    <!-- detail -->
-    <template #contentName='{record}'>
-      <div class="detail" :title="record.contentName" @click="detail(record,record.contentAttribute)">
-        {{record.contentName}}
-      </div>
-    </template>
-    <template #contentTechnicalDirectionGroup='{record}'>
-        <div class="detailDirName" :title="record.contentTechnicalDirectionGroup">
-        {{record.contentTechnicalDirectionGroup}}
-      </div>
-    </template>
-    <template #action="{record}">
-      <a-button type="link" @click="dleDelete(record)">删除</a-button>
-      <!-- <span class="action detail" @click="dleDelete(record)">删除</span> -->
-    </template>
-    </a-table>
-      <template #renderEmpty>
-          <div><Empty :height='80' :text='ifSearch?"抱歉，未搜到相关数据！":"抱歉，暂无数据！"' type="tableEmpty" /></div>
+    <a-spin :spinning="loading" size="large" tip="Loading...">
+      <a-config-provider>
+        <a-table
+        :columns="columns"
+        :data-source="listdata"
+        rowKey='id'
+        :pagination="
+          total > 10
+            ? {
+                hideOnSinglePage: false,
+                showSizeChanger:true,
+                total:total,
+                current: params.page,
+                pageSize: params.pageSize,
+                onChange: onChange,
+                onShowSizeChange: onShowSizeChange,
+              }
+            : false
+        "
+        :row-selection="{
+          selectedRowKeys: tableData.selectedRowKeys,
+          onChange: onSelectChange,
+          getCheckboxProps: getCheckboxProps,
+        }"
+      >
+      <!-- detail -->
+      <template #contentName='{record}'>
+        <div class="detail" :title="record.contentName" @click="detail(record,record.contentAttribute)">
+          {{record.contentName}}
+        </div>
       </template>
-    </a-config-provider>
+      <template #contentTechnicalDirectionGroup='{record}'>
+          <div class="detailDirName" :title="record.contentTechnicalDirectionGroup">
+          {{record.contentTechnicalDirectionGroup}}
+        </div>
+      </template>
+      <template #action="{record}">
+        <a-button type="link" @click="dleDelete(record)">删除</a-button>
+        <!-- <span class="action detail" @click="dleDelete(record)">删除</span> -->
+      </template>
+      </a-table>
+        <template #renderEmpty>
+            <div><Empty v-if="!loading" :height='80' :text='ifSearch?"抱歉，未搜到相关数据！":"抱歉，暂无数据！"' type="tableEmpty" /></div>
+        </template>
+      </a-config-provider>
+    </a-spin>
     </div>
 </template>
 <script lang="ts" setup>
@@ -120,11 +122,13 @@ const ifSearch:any=ref(false)
     })
     interface Props {
       listdata: any[]; 
-      total:any
+      total:any;
+      loading:boolean;
     }
     const props = withDefaults(defineProps<Props>(), {
       listdata: () => [],
-      total:()=>{}
+      total:()=>{},
+      loading:false
     });
     const columns = [
         {
