@@ -36,7 +36,7 @@
       <a-spin :spinning="loading" size="large" tip="Loading...">
       
         <template v-if="dataSetList.length > 0 && !loading">
-          <div class="data-set-item" v-for="item in dataSetList" :key="item.id">
+          <div class="data-set-item"  v-for="item in dataSetList" :key="item.id" :class='selected.includes(item.id)?"borderCorlor":"currentColor"'>
             <div><img :src="item.cover" alt="" /></div>
             <div class="data-base-info">
               <h2>{{ item.name }}</h2>
@@ -356,6 +356,7 @@ export default defineComponent({
       margin-bottom: 20px;
       background: var(--white-100);
       border: 1px solid #cdcdcd;
+
       border-radius: 10px;
       transition: 0.2s;
       &:hover {
@@ -444,6 +445,12 @@ export default defineComponent({
       .shanchu {
         color: var(--primary-color);
       }
+    }
+    .borderCorlor{
+      border-color:var(--primary-color);
+    }
+    .currentColor{
+      border-color: #cdcdcd;
     }
   }
   .look-more-btn {
