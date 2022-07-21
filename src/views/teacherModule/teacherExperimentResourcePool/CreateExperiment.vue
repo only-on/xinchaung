@@ -301,7 +301,7 @@
     :closable="true"
     placement="right"
     :visible="formState.drawerVisible"
-    width="640"
+    width="700"
     @close="closeDrawer"
   >
     <select-data-set
