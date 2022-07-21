@@ -1,7 +1,7 @@
 <template>
   <div class="detail">
     <div class="header">
-      <div class="img flexCenter" :style="`background-image: url(${encodeURI(state.detail.cover)});`">
+      <div class="img flexCenter" :style="`background-image: url('${encodeURI(state.detail.cover)}');`">
       {{state.detail.cover?'':'封面不存在'}}
       </div>
       <div class="header_mid">
