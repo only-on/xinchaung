@@ -46,7 +46,7 @@ const SNIFF_SUCCESSFUL = 4; // ssh服务检测成功
 
 const wsshServerWsUrl = "192.168.101.221:2230";
 const vmHost = ref("192.168.101.221");
-const vmPort = ref(21457);
+const vmPort = ref(21507);
 const reconnect = ref(false);
 const wsState = ref(WS_INIT);
 const sniffState = ref(SNIFF_INIT);
@@ -60,8 +60,8 @@ const wsDisconnected = (args: any) => {
   console.log("[WebsshDemo] disconnected", args);
   wsState.value = WS_DISCONNECTED;
 };
-const wsError = () => {
-  console.log("[WebsshDemo] error");
+const wsError = (args: any) => {
+  console.log("[WebsshDemo] error", args);
   wsState.value = WS_ERROR;
 };
 const sniffFailed = () => {
@@ -88,10 +88,10 @@ const sniffing = () => {
  * 重连，重连只能发生在连接已断开、连接错误的情况发生时
  */
 const handleReconnect = () => {
-  if (wsState.value !== WS_DISCONNECTED && wsState.value !== WS_ERROR) {
-    message.warn("ws还未连接或已连接成功，不可重连！");
-    return;
-  }
+  // if (wsState.value !== WS_DISCONNECTED && wsState.value !== WS_ERROR) {
+  //   message.warn("ws还未连接或已连接成功，不可重连！");
+  //   return;
+  // }
   reconnect.value = !reconnect.value;
 };
 

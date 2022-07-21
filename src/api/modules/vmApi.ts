@@ -64,7 +64,7 @@ export default {
     // 测试ssh服务
     testSSHServe: {url: `/wssh/sniff?hostname={hostname}&port={port}`, method:"POST", dataType: 'json'},
     // 获取webssh连接id
-    getWsshId: {url: '/wssh?hostname={hostname}&port={port}', method: 'POST', dataType: 'json'},
+    getWsshId: {url: '/?hostname={hostname}&port={port}', method: 'POST', dataType: 'json'},
 }
 
 //

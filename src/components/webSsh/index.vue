@@ -8,6 +8,8 @@ import { ITerminalOptions, Terminal } from "xterm";
 import { FitAddon } from "xterm-addon-fit";
 import http from "src/api";
 import "xterm/css/xterm.css";
+import { lStorage } from "../../utils/extStorage";
+import { message } from "ant-design-vue";
 
 const props = defineProps<{
   wsshServerWsUrl?: string; // webssh服务ws地址前缀
@@ -162,8 +164,20 @@ const connect = () => {
   }
   emit("sniffing");
   console.log("[WebSsh] connecting...");
+  let baseUrl =
+    "http://" +
+    (lStorage.get("webssh_ip") || "") +
+    ":" +
+    (lStorage.get("webssh_port") || "");
+  if (baseUrl === "http://:") {
+    message.warn("参数配置有误，无法连接虚拟机！");
+    return;
+  }
   http.vmApi
-    .getWsshId({ urlParams: { hostname: props.host, port: props.port } })
+    .getWsshId({
+      urlParams: { hostname: props.host, port: props.port },
+      baseUrl: baseUrl,
+    })
     .then((res: any) => {
       console.log("[WebSsh] index: ", res);
       if (res.data.id) {
@@ -173,7 +187,7 @@ const connect = () => {
           ? new window.TextDecoder(encoding)
           : encoding;
 
-        console.log("[webSsh] got id, connect to ws server...");
+        console.log("[webSsh] got id", res.data.id, " connect to ws server...");
         sock = new window.WebSocket(wsUrl + "?id=" + res.data.id);
         sock.onopen = () => {
           terminal = new Terminal(termOptions); // xterm事例
@@ -205,14 +219,14 @@ const connect = () => {
           terminal?.dispose();
           terminal = undefined;
           sock = undefined;
-          emit("wsError");
+          emit("wsError", { e: e });
         };
         sock.onclose = (e) => {
           console.log("[WebSsh] onclose: ", e, e.reason); // 主动断开后，reason是chan closed，服务没有开，reason是空
           terminal?.dispose();
           terminal = undefined;
           sock = undefined;
-          emit("wsDisconnected", { normal: e.reason === "chan closed" });
+          emit("wsDisconnected", { e: e });
         };
       } else {
         emit("sniffNoWorker");

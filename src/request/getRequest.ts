@@ -43,7 +43,7 @@ GetRequest.prototype.sendServe = function (
   const silent = config.silent ? config.silent : false;     // 是否禁止弹出错误提示  boolean或者 返回boolean值的function
 
   // let url = this.baseUrl + init.url; // 接口地址
-  let url = init.url; // 接口地址
+  let url = config.baseUrl ? config.baseUrl + init.url : init.url; // 接口地址
   if (config.urlParams) {
     url = pupa(url, config.urlParams)
   }
