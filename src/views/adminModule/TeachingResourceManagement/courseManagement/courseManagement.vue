@@ -276,6 +276,10 @@ const dleDelete=(item:any)=>{
   });
 }
 const BatchDelete=()=>{
+  if(!searchInfo.selectedRowKeys?.length){
+    message.warning('请至少选择一条数据！')
+    return
+  }
   // return
   Modal.confirm({
     title: "确认删除吗？",
@@ -294,6 +298,10 @@ const BatchDelete=()=>{
 }
 // 
 const ClearScreen=()=>{
+  if(!searchInfo.selectedRowKeys?.length){
+    message.warning('请至少选择一条数据！')
+    return
+  }
   // return
   Modal.confirm({
     title: "确认清除录屏吗？",
