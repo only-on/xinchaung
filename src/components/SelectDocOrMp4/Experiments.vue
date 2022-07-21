@@ -291,11 +291,4 @@ onMounted(()=>{
       }
     }
   }
-  
-.ant-pagination{
-
-  :deep(.ant-select-selector){
-    border-radius: 20px;
-  }
-}
 </style>

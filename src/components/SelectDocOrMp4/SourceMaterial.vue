@@ -342,9 +342,6 @@ onMounted(()=>{
             background: var(--primary-1);
           }
         }
-        .openFile{
-          // margin: 1rem 0;
-        }
         .fileIcon {
           width: 20px;
           height: 24px;
@@ -385,11 +382,5 @@ onMounted(()=>{
       }
     }
   }
-  
-.ant-pagination{
 
-  :deep(.ant-select-selector){
-    border-radius: 20px;
-  }
-}
 </style>

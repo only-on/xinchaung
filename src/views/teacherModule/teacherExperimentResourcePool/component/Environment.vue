@@ -1,45 +1,44 @@
 <template>
-  <div v-show="loading">
-
-  </div>
   <h3 class="title">实验环境</h3>
-  <div v-if="props.type">
-    <ConfigModal
-      :imageList="imageList"
-      @selectedImage="selectedImage"
-      :defaultConfig="defaultConfig"
-    />
-  </div>
-  <div class="selectList flexCenter" v-else>
-    <div
-      class="add item flexCenter"
-      @click.stop="selectList.length >= 3 ? '' : (visible = true)"
-      :class="selectList.length >= 3 ? 'not-allowed' : ''"
-    >
-      <div class="tianjia">
-        <span class="iconfont icon-tianjia"></span>
-        <span>添加实验环境</span>
-      </div>
-      <div class="limit">最多添加三个环境</div>
+  <a-spin :spinning="loading" size="large" tip="Loading...">
+    <div v-if="props.type && !loading">
+      <ConfigModal
+        :imageList="imageList"
+        @selectedImage="selectedImage"
+        :defaultConfig="defaultConfig"
+      />
     </div>
-    <div class="item" v-for="(v, idx) in selectList" :key="v">
-      <div class="single_ellipsis" :title="v.imageName">
-        {{ v.imageName }}
-      </div>
-      <div class="content">
-        <div class="info flexCenter">
-          <span>内存：{{ v.flavor.ram / 1024 }}GB</span>
-          <span>CPU：{{ v.flavor.cpu }}核</span>
-          <span>硬盘：{{ v.flavor.disk }}GB</span>
-          <span>GPU：{{ v.flavor.gpu ? "是" : "否" }}</span>
+    <div v-if="!props.type && !loading" class="selectList flexCenter">
+      <div
+        class="add item flexCenter"
+        @click.stop="selectList.length >= 3 ? '' : (visible = true)"
+        :class="selectList.length >= 3 ? 'not-allowed' : ''"
+      >
+        <div class="tianjia">
+          <span class="iconfont icon-tianjia"></span>
+          <span>添加实验环境</span>
         </div>
-        <div class="caozuo">
-          <span class="iconfont icon-bianji1" @click.stop="edit(v, idx)"></span>
-          <span class="iconfont icon-shanchu" @click.stop="Delete(idx)"></span>
+        <div class="limit">最多添加三个环境</div>
+      </div>
+      <div class="item" v-for="(v, idx) in selectList" :key="v">
+        <div class="single_ellipsis" :title="v.imageName">
+          {{ v.imageName }}
+        </div>
+        <div class="content">
+          <div class="info flexCenter">
+            <span>内存：{{ v.flavor.ram / 1024 }}GB</span>
+            <span>CPU：{{ v.flavor.cpu }}核</span>
+            <span>硬盘：{{ v.flavor.disk }}GB</span>
+            <span>GPU：{{ v.flavor.gpu ? "是" : "否" }}</span>
+          </div>
+          <div class="caozuo">
+            <span class="iconfont icon-bianji1" @click.stop="edit(v, idx)"></span>
+            <span class="iconfont icon-shanchu" @click.stop="Delete(idx)"></span>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </a-spin>
   <a-modal
     v-model:visible="visible"
     title="设置实验环境"
@@ -196,11 +195,14 @@ const initData = () => {
     const data= res.data.list;
     imageList.push(...data)
     loading.value=false
-  });
+  }).catch((err:any)=>{
+    loading.value=false
+  })
 };
-onMounted(() => {
-  initData();
-});
+initData()
+// onMounted(() => {
+//   initData();
+// });
 </script>
 <style scoped lang="less">
 h3 {

@@ -503,9 +503,11 @@ const rules = {
   //   { required: true, message: "" },
   //   { validator: selectedKnowledgeValidator, trigger: "change" },
   // ],
+  // formState.imageConfigs
   tags:[
-    { required: true, message: "" },
-    { validator: tagsValidator, trigger: "blur" },
+    // { required: true, message: "" },
+    // { validator: tagsValidator, trigger: "blur" },
+    {required: true,validator: tagsValidator,trigger: "change"},
   ],
   direction:[
     { required: true, message: "请选择所属方向" ,trigger: "change" },
@@ -539,9 +541,12 @@ async function selectedKnowledgeValidator(rule: any, value:any) {
   }
 }
 async function tagsValidator(rule: any, value:any) {
-  // console.log(value)
+  console.log(formState)
+  console.log(value);
   if (!value.length) {
     return Promise.reject("请填写标签");
+  }else{
+    return Promise.resolve()
   }
 }
 const closeDrawer = () => {
@@ -610,7 +615,7 @@ function create() {
     // console.log(docMp4File);
     (docOrMp4Drawer.activeFile.file_url || docMp4File.suffix === 'md' || formState.document.mdValue) ? '' : docMp4FileObj.directory_id=upDoc.catalogue
     // console.log(ipynbFileObj)
-    if (createTypeNumber === 1 && formState.imageConfigs.length === 0) {
+    if ( [1,2,3].includes(createTypeNumber) && formState.imageConfigs.length === 0) {
       message.warning('请添加实验环境')
       return
     }
@@ -1118,9 +1123,6 @@ onMounted(()=>{
 }
 .datasets-box {
    margin-bottom: 1rem;
-  .ant-btn {
-    // margin-right: 1rem;
-  }
   .add-data-set-btn {
     // width: 100px;
     font-size: var(--base-font-size);
@@ -1128,11 +1130,7 @@ onMounted(()=>{
     // margin-bottom: 1rem;
   }
 }
-.Knowledge{
-  .ant-btn {
-    // margin-bottom: 1rem;
-  }
-}
+
 .data-set-hint {
   font-size: 12px;
   font-style: normal;
@@ -1170,9 +1168,6 @@ onMounted(()=>{
     width: 50%;
   }
   .right {
-    .reportBox {
-      // justify-content: space-between;
-    }
     .reportName {
       margin-top: 1rem;
       color: var(--black-85);
@@ -1249,9 +1244,6 @@ onMounted(()=>{
   // padding-top: 2rem;
   padding: 0 24px;
   background-color: var(--white);
-  .jupyterBox {
-    // padding: 2rem;
-  }
   .uploadBox {
     width: 40%;
   }
@@ -1357,9 +1349,6 @@ onMounted(()=>{
     .ant-btn{
       margin-right: 8px;
     }
-  }
-  .docx {
-    // width: 38%;
   }
   .video-box {
     min-height: 155px;

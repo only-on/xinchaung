@@ -38,6 +38,7 @@ const emit = defineEmits<{
   (e: "selectedImage", val: any): void;
 }>();
 if(props.imageList && props.imageList.length){
+  // console.log(props.imageList);
   let val=props.imageList[0]
     reactiveData.image_id=val.id
     reactiveData.imageName=val.name

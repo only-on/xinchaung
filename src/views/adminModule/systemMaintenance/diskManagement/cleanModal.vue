@@ -53,12 +53,13 @@
       inject,
       watch
     } from "vue";
-    import request from "src/api/index";
-    import { message } from "ant-design-vue";
-    const http = (request as any).systemMaintenance;
     import moment from 'moment';
     import beforeIcon from "src/components/aiAnt/beforeIcon.vue";
     import selectIcon from "src/assets/images/screenicon/date.png";
+    import request from "src/api/index";
+    import { message } from "ant-design-vue";
+    const http = (request as any).systemMaintenance;
+    
     const timeSelectData=[
         {label:'一个月前',value:30},
         {label:'二个月前',value:60},
@@ -119,9 +120,4 @@ watch(()=>props.visible,()=>{
       align-items: center;
       margin-top: 10px;
   } 
-  .select {
-      :deep(.ant-select-selector){
-        border-radius: 20px;
-      }
-  }
 </style>

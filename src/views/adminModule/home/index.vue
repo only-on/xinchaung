@@ -680,9 +680,6 @@
                 color:red;
                 margin-left: 10px;
             }
-            :deep(.ant-select-selector){
-                border-radius: 20px;
-            }
         }
 .platformResources{
     margin-top: 20px;
