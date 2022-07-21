@@ -389,8 +389,8 @@ function create() {
       dataset_ids: formState.datasets,
       container: arr.length ? arr : saveImages
     }
-    if (!param.container.length && componentsList.includes('configuration')) {
-      message.warn('实验环境不能为空')
+    if ( [1,2,3].includes(createTypeNumber) && formState.imageConfigs.length === 0) {
+      message.warning('请添加实验环境')
       return
     }
     // return
