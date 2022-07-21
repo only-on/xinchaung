@@ -340,6 +340,7 @@ const getTypeList = () => {
       background-repeat: no-repeat;
       display: flex;
       align-items: flex-end;
+      border-radius: 6px 6px 0 0 ;
       .labels {
         width: 100%;
         background: var(--black-5);

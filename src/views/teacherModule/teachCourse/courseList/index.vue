@@ -669,6 +669,8 @@ onMounted(() => {
         background-image: url(src/assets/images/teacherCourse/defaultCover.jpg);
         .top {
           .state {
+            border-top-left-radius: 6px;
+            border-bottom-right-radius: 6px;
             background-color: rgba(0, 0, 0, 0.5);
             color: var(--white-70);
             padding: 3px 14px;
