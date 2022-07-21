@@ -38,11 +38,11 @@ const router = createRouter({
   history: createWebHistory(), // createWebHistory(process.env.BASE_URL),
   routes,
 });
-// console.log(routes);
+console.log(routes);
 router.beforeEach((to: RouteLocationNormalized,from: RouteLocationNormalized,next: NavigationGuardNext) => {
     const isLogged = store.getters.isLogged;
     const menus: any[] = menusFn();
-    // console.log('前去：'+to.path);
+    console.log('前去：'+to.path);
     var CanPass:boolean=false
     menus.forEach((item:any) => { //to.path.includes(item.url.split('?')[0])  item.url.split('?')[0].includes()
       if( item.url && to.path.includes(item.url.split('?')[0])){

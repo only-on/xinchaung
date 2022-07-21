@@ -41,11 +41,10 @@ const emit = defineEmits<{
 const imageUrl = ref('')
 watch(()=>{return props.coverUrl.cover},(val:any)=>{
   // console.log(val)
-  imageUrl.value = val
-  // console.log(props.coverUrl)
+  imageUrl.value =val
   if ((imageUrl.value as any) instanceof Blob) {
     getBase64(imageUrl.value, (base64Url: string) => {
-      imageUrl.value = `${base64Url}?data-time=${new Date().getTime()}`;       // 
+      imageUrl.value = base64Url;       // 
     });
   }
 },{immediate:true})

@@ -266,12 +266,12 @@
         img:systemImages.Ahome.adminHome4,
         course:'教师数',
         number:'--',
-        link:'/admin/adminUserManagement/teacherManagement'
+        link:'/admin/adminUserManagementTeach'
         },{
         img:systemImages.Ahome.adminHome5,
         course:'学生数',
         number:'--',
-        link:'/admin/adminUserManagement/studentManagement'
+        link:'/admin/adminUserManagementStudent'
         },{
         img:systemImages.Ahome.adminHome6,
         course:'预约人数',
@@ -318,8 +318,8 @@
             '/admin/TeachingResourceManagement/courseManagement':'教学资源管理',
             '/admin/TeachingResourceManagement/experimentManagement':'教学资源管理',
             '/admin/TeachingResourceManagement/resourcesManagement':'教学资源管理',
-            '/admin/adminUserManagement/teacherManagement':'用户管理',
-            '/admin/adminUserManagement/studentManagement':'用户管理',
+            '/admin/adminUserManagementTeach':'用户管理',
+            '/admin/adminUserManagementStudent':'用户管理',
 
             '/admin/systemMaintenance/systemAuthorization':'系统维护',
             '/admin/systemMaintenance/personalization':'系统维护',

@@ -168,8 +168,8 @@ const login = (repeat?: boolean) => {
             router.replace("/teacher/teacherCourse");
             getTeacherInfo();
           }
-          const emenuActiveName=res!.data.role === 5?'教学过程':'首页'
-          store.commit("changemenuActiveName",emenuActiveName)
+          const menuActiveName=res!.data.role === 5?'教学过程':'首页'
+          store.commit("changemenuActiveName",menuActiveName)
           store.commit("saveTheme");
           submitLoading.value = false;
         })

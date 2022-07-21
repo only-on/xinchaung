@@ -275,7 +275,7 @@ let adminUserManagement={
       name: "教师管理",
       parent_id: 131,
       sort: 1,
-      url: "/admin/adminUserManagement/teacherManagement",
+      url: "/admin/adminUserManagementTeach",
     },
     {
       children: [],
@@ -284,7 +284,7 @@ let adminUserManagement={
       name: "学生管理",
       parent_id: 131,
       sort: 1,
-      url: "/admin/adminUserManagement/studentManagement",
+      url: "/admin/adminUserManagementStudent",
     },
   ]
 }

@@ -586,7 +586,7 @@ const studentColumns = [
       });
     }
     function createStu(){
-      router.push({path: '/admin/adminUserManagement/createStudent'});
+      router.push({path: '/admin/adminUserManagementStudent/createStudent'});
     }
     function batchResetPassword(){
       if (!state.selectedRowKeys.length) {

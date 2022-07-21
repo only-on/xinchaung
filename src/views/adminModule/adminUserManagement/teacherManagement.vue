@@ -706,7 +706,7 @@ const teacherColumns = [
       visible.value = true;
     }
     function createteacher(){
-      router.push({path: '/admin/adminUserManagement/createTeacher'});
+      router.push({path: '/admin/adminUserManagementTeach/createTeacher'});
     }
     async function clearSearch() {
       // if(ForumSearch.username || ForumSearch.name || ForumSearch.department){

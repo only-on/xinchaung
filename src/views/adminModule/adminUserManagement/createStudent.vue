@@ -203,7 +203,7 @@ const route = useRoute();
           message.success(editId.value ? "编辑成功" : "创建成功");
           formRef.value.resetFields();
           formState.reset = false;
-          router.push({path: '/admin/adminUserManagement/studentManagement'});
+          router.push({path: '/admin/adminUserManagementStudent'});
         })
         .catch((error:any) => {
           console.log('error', error);
@@ -211,7 +211,7 @@ const route = useRoute();
       })
     }
     function cancelSave(){
-      router.push({path: '/admin/adminUserManagement/studentManagement'});
+      router.go(-1)
     }
 </script>
 <style lang="less" scoped>
