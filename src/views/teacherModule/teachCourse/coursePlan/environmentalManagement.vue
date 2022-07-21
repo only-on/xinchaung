@@ -69,6 +69,7 @@
       </div>
     </div>
     <div class="environmental-table">
+      <a-spin :spinning="loading" size="large" tip="Loading...">  
         <a-config-provider>
               <a-table
               :dataSource="dataList"
@@ -88,9 +89,10 @@
               </template>
             </a-table>
           <template #renderEmpty>
-            <div><Empty :text='ifSearch?"抱歉，未搜到相关数据！":"抱歉，暂无数据！"' type="tableEmpty" /></div>
+            <div v-if="!loading"><Empty :text='ifSearch?"抱歉，未搜到相关数据！":"抱歉，暂无数据！"' type="tableEmpty" /></div>
           </template>
         </a-config-provider>
+      </a-spin>
     </div>
     <div class="page-box" v-if="formData.total > 10">
       <a-pagination
@@ -159,6 +161,7 @@ updata({
   componenttype: undefined,
   showNav: true,
 });
+const loading:any=ref(false)
 const columns: any = [
   {
     title: "学号",
@@ -241,11 +244,13 @@ function getList() {
     // 普通查询
   }
   dataList.value=[]
+  loading.value=true
   http
     .envMonitoringList({
       param:params,
     })
     .then((res: any) => {
+      loading.value=false
       const { data, total } = res.data;
       formData.total = total;
       dataList.value.push(...data);

@@ -70,6 +70,7 @@
           </div>
         </a-col>
       </a-row>
+     <a-spin :spinning="loading" size="large" tip="Loading...">  
       <div class="table-main setscrollbar2">
         <div class="table-content">
           <div class="table-time-col">
@@ -345,6 +346,7 @@
           </a-row>
         </div>
       </div>
+      </a-spin>
     </div>
   </div>
   <setting-time-modal ref="settingTimeModalRef" />
@@ -408,7 +410,7 @@ updata({
   componenttype: undefined,
   showNav: false,
 });
-
+const loading:any=ref(false)
 const dayTimes: Ref<any[]> = ref([]);
 // top数据
 // 初始表头数据
@@ -475,10 +477,10 @@ function getTimeTable(data: string) {
   };
   // datas.tableList = {};
   // console.log("2222");
-
+  loading.value=true
   http.getTimeTable({ param }).then((res: any) => {
     console.log(res);
-
+    loading.value=false
     datas.tableList = res.data;
   });
 }
