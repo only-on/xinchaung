@@ -376,7 +376,7 @@ const selectChaptert=(val:any)=>{
  // 选中章节下实验
 function Overview (a:any,v:any){
   selectExperiment(a,v)
-  if((Number(currentTab)===1 && role==3) || (role===4 && a.power)){     //公开课程点击整条  显示实验指导
+  if((Number(currentTab)===1 && [2,3,5].includes(role)) || (role===4 && a.power)){     //公开课程点击整条  显示实验指导
     ViewExperiment(a,v)
   }
 }
@@ -784,7 +784,7 @@ function StudentChaptersTree(course_student_id:number){
 onMounted(() => {
   console.log(props.courseId)
   // const { course_student_id,from} = route.query;
-  if((props.courseId && (role === 3 || role===5)) || (from && from === 'courseManagement' && role===2)){
+  if(props.courseId && [2,3,5].includes(role)){
     getChaptersTree()
   }
   if(role === 4){

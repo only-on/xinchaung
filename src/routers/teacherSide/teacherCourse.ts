@@ -8,15 +8,6 @@ export default {
   component: Layout,
   name:'teacherCourse',
   meta: {
-    // title: (params?: RouteParams, query?: RouteParams) => {
-    //   const dataDetailMap = {
-    //       '2': '教学资源管理',
-    //       '3': '教学过程',
-    //       '4': '教学过程',
-    //       '5': '教学过程',
-    //   }
-    //   return dataDetailMap[query!.role && query!.role.toString()] || dataDetailMap[3]
-    // },
     title:'教学过程',
     authCode: 'courseList'
   },
@@ -25,11 +16,7 @@ export default {
       path:"",
       name:"",
       component: () => {
-        // if(role===2){
-        //   return import("src/views/adminModule/TeachingResourceManagement/courseManagement/courseManagement.vue")
-        // }else{
-          return import("src/views/teacherModule/teachCourse/courseList/index.vue")
-        // }
+        return import("src/views/teacherModule/teachCourse/courseList/index.vue")
       },
       meta: {
         title: "课程列表",
@@ -43,13 +30,6 @@ export default {
       meta: {
         // title: "创建课程",  // EditId
         title: (params?: RouteParams, query?: RouteParams) => {
-          // const dataDetailMap = {
-          //     '2': '教学资源管理',
-          //     '3': '教学过程',
-          //     '4': '教学过程',
-          //     '5': '教学过程',
-          // }
-          // return dataDetailMap[query!.EditId && query!.EditId.toString()] || dataDetailMap[3]
           return query!.EditId?'复用课程':'创建课程'
         },
         authCode: 'CreateCourse'

@@ -320,10 +320,10 @@ const viewDetail=(val:any)=>{
   router.push({
     path:'/admin/TeachingResourceManagement/courseManagement/courseManagementDetail',
     query:{
-      role:2,
+      // role:2,
       currentTab:1,
       courseId:val.id,
-      from:'courseManagement'
+      // from:'courseManagement'
     }
   })
   // return Math.ceil(val/analysisObj.allCourseCount)
