@@ -123,7 +123,8 @@ router.afterEach(
           }).fullPath,
         };
         // console.log('routeTuple:=',routeTuple)
-        processedPath.push(routeSegment.path);
+        breadcrumbs.push(routeTuple)
+        processedPath.push(routeSegment.path)
       }
     });
     // console.log("breadcrumbs:=", breadcrumbs);
