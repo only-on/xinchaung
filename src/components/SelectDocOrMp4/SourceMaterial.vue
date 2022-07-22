@@ -66,9 +66,9 @@
                 </div>
                 <div class="flexCenter fileRight">
                   <span>{{bytesToSize(i.size)}}</span>
-                  <span class="select"  @click="selectDocOrMp4File(i)">
+                  <a-button class="select" @click="selectDocOrMp4File(i)" type="text" :disabled="docOrMp4Drawer.activeFile.id === i.id">
                     {{ docOrMp4Drawer.activeFile.id === i.id ? "取消" : "选择" }}
-                  </span>
+                  </a-button>
                 </div>
               </div>
             </a-spin>  
@@ -328,9 +328,9 @@ onMounted(()=>{
               padding-left: 2rem;
             }
             .select{
-              width: 60px;
-              text-align: center;
-              cursor: pointer;
+              // width: 60px;
+              // text-align: center;
+              // cursor: pointer;
               color: var(--primary-color);
               // justify-content: center;
             }

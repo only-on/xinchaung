@@ -144,6 +144,14 @@
       isEdit.value = !isEdit.value
       return
     }
+    if (!systemInfo.logo_url) {
+      message.warn('LOGO不能为空');
+      return
+    }
+    if (!systemInfo.theme) {
+      message.warn('请选择主题风格');
+      return
+    }
     formRef.value.validate().then(()=>{
       systemInfo.login = systemInfo.theme
       http.systemPersonalSet({param: systemInfo}).then((res:IBusinessResp) => {
@@ -160,8 +168,10 @@
         isEdit.value = false
         message.success('初始化成功')
       }
-      Object.assign(systemInfo, res.data)
-      setStyle()
+      if (res.data) {
+        Object.assign(systemInfo, res.data)
+        setStyle()
+      }
     })
   }
   function setStyle () {
