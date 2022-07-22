@@ -23,7 +23,7 @@ import { defineComponent, Ref, ref, inject ,watch} from 'vue'
 import { LoadingOutlined } from '@ant-design/icons-vue';
 import { MessageApi } from "ant-design-vue/lib/message";
 import {getThemeData} from 'src/utils/theme'
-const {systemImages} = getThemeData()
+const {systemImages, systemColor} = getThemeData()
 // console.log(systemImages)
 const $message: MessageApi = inject("$message")!;
 
@@ -108,6 +108,8 @@ const handleChange = (info: FileInfo) => {
     });
   }
 };
+const uploadCoverBorder = systemColor.uploadCoverBorder
+const uploadCoverBg = systemColor.uploadCoverBg
 </script>
 
 <style scoped lang="less">
@@ -127,8 +129,8 @@ img {
 .upload {
   width: 162px;
   height: 90px;
-  background: #fffdfb;
-  border: 1px dashed #ffdcc1;
+  background: v-bind(uploadCoverBg);
+  border: 1px dashed v-bind(uploadCoverBorder);
   border-radius: 17px;
   img {
     width: 100%;
@@ -139,6 +141,7 @@ img {
     cursor: pointer;
     img {
       width: 70px;
+      margin-right: 0;
     }
   }
 }

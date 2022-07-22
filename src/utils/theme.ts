@@ -5,6 +5,7 @@ import loginC from 'src/assets/images/admin/systemmain/loginC.png'
 // 上传文件的封面
 import uploadCoverImg from 'src/assets/images/teacherMaterialResource/cover.png'
 import uploadCoverImg2 from 'src/assets/images/teacherMaterialResource/cover2.png'
+import uploadCoverImg3 from 'src/assets/images/teacherMaterialResource/cover3.png'
 // 实验详情顶部图片
 import experimentA from 'src/assets/images/themeA/teacherExperiment/base_info_bg.png'
 import experimentB from 'src/assets/images/themeB/teacherExperiment/base_info_bg.jpg'
@@ -74,7 +75,9 @@ const themeColorList:any = [
     primary3: '#FFE1B4',
     primary4: '#FFCB8E',
     primary5: '#fe8020 ', // 鼠标移入颜色
-    primary7: '#D78D0E' //主色点击颜色
+    primary7: '#D78D0E', //主色点击颜色
+    secondary24: 'rgba(28, 178, 179, 0.24)',
+    primary24: 'rgba(255, 149, 68,0.24)'
   },
   {
     value: 'B',
@@ -87,7 +90,9 @@ const themeColorList:any = [
     primary2: '#E5F8FA', // 浅主题颜色
     primary3: '#CDEDF0',
     primary5: '#3BDEDC', // 鼠标移入颜色
-    primary7: '#0392AC' //主色点击颜色
+    primary7: '#0392AC', //主色点击颜色
+    secondary24: 'rgba(250, 173, 20, 0.24)',
+    primary24: 'rgba(5, 187, 201,0.24)'
   },
   {
     value: 'C',
@@ -100,7 +105,9 @@ const themeColorList:any = [
     primary2: '#FFF7E7', // 浅主题颜色
     primary3: '#F8EDDC',
     primary5: '#FAAD14', // 主色鼠标移入颜色
-    primary7: '#D78D0E' //主色点击颜色
+    primary7: '#D78D0E', //主色点击颜色
+    secondary24: 'rgba(255, 138, 23,0.24)',
+    primary24: 'rgba(255, 184, 73,0.24)'
   }
 ]
  const loginStyleList = [
@@ -164,13 +171,27 @@ const AHomeEchartsThemeColor = {
     Acolor4: '#EE7258',
   }
 }
+const otherThemeColor = {
+  A: {
+    uploadCoverBorder: '#ffdcc1', // 上传封面的边框颜色
+    uploadCoverBg: '#fffdfb', // 上传封面的背景颜色
+  },
+  B: {
+    uploadCoverBorder: '#94E4EA',
+    uploadCoverBg: '#F7FEFF'
+  },
+  C: {
+    uploadCoverBorder: '#FCEBBE',
+    uploadCoverBg: '#FFFDFB'
+  }
+}
 function getTheme () {
   // A默认的橘黄系统色    B 暗色蓝绿   C 白色+浅色黄色
   let systemInfo = sStorage.get('systemInfo')
   let theme = systemInfo && systemInfo.theme ? systemInfo.theme : 'A'
   let themeData = themeColorList.filter((item:any) => item.value === theme)[0]
   Object.assign(themeData,THomeEchartsThemeColor[theme])
-  Object.assign(themeData, AHomeEchartsThemeColor[theme])
+  Object.assign(themeData, AHomeEchartsThemeColor[theme], otherThemeColor[theme])
   return {
     systemInfo,
     themeData,
@@ -197,6 +218,8 @@ function setTheme () {
       bodyEle.style.setProperty('--primary-5', themeData.primary5)
       bodyEle.style.setProperty('--primary-7', themeData.primary7)
       bodyEle.style.setProperty('--primary-atn-hover', themeData.primary5)
+      bodyEle.style.setProperty('--brightBtn-24', themeData.secondary24)
+      bodyEle.style.setProperty('--primary-24', themeData.primary24)
     }
     if (key === 'logo_url') {
       let favEle:any = document.getElementById('custom_favicon');
@@ -272,7 +295,7 @@ let imageData = {
     },
     qualityPrev: prevImg1,
     qualityNext: nextImg1,
-    uploadCoverImg:uploadCoverImg, // 上传文件的封面
+    uploadCoverImg:uploadCoverImg3, // 上传文件的封面
   }
 }
 export function getThemeData () {

@@ -1,7 +1,7 @@
 <template>
   <div class="nav__menu">
     <a-dropdown v-for="v in menus" :key="v" trigger="hover" 
-    :overlayClassName="`${v.children && v.children.length?'meanBarOverlay borC':'meanBarOverlay'}`"
+    :overlayClassName="`${v.children && v.children.length? dropClass:'meanBarOverlay'}`"
      @visibleChange="visibleChange">
       <div
         class="menu__top-item ant-dropdown-trigger flexCenter"
@@ -49,6 +49,7 @@ export default defineComponent({
     const route = useRoute();
     const { lStorage } = extStorage;
     const store = useStore();
+    const dropClass = ref(store.state.systemInfo.theme ? `meanBarOverlay borC theme${store.state.systemInfo.theme}` : 'meanBarOverlay borC')
     // var menus:MenuItem[]=reactive([])
     var menus: any[] = menusFn();
     // console.log(menus);
@@ -73,6 +74,9 @@ export default defineComponent({
       lStorage.set("menuActiveName", activeName.value);
       store.commit("changemenuActiveName",activeName.value)
     }
+    watch(()=>store.state.systemInfo.theme, newVal => {
+      dropClass.value = `meanBarOverlay borC theme${newVal}`
+    })
     // store
     watch(()=>store.state.menuActiveName, newVal => {
       // console.log(newVal);
@@ -94,7 +98,7 @@ export default defineComponent({
     onMounted(() => {
       
     });
-    return { menus, select, activeName ,visibleChange};
+    return { menus, select, activeName ,visibleChange, dropClass};
   },
   components: {},
 });

@@ -119,8 +119,8 @@
           </td>
         </tr>
         <tr v-if="item.type === 'w8'" class="editable-markdown">
-          <td class="editable-markdown" colspan="6">
-            <div>
+          <td colspan="6">
+            <div class="title">
               <markdown v-model="item.fields[1].value" :preview="true" />
             </div>
           </td>
@@ -185,6 +185,7 @@ export default defineComponent({
       .ant-input-disabled {
         color: var(--black-85);
         cursor: auto;
+        border-radius: 0 !important;
       }
       .title {
         min-height: 52px;
