@@ -54,9 +54,7 @@
           ></knowledge-modal>
         </a-form-item>
         <a-form-item label="添加标签" name="tags">
-          <div>
-              <LabelList :tag="formState.tags" :recommend="formState.recommend" />
-            </div>
+          <LabelList :tag="formState.tags" :recommend="formState.recommend" />
         </a-form-item>
       </div>
       <div class="right">

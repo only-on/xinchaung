@@ -80,9 +80,7 @@
           </div>
           <div class="row"> 
             <a-form-item label="添加标签" name="tags">
-              <div>
-                <LabelList :tag="imageData.tags" :recommend="recommend" @selectTag="selectTag"  />
-              </div>
+              <LabelList :tag="imageData.tags" :recommend="recommend" @selectTag="selectTag"  />
             </a-form-item>
           </div>
           <a-form-item label="描述">

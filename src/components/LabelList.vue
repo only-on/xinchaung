@@ -1,45 +1,46 @@
 <template>
-  <div class="label-list">
-    <span
-      v-for="(item, index) in props.tag"
-      :key="index"
-      class="active"
-    >
-      {{ item }}
-      <i
-        class="remove iconfont icon-guanbi"
-        @click="removeLabel(item)"
-      ></i>
-    </span>
-    <span class="edit-box" v-if="props.tag && props.tag.length < 3">
-      <span @click="clickCustomLabel" v-show="!openCustom">
-        <span class="iconfont iconbiaoqian"></span>
-        + 自定义标签
+  <div>
+    <div class="label-list">
+      <span
+        v-for="(item, index) in props.tag"
+        :key="index"
+        class="active"
+      >
+        {{ item }}
+        <i
+          class="remove iconfont icon-guanbi"
+          @click="removeLabel(item)"
+        ></i>
       </span>
-      <a-input
-        ref="refCustomLabel"
-        @pressEnter="customFinish"
-        @blur="customFinish"
-        @change="changeLabel"
-        v-show="openCustom"
-        v-model:value="state.customLabelV"
-      />
-    </span>
-  </div>
-  <div class="recommend" v-if="showTag && props.recommend.length">
-    <div class="tit">或从推荐中选择</div>
-    <div class="tagBox">
-      <div v-for="v in props.recommend" :key="v">
-        <span
-          @click="addTag(v.value)"
-          :class="props.tag.includes(v.value) ? 'act' : ''"
-          >{{v.value}}</span
-        >
+      <span class="edit-box" v-if="props.tag && props.tag.length < 3">
+        <span @click="clickCustomLabel" v-show="!openCustom">
+          <span class="iconfont iconbiaoqian"></span>
+          + 自定义标签
+        </span>
+        <a-input
+          ref="refCustomLabel"
+          @pressEnter="customFinish"
+          @blur="customFinish"
+          @change="changeLabel"
+          v-show="openCustom"
+          v-model:value="state.customLabelV"
+        />
+      </span>
+    </div>
+    <div class="recommend" v-if="showTag && props.recommend.length">
+      <div class="tit">或从推荐中选择</div>
+      <div class="tagBox">
+        <div v-for="v in props.recommend" :key="v">
+          <span
+            @click="addTag(v.value)"
+            :class="props.tag.includes(v.value) ? 'act' : ''"
+            >{{v.value}}</span
+          >
+        </div>
       </div>
     </div>
   </div>
 </template>
-
 <script lang="ts" setup>
 import {
   Ref,
@@ -63,6 +64,7 @@ const state: any = reactive({
 });
 const emit=defineEmits<{
   (e:'selectTag',val:any,arr:any):void,
+  (e:'finishTag',arr:any):void,
 }>()
 var showTag: Ref<boolean> = ref(false);
 var openCustom: Ref<boolean> = ref(false);
@@ -93,6 +95,8 @@ function customFinish() {
     state.customLabelV = "";
   }
   openCustom.value = false;
+  console.log(props.tag);
+  emit('finishTag',props.tag || [])
 }
 function addTag(val: any) {
   if (props.tag.length < 3 && props.tag.includes(val) === false) {

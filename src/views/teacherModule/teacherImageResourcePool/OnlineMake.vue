@@ -94,9 +94,7 @@
                 <a-input v-model:value="createFormData.name" placeholder="请在这里输入镜像标题" />
               </a-form-item>
               <a-form-item label="添加标签" name="tags">
-                <div>
-                  <LabelList :tag="createFormData.tags" :recommend="recommend" @selectTag="selectTag" />
-                </div>
+                <LabelList :tag="createFormData.tags" :recommend="recommend" @selectTag="selectTag" />
               </a-form-item>
               <a-form-item  label="镜像描述" name="description">
                 <a-textarea

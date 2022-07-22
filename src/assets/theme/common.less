@@ -249,12 +249,22 @@ a {
       font-size: 14px;
     }
   }
-  .ant-spin-nested-loading,.ant-spin-spinning{ 
+  .ant-spin-nested-loading > div > .ant-spin{
     min-height: 400px;
-    width: 100%;
   }
-  .ant-spin-container{
-    height: 100%;
+  .ant-popover{
+    box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16); 
+    .ant-popover-inner{
+      border-radius: 10px;
+    }
+    .ant-popover-inner-content>p:hover{
+      cursor: pointer;
+      color: var(--primary-color);
+    }
+    .ant-popover-inner-content>div:hover{
+      cursor: pointer;
+      color: var(--primary-color);
+    }
   }
 // }
 .meanBarOverlay{
@@ -553,7 +563,4 @@ h3 {
   min-height:700px;
   max-height: 850px;
   overflow-y: auto;
-}
-.ant-popover{
-  box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16); 
 }

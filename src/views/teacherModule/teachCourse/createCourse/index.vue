@@ -39,9 +39,7 @@
                 </a-select>
               </a-form-item>
               <a-form-item label="添加标签" name="tags">
-                <div>
-                    <LabelList :tag="formState.tags" />
-                  </div>
+                <LabelList :tag="formState.tags" />
               </a-form-item>
               <a-form-item label="封面图" class="cover">
                 <uploadCover :coverUrl="formState" :isUpload="true" @uploadCoverHandle="uploadCoverHandle" />

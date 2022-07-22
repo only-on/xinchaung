@@ -1,5 +1,5 @@
 <template>
-  <a-form :model="formState"  ref="formRef" layout="vertical" :label-col="{ span: 10 }" :wrapperCol="{ span: 20 }" :rules="rules">
+  <a-form :model="formState" :scrollToFirstError="true"  ref="formRef" layout="vertical" :label-col="{ span: 10 }" :wrapperCol="{ span: 20 }" :rules="rules">
     <div class="base-info">
     <h3 class="title">实验基本信息</h3>
     <div class="create-middle">
@@ -50,9 +50,7 @@
           ></knowledge-modal>
         </a-form-item>
         <a-form-item label="添加标签" name="tags">
-          <div>
-              <LabelList :tag="formState.tags" :recommend="formState.recommend" />
-            </div>
+            <LabelList :tag="formState.tags" :recommend="formState.recommend" @finishTag="tagsValidator" />
         </a-form-item>
       </div>
       <div class="right">
@@ -505,9 +503,7 @@ const rules = {
   // ],
   // formState.imageConfigs
   tags:[
-    // { required: true, message: "" },
-    // { validator: tagsValidator, trigger: "blur" },
-    {required: true,validator: tagsValidator,trigger: "change"},
+    {required: true,validator: tagsValidator,trigger: "change", message: "请填写标签"},
   ],
   direction:[
     { required: true, message: "请选择所属方向" ,trigger: "change" },
@@ -540,15 +536,19 @@ async function selectedKnowledgeValidator(rule: any, value:any) {
     return Promise.resolve()
   }
 }
-async function tagsValidator(rule: any, value:any) {
+async function tagsValidator(val:any) {
   console.log(formState)
-  console.log(value);
-  if (!value.length) {
-    return Promise.reject("请填写标签");
+  if (!formState.tags.length) {
+    // return Promise.reject("请填写标签");
   }else{
+    formRef.value.clearValidate('tags')
     return Promise.resolve()
   }
 }
+// const finishTag=async (val:any)=>{
+//   console.log(val);
+//   tagsValidator()
+// }
 const closeDrawer = () => {
   formState.drawerVisible = false;
 };
@@ -580,6 +580,7 @@ function create() {
   // console.log(TaskLIst)
   // return
   formRef.value.validate().then(async () => {
+    const val= await tagsValidator(formState.tags)
     currentUuid ? await removeTopo() : ''
     const docMp4File:any=upDoc.docFileList.length?upDoc.docFileList[0]:docOrMp4Drawer.activeFile;  // tusd上传的 或者选择的素材资源的
     const ipynbFileObj:any=createTypeNumber === 2 ? formState.ipynbList[0]:{}               // 是视频和文档公用一个 文件对象

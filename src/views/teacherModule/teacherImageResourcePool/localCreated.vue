@@ -10,9 +10,7 @@
             <a-input class="form-input" v-model:value="image.name"></a-input>
           </a-form-item>
           <a-form-item label="添加标签" name="tag">
-            <div>
-              <LabelList :tag="image.tag" :recommend="recommend" @selectTag="selectTag" />
-            </div>
+            <LabelList :tag="image.tag" :recommend="recommend" @selectTag="selectTag" />
           </a-form-item>
           <!-- <a-form-item label="系统类型" name="ostype">
             <a-select
@@ -55,9 +53,7 @@
             </a-select>
           </a-form-item>
           <!-- <a-form-item label="添加标签" name="tag">
-            <div>
-              <LabelList :tag="image.tag" :recommend="recommend" />
-            </div>
+            <LabelList :tag="image.tag" :recommend="recommend" />
           </a-form-item> -->
         </div>
       </div>

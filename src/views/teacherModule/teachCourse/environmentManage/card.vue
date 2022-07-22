@@ -61,13 +61,11 @@
       :class="currentStatus ? '' : 'isOpen'"
       >关机</span
     >
-    <a-popover placement="bottom">
+    <a-popover title="" trigger="hover" placement="bottom">
       <template #content>
-        <div class="btn vm-revert pointer" :class="currentStatus ? '' : 'isOpen'" @click="btnClick(2)" style="marginBottom:10px;padding: 0 10px;">重启</div>
-        <div  class="btn vm-reset pointer" @click="btnClick(3)" style="padding: 0 10px;">重置</div>
+        <div class="btn vm-revert" :class="currentStatus ? '' : 'isOpen'" @click="btnClick(2)" style="marginBottom:10px;padding: 0 10px;">重启</div>
+        <div  class="btn vm-reset" @click="btnClick(3)" style="padding: 0 10px;">重置</div>
       </template>
-      <!-- <a-button type="primary">Hover me</a-button> style="border-right: 1px solid var(--brightBtn-25);color: #007879;"-->
-    
       <span class="iconfont icon-gengduotianchong btn vm-revert pointer"></span>
     </a-popover>
     <!-- <span

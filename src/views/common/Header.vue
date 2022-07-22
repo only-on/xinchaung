@@ -551,10 +551,6 @@ export default defineComponent({
     margin-bottom: 0;
     padding: 0.5em;
   }
-  .operation:hover {
-    cursor: pointer;
-    color: var(--primary-color);
-  }
 }
 .help-question-warp {
   width: 255px;
