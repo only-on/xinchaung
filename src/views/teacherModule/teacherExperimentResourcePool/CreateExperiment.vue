@@ -503,7 +503,7 @@ const rules = {
   // ],
   // formState.imageConfigs
   tags:[
-    {required: true,validator: tagsValidator,trigger: "change", message: "请填写标签"},
+    {required: true,validator: tagsValidator,trigger: "blur", message: "请填写标签"},
   ],
   direction:[
     { required: true, message: "请选择所属方向" ,trigger: "change" },

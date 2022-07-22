@@ -122,7 +122,7 @@ const rules = {
   ostype: [{ required: true, message: "请选择镜像类型" }],
   tag: [
     // { required: true, message: "请选择镜像标签",trigger: "blur"},
-    {required: true,validator: fileListValidator,trigger: "change", message: "请填写标签"},
+    {required: true,validator: fileListValidator,trigger: "blur", message: "请填写标签"},
   ],
 };
 async function fileListValidator() {
