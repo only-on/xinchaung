@@ -28,11 +28,11 @@ const { lStorage, sStorage } = extStorage;
 const router = useRouter();
 const route = useRoute();
 const store = useStore();
-const loginInfo = ref<any>({
-  src: loginBg[store.state.systemInfo.theme],
-  logo: store.state.systemInfo.logo_url,
-  name: store.state.systemInfo.site_name,
-  class: "login" + store.state.systemInfo.theme,
+const loginInfo = reactive<any>({
+  src: '',
+  logo: '',
+  name: '',
+  class: '',
 });
 interface FormState {
   username: string;
@@ -119,17 +119,18 @@ http.onlineUserInfo({}).then((res: IBusinessResp | null) => {
   if (res!.data.site_setting) {
     store.commit("setSystemInfo", res!.data.site_setting);
   }
-  const site_setting = res!.data.site_setting;
-  // site_setting.theme?loginInfo.src=loginBg[site_setting.theme]:''
 });
 watch(
   () => {
     return store.state.systemInfo;
   },
-  (val: any) => {
-    console.log(val);
+  (newVal: any) => {
+    loginInfo.src = loginBg[newVal.theme]
+    loginInfo.logo = newVal.logo_url
+    loginInfo.name = newVal.site_name
+    loginInfo.class = 'login' + newVal.theme
   },
-  { deep: true }
+  { deep: true, immediate:true }
 );
 const login = (repeat?: boolean) => {
   refForm.value

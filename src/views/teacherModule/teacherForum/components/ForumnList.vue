@@ -278,7 +278,7 @@ export default defineComponent({
   }
   .btns {
     padding: 0 22px;
-    background: var(--primary-3);
+    background: var(--primary-2);
     color: var(--primary-color);
     height:28px;
     display: inline-block;

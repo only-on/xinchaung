@@ -267,7 +267,7 @@ const edit=()=>{
           }
           .tags{
             padding: 0 1rem;
-            background: rgba(255,149,68,0.24);
+            background: var(--primary-24);
             border-radius: 10px;
             span{
               color: var(--primary-color);
