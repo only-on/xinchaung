@@ -7,7 +7,7 @@ export default{
     // 获取个性化设置
     systemPersonalShow: {url:`/api/system/setting/show`,method:'get'},
     //点击设置初始化
-    setInit:{url:`/api/setting/initset`,method:'post'},
+    setInit:{url:`/api/system/setting/initset`,method:'post'},
     //磁盘管理
     // 1.操作记录
     operateRecords:{url:'/api/system/setting/log',method:'get'},
