@@ -119,6 +119,9 @@ watch(()=>props.envList, newVal => {
   if (!newVal.length) return
   selectList.length = 0
   selectList.push(...JSON.parse(JSON.stringify(newVal)))
+  selectList.forEach((item:any) => {
+    item.flavor.gpu = item.is_use_gpu
+  })
   // 单环镜
   if (props.type) {
     defaultConfig.flavor = selectList[0].flavor
