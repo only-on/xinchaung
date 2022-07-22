@@ -7,136 +7,74 @@
       </div>
     </div>   
     <a-spin :spinning="chartLoading" size="large" tip="Loading...">
-      
-      <!-- <draggable v-if="false" v-model="ChaptersTreeList" class="tableDom chapterList 2" :sort="true" tag="div" ignore="a, img, input, textarea"    item-key="idx">
-        <template #item="{ element, index }">
-          <div>
-            <div class="title flexCenter" @click.stop="selectChaptert(element),element.openItem=!element.openItem">
-              <div class="flexCenter titleBox" :class="props.Editable === 'readOnly'?'noEdit':''">
-                <div class="titleItem titleItem1">{{`第${index+1}章`}}</div>
-                <div class="titleItem titleItem2 single_ellipsis">{{element.name}}</div>
-              </div>
-              <div class="titleBoxRight flexCenter">
-                <div class="operation flexCenter" v-if="props.Editable === 'canEdit'">
-                  <span  class="iconfont icon-chuangjian" @click.stop="establishChapter(element)"></span>
-                  <span class="iconfont icon-bianji1"  @click.stop="editChapter(element)"></span>
-                  <span class="iconfont icon-shanchu"  @click.stop="deleteChapter(element)"></span>
-                </div>
-                <span class="collect">{{element.openItem?'收起':'展开'}}</span>
-              </div>
+      <div>
+        <div class="chapterList" v-for="(v,k) in ChaptersTreeList" :key="v.id">
+          <div class="title flexCenter" @click.stop="selectChaptert(v),v.openItem=!v.openItem">
+            <div class="flexCenter titleBox" :class="props.Editable === 'readOnly'?'noEdit':''">
+              <div class="titleItem titleItem1">{{`第${k+1}章`}}</div>
+              <div class="titleItem titleItem2 single_ellipsis" :title="v.name">{{v.name}}</div>
             </div>
-            <div class="listBox" v-if="element.openItem">
-              <div class="list" v-for="(a,i) in element.list" :key="a">
-                <div class="itemTit flexCenter" @click.stop="selectExperiment(a,element)" :class="state.activeExperimentObj.id === a.id?'ActiveItem':''">
-                  <div class="TitLeft flexCenter" :class="getTitLeftClass()">
-                    <div class="experimentType">
-                      <span v-if="a.TeachingAids">教辅</span>
-                      <span v-else :style="{ color: a.type_obj.color, background: a.type_obj.backgroundColor,}">{{a.type_obj.name}}</span>
-                    </div>
-                    <div class="experimentTitle single_ellipsis" :class="a.TeachingAids?'TeachingAids':''">
-                      <span v-if="a.TeachingAids">{{`【${a.TeachingAidsName}】`}}&nbsp;</span>
-                      <span v-if="!a.TeachingAids">{{`${index+1}-${i+1-element.orderNuumber}`}}&nbsp;&nbsp;</span>
-                      <span class="ItemExperimentTitle">{{a.name}}</span>
-                    </div>
+            <div class="titleBoxRight flexCenter">
+              <div class="operation flexCenter" v-if="props.Editable === 'canEdit'">
+                <span  class="iconfont icon-chuangjian" @click.stop="establishChapter(v)"></span>
+                <span class="iconfont icon-bianji1"  @click.stop="editChapter(v)"></span>
+                <span class="iconfont icon-shanchu"  @click.stop="deleteChapter(v)"></span>
+              </div>
+              <span class="collect">{{v.openItem?'收起':'展开'}}</span>
+            </div>
+          </div>
+          <div class="listBox" v-if="v.openItem">
+            <div class="list" v-for="(a,i) in v.list" :key="a">
+            <!-- @click.stop="ViewExperiment(a,v)" -->
+              <div class="itemTit flexCenter" @click.stop="Overview(a,v)" :class="state.activeExperimentObj.id === a.id?'ActiveItem':''">
+                <div class="TitLeft flexCenter" :class="getTitLeftClass()">
+                  <div class="experimentType">
+                    <span v-if="a.TeachingAids">教辅</span>
+                    <span v-else :style="{ color: a.type_obj.color, background: a.type_obj.backgroundColor,}">{{a.type_obj.name}}</span>
                   </div>
-                  <div class="TitRight"> 
-                    <div v-if="['canStudy','noStudy'].includes(props.Editable) || role ===2">
-                      <span v-if="!a.TeachingAids && ['canStudy'].includes(props.Editable) && role !==2">
-                        <a-button  v-if="a.studys&&a.studys.length&&Number(a.studys[0].status)>=2" type="primary" class="brightBtn" size="small" :disabled="true">学习结束</a-button>
-                        <a-button  v-else-if="a.task_type===3||a.task_type===6||a.task_type===7" type="primary" class="brightBtn" size="small" @click="openVm(a, 'start')">开始学习</a-button>
-                        <a-button  v-else-if="a.studys&&a.studys.length&&Number(a.studys[0].status)===1&&a.studys[0].topoinst_id" type="primary" class="brightBtn" size="small" @click="openVm(a, 'continue')">进入</a-button>
-                        <a-button v-else type="primary" class="brightBtn" size="small" :loading="a.startup===2&&connectStatus===1 || a.startup===3" 
-                        @click.stop="prepare(a, i)">{{a.startup===1 || !connectStatus?'开始学习':(a.startup===2&&connectStatus===1&&(currentClickIndex===i)?'准备中...':'进入')}}</a-button>
-                      </span>
-                      <span class="view" @click.stop="ViewExperiment(a,element)" v-if="a.power">
-                        {{`${a.openGuidance?'收起':'查看'}${a.TeachingAids?'文档':'指导'}`}}
-                      </span>
-                    </div>
-                    <div class="operation flexCenter" v-if="props.Editable === 'canEdit'">
-                      <span class="iconfont icon-bianji1" @click.stop="editExperiment(a)" v-if="!a.TeachingAids"></span>
-                      <span class="iconfont icon-shanchu" @click.stop="deleteExperiment(element,a)"></span>
-                    </div>
+                  <div class="experimentTitle single_ellipsis" :title="a.name" :class="a.TeachingAids?'TeachingAids':''">
+                    <span v-if="a.TeachingAids">{{`【${a.TeachingAidsName}】`}}&nbsp;</span>
+                    <span v-if="a.is_high" class="iconfont icon-gaopei gaopeiColor"></span>
+                    <span v-if="!a.TeachingAids">{{`${k+1}-${i+1-v.orderNuumber}`}}&nbsp;&nbsp;</span>
+                    <span class="ItemExperimentTitle">{{a.name}}</span>
                   </div>
                 </div>
-                <div class="experimentGuide" v-if="a.openGuidance">
-                  <a-spin  :spinning="a.experimentGuideLoading" size="large" tip="Loading..." class="experimentGuideContnet">
-                    <template v-if="!a.experimentGuideLoading">
-                      <ExperimentalGuidance :activeExperimentObj="a.activeExperimentObj" />
-                    </template>
-                  </a-spin>
+                <div class="TitRight"> 
+                  <!-- 管理端是直接进入详情查看了，没有传参数通过 role判断 -->
+                  <div v-if="['canStudy','noStudy'].includes(props.Editable) || role ===2">
+                    <!-- status 1 开始学习 topoinst_id有值 进入 status 2 学习结束 -->
+                    <span v-if="!a.TeachingAids && ['canStudy'].includes(props.Editable) && role !==2">
+                      <!-- <a-button type="primary" class="brightBtn" size="small" :loading="a.startup===2&&connectStatus===1 || a.startup===3" 
+                      @click.stop="prepare(a, i)">{{a.startup===1 || !connectStatus?'开始学习':(a.startup===2&&connectStatus===1&&(currentClickIndex===i)?'准备中...':'进入')}}</a-button> -->
+                      <a-button v-if="(!a.studys||!a.studys.length)&&role===4 || (role===3||role===5)&&!a.topoinst_id" type="primary" class="brightBtn" size="small" @click.stop="studyHandle(a, 'start')" :loading="a.startup===2 || a.startup===3">{{a.startup===2?'准备中...':'开始学习'}}</a-button>
+                      <a-button v-else-if="a.studys&&a.studys[0].status>=2" type="primary" class="brightBtn" size="small" :disabled="true">学习结束</a-button>
+                      <a-button v-else-if="a.studys&&Number(a.studys[0].status)===1&&a.studys[0].topoinst_id || (role===3||role===5)&&a.topoinst_id" type="primary" class="brightBtn" size="small" :loading="a.startup===2" @click.stop="openVm(a, 'continue')">进入</a-button>
+                      <a-button v-else type="primary" class="brightBtn" size="small"  @click.stop="studyHandle(a, 'continue')" :loading="a.startup===2 ||a.startup===3">{{a.startup===2?'准备中...':'继续学习'}}</a-button>
+                    </span>
+                    <!-- <a-button  v-if="!a.TeachingAids" type="primary" class="brightBtn" size="small" @click="rebuild(a)">重修</a-button> -->
+                    <!-- 不以学生端还是教师端区分      “查看指导”用在实验上  “查看文档”用在教辅上 -->
+                    <span class="view" @click.stop="ViewExperiment(a,v)" v-if="a.power">
+                      {{`${a.openGuidance?'收起':'查看'}${a.TeachingAids?'文档':'指导'}`}}
+                    </span>
+                  </div>
+                  <div class="operation flexCenter" v-if="props.Editable === 'canEdit'">
+                    <span class="iconfont icon-bianji1" @click.stop="editExperiment(a)" v-if="!a.TeachingAids"></span>
+                    <span class="iconfont icon-shanchu" @click.stop="deleteExperiment(v,a)"></span>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </template>
-      </draggable> -->
-
-      <div class="chapterList" v-for="(v,k) in ChaptersTreeList" :key="v.id">
-        <div class="title flexCenter" @click.stop="selectChaptert(v),v.openItem=!v.openItem">
-          <div class="flexCenter titleBox" :class="props.Editable === 'readOnly'?'noEdit':''">
-            <div class="titleItem titleItem1">{{`第${k+1}章`}}</div>
-            <div class="titleItem titleItem2 single_ellipsis" :title="v.name">{{v.name}}</div>
-          </div>
-          <div class="titleBoxRight flexCenter">
-            <div class="operation flexCenter" v-if="props.Editable === 'canEdit'">
-              <span  class="iconfont icon-chuangjian" @click.stop="establishChapter(v)"></span>
-              <span class="iconfont icon-bianji1"  @click.stop="editChapter(v)"></span>
-              <span class="iconfont icon-shanchu"  @click.stop="deleteChapter(v)"></span>
-            </div>
-            <span class="collect">{{v.openItem?'收起':'展开'}}</span>
-          </div>
-        </div>
-        <div class="listBox" v-if="v.openItem">
-          <div class="list" v-for="(a,i) in v.list" :key="a">
-          <!-- @click.stop="ViewExperiment(a,v)" -->
-            <div class="itemTit flexCenter" @click.stop="Overview(a,v)" :class="state.activeExperimentObj.id === a.id?'ActiveItem':''">
-              <div class="TitLeft flexCenter" :class="getTitLeftClass()">
-                <div class="experimentType">
-                  <span v-if="a.TeachingAids">教辅</span>
-                  <span v-else :style="{ color: a.type_obj.color, background: a.type_obj.backgroundColor,}">{{a.type_obj.name}}</span>
-                </div>
-                <div class="experimentTitle single_ellipsis" :title="a.name" :class="a.TeachingAids?'TeachingAids':''">
-                  <span v-if="a.TeachingAids">{{`【${a.TeachingAidsName}】`}}&nbsp;</span>
-                  <span v-if="a.is_high" class="iconfont icon-gaopei gaopeiColor"></span>
-                  <span v-if="!a.TeachingAids">{{`${k+1}-${i+1-v.orderNuumber}`}}&nbsp;&nbsp;</span>
-                  <span class="ItemExperimentTitle">{{a.name}}</span>
-                </div>
+              <div class="experimentGuide" v-if="a.openGuidance">
+                <a-spin  :spinning="a.experimentGuideLoading" size="large" tip="Loading..." class="experimentGuideContnet">
+                  <template v-if="!a.experimentGuideLoading">
+                    <ExperimentalGuidance :activeExperimentObj="a.activeExperimentObj" />
+                  </template>
+                </a-spin>
               </div>
-              <div class="TitRight"> 
-                <!-- 管理端是直接进入详情查看了，没有传参数通过 role判断 -->
-                <div v-if="['canStudy','noStudy'].includes(props.Editable) || role ===2">
-                  <!-- status 1 开始学习 topoinst_id有值 进入 status 2 学习结束 -->
-                  <span v-if="!a.TeachingAids && ['canStudy'].includes(props.Editable) && role !==2">
-                    <!-- <a-button type="primary" class="brightBtn" size="small" :loading="a.startup===2&&connectStatus===1 || a.startup===3" 
-                    @click.stop="prepare(a, i)">{{a.startup===1 || !connectStatus?'开始学习':(a.startup===2&&connectStatus===1&&(currentClickIndex===i)?'准备中...':'进入')}}</a-button> -->
-                    <a-button v-if="(!a.studys||!a.studys.length)&&role===4 || (role===3||role===5)&&!a.topoinst_id" type="primary" class="brightBtn" size="small" @click.stop="studyHandle(a, 'start')" :loading="a.startup===2 || a.startup===3">{{a.startup===2?'准备中...':'开始学习'}}</a-button>
-                    <a-button v-else-if="a.studys&&a.studys[0].status>=2" type="primary" class="brightBtn" size="small" :disabled="true">学习结束</a-button>
-                    <a-button v-else-if="a.studys&&Number(a.studys[0].status)===1&&a.studys[0].topoinst_id || (role===3||role===5)&&a.topoinst_id" type="primary" class="brightBtn" size="small" :loading="a.startup===2" @click.stop="openVm(a, 'continue')">进入</a-button>
-                    <a-button v-else type="primary" class="brightBtn" size="small"  @click.stop="studyHandle(a, 'continue')" :loading="a.startup===2 ||a.startup===3">{{a.startup===2?'准备中...':'继续学习'}}</a-button>
-                  </span>
-                  <!-- <a-button  v-if="!a.TeachingAids" type="primary" class="brightBtn" size="small" @click="rebuild(a)">重修</a-button> -->
-                  <!-- 不以学生端还是教师端区分      “查看指导”用在实验上  “查看文档”用在教辅上 -->
-                  <span class="view" @click.stop="ViewExperiment(a,v)" v-if="a.power">
-                    {{`${a.openGuidance?'收起':'查看'}${a.TeachingAids?'文档':'指导'}`}}
-                  </span>
-                </div>
-                <div class="operation flexCenter" v-if="props.Editable === 'canEdit'">
-                  <span class="iconfont icon-bianji1" @click.stop="editExperiment(a)" v-if="!a.TeachingAids"></span>
-                  <span class="iconfont icon-shanchu" @click.stop="deleteExperiment(v,a)"></span>
-                </div>
-              </div>
-            </div>
-            <div class="experimentGuide" v-if="a.openGuidance">
-              <a-spin  :spinning="a.experimentGuideLoading" size="large" tip="Loading..." class="experimentGuideContnet">
-                <template v-if="!a.experimentGuideLoading">
-                  <ExperimentalGuidance :activeExperimentObj="a.activeExperimentObj" />
-                </template>
-              </a-spin>
             </div>
           </div>
         </div>
+        <Empty class="chapterEmpty" v-if="!ChaptersTreeList.length && !chartLoading" :text="'暂无章节'"/>
       </div>
-      <Empty class="chapterEmpty" v-if="!ChaptersTreeList.length && !chartLoading" :text="'暂无章节'"/>
     </a-spin>
   </div>
   <!-- 编辑章节的实验名称 -->

@@ -17,6 +17,7 @@ import { defineComponent } from "vue";
 </script>
 <style lang="less" scoped>
 .NotFound{
+  margin-top: 140px;
   flex-direction: column;
   .tips{
     margin-top: 2rem;
@@ -24,5 +25,4 @@ import { defineComponent } from "vue";
     color: var(--black-65);
   }
 }
-  
 </style>
