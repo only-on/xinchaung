@@ -756,6 +756,9 @@
     width:100%;
     height:60%;
     // background-color: aqua;
+    :deep(canvas:hover){
+        cursor:auto;
+    }
 }
 .node{
     display: flex;
@@ -836,6 +839,9 @@
 #node1,#node2,#node3,#node4{
     width: 50%;
     height: 100%;
+    :deep(canvas:hover){
+        cursor:auto;
+    }
 }
 
 .bottomInfo{
