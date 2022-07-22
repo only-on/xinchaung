@@ -579,7 +579,6 @@ let currentUuid = ''
 function create() {
   // console.log(TaskLIst)
   // return
-  // tagsValidator(formState.tags)
   formRef.value.validate().then(async () => {
     currentUuid ? await removeTopo() : ''
     const docMp4File:any=upDoc.docFileList.length?upDoc.docFileList[0]:docOrMp4Drawer.activeFile;  // tusd上传的 或者选择的素材资源的
