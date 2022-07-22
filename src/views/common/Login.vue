@@ -230,8 +230,12 @@ onMounted(() => {
       Button,
       {
         type: "link",
-        style:
-          "padding: 0; height: auto; line-height: normal; border-radius: 4px;",
+        style: {
+          padding: 0,
+          height: "auto",
+          lineHeight: "normal",
+          borderRadius: "4px",
+        },
         onClick: () => {
           message.destroy();
         },
