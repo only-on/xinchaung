@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, toRefs, onMounted,inject,reactive} from "vue";
+import { ref, toRefs, onMounted,inject,reactive,watch} from "vue";
 import StatisticsPie from '../components/StatisticsPie.vue'
 import experManage from './experManage/index.vue'
 import experTemplateManage from './experTemplateManage/index.vue'
@@ -122,16 +122,19 @@ function updateData(val:any){
 const experTypes:any=ref([])
 function experTemplateData(){
   console.log(experParams.search.templateName,'jjj')
+   loading.value=true
   const param:any={
     'search[templateName]':experTemplateParams.search.templateName?experTemplateParams.search.templateName:'',
     page:experTemplateParams.page,
     limit:experTemplateParams.limit
   }
   http.experTemplateList({param:param}).then((res:any)=>{
+     loading.value=false
     daWithdata(res)
   })
 }
 function experData(){
+  loading.value=true
   const param:any={
     'search[contentName]':experParams.search.contentName?experParams.search.contentName:'',
     'search[contentAttribute]':experParams.search.contentAttribute?experParams.search.contentAttribute:'',
@@ -140,6 +143,7 @@ function experData(){
     limit:experParams.limit
   }
   http.experList({param:param}).then((res:any)=>{
+    loading.value=false
     daWithdata(res)
   })
 }
@@ -176,6 +180,8 @@ function callBack(key:any){
     experParams.search.contentAttribute=''
     experParams.search.contentType=''
     experTemplateParams.search.templateName=''
+    tableData.data=[]
+    tableData.total=0
     key==1?experData():experTemplateData()
 }
 onMounted(()=>{
@@ -189,6 +195,7 @@ onMounted(()=>{
   echartsBar('experType',echartsData.experType)
   HotWords('directPoints',doHotData(echartsData.hotLabelList))
   loading.value=true;
+  tableData.data=[]
   http.experList({param:param}).then((res:any)=>{
     loading.value=false;
     echartsData.experType={

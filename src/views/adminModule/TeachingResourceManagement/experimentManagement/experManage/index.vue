@@ -48,7 +48,7 @@
           <a-button type="primary" @click="batchDelete">批量删除</a-button>
         </div>
     </div>
-    <a-spin :spinning="loading" size="large" tip="Loading...">
+      <a-spin :spinning="loading" size="large" tip="Loading...">
       <a-config-provider>
         <a-table
         :columns="columns"
@@ -90,7 +90,7 @@
       </template>
       </a-table>
         <template #renderEmpty>
-            <div><Empty v-if="!loading" :height='80' :text='ifSearch?"抱歉，未搜到相关数据！":"抱歉，暂无数据！"' type="tableEmpty" /></div>
+            <div v-if="listdata?.length==0"><Empty :height='80' :text='ifSearch?"抱歉，未搜到相关数据！":"抱歉，暂无数据！"' type="tableEmpty" /></div>
         </template>
       </a-config-provider>
     </a-spin>
