@@ -539,7 +539,7 @@ async function selectedKnowledgeValidator(rule: any, value:any) {
 async function tagsValidator(val:any) {
   console.log(formState)
   if (!formState.tags.length) {
-    // return Promise.reject("请填写标签");
+    return Promise.reject("请填写标签");
   }else{
     formRef.value.clearValidate('tags')
     return Promise.resolve()
@@ -579,8 +579,8 @@ let currentUuid = ''
 function create() {
   // console.log(TaskLIst)
   // return
+  // tagsValidator(formState.tags)
   formRef.value.validate().then(async () => {
-    const val= await tagsValidator(formState.tags)
     currentUuid ? await removeTopo() : ''
     const docMp4File:any=upDoc.docFileList.length?upDoc.docFileList[0]:docOrMp4Drawer.activeFile;  // tusd上传的 或者选择的素材资源的
     const ipynbFileObj:any=createTypeNumber === 2 ? formState.ipynbList[0]:{}               // 是视频和文档公用一个 文件对象
