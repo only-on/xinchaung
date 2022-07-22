@@ -33,7 +33,8 @@ const clearStore = (keys:any) =>
      connectStatus: 0,   // 0失败 1 连接中 2 成功
      longWs: null,
      systemInfo: sStorage.get('systemInfo') ? sStorage.get('systemInfo') : defaultTheme,
-     menuActiveName:lStorage.get("menuActiveName") || '首页'
+     menuActiveName:lStorage.get("menuActiveName") || '首页',
+     kickedOut: false
   },
   getters: {
     isLogged() {
@@ -81,10 +82,16 @@ const clearStore = (keys:any) =>
       sStorage.set('systemInfo', val)
       state.systemInfo = val
       setTheme()
+    },
+    kickOut(state, val) {
+      state.kickedOut = val
+    },
+    kickOutReset(state) {
+      state.kickedOut = false
     }
   },
   actions: {
-    
+
   },
   modules:{
     CommonState

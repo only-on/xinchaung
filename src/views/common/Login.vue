@@ -1,7 +1,10 @@
 <script lang="ts" setup>
-import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
-import { Modal, message } from "ant-design-vue";
-import { reactive, ref, watch, createVNode } from "vue";
+import {
+  ExclamationCircleOutlined,
+  CloseOutlined,
+} from "@ant-design/icons-vue";
+import { Modal, message, Button } from "ant-design-vue";
+import { reactive, ref, watch, createVNode, onMounted, h } from "vue";
 import { useRouter, useRoute } from "vue-router";
 // import http from "src/api";
 import extStorage from "src/utils/extStorage";
@@ -158,7 +161,6 @@ const login = (repeat?: boolean) => {
           lStorage.set("username", res!.data.username);
           lStorage.set("portrait", res!.data.portrait);
           if (res!.data.role === 2) {
-            
             router.replace("/admin");
           } else if (res!.data.role === 3) {
             router.replace("/teacher");
@@ -168,8 +170,8 @@ const login = (repeat?: boolean) => {
             router.replace("/teacher/teacherCourse");
             getTeacherInfo();
           }
-          const menuActiveName=res!.data.role === 5?'教学过程':'首页'
-          store.commit("changemenuActiveName",menuActiveName)
+          const menuActiveName = res!.data.role === 5 ? "教学过程" : "首页";
+          store.commit("changemenuActiveName", menuActiveName);
           store.commit("saveTheme");
           submitLoading.value = false;
         })
@@ -220,6 +222,28 @@ const getTeacherInfo = () => {
     lStorage.set("tuid", res!.data?.user.id);
   });
 };
+
+onMounted(() => {
+  const kickOutMsg = createVNode("span", {}, [
+    "当前账号已在其他终端登录，您已被强制下线。",
+    createVNode(
+      Button,
+      {
+        type: "link",
+        style:
+          "padding: 0; height: auto; line-height: normal; border-radius: 4px;",
+        onClick: () => {
+          message.destroy();
+        },
+      },
+      [createVNode(CloseOutlined)]
+    ),
+  ]);
+  if (store.state.kickedOut) {
+    message.warn(kickOutMsg, 0);
+    store.commit("kickOutReset");
+  }
+});
 </script>
 <template>
   <!-- :style="v.url?`background-image: url(${v.url});`:''"  loginInfo.class  -->

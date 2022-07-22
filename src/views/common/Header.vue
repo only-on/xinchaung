@@ -133,6 +133,7 @@ export default defineComponent({
       return env?'/proxyPrefix' + logo_url : logo_url
     })
     const userName = ref<string>(lStorage.get("username"));
+    let kickingOut = false;
 
     function information() {
       router.push("/personalInformation");
@@ -219,6 +220,7 @@ export default defineComponent({
         getHelpFinfo()
         setWs()
       }
+      kickingOut = false;
     });
     const helpInfoList: Ref<any> = ref([])
     const isRead: Ref<boolean> = ref(false)
@@ -285,6 +287,13 @@ export default defineComponent({
                 store.commit('setIsWsConnect', false)
                 store.commit('setConnectStatus', 0)
               }
+            } else if (data.type === 'kick_out') {
+              if (kickingOut) {
+                return;
+              }
+              kickingOut = true;
+              store.commit('kickOut', true);
+              loginOut();
             }
           }
         }
