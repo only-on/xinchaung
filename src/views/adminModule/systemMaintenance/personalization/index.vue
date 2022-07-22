@@ -43,7 +43,7 @@
       </div>
       <div class="bottomBtn">
         <a-button type='primary' @click="handleSave">{{isEdit ? '保存' : '编辑'}}</a-button>
-        <a-button type='primary' class="brightBtn" :disabled="!isEdit" @click="handleInit">设置初始化</a-button>
+        <a-button type='primary' class="brightBtn" :disabled="!isEdit" @click="clickSetInit">设置初始化</a-button>
       </div>
     </div>
 </template>
@@ -159,6 +159,11 @@
         isEdit.value = false
         setStyle()
       })
+    })
+  }
+  function clickSetInit(){
+    http.setInit().then((res:any)=>{
+      handleInit ()
     })
   }
   // 设置初始化
