@@ -93,10 +93,11 @@ function customFinish() {
   if (state.customLabelV.trim()) {
     props.tag.push(state.customLabelV);
     state.customLabelV = "";
+    // console.log(props.tag);
+    emit('finishTag',props.tag)
   }
   openCustom.value = false;
-  console.log(props.tag);
-  emit('finishTag',props.tag || [])
+  
 }
 function addTag(val: any) {
   if (props.tag.length < 3 && props.tag.includes(val) === false) {
