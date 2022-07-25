@@ -50,6 +50,9 @@
             "
           >
           </a-table>
+          <template #renderEmpty>
+            <Empty :type="EmptyType"/>
+          </template>
       </a-config-provider>
     </a-spin>
   </div>
@@ -64,6 +67,7 @@ import {
   Ref,
   inject,
   watch,
+  computed
 } from "vue";
 import request from "src/api/index";
 const http = (request as any).systemMaintenance;
@@ -124,6 +128,16 @@ const state: any = reactive({
   ]
 });
 var loading: Ref<boolean> = ref(false);
+const EmptyType:any=computed(()=>{
+  let str=''
+  if(state.query.user_name === '' && state.query.type === ''){
+    str= 'tableEmpty'
+  }else{
+    str= 'tableSearchEmpty'
+  }
+  console.log(str)
+  return str
+})
 function getSystemList() {
   let search = {
     // ...ForumSearch,

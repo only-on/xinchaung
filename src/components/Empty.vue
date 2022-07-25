@@ -43,7 +43,7 @@ export default defineComponent({
       empty:'暂无数据！',
       searchEmpty:'抱歉，未搜到相关数据！',
       tableEmpty:'抱歉，暂无数据！',
-      tableSearchEmpty:'抱歉。未搜到相关数据！',
+      tableSearchEmpty:'抱歉，未搜到相关数据！',
       drawerEmpty:'抱歉，暂无数据！',
       drawerSearchEmpty:'抱歉，未搜到相关数据！',
       filePreview:'抱歉，该文件暂不支持预览，建议下载查看'
