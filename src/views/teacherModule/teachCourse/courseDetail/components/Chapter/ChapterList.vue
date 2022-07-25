@@ -515,13 +515,16 @@ const getExperimentGuide=(id:number,a:any)=>{
     var {data}=res  
     if(data.task_type === 6){
       // state.activeExperimentObj.Newguidance.file_url=data.content_task_files?data.content_task_files[0].file_url:''
-      data.file_url=data.content_task_files?data.content_task_files[0].file_url:''
+      data.file_url=data.content_task_files?.length?data.content_task_files[0].file_url:''
     }
     state.activeExperimentObj.Newguidance=data
     // if(role===3 && Number(currentTab) === 1){
     //   a.activeExperimentObj.Newguidance=data
     // }
     a.activeExperimentObj.Newguidance=data
+    a.experimentGuideLoading=false
+  }).catch((err:any)=>{
+    a.activeExperimentObj.Newguidance={}
     a.experimentGuideLoading=false
   })
 }

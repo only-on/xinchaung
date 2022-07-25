@@ -288,9 +288,6 @@ const allexperTypes:any=ref([
  .custom_input{
   width: 270px;
  }
- .custom_input:deep(.ant-select:not(.ant-select-customize-input) .ant-select-selector){
-   border-radius: 20px;
- }
  .detail{
    color: var(--primary-color);
    overflow: hidden;

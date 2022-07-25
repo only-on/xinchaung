@@ -1197,6 +1197,12 @@ onMounted(()=>{
     text-align: center;
     cursor: pointer;
   }
+  span:first-child{
+    border-radius: 18px 0 0 18px;
+  }
+  span:last-child{
+    border-radius: 0 18px 18px 0;
+  }
   .active {
     color: var(--primary-color);
     border-color: var(--primary-color);

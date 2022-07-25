@@ -852,9 +852,6 @@ export default defineComponent({
     .input-search {
       margin-right: 20px;
     }
-    .ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
-      height: 35px !important;
-    }
   }
   .question-btn {
     .ant-btn {

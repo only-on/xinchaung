@@ -54,7 +54,7 @@
           ></knowledge-modal>
         </a-form-item>
         <a-form-item label="添加标签" name="tags">
-          <LabelList :tag="formState.tags" :recommend="formState.recommend" />
+          <LabelList :tag="formState.tags" :recommend="formState.recommend" @finishTag="tagsValidator" />
         </a-form-item>
       </div>
       <div class="right">
@@ -278,8 +278,7 @@ const rules = {
   //   { validator: selectedKnowledgeValidator, trigger: "change" },
   // ],
   tags:[
-    { required: true, message: "" },
-    { validator: tagsValidator, trigger: "blur" },
+    {required: true,validator: tagsValidator,trigger: "blur", message: "请填写标签"},
   ],
   direction:[
     { required: true, message: "请选择所属方向" ,trigger: "change" },
@@ -312,10 +311,13 @@ async function selectedKnowledgeValidator(rule: any, value:any) {
     return Promise.resolve()
   }
 }
-async function tagsValidator(rule: any, value:any) {
-  // console.log(value)
-  if (!value.length) {
+async function tagsValidator(val:any) {
+  console.log(formState)
+  if (!formState.tags.length) {
     return Promise.reject("请填写标签");
+  }else{
+    formRef.value.clearValidate('tags')
+    return Promise.resolve()
   }
 }
 const closeDrawer = () => {
@@ -523,6 +525,12 @@ onMounted(()=>{
     color: rgba(51, 57, 75, 0.85);
     text-align: center;
     cursor: pointer;
+  }
+  span:first-child{
+    border-radius: 18px 0 0 18px;
+  }
+  span:last-child{
+    border-radius: 0 18px 18px 0;
   }
   .active {
     color: var(--primary-color);
