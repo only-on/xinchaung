@@ -190,12 +190,12 @@ const initData = () => {
   loading.value=true
   imageList.length=0
   let obj={
-    page:1,
-    limit:99999,
+    // page:1,
+    // limit:99999,
     tags:[props.imageType]
   }
-  http.imagesList({param:{...obj}}).then((res: IBusinessResp) => {
-    const data= res.data.list;
+  http.imagesSelectList({param:{...obj}}).then((res: IBusinessResp) => {
+    const data= res.data;
     imageList.push(...data)
     loading.value=false
   }).catch((err:any)=>{
