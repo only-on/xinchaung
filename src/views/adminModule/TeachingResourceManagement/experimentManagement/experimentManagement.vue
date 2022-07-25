@@ -105,6 +105,8 @@ function daWithdata(res:any){
 }
 function updateData(val:any){
   console.log(val)
+    tableData.data=[]
+    tableData.total=0
   if(activeKey.value==1){
     experParams.search.contentName=val?.name
     experParams.search.contentAttribute=val?.attribute
