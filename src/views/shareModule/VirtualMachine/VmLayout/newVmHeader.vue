@@ -789,6 +789,11 @@ function back() {
 }
 
 // 下拉选择虚拟机
+function sendDisconnect() {
+  if (novncEl.value) {
+    novncEl.value.sendDisconnect();
+  }
+}
 async function switchVm() {
   if (isScreenRecording.value) {
     await startEndRecord();
@@ -807,6 +812,7 @@ async function switchVm() {
     ) {
       currentInterface.value = "ssh";
       sshIsOpen.value = false
+      sendDisconnect()
     } else {
       if (currentInterface.value == "ssh") {
       } else {
@@ -826,6 +832,7 @@ async function switchVm() {
     ) {
       currentInterface.value = "ssh";
       sshIsOpen.value = true
+      sendDisconnect()
     } else {
       vncLoading.value = true;
       isClose.value = false;
