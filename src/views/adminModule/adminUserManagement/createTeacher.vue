@@ -194,7 +194,7 @@
         promise.then((res:any) => {
           // initData();
           message.success(editId.value ? "编辑成功" : "创建成功");
-          router.push({path: '/admin/adminUserManagementTeach/teacherManagement'});
+          router.push({path: '/admin/adminUserManagementTeach'});
           formRef.value.resetFields();
           formState.reset = false;
           // visible.value = false;
