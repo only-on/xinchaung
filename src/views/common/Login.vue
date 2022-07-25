@@ -29,10 +29,10 @@ const router = useRouter();
 const route = useRoute();
 const store = useStore();
 const loginInfo = reactive<any>({
-  src: '',
-  logo: '',
-  name: '',
-  class: '',
+  src: "",
+  logo: "",
+  name: "",
+  class: "",
 });
 interface FormState {
   username: string;
@@ -125,14 +125,15 @@ watch(
     return store.state.systemInfo;
   },
   (newVal: any) => {
-    loginInfo.src = loginBg[newVal.theme]
-    loginInfo.logo = newVal.logo_url
-    loginInfo.name = newVal.site_name
-    loginInfo.class = 'login' + newVal.theme
+    loginInfo.src = loginBg[newVal.theme];
+    loginInfo.logo = newVal.logo_url;
+    loginInfo.name = newVal.site_name;
+    loginInfo.class = "login" + newVal.theme;
   },
-  { deep: true, immediate:true }
+  { deep: true, immediate: true }
 );
 const login = (repeat?: boolean) => {
+  message.destroy();
   refForm.value
     .validate()
     .then(() => {
@@ -177,7 +178,6 @@ const login = (repeat?: boolean) => {
           submitLoading.value = false;
         })
         .catch((res: any) => {
-          console.error("login failed: ", res);
           if (res.data.unique_confirm && res.data.unique_confirm === true) {
             againLogin();
             return;
@@ -241,10 +241,11 @@ onMounted(() => {
           message.destroy();
         },
       },
-      [createVNode(CloseOutlined)]
+      () => createVNode(CloseOutlined)
     ),
   ]);
   if (store.state.kickedOut) {
+    message.destroy();
     message.warn(kickOutMsg, 0);
     store.commit("kickOutReset");
   }

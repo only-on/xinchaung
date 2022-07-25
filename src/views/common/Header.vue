@@ -146,6 +146,7 @@ export default defineComponent({
         if (longWs1.value) {
           longWs1.value.close();
         }
+        message.destroy(); // 登出，移除所有消息弹窗
         router.replace({ path: "/login" }).catch(() => {});
       });
     }
@@ -258,6 +259,7 @@ export default defineComponent({
           if (ev.type === "close") {
             console.log('[Header] longWs1: ', longWs1);
             if (longWs1.value && longWs1.value.isReset()) {
+              message.destroy();
               message.warn(resetMsgNode, 0);
             }
           }
