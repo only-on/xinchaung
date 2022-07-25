@@ -93,6 +93,7 @@
     :visible="editChartVisible" 
     :activeFile="state.activeExperimentObj" 
     :selectList="ExperimentsAndMaterialsObj.activeExperiments" 
+    :selectMaterials="ExperimentsAndMaterialsObj.activeMaterials"
     @closeDrawerDoc="closeDrawerDoc" 
     @selectDocOrMp4File="selectFile" 
   />
@@ -190,7 +191,7 @@ var state:any=reactive({
 // 已选的实验和教辅资源
 var ExperimentsAndMaterialsObj=reactive<any>({
   activeExperiments:[],
-  activeMaterials:{}
+  activeMaterials: []
 })
 
 const emit = defineEmits<{
@@ -309,6 +310,7 @@ const selectChaptert=(val:any)=>{
   state.activeChapter=val
   state.activeTab.chapterId=val.id
   ExperimentsAndMaterialsObj.activeExperiments=val.contents
+  ExperimentsAndMaterialsObj.activeMaterials=val.resource
   emit('selectChaptert',val)
 }
  // 选中章节下实验

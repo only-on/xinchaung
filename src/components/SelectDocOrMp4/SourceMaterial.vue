@@ -58,7 +58,7 @@
           <!-- 是否有文件列表 -->
           <div class="fileList" v-if="v.show && v.fileList.length" :class="(v.show && v.fileList.length)?'openFile':''">
             <a-spin :spinning="v.loading" size="large" tip="Loading...">
-              <div v-for="(i,index) in v.fileList" class="flexCenter fileItem" :class="docOrMp4Drawer.activeFile.id === i.id ? 'activeFileItem':''" :key="index">
+              <div v-for="(i,index) in v.fileList" class="flexCenter fileItem" :class="docOrMp4Drawer.selectListIds.includes(i.id) ? 'activeFileItem':''" :key="index">
                 <div class="flexCenter fileLeft">
                   <!-- <span class="fileIcon" :style="`background-image: url(${iconList[props.docOrMp4Type === 1?'ppt':'mp4']});`"></span> -->
                   <span class="fileIcon" :style="`background-image: url(${getFileTypeIcon(v.file_name)});`"></span>
@@ -66,8 +66,8 @@
                 </div>
                 <div class="flexCenter fileRight">
                   <span>{{bytesToSize(i.size)}}</span>
-                  <a-button class="select" @click="selectDocOrMp4File(i)" type="text" :disabled="docOrMp4Drawer.activeFile.id === i.id">
-                    {{ docOrMp4Drawer.activeFile.id === i.id ? "取消" : "选择" }}
+                  <a-button class="select" @click="selectDocOrMp4File(i)" type="text" :disabled="docOrMp4Drawer.selectListIds.includes(i.id)">
+                    {{ docOrMp4Drawer.selectListIds.includes(i.id) ? "取消" : "选择" }}
                   </a-button>
                 </div>
               </div>
@@ -111,11 +111,13 @@ import request from "src/api/index";
 const http = (request as any).teacherMaterialResource;
 interface Props { 
   activeFile:any;     // 选中的文件对象
-  tags:string         //  资源标签名称
+  tags:string;        //  资源标签名称
+  selectList:any    // 选中的资源
 }
 const props = withDefaults(defineProps<Props>(),{
   activeFile: () => {},
-  tags:''
+  tags:'',
+  selectList: () => []
 });
 
 const emit = defineEmits<{
@@ -131,8 +133,15 @@ const docOrMp4Drawer: any = reactive({
   activeFile: {
     id: props.activeFile.id
   }, //  选择或上传的文档、视频
+  selectListIds: []
 });
+if(props.selectList.length){
+  props.selectList.forEach((v:any)=>{
+    docOrMp4Drawer.selectListIds.push(v.id)
+  })
+}
 console.log(props.activeFile)
+console.log(docOrMp4Drawer.selectListIds)
 var is_public:Ref<number>=ref(1)
 const changeTab=(v:number)=>{
   is_public.value=v
