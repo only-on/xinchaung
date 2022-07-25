@@ -125,6 +125,9 @@
         </span>
       </template>
     </a-table>
+    <template #renderEmpty>
+      <div v-if="!loading"><Empty :type="EmptyType" /></div>
+    </template>
   </a-config-provider>
   <a-modal
     v-model:visible="visible"
@@ -454,6 +457,15 @@ const studentColumns = [
     });
     formState.password_hash = `${formState.username}${suffix}`;
     formState.repassword = `${formState.username}${suffix}`;
+    const EmptyType:any=computed(()=>{
+      let str=''
+      if(ForumSearch.name == '' && ForumSearch.classname == '' && ForumSearch.grade == '' && ForumSearch.major == ''){
+        str= 'tableEmpty'
+      }else{
+        str= 'tableSearchEmpty'
+      }
+      return str
+    })
     var uploadData:any= ref(false);
     const loading:any=ref(false)
     var visible:any = ref(false);

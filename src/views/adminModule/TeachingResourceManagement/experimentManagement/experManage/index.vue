@@ -90,7 +90,7 @@
       </template>
       </a-table>
         <template #renderEmpty>
-            <div v-if="listdata?.length==0"><Empty :height='80' :text='ifSearch?"抱歉，未搜到相关数据！":"抱歉，暂无数据！"' type="tableEmpty" /></div>
+            <div v-if="listdata?.length==0"><Empty :type="EmptyType" /></div>
         </template>
       </a-config-provider>
     </a-spin>
@@ -99,7 +99,7 @@
 <script lang="ts" setup>
 import { message,Modal } from "ant-design-vue";
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
-import { ref, toRefs, onMounted,inject, reactive,createVNode} from "vue";
+import { ref, toRefs, onMounted,inject, reactive,createVNode, computed} from "vue";
 import { useRouter, useRoute } from "vue-router";
 import request from "src/api/index";
 const http = (request as any).TeachingResourceManagement;
@@ -115,7 +115,6 @@ const allexperTypes:any=ref([
   {name:'视频实验',type:6},
   {name:'文档实验',type:7},
 ])
-const ifSearch:any=ref(false)
     const ForumSearch:any=reactive({
       type:'',
       attribute:''
@@ -177,12 +176,16 @@ const ifSearch:any=ref(false)
     const emit = defineEmits<{
       (e: "updateData", val: any): void;
     }>();
+    const EmptyType:any=computed(()=>{
+      let str=''
+      if(ForumSearch.name == '' && ForumSearch.attribute == '' && ForumSearch.type == ''){
+        str= 'tableEmpty'
+      }else{
+        str= 'tableSearchEmpty'
+      }
+      return str
+    })
     function search(){
-      if(ForumSearch.name||ForumSearch.attribute||ForumSearch.type){
-          ifSearch.value=true
-        }else{
-          ifSearch.value=false
-        }
         params.page=1
         emit('updateData',{name:ForumSearch.name,page:params.page,pageSize:params.pageSize,type:ForumSearch.type,attribute:ForumSearch.attribute})
     }

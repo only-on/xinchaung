@@ -75,7 +75,7 @@
           </div>
         </div>
       </div>
-      <Empty v-if="!docOrMp4Drawer.list.length && docOrMp4Drawer.loading===false" text="暂无文件" />
+      <Empty v-if="!docOrMp4Drawer.list.length && docOrMp4Drawer.loading===false" :type="EmptyType" />
     </div>
   </a-spin>
   <a-pagination
@@ -140,8 +140,15 @@ if(props.selectList.length){
     docOrMp4Drawer.selectListIds.push(v.id)
   })
 }
-console.log(props.activeFile)
-console.log(docOrMp4Drawer.selectListIds)
+const EmptyType:any=computed(()=>{
+  let str=''
+  if(docOrMp4Drawer.file_name == ''){
+    str= 'empty'
+  }else{
+    str= 'searchEmpty'
+  }
+  return str
+})
 var is_public:Ref<number>=ref(1)
 const changeTab=(v:number)=>{
   is_public.value=v

@@ -5,7 +5,7 @@
       <div class="text" @click="Detail(v)">{{v.content_name}}</div>
       <div class="number">{{v.learned}}人学过</div>
     </div>
-    <Empty v-if="!list.length" :text="'暂无推荐'" />
+    <Empty v-if="!list.length" :text="'暂无推荐'" type="tableEmpty" />
   </div>
 
 </template>

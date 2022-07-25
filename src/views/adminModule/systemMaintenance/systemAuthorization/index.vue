@@ -89,7 +89,7 @@
                         </template>
                       </a-table>
                     <template #renderEmpty>
-                    <div v-if="!loading"><Empty type="tableEmpty" /></div>
+                      <div v-if="!loading"><Empty type="tableEmpty" /></div>
                     </template>
                 </a-config-provider>
             </a-spin>

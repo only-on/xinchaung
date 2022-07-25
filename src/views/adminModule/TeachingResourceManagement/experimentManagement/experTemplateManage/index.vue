@@ -60,7 +60,7 @@
           </template>
       </a-table>
         <template #renderEmpty>
-            <div v-if="listdata?.length==0"><Empty :height='80' :text='ifSearch?"抱歉，未搜到相关数据！":"抱歉，暂无数据！"' type="tableEmpty" /></div>
+            <div v-if="listdata?.length==0"><Empty :type="EmptyType" /></div>
         </template>
       </a-config-provider>
     </a-spin>
@@ -78,7 +78,7 @@
 </template>
 <script lang="ts" setup>
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
-    import { ref, toRefs, onMounted,inject, reactive,createVNode} from "vue";
+    import { ref, toRefs, onMounted,inject, reactive,createVNode, computed} from "vue";
     import PdfVue from "src/components/pdf/pdf.vue";
     import { downloadUrl } from "src/utils/download";
     import CreateTemplate from "src/views/teacherModule/teacherTemplate/createTemplate.vue";
@@ -94,7 +94,6 @@ import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
     const ForumSearch:any=reactive({
         name:''
     })
-    const ifSearch:any=ref(false)
     interface Props {
       listdata: any[]; 
       total:any;
@@ -152,12 +151,16 @@ import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
         const emit = defineEmits<{
       (e: "updateData", val: any): void;
     }>();
+    const EmptyType:any=computed(()=>{
+      let str=''
+      if(ForumSearch.name == ''){
+        str= 'tableEmpty'
+      }else{
+        str= 'tableSearchEmpty'
+      }
+      return str
+    })
     function search(){
-      if(ForumSearch.name){
-          ifSearch.value=true
-        }else{
-          ifSearch.value=false
-        }
         params.page=1
       emit('updateData',{expername:ForumSearch.name,page:params.page,pageSize:params.pageSize})
     }

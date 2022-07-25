@@ -74,7 +74,7 @@
               </template>
             </a-table>
             <template #renderEmpty>
-              <div v-if="!loading"><Empty type="tableEmpty" /></div>
+              <div v-if="!loading"><Empty :type="EmptyType" /></div>
             </template>
           </a-config-provider>
         </a-spin>
@@ -85,7 +85,7 @@
 
 <script lang="ts" setup>
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
-import { inject,ref, toRefs, onMounted ,Ref,reactive,createVNode} from "vue";
+import { inject,ref, toRefs, onMounted ,Ref,reactive,createVNode, computed} from "vue";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { ColumnProps } from "ant-design-vue/es/table/interface";
@@ -182,6 +182,15 @@ var loading: Ref<boolean> = ref(false);
 var courseList: any[] = reactive([{id:1}]);
 var totalCount: Ref<number> = ref(0);
 var analysisObj:any=reactive({})
+const EmptyType:any=computed(()=>{
+  let str=''
+  if(searchInfo.name == '' && searchInfo.is_public == '' && searchInfo.tags == ''){
+    str= 'tableEmpty'
+  }else{
+    str= 'tableSearchEmpty'
+  }
+  return str
+})
 const initData = () => {
   const param:any={
     name:searchInfo.name,

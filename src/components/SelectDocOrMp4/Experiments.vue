@@ -41,7 +41,7 @@
           </div>
         </div>
       </div>
-      <Empty v-if="!docOrMp4Drawer.list.length && docOrMp4Drawer.loading===false" text="暂无文件" />
+      <Empty v-if="!docOrMp4Drawer.list.length && docOrMp4Drawer.loading===false" :type="EmptyType" />
     </div>
   </a-spin>
   <a-pagination
@@ -120,6 +120,15 @@ const classNum=computed(()=>{
     })
   }
   return num
+})
+const EmptyType:any=computed(()=>{
+  let str=''
+  if(docOrMp4Drawer.name == ''){
+    str= 'empty'
+  }else{
+    str= 'searchEmpty'
+  }
+  return str
 })
 var init_type:Ref<number>=ref(1)
 const changeTab=(v:number)=>{
