@@ -550,7 +550,7 @@ import Submit from "src/components/submit/index.vue";
 import { IBusinessResp } from "src/typings/fetch.d";
 import {useStore} from "vuex";
 import {IWmc} from "../../../../typings/wmc";
-import {WS_CLOSE_REASON_EXP_ENDED} from "../../../../utils/vm";
+import {WS_CLOSE_CODE_EXP_ENDED, WS_CLOSE_REASON_EXP_ENDED} from "../../../../utils/vm";
 
 const route = useRoute();
 const router = useRouter();
@@ -936,9 +936,9 @@ function finishExperiment() {
 
 // 检查脚本并结束实验
 async function finishTest() {
-  // 断开ws连接
+  // 主动断开ws连接
   if (store.state.longWs) {
-    (store.state.longWs as IWmc).close(1000, WS_CLOSE_REASON_EXP_ENDED);
+    (store.state.longWs as IWmc).close(WS_CLOSE_CODE_EXP_ENDED, WS_CLOSE_REASON_EXP_ENDED);
   }
 
   if (isScreenRecording.value) {

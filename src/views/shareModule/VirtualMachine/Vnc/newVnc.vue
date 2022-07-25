@@ -72,7 +72,7 @@ import {
   LocationQueryValue,
   onBeforeRouteUpdate,
 } from "vue-router";
-import { WS_CLOSE_REASON_EXP_ENDED } from "../../../../utils/vm";
+import { WS_CLOSE_CODE_EXP_ENDED, WS_CLOSE_REASON_EXP_ENDED } from "../../../../utils/vm";
 
 import storage from "src/utils/extStorage";
 import { getVmConnectSetting } from "src/utils/seeting";
@@ -228,8 +228,8 @@ function initWs() {
                 });
               } else {
                 console.log('[newVnc] longWs closed: ', ev.code, ev.reason);
-                // ws正常断开时，不用重连
-                if (!(ev.code === 1000 && ev.reason === WS_CLOSE_REASON_EXP_ENDED)) {
+                // ws主动断开时，不用重连
+                if (ev.code !== WS_CLOSE_CODE_EXP_ENDED) {
                   timerout = setTimeout(() => {
                     initWs();
                   }, 300);
