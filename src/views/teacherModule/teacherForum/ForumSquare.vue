@@ -2,12 +2,14 @@
   <div class="forum-square">
     <forumn-top @search="search" :tagList="tagList"></forumn-top>
     <div class="forumn-content" id="scrool">
-      <a-spin :spinning="loading" size="large" tip="Loading...">
+      <!-- <a-spin :spinning="loading" size="large" tip="Loading..."> -->
         <div class="left">
+          <a-spin :spinning="loading" size="large" tip="Loading...">
             <forumn :forumnList="forumnList" @pageChange="pageChange" :total="total" :forumSearch="forumSearch"></forumn>
             <Empty v-if="!forumnList.length && !loading" :type="EmptyType" />
+          </a-spin>
         </div>
-      </a-spin>
+      <!-- </a-spin> -->
       <div class="right" v-if="role !== 2">
         <div>
         <div class="post pointer" @click="createPost">发帖</div>
@@ -207,9 +209,6 @@ provide("bottomStyle", bottomStyle);
     .left {
       // width: 830px;
       width: 100%;
-      .ant-spin-nested-loading {
-        min-height: 300px;
-      }
     }
     .right {
       width: 300px;

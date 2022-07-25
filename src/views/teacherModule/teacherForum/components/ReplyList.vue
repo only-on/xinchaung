@@ -252,9 +252,6 @@ export default defineComponent({
   padding-bottom: 16px;
   border-bottom: 1px solid var(--lightgray-4);
   
-  .ant-spin-nested-loading {
-    min-height: 80px!important;
-  }
   .reply-info {
     margin: 8px 0 12px;
     line-height: 19px;

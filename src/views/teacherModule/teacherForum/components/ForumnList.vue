@@ -354,9 +354,6 @@ export default defineComponent({
       word-break: keep-all;
     }
   }
-  .ant-spin-nested-loading {
-    min-height: 80px!important;
-  }
 }
 .bottom {
   height: 54px;

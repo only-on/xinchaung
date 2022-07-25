@@ -113,7 +113,7 @@
               </template>
             </a-table>
             <template #renderEmpty>
-              <div v-if="!loading"><Empty type="tableEmpty" /></div>
+              <div v-if="!loading"><Empty :type="'tableEmpty'" /></div>
             </template>
           </a-config-provider>
         </a-spin>
@@ -213,6 +213,7 @@ const initData = () => {
   }
   loading.value = true;
   courseList.length = 0
+  totalCount.value=0
   http.courselist({param:{...param}}).then((res: IBusinessResp) => {
     loading.value = false
     if (!res) return

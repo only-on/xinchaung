@@ -1,7 +1,8 @@
-import { IBusinessResp } from '../typings/fetch';
-import { TAvailableModules, IApiItem } from '../typings/api';
-import { IRequestConfig, IHttpClient } from '../typings/getRequest';
+import { IBusinessResp } from 'src/typings/fetch';
+import { TAvailableModules, IApiItem } from 'src/typings/api';
+import { IRequestConfig, IHttpClient } from 'src/typings/getRequest';
 import request from "./fetch";
+
 import pupa from 'pupa';
 // import qs from 'qs';
 // https://stackoverflow.com/questions/28920753/declaring-the-type-of-this-in-a-typescript-function/41358367
@@ -79,4 +80,5 @@ GetRequest.prototype.sendServe = function (
   return new Promise((resolve, reject) => { resolve(null) });
 };
 
-export default new GetRequest('');
+// export default new GetRequest('');
+export default  GetRequest;
