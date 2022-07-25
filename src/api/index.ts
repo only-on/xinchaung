@@ -1,9 +1,9 @@
 import { TAvailableModules } from 'src/typings/api';
 
-import GetRequest from 'src/request/getRequest'
+import MyServer from 'src/request/getRequest'
 // const MyServer:any=await import ('src/request/getRequest')
 // MyServer.default()
-const MyServer=new GetRequest('')
+// const MyServer:any=new GetRequest('')
 const modulesFiles: any = import.meta.globEager("./modules/*.ts")
 const teacherFiles: any = import.meta.globEager("./teacher/*.ts")
 const studentFiles: any = import.meta.globEager("./student/*.ts")
@@ -15,7 +15,7 @@ for (const key in files) {
     let moduleFiles = files[key].default
     MyServer.parseRouter(file_name as TAvailableModules, moduleFiles)
 }
-
+console.log(MyServer);
 export default MyServer;
 
 export const RESP_SUCCESS = 1; // 响应成功的状态码

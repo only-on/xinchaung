@@ -80,5 +80,5 @@ GetRequest.prototype.sendServe = function (
   return new Promise((resolve, reject) => { resolve(null) });
 };
 
-// export default new GetRequest('');
-export default  GetRequest;
+export default new GetRequest('');
+// export default  GetRequest;

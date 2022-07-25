@@ -19,7 +19,7 @@ api.common
       router.replace(getHomePath(res.data.role));
     }
   })
-  .catch((err) => {
+  .catch((err:any) => {
     router.replace(getHomePath(9));
   });
 </script>
