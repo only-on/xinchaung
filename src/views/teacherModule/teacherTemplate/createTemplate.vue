@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div class="wrapper" v-if="!isCheck">
     <div class="toolbar" v-if="!isCheck">
       <div class="toolbar-title">报告模板组件</div>
       <div v-for="(item, index) in initialWidgetThumb" :key="index">
@@ -66,6 +66,9 @@
       </div> -->
     </div>
   </div>
+  <div v-else>
+    <onlinePreview :reportTemplateData="reportTemplateData"></onlinePreview>
+  </div>
   <div class="operate">
     <a-button @click="goBack(1)">{{ templateId ? "关闭" : "取消" }}</a-button>
     <a-button
@@ -125,6 +128,7 @@ import dragGable from "vuedraggable";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { ITeacherTemplateHttp, Iform, WidgetModel } from "./templateTyping";
+import onlinePreview from "src/components/report/onlinePreview.vue"
 // import SelectReport from "src/views/teacherModule/teacherExperimentResourcePool/component/selectReport.vue";
 // export default defineComponent({
 // components: {
@@ -197,12 +201,14 @@ var activeTemplateItem: any = reactive({
   name: "",
   typeText:''
 });
+const reportTemplateData = ref({})
 const getDetail = () => {
   dataList.length = 0;  // {urlParams: {id: templateId.value}}
   http.viewTemplate({urlParams: {id: templateId.value}})
     .then((res: IBusinessResp) => {
       if (res && res.data) {
         let result = res.data;
+        reportTemplateData.value = result
         form.name = result.name;
         Object.assign(dataList, result.json_content);
         // 增加唯一标识， 否则拖拽排序时input的value值会被影响

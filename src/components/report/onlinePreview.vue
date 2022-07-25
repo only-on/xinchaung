@@ -1,7 +1,7 @@
 <template>
   <div
     class="report-template-online"
-    v-if="reportTemplateData && reportTemplateData.json_content.length > 0"
+    v-if="reportTemplateData&&reportTemplateData.json_content && reportTemplateData.json_content.length > 0"
   >
     <div class="template-name">{{reportTemplateData.name||reportTemplateData.filename}}</div>
     <table style="width: 100%" id="onlineReportTableEditable">
@@ -102,7 +102,7 @@
           <td class="title-text" style="width: 20%" :align="item.fields[0].align">
             <div class="title">{{ item.fields[0].value }}</div>
           </td>
-          <td class="" colspan="5">
+          <td colspan="5" class="markdown-content">
             <div>
               <markdown v-model="item.fields[1].value" :preview="true" />
               <!-- <markdown
@@ -119,7 +119,7 @@
           </td>
         </tr>
         <tr v-if="item.type === 'w8'" class="editable-markdown">
-          <td colspan="6">
+          <td colspan="6" class="markdown-content">
             <div class="title">
               <markdown v-model="item.fields[1].value" :preview="true" />
             </div>
@@ -161,6 +161,7 @@ export default defineComponent({
     border-bottom: none;
     max-height: 200px;
     overflow-y: auto;
+    background-color: var(--gray-3);
   }
   .mark__body .mark__preview {
     min-width: auto;
@@ -197,6 +198,11 @@ export default defineComponent({
   textarea {
     outline: none;
     border: none;
+  }
+  .editable-markdown {
+    .markdown-content {
+      background-color: var(--gray-3);
+    }
   }
 }
 </style>
