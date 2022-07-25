@@ -1,0 +1,1 @@
+export const WS_CLOSE_REASON_EXP_ENDED = 'EXP_ENDED';
