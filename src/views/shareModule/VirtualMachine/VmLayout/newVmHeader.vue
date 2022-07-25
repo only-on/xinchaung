@@ -548,6 +548,8 @@ import storage from "src/utils/extStorage";
 import tusFileUpload from 'src/utils/tusFileUpload'
 import Submit from "src/components/submit/index.vue";
 import { IBusinessResp } from "src/typings/fetch.d";
+import {useStore} from "vuex";
+import {IWmc} from "../../../../typings/wmc";
 
 const route = useRoute();
 const router = useRouter();
@@ -614,6 +616,7 @@ const quizPaperList: Ref<any> = ref([]);   // 没有答完的题
 const currentQuizIndex: Ref<number> = ref(0);  // 当前在答的题目的索引
 const currentShowType: Ref<any> = ref(0); // 0 未答完 1提交结果 2 随测记录
 const answerPaperList: Ref<any> = ref([]);  // 带答案的试题
+const store = useStore();
 
 const answerNum = computed(() => {
   let num = 0;
@@ -807,7 +810,7 @@ async function switchVm() {
     if (
       baseInfo.value &&
       baseInfo.value.base_info &&
-      baseInfo.value.base_info.is_webssh === 1 
+      baseInfo.value.base_info.is_webssh === 1
       // && ((role == 4 && vmsInfo.value.vms[currentVmIndex.value].switch == 0) || role != 4)
     ) {
       currentInterface.value = "ssh";
@@ -827,7 +830,7 @@ async function switchVm() {
     if (
       baseInfo.value &&
       baseInfo.value.base_info &&
-      baseInfo.value.base_info.is_webssh === 1 
+      baseInfo.value.base_info.is_webssh === 1
       // && ((role == 4 && vmsInfo.value.vms[currentVmIndex.value].switch == 0) || role != 4)
     ) {
       currentInterface.value = "ssh";
@@ -863,7 +866,7 @@ function delayedTime() {
       use_time.value = res.data.remaining_time;
       delayNum.value ++
       times();
-    } 
+    }
   });
 }
 
@@ -932,6 +935,11 @@ function finishExperiment() {
 
 // 检查脚本并结束实验
 async function finishTest() {
+  // 断开ws连接
+  if (store.state.longWs) {
+    (store.state.longWs as IWmc).close();
+  }
+
   if (isScreenRecording.value) {
     await startEndRecord();
   }
@@ -974,7 +982,7 @@ function endVmEnvirment() {
       taskId: taskId,
     };
   }
-  recommendType ? Object.assign(params, {recommendType}) : ''    
+  recommendType ? Object.assign(params, {recommendType}) : ''
   setTimeout(() => {
     endExperiment(params).then((res: any) => {
       if (
@@ -1039,7 +1047,7 @@ function colseOrStart() {
       // loading.vaue=true
     // },2000)
   // }
-  
+
   Modal.confirm({
     title: "提示",
     content: `是否确认${vmStartStatus.value?'关机':'开机'}？`,
@@ -1090,7 +1098,7 @@ async function startVm() {
   initVnc.value();
 }
 // 重置
-async function resetVm() { 
+async function resetVm() {
   Modal.confirm({
     title: "提示",
     content: `是否确认重置？`,
@@ -1518,7 +1526,7 @@ async function openQuizModal() {
           tempData[i].student_answer = [];
         }
       }
-      
+
     quizPaperList.value = tempData;
     currentQuizIndex.value = 0;
     }
