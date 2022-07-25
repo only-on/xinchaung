@@ -141,7 +141,7 @@
                         重启 
                         <span class="icon iconfont icon-zhongqi"></span>
                     </div>
-                    <div :class="serveNode?.state!=='up'?'disabledClack':'dohover'" @click="serveNode?.state!=='up'?'':doSimJetSoft">
+                    <div :class="serveNode?.state!=='up'?'disabledClack':'dohover'" @click="serveNode?.state!=='up'?'':doSimJetSoft()">
                         一键关闭 <span class="icon iconfont icon-guanbi"></span>
                     </div>
                 </div>
