@@ -46,10 +46,10 @@
         class="delayed"
         v-if="roleArry.includes('delayed')"
       >
-        <span>
+        <span class="delayed-time">
           {{ experimentTime?.h + ":" + experimentTime?.m + ":" + experimentTime?.s }}
         </span>
-        <span class="pointer" @click="delayedTime" v-if="isShowDelayBtn">延时</span>
+        <span class="pointer delayed-btn" @click="delayedTime" v-if="isShowDelayBtn">延时</span>
       </div>
       <div
         class="vnc-change pointer"
@@ -1859,7 +1859,7 @@ i {
     .delayed {
       // border: none;
       color: var(--primary-color);
-      span:last-child {
+      .delayed-btn {
         display: inline-block;
         height: 18px;
         line-height: 20px;
