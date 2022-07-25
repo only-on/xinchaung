@@ -336,6 +336,7 @@ export default defineComponent({
       }).catch(() => {
         jumpLoading.value = false
         currentHelpId.value = 0
+        helpInfoList.value.splice(index, 1);
       });
       vmApi.createExamples({ param: params }).then((res: any) => {
         if (res.status === 1) {
@@ -355,10 +356,12 @@ export default defineComponent({
         } else {
           jumpLoading.value = false
           currentHelpId.value = 0
+          helpInfoList.value.splice(index, 1);
         }
       }).catch(() => {
         jumpLoading.value = false
         currentHelpId.value = 0
+        helpInfoList.value.splice(index, 1);
       })
     }
     onBeforeRouteLeave(()=>{
@@ -585,6 +588,9 @@ export default defineComponent({
       .ant-spin {
         :deep(.ant-spin-dot) {
           margin-right: 8px;
+        }
+        &.ant-spin-spinning {
+          min-height: 1px;
         }
       }
     }
