@@ -121,7 +121,7 @@ let ExamAssignment={
       children: [],
       icon: "",
       id: 1247,
-      name: "题库",
+      name: "题 库",
       parent_id: 161,
       sort: 1,
       url: "/teacher/QuestionBank?currentTab=0",
@@ -130,7 +130,7 @@ let ExamAssignment={
       children: [],
       icon: "",
       id: 1248,
-      name: "作业",
+      name: "作 业",
       parent_id: 161,
       sort: 1,
       url: "/teacher/teacherAssignment",
@@ -139,7 +139,7 @@ let ExamAssignment={
       children: [],
       icon: "",
       id: 1249,
-      name: "考试",
+      name: "考 试",
       parent_id: 161,
       sort: 1,
       url: "/teacher/teacherExamination",
@@ -351,6 +351,6 @@ export default function menusFn(){
     4:[statistics,forum,studentCourse,studentAssignment,studentExamination],
     5:[center,material,teacherCourse,ExamAssignment]
   }
-  console.log(role)
+  // console.log(role)
   return menus[role]
 }

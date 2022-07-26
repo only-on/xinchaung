@@ -6,7 +6,8 @@ import initProject from 'src/bootstrap/project'
 
 import 'src/themecss/variable.css'
 
-import 'src/themecss/antdCopy.css'
+// import 'src/themecss/antdCopy.css'
+import 'src/themecss/antdCopy2.css'
 import "src/assets/theme/common.less"
 
 import '@xianfe/antdv-markdown/dist/style.css'

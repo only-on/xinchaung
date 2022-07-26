@@ -8,7 +8,7 @@
       </div>
     </div>
     <div class="header-middle">
-      <menu-bar :activeMenu="activeMenu"></menu-bar>
+      <menu-bar></menu-bar>
     </div>
     <div class="header-right">
       <a-popover title="" trigger="click" placement="bottom">
