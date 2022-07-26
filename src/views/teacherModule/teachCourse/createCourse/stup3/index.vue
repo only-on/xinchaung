@@ -27,32 +27,34 @@
             }"
             rowKey="id"
           >
-            <template #username="{ record }">
-              <div class="single_ellipsis" :title="record.user?.username">{{ record.user?.username }}</div>
-            </template>
-            <template #name="{ record }">
-              <div class="single_ellipsis" :title="record.userProfile?.name">{{ record.userProfile?.name }}</div>
-            </template>
-            <template #gender="{ record }">
-              <div>{{ record.userProfile?.gender }}</div>
-            </template>
-            <template #major="{ record }">
-              <div class="single_ellipsis" :title="record.userProfile?.major">{{ record.userProfile?.major }}</div>
-            </template>
-            <template #department="{ record }">
-              <div class="single_ellipsis" :title="record.userProfile?.department">{{ record.userProfile?.department }}</div>
-            </template>
-            <template #phone="{ record }">
-              <div class="single_ellipsis" :title="record.userProfile?.phone">{{ record.userProfile?.phone }}</div>
-            </template>
-            <template #email="{ record }">
-              <div  class="single_ellipsis" :title="record.user?.email">{{ record.user?.email }}</div>
-            </template>
-            <template #stuaction="{ record }">
-              <div class="action">
-                <span class="spanleft iconfont" @click.stop="removeStudent(record.id)">删除</span>
-                <span class="spanleft iconfont" @click.stop="initPassword(record.id)">初始化密码</span>
-              </div>
+            <template v-slot:bodyCell="{column,record}">
+              <template v-if="column.dataIndex === 'username'">
+                <div class="single_ellipsis" :title="record.user?.username">{{ record.user?.username }}</div>
+              </template>
+              <template v-if="column.dataIndex === 'name'">
+                <div class="single_ellipsis" :title="record.userProfile?.name">{{ record.userProfile?.name }}</div>
+              </template>
+              <template v-if="column.dataIndex === 'gender'">
+                <div>{{ record.userProfile?.gender }}</div>
+              </template>
+              <template v-if="column.dataIndex === 'major'">
+                <div class="single_ellipsis" :title="record.userProfile?.major">{{ record.userProfile?.major }}</div>
+              </template>
+              <template v-if="column.dataIndex === 'department'">
+                <div class="single_ellipsis" :title="record.userProfile?.department">{{ record.userProfile?.department }}</div>
+              </template>
+              <template v-if="column.dataIndex === 'phone'">
+                <div class="single_ellipsis" :title="record.userProfile?.phone">{{ record.userProfile?.phone }}</div>
+              </template>
+              <template v-if="column.dataIndex === 'email'">
+                <div  class="single_ellipsis" :title="record.user?.email">{{ record.user?.email }}</div>
+              </template>
+              <template v-if="column.dataIndex === 'stuaction'">
+                <div class="action">
+                  <span class="spanleft iconfont" @click.stop="removeStudent(record.id)">删除</span>
+                  <span class="spanleft iconfont" @click.stop="initPassword(record.id)">初始化密码</span>
+                </div>
+              </template>
             </template>
           </a-table>
           <template #renderEmpty>
@@ -91,19 +93,16 @@ const columns= [
           title: "学号",
           dataIndex: "username",
           align: "left",
-          ellipsis: true,
-          slots: { customRender: "username" },
+          ellipsis: true
         },
         {
           title: "姓名",
           dataIndex: "name",
-          ellipsis: true,
-          slots: { customRender: "name" },
+          ellipsis: true
         },
         {
           title: "性别",
           dataIndex: "gender",
-          slots: { customRender: "gender" },
           width: 80,
         },
         {
@@ -121,34 +120,29 @@ const columns= [
         {
           title: "专业",
           dataIndex: "major",
-          slots: { customRender: "major" },
           align: "left",
           ellipsis: true,
         },
         {
           title: "学院",
           dataIndex: "department",
-          ellipsis: true,
-          slots: { customRender: "department" },
+          ellipsis: true
         },
         {
           title: "邮箱",
           dataIndex: "email",
           align: "center",
-          ellipsis: true,
-          slots: { customRender: "email" },
+          ellipsis: true
         },
         {
           title: "电话",
           dataIndex: "phone",
-          ellipsis: true,
-          slots: { customRender: "phone" },
+          ellipsis: true
         },
         {
           title: "操作",
           dataIndex: "stuaction",
           align: "center",
-          slots: { customRender: "stuaction" },
           width:200
         },
       ]

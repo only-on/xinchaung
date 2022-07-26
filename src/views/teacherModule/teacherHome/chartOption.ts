@@ -97,7 +97,7 @@ export const radarOptions = (data: any) => {
       axisTick: {
         length: 1
       },
-      nameGap:20,
+      axisNameGap:20,
     },
     series: [{
       type: 'radar',

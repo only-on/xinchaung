@@ -428,7 +428,7 @@ onMounted(() => {
           background: none;
         }
       }
-      > .ant-calendar-picker {
+      > .ant-picker {
         width: 50%;
         &:nth-child(1) {
           span {

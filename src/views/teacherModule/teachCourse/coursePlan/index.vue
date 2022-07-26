@@ -716,7 +716,7 @@ onMounted(() => {
   width: 170px;
   display: inline-block;
 
-  :deep(.ant-calendar-picker-input.ant-input) {
+  :deep(.ant-picker) {
     word-spacing: 2px;
     letter-spacing: 2px;
     font-size: 20px !important;

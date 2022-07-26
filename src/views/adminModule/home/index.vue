@@ -910,7 +910,7 @@
     border-top-left-radius:20px;
     border-bottom-left-radius:20px;
 }
-:deep(.ant-calendar-picker-input.ant-input){
+:deep(.ant-picker){
     border-radius: 20px;
 }
 .pickDay{

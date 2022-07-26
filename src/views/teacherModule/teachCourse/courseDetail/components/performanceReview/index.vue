@@ -48,69 +48,59 @@
           row-key="user_id"
           :pagination="false"
         >
-          <template #customReportTitle> 报告</template>
+          <!-- <template #customReportTitle> 报告</template>
           <template #customQuizTitle> 随测</template>
           <template #customAutoTitle> 自动评分</template>
-          <template #customExercisesTitle> 习题 </template>
-          <template #reference="{ text, record, index }">
-            <span :class="record.video!=null&&record.video?.length!==0?'table-a-link':'no-link'" @click="record.video!=null&&record.video?.length!==0?clickFun('video', record, index):''"
-              >录屏</span
-            >
-          </template>
-          <template #report="{ text, record, index }">
-            <template v-if="record.report_score != null">
-              <span
-                >{{ text
-                }}<i
-                  @click="clickFun('updateReport', record, index)"
-                  class="edit-btn iconfont icon-bianji1"
-                ></i
-              ></span>
+          <template #customExercisesTitle> 习题 </template> -->
+          <template v-slot:bodyCell="{column,record,text,index}">
+            <template v-if="column.dataIndex === 'report'">
+              <template v-if="record.report_score != null">
+                <span
+                  >{{ text
+                  }}<i
+                    @click="clickFun('updateReport', record, index)"
+                    class="edit-btn iconfont icon-bianji1"
+                  ></i
+                ></span>
+              </template>
+              <template v-else>
+                <span :class="Number(record.status)>1&&(record.report?.pdf_path || record.report?.json_content)?'table-a-link':'no-link'" @click="Number(record.status)>1&&(record.report?.pdf_path || record.report?.json_content)?clickFun('report', record, index):''"
+                  >评阅</span
+                >
+              </template>
             </template>
-            <template v-else>
-              <span :class="Number(record.status)>1&&(record.report?.pdf_path || record.report?.json_content)?'table-a-link':'no-link'" @click="Number(record.status)>1&&(record.report?.pdf_path || record.report?.json_content)?clickFun('report', record, index):''"
-                >评阅</span
+            <template v-if="column.dataIndex === 'reference'">
+              <span :class="record.video!=null&&record.video?.length!==0?'table-a-link':'no-link'" @click="record.video!=null&&record.video?.length!==0?clickFun('video', record, index):''"
+                >录屏</span
               >
             </template>
-          </template>
-          <template #question="{ text, record, index }">
-            <template v-if="record.question_score != null">
-              <span>{{ text }}</span>
+            <template v-if="column.dataIndex === 'question'">
+              <template v-if="record.question_score != null">
+                <span>{{ text }}</span>
+              </template>
+              <template v-else>
+                <div style="text-align: center">--</div>
+              </template>
             </template>
-            <template v-else>
-              <div style="text-align: center">--</div>
+            <template v-if="column.dataIndex === 'autoScore'">
+              <span v-if="record.auto_score!=null">{{ text }}</span>
+              <span v-else>--</span>
             </template>
-          </template>
-          <template #autoScore="{ text, record, index }">
-            <span v-if="record.auto_score!=null">{{ text }}</span>
-            <span v-else>--</span>
-            <!-- <template v-if="record.auto_score!=null">
-              <span
-                >{{ text
-                }}<i
-                  @click="clickFun('updateCode', record,index)"
-                  class="edit-btn iconfont icon-bianji1"
-                ></i
-              ></span>
-            </template>
-            <template v-else>
-              <span class="table-a-link" @click="clickFun('code', record,index)">评阅</span>
-            </template> -->
-          </template>
-          <template #score="{ text, record, index }">
-            <template v-if="record.final_score != null">
-              <span
-                >{{ text
-                }}<i
-                  @click="clickFun('updateScore', record, index)"
-                  class="edit-btn iconfont icon-bianji1"
-                ></i
-              ></span>
-            </template>
-            <template v-else>
-              <span :class="Number(record.status)<2?'no-link':'table-a-link'" @click="Number(record.status)<2?'':clickFun('score', record, index)"
-                >评分</span
-              >
+            <template v-if="column.dataIndex === 'score'">
+              <template v-if="record.final_score != null">
+                <span
+                  >{{ text
+                  }}<i
+                    @click="clickFun('updateScore', record, index)"
+                    class="edit-btn iconfont icon-bianji1"
+                  ></i
+                ></span>
+              </template>
+              <template v-else>
+                <span :class="Number(record.status)<2?'no-link':'table-a-link'" @click="Number(record.status)<2?'':clickFun('score', record, index)"
+                  >评分</span
+                >
+              </template>
             </template>
           </template>
         </a-table>
@@ -273,20 +263,20 @@ const oldColumns: any[] = [
     title: "评分项",
     children: [
       {
-        dataIndex: "report_score",
-        slots: { title: "customReportTitle", customRender: "report" },
+        title: "报告",
+        dataIndex: "report",
         width: 74,
         align:'center'
       },
       {
-        dataIndex: "question_score",
-        slots: { title: "customQuizTitle", customRender: "question" },
+        title: "随测",
+        dataIndex: "question",
         width: 74,
         align:'center'
       },
       { 
-        dataIndex: "auto_score",
-        slots: { title: "customAutoTitle", customRender: "autoScore" },
+        title: "自动评分",
+        dataIndex: "autoScore",
         width: 74,
         align:'center'
       }
@@ -300,15 +290,13 @@ const oldColumns: any[] = [
   {
     title: "评分参考",
     dataIndex: "reference",
-    width: 75,
-    slots: { customRender: "reference" },
+    width: 75
   },
   {
     title: "成绩",
-    dataIndex: "final_score",
-    key: "final_score",
-    width: 65,
-    slots: { customRender: "score" },
+    dataIndex: "score",
+    key: "score",
+    width: 65
   },
 ];
 const columns: Ref<any> = ref([]);

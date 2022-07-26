@@ -8,6 +8,7 @@
             :class="{ mouseover: isMouseOver }"
             v-model:value="searchKey"
             @search="searchFn"
+            enter-button
             placeholder="请输入关键词查询"
           />
         </div>
@@ -102,7 +103,9 @@ const emit = defineEmits<{
         :deep(.ant-input) {
           display: inline-block;
           background: 0 0;
+          padding: 0;
           border: none;
+          box-shadow: none;
           color: var(--white-100);
           // padding-left: 20px;
           line-height: 50px;
@@ -116,6 +119,19 @@ const emit = defineEmits<{
         :deep(.ant-input-suffix) {
           margin-left: 0;
           padding: 0 15px;
+        }
+        :deep(.ant-input-group-addon:last-child){
+          background: var(--brightBtn);
+          border:0;
+          .ant-btn{
+            width: 50px;
+            border: 0;
+            background: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+          }
         }
       }
       .addCircular {

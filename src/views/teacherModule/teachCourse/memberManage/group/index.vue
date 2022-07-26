@@ -23,12 +23,14 @@
           : false
       "
     >
-    <template #action='{record}'>
-      <div class="action">
-        <span class='delete actionBtn' @click="deleteGroup(record.id)">删除</span>
-        <span class="actionBtn" @click="editGroup(record.id,record.name)">编辑</span>
-      </div>
-    </template>
+      <template v-slot:bodyCell="{column,record}">
+        <template v-if="column.dataIndex === 'action'">
+          <div class="action">
+            <span class='delete actionBtn' @click="deleteGroup(record.id)">删除</span>
+            <span class="actionBtn" @click="editGroup(record.id,record.name)">编辑</span>
+          </div>
+        </template>
+      </template>
     </a-table>
     </div>
     <autoGroupCom v-if="groupType=='auto'" :visable='modalVisable' @updateVisable='updateVisable'></autoGroupCom>
@@ -73,8 +75,8 @@ columns.value = [
   },
   {
     title: "操作",
+    dataIndex: "action",
     key: "action",
-    slots: { customRender: "action" },
     width:140,
   },
 ];

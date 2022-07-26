@@ -40,7 +40,8 @@
               onChange: onSelectChange,
             }"
           >
-          <template #status="{ record }">
+          <template v-slot:bodyCell="{column,record}">
+            <template v-if="column.dataIndex === 'status'">
               <a-switch
                 checked-children="启用"
                 un-checked-children="禁用"
@@ -48,13 +49,14 @@
                 @change="changeSwitch(record)"
               />
             </template>
-            <template #action="{ record }">
+            <template v-if="column.dataIndex === 'action'">
               <div class="action">
                 <span class="delete" @click="delateCard(record.id)">删除</span>
                 <span class="caozuo" @click="editCard(record)"
                 title="更新">编辑</span>
               </div>  
             </template>
+          </template>
           </a-table>
           <template #renderEmpty>
             <div><Empty :text='ifSearch?"抱歉，未搜到相关数据！":"抱歉，暂无数据！"' type="tableEmpty" /></div>
@@ -153,13 +155,13 @@ columns.value = [
   },
   {
     title: "状态",
-    key: "status",
-    slots: { customRender: "status" },
+    dataIndex: "status",
+    key: "status"
   },
   {
     title: "操作",
-    key: "action",
-    slots: { customRender: "action" },
+    dataIndex: "action",
+    key: "action"
   },
 ];
 const tableData: any = reactive({

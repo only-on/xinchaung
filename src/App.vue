@@ -19,6 +19,9 @@ import * as echarts from 'echarts'
 import extStorage from "src/utils/extStorage";
 import { useRouter ,useRoute } from 'vue-router';
 import {setTheme} from 'src/utils/theme'
+import dayjs from 'dayjs';
+import 'dayjs/locale/zh-cn';
+dayjs.locale('en');
 export default defineComponent({
   name: "App",
   components: {

@@ -62,12 +62,41 @@
               onChange: onSelectChange,
             }"
           >
-    <template #action='{record}'>
-      <div class="action">
-        <span class='delete' @click="deleteStu(record.id)">删除</span>
-        <span @click="initPassward(record.id)">初始化密码</span>
-      </div>
-    </template>
+          <template v-slot:bodyCell="{column,record}">
+            <template v-if="column.dataIndex === 'username'">
+              <span>{{record.user.username}}</span>
+            </template>
+            <template v-if="column.dataIndex === 'name'">
+              <span>{{record.userProfile.name}}</span>
+            </template>
+            <template v-if="column.dataIndex === 'gender'">
+              <span>{{record.userProfile.gender}}</span>
+            </template>
+            <template v-if="column.dataIndex === 'grade'">
+              <span>{{record.userProfile.grade}}</span>
+            </template>
+            <template v-if="column.dataIndex === 'major'">
+              <span>{{record.userProfile.major}}</span>
+            </template>
+            <template v-if="column.dataIndex === 'department'">
+              <span>{{record.userProfile.department}}</span>
+            </template>
+            <template v-if="column.dataIndex === 'email'">
+              <span>{{record.user.email}}</span>
+            </template>
+            <template v-if="column.dataIndex === 'department'">
+              <span>{{record.userProfile.department}}</span>
+            </template>
+            <template v-if="column.dataIndex === 'phone'">
+              <span>{{record.userProfile.phone}}</span>
+            </template>
+            <template v-if="column.dataIndex === 'action'">
+              <div class="action">
+                <span class='delete' @click="deleteStu(record.id)">删除</span>
+                <span @click="initPassward(record.id)">初始化密码</span>
+              </div>
+            </template>
+          </template>
     </a-table>
           <template #renderEmpty>
             <div><Empty :type="EmptyType"/></div>
@@ -121,20 +150,19 @@ const nick:any=ref('')
 columns.value = [
   {
     title: "账号",
-    dataIndex: "user.username",
-    key: "user.username",
+    dataIndex: "username",
+    key: "username",
   },
   {
     title: "姓名",
-    dataIndex: "userProfile.name",
-    key: "userProfile.name",
+    dataIndex: "name",
     width:80,
     ellipsis: true,
   },
   {
     title: "性别",
-    dataIndex: "userProfile.gender",
-    key: "userProfile.gender",
+    dataIndex: "gender",
+    key: "gender",
   },
   {
     title: "班级",
@@ -145,40 +173,40 @@ columns.value = [
   },
   {
     title: "年级",
-    dataIndex: "userProfile.grade",
-    key: "userProfile.grade",
+    dataIndex: "grade",
+    key: "grade",
   },
   {
     title: "专业",
-    dataIndex: "userProfile.major",
-    key: "userProfile.major",
+    dataIndex: "major",
+    key: "major",
     width:80,
     ellipsis: true,
   },
   {
     title: "学院",
-    dataIndex: "userProfile.department",
-    key: "userProfile.department",
+    dataIndex: "department",
+    key: "department",
     width:100,
     ellipsis: true,
   },
   {
     title: "邮箱",
-    dataIndex: "user.email",
-    key: "user.email",
+    dataIndex: "email",
+    key: "email",
     width:120,
     ellipsis: true,
   },
   {
     title: "电话",
-    dataIndex: "userProfile.phone",
-    key: "userProfile.phone",
+    dataIndex: "phone",
+    key: "phone",
     width:120,
   },
   {
     title: "操作",
+    dataIndex: "action",
     key: "action",
-    slots: { customRender: "action" },
     width:140,
   },
 ];

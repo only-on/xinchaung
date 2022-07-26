@@ -57,6 +57,29 @@
               getCheckboxProps: getCheckboxProps,
             }"
           >
+          <template v-slot:bodyCell="{column,record}">
+            <template v-if="column.dataIndex === 'name'">
+              <span>{{record.user_profile.name}}</span>
+            </template>
+            <template v-if="column.dataIndex === 'gender'">
+              <span>{{record.user_profile.gender}}</span>
+            </template>
+            <template v-if="column.dataIndex === 'grade'">
+              <span>{{record.user_profile.grade}}</span>
+            </template>
+            <template v-if="column.dataIndex === 'major'">
+              <span>{{record.user_profile.major}}</span>
+            </template>
+            <template v-if="column.dataIndex === 'department'">
+              <span>{{record.user_profile.department}}</span>
+            </template>
+            <template v-if="column.dataIndex === 'department'">
+              <span>{{record.user_profile.department}}</span>
+            </template>
+            <template v-if="column.dataIndex === 'phone'">
+              <span>{{record.user_profile.phone}}</span>
+            </template>
+          </template>
           </a-table>
           <template #renderEmpty>
             <div><Empty :height='80' :text='ifSearch?"抱歉，未搜到相关数据！":"抱歉，暂无数据！"' type="tableEmpty" /></div>
@@ -100,13 +123,12 @@ columns.value = [
   },
   {
     title: "姓名",
-    dataIndex: "user_profile.name",
-    key: "user_profile.name",
+    dataIndex: "name",
   },
   {
     title: "性别",
-    dataIndex: "user_profile.gender",
-    key: "user_profile.gender",
+    dataIndex: "gender",
+    key: "gender",
   },
   {
     title: "班级",
@@ -115,18 +137,18 @@ columns.value = [
   },
   {
     title: "年级",
-    dataIndex: "user_profile.grade",
-    key: "user_profile.grade",
+    dataIndex: "grade",
+    key: "grade",
   },
   {
     title: "专业",
-    dataIndex: "user_profile.major",
-    key: "user_profile.major",
+    dataIndex: "major",
+    key: "major",
   },
   {
     title: "学院",
-    dataIndex: "user_profile.department",
-    key: "user_profile.department",
+    dataIndex: "department",
+    key: "department",
   },
   {
     title: "邮箱",
@@ -136,8 +158,8 @@ columns.value = [
   },
   {
     title: "电话",
-    dataIndex: "user_profile.phone",
-    key: "user_profile.phone",
+    dataIndex: "phone",
+    key: "phone",
     width:150,
   },
 ];
@@ -159,8 +181,7 @@ const params:any=reactive({
 const emit = defineEmits<{ (e: "updateSelectStuVisable", val: any,selectkeyws:any): void }>();
 function getCheckboxProps(record: any) {
   return {
-    disabled: record.selected,
-    defaultChecked: record.selected,
+    disabled: record.selected
   };
 }
 function handleChange() {}
@@ -206,9 +227,15 @@ function handleCancelSelect(){
   tableData.selectedRowKeys=[]
 }
 function getallstudent(){
+  tableData.selectedRowKeys.length = 0
   http.allstudentlist({param:params}).then((res:any)=>{
     data.value=res.data.list
     tableData.total=res.data.page.totalCount
+    res.data.list.forEach((item:any) => {
+      if(item.selected){
+        tableData.selectedRowKeys.push(item.id)
+      }
+    })
   })
 }
 watch(
