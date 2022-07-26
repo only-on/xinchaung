@@ -1,7 +1,7 @@
 <template>
   <div class="detail">
     <div class="header">
-      <div class="img flexCenter" :style="`background-image: url(${encodeURI(state.detail.cover)});`">
+      <div class="img flexCenter" :style="`background-image: url('${encodeURI(state.detail.cover)}');`">
       {{state.detail.cover?'':'封面不存在'}}
       </div>
       <div class="header_mid">
@@ -448,7 +448,8 @@ function detailed(){
       ...res.data
     }
     //common
-
+    state.coverTime=new Date().getTime()
+    state.detail.cover=`${state.detail.cover}?data-time=${state.coverTime}`
     state.detail.is_public=String(res.data.common)
     state.detail.categoryText=res.data.categorys[0].name
     state.detail.item_count=res.data.amount
@@ -463,7 +464,8 @@ function detailed(){
       })
     }
     // name:state.detail.name,description:state.detail.description,tags:state.detail.tags,is_public:state.detail.is_public,cover:state.detail.cover
-
+    console.log(state);
+    
     oldCommon.value=res.data.common
   })
 }
@@ -509,6 +511,7 @@ onMounted(() => {
     .img{
       width: 270px;
       height: 150px;
+      border-radius: 6px;
       background: url("src/assets/images/cover2.png") no-repeat;
       background-size: 100% 100%;
       justify-content: center;
@@ -583,6 +586,7 @@ onMounted(() => {
     .title{
 
       justify-content: space-between;
+      border-bottom: 1px solid #e8e8e8;
       .tab{
         // width: 300px;
         .item{
@@ -595,6 +599,7 @@ onMounted(() => {
           cursor: pointer;
           border-bottom: 2px solid transparent;
           text-align: left;
+          font-size: 16px;
         }
         .active{
           border-bottom: 2px solid var(--primary-color);
@@ -631,8 +636,9 @@ onMounted(() => {
           flex:1;
           padding-left: 2rem;
           .fileItem{
-            padding: 9px 0;
+            padding: 15px 24px;
             justify-content: space-between;
+            background: #f9f9f9;
             .img{
               width: 40px;
               height: 40px;

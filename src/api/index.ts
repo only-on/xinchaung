@@ -1,9 +1,9 @@
-import { TAvailableModules } from '../typings/api';
-// import  request  from "../utils/fetch.js";
-// //   预设了四中数据格式  URLENCODED(默认)    JSON   TEXT  FORMDATA
+import { TAvailableModules } from 'src/typings/api';
 
 import MyServer from 'src/request/getRequest'
-
+// const MyServer:any=await import ('src/request/getRequest')
+// MyServer.default()
+// const MyServer:any=new GetRequest('')
 const modulesFiles: any = import.meta.globEager("./modules/*.ts")
 const teacherFiles: any = import.meta.globEager("./teacher/*.ts")
 const studentFiles: any = import.meta.globEager("./student/*.ts")

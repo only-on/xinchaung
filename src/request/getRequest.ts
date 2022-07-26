@@ -1,7 +1,8 @@
-import { IBusinessResp } from '../typings/fetch';
-import { TAvailableModules, IApiItem } from '../typings/api';
-import { IRequestConfig, IHttpClient } from '../typings/getRequest';
+import { IBusinessResp } from 'src/typings/fetch';
+import { TAvailableModules, IApiItem } from 'src/typings/api';
+import { IRequestConfig, IHttpClient } from 'src/typings/getRequest';
 import request from "./fetch";
+
 import pupa from 'pupa';
 // import qs from 'qs';
 // https://stackoverflow.com/questions/28920753/declaring-the-type-of-this-in-a-typescript-function/41358367
@@ -43,7 +44,7 @@ GetRequest.prototype.sendServe = function (
   const silent = config.silent ? config.silent : false;     // 是否禁止弹出错误提示  boolean或者 返回boolean值的function
 
   // let url = this.baseUrl + init.url; // 接口地址
-  let url = init.url; // 接口地址
+  let url = config.baseUrl ? config.baseUrl + init.url : init.url; // 接口地址
   if (config.urlParams) {
     url = pupa(url, config.urlParams)
   }
@@ -80,3 +81,4 @@ GetRequest.prototype.sendServe = function (
 };
 
 export default new GetRequest('');
+// export default  GetRequest;

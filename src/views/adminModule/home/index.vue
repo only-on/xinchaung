@@ -84,7 +84,7 @@
                 <div class="flexTitle">
                     <div class="title-bac">服务器节点状态</div>
                     <!-- 优秀 -->
-                    <div>评级:<span class="status" :class="serveNodeStatus=='优秀'?'youxiu':(serveNodeStatus=='差'?'cha':'lianghao')">{{serveNodeStatus}}</span></div>
+                    <div>评级:<span class="status" :class="serveNode?.state!=='up'?'':(serveNodeStatus=='优秀'?'youxiu':(serveNodeStatus=='差'?'cha':'lianghao'))">{{serveNode?.state=='up'?serveNodeStatus:'--'}}</span></div>
                     <div>
                         <a-select class="select-input"  @change="handleChange" v-model:value="serveNodeValue">
                             <a-select-option
@@ -124,7 +124,7 @@
                                     等级:
                                 </span>
                                 <span :class="item.grade=='low'?'low':(item.grade=='medium'?'middle':'high')">
-                                    {{item.grade=='low'?'低风险':(item.grade=='medium'?'中风险':'高风险')}}
+                                    {{serveNode?.state!=='up'?'--':(item.grade=='low'?'低风险':(item.grade=='medium'?'中风险':'高风险'))}}
                                 </span>
                                 <span class='maintain' @click="toMaintain(item.link)">
                                     去维护 
@@ -134,14 +134,14 @@
                     </div>
                 </div>
                 <div class="nodeOperation">
-                    <div class="dohover" @click="nodeOpera(serveNodeValue,serveNodeValue==options[0].value?'master':'slave','stop')">
+                    <div :class="serveNode?.state!=='up'?'disabledClack':'dohover'" @click="serveNode?.state!=='up'?'':nodeOpera(serveNodeValue,serveNodeValue==options[0].value?'master':'slave','stop')">
                         关机 <span class="icon iconfont icon-guanji"></span>
                     </div>
-                    <div class="dohover" @click="nodeOpera(serveNodeValue,serveNodeValue==options[0].value?'master':'slave','restart')">
+                    <div :class="serveNode?.state!=='up'?'disabledClack':'dohover'" @click="serveNode?.state!=='up'?'':nodeOpera(serveNodeValue,serveNodeValue==options[0].value?'master':'slave','restart')">
                         重启 
                         <span class="icon iconfont icon-zhongqi"></span>
                     </div>
-                    <div class="dohover" @click="doSimJetSoft">
+                    <div :class="serveNode?.state!=='up'?'disabledClack':'dohover'" @click="serveNode?.state!=='up'?'':doSimJetSoft()">
                         一键关闭 <span class="icon iconfont icon-guanbi"></span>
                     </div>
                 </div>
@@ -266,12 +266,12 @@
         img:systemImages.Ahome.adminHome4,
         course:'教师数',
         number:'--',
-        link:'/admin/adminUserManagement/teacherManagement'
+        link:'/admin/adminUserManagementTeach'
         },{
         img:systemImages.Ahome.adminHome5,
         course:'学生数',
         number:'--',
-        link:'/admin/adminUserManagement/studentManagement'
+        link:'/admin/adminUserManagementStudent'
         },{
         img:systemImages.Ahome.adminHome6,
         course:'预约人数',
@@ -282,7 +282,6 @@
     const productInfo:any=ref([])
     const enterInfo:any=ref([])
     const aboutData:any=ref([])
-    const activeMenu = ref<string>('')
     productInfo.value=[
         {name:'产品名称'},
         {name:'版本信息'},
@@ -301,7 +300,7 @@
         {name:'运行环境清理',link:'/teacher/coursePlan/environmental'},
         {name:'用户登录信息',link:'/admin/systemMaintenance/userloginInformation'},
         {name:'磁盘管理',link:'/admin/systemMaintenance/diskManagement'},
-        {name:'平台设置',link:'/admin/systemMaintenance/systemAuthorization'},
+        // {name:'平台设置',link:'/admin/systemMaintenance/systemAuthorization'},
     ]
     aboutData.value=[
         {name:'了解西普'},
@@ -319,8 +318,13 @@
             '/admin/TeachingResourceManagement/courseManagement':'教学资源管理',
             '/admin/TeachingResourceManagement/experimentManagement':'教学资源管理',
             '/admin/TeachingResourceManagement/resourcesManagement':'教学资源管理',
-            '/admin/adminUserManagement/teacherManagement':'用户管理',
-            '/admin/adminUserManagement/studentManagement':'用户管理',
+            '/admin/adminUserManagementTeach':'用户管理',
+            '/admin/adminUserManagementStudent':'用户管理',
+
+            '/admin/systemMaintenance/systemAuthorization':'系统维护',
+            '/admin/systemMaintenance/personalization':'系统维护',
+            '/admin/systemMaintenance/userloginInformation':'系统维护',
+            '/admin/systemMaintenance/diskManagement':'系统维护',
         }
         if(obj[value]){
             store.commit("changemenuActiveName",obj[value])
@@ -382,10 +386,10 @@
                 });
                 drawEcharts('resource_echarts',resourceOption(resourceHistory))
                 //平台资源概览
-                drawEcharts('plate1',dashboardResource(statisticData.value.platform_resource.memTotal-statisticData.value.platform_resource.memUsed,statisticData.value.platform_resource.memUseRate,'G',systemColor.Acolor1))
-                drawEcharts('plate2',dashboardResource(statisticData.value.platform_resource.cpuCores-statisticData.value.platform_resource.cpuUsed,statisticData.value.platform_resource.cpuUseRate,'核',systemColor.Acolor2))
-                drawEcharts('plate3',dashboardResource(statisticData.value.platform_resource.disk-statisticData.value.platform_resource.diskUsed,statisticData.value.platform_resource.diskUseRate,'G',systemColor.Acolor3))
-                drawEcharts('plate4',dashboardResource(statisticData.value.platform_resource.gpuMem-statisticData.value.platform_resource.gpuMemUsed,statisticData.value.platform_resource.gpuUseRate,'G',systemColor.Acolor4))
+                drawEcharts('plate1',dashboardResource(Number(statisticData.value.platform_resource.memTotal)-Number(statisticData.value.platform_resource.memUsed),Number(statisticData.value.platform_resource.memUseRate),'G',systemColor.Acolor1))
+                drawEcharts('plate2',dashboardResource(Number(statisticData.value.platform_resource.cpuCores)-Number(statisticData.value.platform_resource.cpuUsed),Number(statisticData.value.platform_resource.cpuUseRate),'核',systemColor.Acolor2))
+                drawEcharts('plate3',dashboardResource(Number(statisticData.value.platform_resource.disk)-Number(statisticData.value.platform_resource.diskUsed),Number(statisticData.value.platform_resource.diskUseRate),'G',systemColor.Acolor3))
+                drawEcharts('plate4',dashboardResource(Number(statisticData.value.platform_resource.gpuMem)-Number(statisticData.value.platform_resource.gpuMemUsed),Number(statisticData.value.platform_resource.gpuUseRate),'G',systemColor.Acolor4))
                 
                 //服务节点状态
                 serveNode.value=statisticData.value?.single_node_resource
@@ -676,9 +680,6 @@
                 color:red;
                 margin-left: 10px;
             }
-            :deep(.ant-select-selector){
-                border-radius: 20px;
-            }
         }
 .platformResources{
     margin-top: 20px;
@@ -755,6 +756,9 @@
     width:100%;
     height:60%;
     // background-color: aqua;
+    :deep(canvas:hover){
+        cursor:auto;
+    }
 }
 .node{
     display: flex;
@@ -835,6 +839,9 @@
 #node1,#node2,#node3,#node4{
     width: 50%;
     height: 100%;
+    :deep(canvas:hover){
+        cursor:auto;
+    }
 }
 
 .bottomInfo{
@@ -962,5 +969,9 @@
 .icon-guanbi{
     font-size: 14px;
     font-weight: bold;
+}
+.disabledClack{
+    color: var(--black-15);
+    cursor:not-allowed;
 }
 </style>

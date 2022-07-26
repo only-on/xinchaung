@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-drawer :visible="true" :closable="false" class="vm-environment-drawer">
+    <!-- <a-drawer :visible="true" :closable="false" class="vm-environment-drawer"> -->
       <div class="vm-environment-setting">
         <a-row>
           <a-col :span="6" class="vm-info-list">
@@ -84,7 +84,7 @@
             </div>
             <div class="text-center">
               <a-space>
-                <a-button :disabled="loading || !isSaveImage" type="primary" @click="stop"
+                <a-button :disabled="loading || !isSaveImage" @click="stop" :class="isSaveImage?'stopenv':''"
                   >停止环境</a-button
                 >
                 <a-button
@@ -97,6 +97,7 @@
             </div>
           </a-col>
           <a-col :span="18" class="envronment-setting-container">
+            <vm-loading v-if="vncLoading || loading"></vm-loading>
             <vue-no-vnc
               background="rgb(40,40,40)"
               :options="vmOptions"
@@ -113,9 +114,7 @@
                 <a-input v-model:value="createFormData.name" />
               </a-form-item>
               <a-form-item label="添加标签" name="tags">
-                <div>
-                  <LabelList :tag="createFormData.tags" :recommend="recommend" @selectTag="selectTag" />
-                </div>
+                <LabelList :tag="createFormData.tags" :recommend="recommend" @selectTag="selectTag" />
               </a-form-item>
               <a-form-item  label="镜像描述" name="description">
                 <a-textarea
@@ -131,7 +130,7 @@
           </template>
         </a-modal>
       </div>
-    </a-drawer>
+    <!-- </a-drawer> -->
   </div>
 </template>
 
@@ -162,6 +161,7 @@ import storage from "src/utils/extStorage";
 import _ from "lodash";
 import VueNoVnc from "src/components/noVnc/noVnc.vue";
 import uploadFile from "src/request/uploadFile";
+import vmLoading from "src/components/noVnc/vmLoading.vue"
 import request from "src/api/index";
 const http = (request as any).teacherImageResourcePool;
 type TreactiveData = {
@@ -189,7 +189,8 @@ export default defineComponent({
   components: {
     "vue-no-vnc": VueNoVnc,
     LabelList,
-    Submit
+    Submit,
+    vmLoading,
   },
   setup() {
     const env = process.env.NODE_ENV == "development" ? true : false;
@@ -338,15 +339,15 @@ export default defineComponent({
             const iamgeSaveStatus = storage.lStorage.get("iamgeSaveStatus")
               ? storage.lStorage.get("iamgeSaveStatus")
               : [];
-            if (_.some(iamgeSaveStatus, { id: reactiveData.id })) {
+            if (_.some(iamgeSaveStatus, { id: Number(reactiveData.id) })) {
               iamgeSaveStatus.forEach((item: any, index: number) => {
-                if (reactiveData.id === item.id) {
+                if (reactiveData.id == item.id) {
                   iamgeSaveStatus[index].beginIime = new Date();
                 }
               });
             } else {
               iamgeSaveStatus.push({
-                id: reactiveData.id,
+                id: Number(reactiveData.id),
                 beginIime: new Date(),
               });
             }
@@ -399,6 +400,7 @@ export default defineComponent({
               vmUpload(res.data.full_url);
             }
           } else {
+            (fileList.value as any)[i].progress = 0;
             message.warn(res.msg)
           }
           (fileList.value as any)[i].upload = "";
@@ -448,9 +450,9 @@ export default defineComponent({
         var iamgeSaveStatus = storage.lStorage.get("iamgeSaveStatus")
           ? storage.lStorage.get("iamgeSaveStatus")
           : [];
-        if (_.some(iamgeSaveStatus, { id: reactiveData.id })) {
+        if (_.some(iamgeSaveStatus, { id: Number(reactiveData.id) })) {
           iamgeSaveStatus.forEach((item: any, index: number) => {
-            if (reactiveData.id === item.id) {
+            if (reactiveData.id == item.id) {
               // 10分钟秒数
               /* eslint-disable */
               var time = new Date().getTime() - new Date(item.beginIime).getTime();
@@ -507,13 +509,24 @@ export default defineComponent({
       novncEl,
       recommend,
       selectTag,
-      saveImageLoad
+      saveImageLoad,
+      vncLoading,
     };
   },
 });
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
+.vm-environment-setting {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+  z-index: 2;
+  overflow: hidden;
+}
 .vm-environment-drawer {
   z-index: 1111 !important;
   .ant-btn > span {
@@ -521,6 +534,7 @@ export default defineComponent({
   }
   .ant-btn-primary {
     box-shadow: none;
+    border-radius: 17px;
   }
   .ant-drawer-content-wrapper {
     width: 100% !important;
@@ -659,6 +673,14 @@ export default defineComponent({
     margin-top: 40px;
     display: flex;
     justify-content: center;
+    .ant-btn {
+      &.stopenv {
+        background: #eee;
+        color: #535353;
+        border-color: #eee;
+      }
+
+    }
   }
 }
 .ant-modal {

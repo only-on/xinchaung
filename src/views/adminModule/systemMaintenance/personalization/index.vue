@@ -43,7 +43,7 @@
       </div>
       <div class="bottomBtn">
         <a-button type='primary' @click="handleSave">{{isEdit ? '保存' : '编辑'}}</a-button>
-        <a-button type='primary' class="brightBtn" :disabled="!isEdit" @click="handleInit">设置初始化</a-button>
+        <a-button type='primary' class="brightBtn" :disabled="!isEdit" @click="clickSetInit">设置初始化</a-button>
       </div>
     </div>
 </template>
@@ -144,6 +144,14 @@
       isEdit.value = !isEdit.value
       return
     }
+    if (!systemInfo.logo_url) {
+      message.warn('LOGO不能为空');
+      return
+    }
+    if (!systemInfo.theme) {
+      message.warn('请选择主题风格');
+      return
+    }
     formRef.value.validate().then(()=>{
       systemInfo.login = systemInfo.theme
       http.systemPersonalSet({param: systemInfo}).then((res:IBusinessResp) => {
@@ -153,6 +161,11 @@
       })
     })
   }
+  function clickSetInit(){
+    http.setInit().then((res:any)=>{
+      handleInit ()
+    })
+  }
   // 设置初始化
   function handleInit () {
     http.systemPersonalShow().then((res:IBusinessResp) => {
@@ -160,8 +173,10 @@
         isEdit.value = false
         message.success('初始化成功')
       }
-      Object.assign(systemInfo, res.data)
-      setStyle()
+      if (res.data) {
+        Object.assign(systemInfo, res.data)
+        setStyle()
+      }
     })
   }
   function setStyle () {

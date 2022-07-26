@@ -125,6 +125,9 @@
         </span>
       </template>
     </a-table>
+    <template #renderEmpty>
+      <div v-if="!loading"><Empty :type="EmptyType" /></div>
+    </template>
   </a-config-provider>
   <a-modal
     v-model:visible="visible"
@@ -220,9 +223,12 @@
           :show-upload-list="false"
           accept=".xls,.xlsx"
         >
-          <a-button>
-            <span class="icon iconfont icon-upload"></span>
-            选择文件
+          <a-button :loading="ImportData.loading" :disabled="ImportData.loading">
+            <template v-if="!ImportData.loading">
+              <span class="icon iconfont icon-upload"></span>
+              选择文件
+            </template>
+            <span v-else>导入中...</span>
           </a-button>
         </a-upload>
         <!-- <div>
@@ -451,6 +457,15 @@ const studentColumns = [
     });
     formState.password_hash = `${formState.username}${suffix}`;
     formState.repassword = `${formState.username}${suffix}`;
+    const EmptyType:any=computed(()=>{
+      let str=''
+      if(ForumSearch.name == '' && ForumSearch.classname == '' && ForumSearch.grade == '' && ForumSearch.major == ''){
+        str= 'tableEmpty'
+      }else{
+        str= 'tableSearchEmpty'
+      }
+      return str
+    })
     var uploadData:any= ref(false);
     const loading:any=ref(false)
     var visible:any = ref(false);
@@ -467,6 +482,7 @@ const studentColumns = [
       list: [],
       finished: 0,
       unfinished: 0,
+      loading: false
     });
     function initData() {
       loading.value = true;
@@ -582,11 +598,11 @@ const studentColumns = [
       });
     }
     function createStu(){
-      router.push({path: '/admin/adminUserManagement/createStudent'});
+      router.push({path: '/admin/adminUserManagementStudent/createStudent'});
     }
     function batchResetPassword(){
       if (!state.selectedRowKeys.length) {
-        message.warn("请选择要删除的数据");
+        message.warn("请选择要重置密码的数据");
         return;
       }
       Modal.confirm({
@@ -747,6 +763,7 @@ const studentColumns = [
         message.warn("文件大小不能为空");
         return false;
       }
+      ImportData.loading = true
       // loading.value=true
       const fd = new FormData();
       fd.append("file", file);
@@ -755,7 +772,10 @@ const studentColumns = [
         ImportData.unfinished = res.data.total.unfinished;
         ImportData.list = res.data.msg;
         message.success("导入完成");
+        ImportData.loading = false
         initData();
+      }).catch(() => {
+        ImportData.loading = false
       });
       return false
     }
@@ -763,7 +783,7 @@ const studentColumns = [
       const isDev = process.env.NODE_ENV == "development" ? true : false;
       let url = isDev
         ? "./public/template/Student.xlsx"
-        : "api/template/Student.xlsx";
+        : "/api/template/Student.xlsx";
       const a = document.createElement("a");
       a.href = url;
       a.download = "学生模板.xlsx";
@@ -878,23 +898,23 @@ const studentColumns = [
       padding-left: 16px;
       font-size: 13px;
     }
+    .ant-upload {
+      button {
+        background: var(--primary-color);
+        border-radius: 5px;
+        color: #ffffff;
+        .icon-upload {
+          font-size: 12px;
+          padding-right: 6px;
+        }
+      }
+    }
   }
   .list {
     .title {
       span {
         margin-right: 50px;
       }
-    }
-  }
-}
-.ant-upload {
-  button {
-    background: var(--primary-color);
-    border-radius: 5px;
-    color: #ffffff;
-    .icon-upload {
-      font-size: 12px;
-      padding-right: 6px;
     }
   }
 }

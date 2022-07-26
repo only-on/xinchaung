@@ -70,6 +70,7 @@
           </div>
         </a-col>
       </a-row>
+     <a-spin :spinning="loading" size="large" tip="Loading...">  
       <div class="table-main setscrollbar2">
         <div class="table-content">
           <div class="table-time-col">
@@ -255,21 +256,8 @@
                       v-if="!classVal.full && role != 2"
                       class="create-button flex-center"
                     >
-                      <div
-                        :class="classVal.belongs_to_currentteacher||classVal.left_stunum<=0?'noclick':'create-btn'"
-                        @click="
-                        classVal.belongs_to_currentteacher||classVal.left_stunum<=0?'':
-                          createTeachingSchedule(
-                            classVal.left_stunum,
-                            weekIndex,
-                            classIndex
-                          )
-                        "
-                        v-if="!classVal.belongs_to_currentteacher&&classVal.left_stunum>0"
-                      >
-                        创建排课
-                      </div>
-                      <div v-else :class="classVal.left_stunum>0?'edit-delete-wrap':'cannot_click'">
+                      
+                      <div v-if="classVal.belongs_to_currentteacher&&classVal.total_students>0" :class="classVal.left_stunum>0?'edit-delete-wrap':'cannot_click'">
                         <span
                           @click="classVal.left_stunum>0?
                             editTeachingSchedule(
@@ -282,6 +270,21 @@
                         <span @click="classVal.left_stunum>0?cancelScheduleConfirm(classVal.arrangements[0].cid):''"
                           >删除</span
                         >
+                      </div>
+                      <div
+                        :class="classVal.belongs_to_currentteacher||classVal.left_stunum<=0?(classVal.left_stunum==0?'nopower_click':'noclick'):'create-btn'"
+                        @click="
+                        classVal.belongs_to_currentteacher||classVal.left_stunum<=0?'':
+                          createTeachingSchedule(
+                            classVal.left_stunum,
+                            weekIndex,
+                            classIndex
+                          )
+                        "
+                        v-else
+                      >
+                      <!-- &&classVal.left_stunum>=0 -->
+                        创建排课
                       </div>
                     </div>
                     <div v-else class="course-make-wrap">
@@ -343,6 +346,7 @@
           </a-row>
         </div>
       </div>
+      </a-spin>
     </div>
   </div>
   <setting-time-modal ref="settingTimeModalRef" />
@@ -406,7 +410,7 @@ updata({
   componenttype: undefined,
   showNav: false,
 });
-
+const loading:any=ref(false)
 const dayTimes: Ref<any[]> = ref([]);
 // top数据
 // 初始表头数据
@@ -473,10 +477,10 @@ function getTimeTable(data: string) {
   };
   // datas.tableList = {};
   // console.log("2222");
-
+  loading.value=true
   http.getTimeTable({ param }).then((res: any) => {
     console.log(res);
-
+    loading.value=false
     datas.tableList = res.data;
   });
 }
@@ -746,7 +750,6 @@ onMounted(() => {
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   // overflow: hidden;
-  margin-top: 20px;
   .table-th {
     flex-direction: row;
     display: flex;
@@ -758,7 +761,7 @@ onMounted(() => {
       font-size: 22px;
       // padding-right: 10px;
       &.active {
-        color: var(--orangeyellow-6);
+        color: var(--primary-color);
       }
     }
     .table-week-date {
@@ -1073,11 +1076,12 @@ onMounted(() => {
             flex-direction: column;
             .course-info-text {
               font-size: 12px;
-              margin-bottom:20px;
+              margin-bottom:12px;
             }
             .course-info-num {
               font-size: 50px;
               line-height: 1;
+              font-weight: 700;
             }
           }
           .course-info-title-active {
@@ -1132,13 +1136,19 @@ onMounted(() => {
   }
   .table-title {
     padding: 10px;
-    background: #f7f7f7;
+    background: #ececec;
+    &:first-child{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
   }
   .table-time-col {
     width: 100px;
     min-width: 100px;
     display: flex;
     flex-direction: column;
+    background: var(--white-100);
     .table-time-list {
       transition: all 0.2s;
       flex: 1;
@@ -1287,10 +1297,10 @@ onMounted(() => {
     // border-radius: 50%;
     // background: #FF9D00;
     width: 100%;
-    height: 100%;
-    background-color: #f2f2f2;
+    // height: 100%;
+    // background-color: var(--white-100);
     display: none;
-    cursor: pointer;
+    // cursor: pointer;
     position: absolute;
     & > div.create-btn {
       color: var(--white-100);
@@ -1300,6 +1310,8 @@ onMounted(() => {
       margin: 0 auto;
       background: var(--primary-color);
       border-radius:20px;
+      box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.14); 
+      cursor: pointer;
     }
   }
   .a-create-wrap{
@@ -1340,6 +1352,15 @@ onMounted(() => {
   margin: auto auto 10px auto;
   margin-top: auto;
 }
+.nopower_click{
+  cursor: not-allowed;
+  color: #828282;
+  width: 112px;
+  height: 24px;
+  background: #f5f5f5;
+  border: 1px solid #d9d9d9;
+  border-radius: 13px;
+}
 .cannot_click{
   cursor: not-allowed;
   color: #828282;
@@ -1371,6 +1392,7 @@ onMounted(() => {
   line-height: 30px;
   font-size: 12px;
   color: var(--primary-color);
+  margin: 8px 0;
   .iconfont{
     font-size: 12px;
   }

@@ -86,8 +86,14 @@ function openVm(params: IEnvirmentsParam) {
                             taskId: params.taskId,
                           }
                         });
+                      }).catch(() => {
+                        reject()
                       })
+                    }).catch(() => {
+                      reject()
                     })
+                  }).catch(() => {
+                    reject()
                   })
                 } catch (error) {
                   console.log(error);
@@ -114,7 +120,11 @@ function openVm(params: IEnvirmentsParam) {
                     taskId: params.taskId,
                   }
                 });
+              }).catch(() => {
+                reject()
               })
+            }).catch(() => {
+              reject()
             })
           }
   
@@ -500,7 +510,7 @@ function operatesHandle(params: IOperatesHandle) {
   });
 }
 /**
- * @description 创建环境前的检查环境
+ * @description ide实验 创建环境前的检查环境
  * @param params
  */
  function inspectEnv(params: IEnvirmentsParam) {

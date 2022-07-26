@@ -228,15 +228,7 @@ export default defineComponent({
           display: flex;
           align-items: center;
           margin-right: 22px;
-          :deep(.ant-select-selector){
-            width: 240px;
-            height: 35px;
-            padding-left: 30px;
-            align-items: center;
-          }
-          :deep(.ant-input){
-              padding-left: 26px;
-          }
+          
         }
         .item:last-child{
           .ant-btn{

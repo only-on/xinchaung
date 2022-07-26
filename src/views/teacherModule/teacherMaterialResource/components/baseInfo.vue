@@ -25,22 +25,6 @@
       </a-form-item>
       <a-form-item label="封面图" class="cover">
         <upload-cover :coverUrl="formState" :isUpload="props.materialType === '数据集'" @uploadCoverHandle="uploadCoverHandle"></upload-cover>
-        <!-- <img v-if="imageUrl" :src="imageUrl" alt="" srcset="">
-        <a-upload
-          v-model:file-list="fileList"
-          list-type="picture"
-          class="uploader"
-          :show-upload-list="false"
-          :before-upload="beforeUpload"
-          @change="handleChange"
-        >
-          <div class="upload">
-            <div class="cover">
-              <img src="src/assets/images/teacherMaterialResource/cover.png" alt="">
-            </div>
-            <loading-outlined v-if="loading"></loading-outlined>
-          </div>
-        </a-upload> -->
       </a-form-item>
     </div>
   </div>
@@ -60,9 +44,7 @@
       </a-radio-group>
     </a-form-item>
     <a-form-item class="right" label="添加标签" name="tags">
-      <div>
-        <LabelList :tag="formState.tags" :recommend="commonLabelsList" />
-      </div>
+      <LabelList :tag="formState.tags" :recommend="commonLabelsList" />
     </a-form-item>
   </div>
 </a-form>
@@ -135,42 +117,7 @@ const uploadCoverHandle = (file: any) => {
     formState.cover = res.data.path
   })
 }
-const fileList:Ref<any>=ref([])
-const loading = ref<boolean>(false)
-const beforeUpload = (file:any) => {
-  console.log(file)
-  const isJpgOrPng = ['image/jpeg','image/png'].includes(file.type)
-  if (!isJpgOrPng) {
-    $message.warn('图片类型不正确')
-    return false
-  }
-  if (props.materialType === '数据集') {
-    const fd = new FormData()
-    fd.append('upload_file', file)
-    datasetHttp.upLoadCover({param:fd}).then((res:any)=>{
-      loading.value = false
-      console.log(res)
-      formState.cover = res.data.path
-      let data = res.data;
-      let obj = [
-        {
-          uid: "-1",
-          name: data.name,
-          status: "",
-          url: data.path,
-        },
-      ];
-      // (state.ForumSearch.cover = data.path), (coverFileList.value = obj);
-    })
-    return
-  }
-  formState.cover = file
-}
-function getBase64(img: Blob, callback: (base64Url: string) => void) {
-  const reader = new FileReader();
-  reader.addEventListener('load', () => callback(reader.result as string));
-  reader.readAsDataURL(img);
-}
+
 interface FileItem {
   uid: string;
   name?: string;
@@ -185,71 +132,6 @@ interface FileInfo {
   file: FileItem;
   fileList: FileItem[];
 }
-const handleChange = (info: FileInfo) => {
-  console.log(info)
-    loading.value = true
-  getBase64(info.file.originFileObj, (base64Url: string) => {
-    imageUrl.value = base64Url;
-    loading.value = false;
-  });
-  if (info.file.status === 'uploading') {
-    loading.value = true;
-    return;
-  }
-  if (info.file.status === 'done') {
-    // Get this url from response in real world.
-    getBase64(info.file.originFileObj, (base64Url: string) => {
-      imageUrl.value = base64Url;
-      loading.value = false;
-    });
-  }
-  // if (info.file.status === 'error') {
-  //   loading.value = false;
-  //   $message.error('upload error');
-  // }
-  // return false
-};
-// 添加标签
-const openCustom: Ref<boolean> = ref(false);
-const showTag: Ref<boolean> = ref(false);
-const customLabelV = ref<string>('')
-const refCustomLabel = ref<HTMLElement>()
-function clickCustomLabel() {
-  showTag.value = true;
-  openCustom.value = true;
-  nextTick(() => {
-    refCustomLabel.value && refCustomLabel.value.focus();
-  });
-}
-function removeLabel(val: string) {
-  let num = formState.tags.indexOf(val);
-  if (num !== -1) {
-    formState.tags.splice(num, 1);
-  }
-}
-function customFinish() {
-  if (customLabelV.value.trim()) {
-    formState.tags.push(customLabelV.value);
-    customLabelV.value = "";
-    openCustom.value = false;
-  } else {
-    openCustom.value = false;
-  }
-}
-function changeLabel() {
-  customLabelV.value =
-    customLabelV.value.length > 10
-      ? customLabelV.value.slice(0, 10)
-      : customLabelV.value;
-}
-function addTag(val: any) {
-  if (formState.tags.length < 3) {
-    formState.tags.push(val.name);
-  } else {
-    $message.warn("最多添加3个标签");
-  }
-}
-
 const rules = {
   name: [
     { required: true, message: `请输入${props.materialType}名称`, trigger: "blur" },
@@ -259,7 +141,6 @@ const rules = {
     { required: true, message: "请选择数据集类型", trigger: "change" },
   ],
 }
-// let baseInfoFormRef = ref<HTMLElement | null>(null)
 let baseInfoFormRef = ref()
 const fromValidate = () => {
   return new Promise((resolve: any, reject: any) => {

@@ -19,13 +19,22 @@ export default {
       },
     },
     {
-        path: "Detail",
-        name:'学生课程详情',
-        component: () => import("src/views/studentModule/studentCourse/courseDetail/index.vue"),
-        meta: {
-          title: "详情",
-          authCode: 'Detail'
-        },
+      path: "Detail",
+      name:'学生课程详情',
+      component: () => import("src/views/studentModule/studentCourse/courseDetail/index.vue"),
+      meta: {
+        title: "详情",
+        authCode: 'Detail'
       },
+    },
+    {
+      path: "StuCourseExperimentDetail",
+      name: "StuCourseExperimentDetail",
+      component: () =>import("src/views/teacherModule/teacherExperimentResourcePool/experimentDetail.vue"),
+      meta: {
+        title: "推荐实验详情",
+        icon: "",
+      },
+    },
   ],
 };

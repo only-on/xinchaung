@@ -32,11 +32,11 @@
         />
       </div>
     </div>
-    <div class="data-set-base-box setScrollbar">
+    <div class="data-set-base-box">
       <a-spin :spinning="loading" size="large" tip="Loading...">
       
         <template v-if="dataSetList.length > 0 && !loading">
-          <div class="data-set-item" v-for="item in dataSetList" :key="item.id">
+          <div class="data-set-item"  v-for="item in dataSetList" :key="item.id" :class='selected.includes(item.id)?"borderCorlor":"currentColor"'>
             <div><img :src="item.cover" alt="" /></div>
             <div class="data-base-info">
               <h2>{{ item.name }}</h2>
@@ -45,7 +45,7 @@
                   <!-- v-if="params.common === 1" -->
                   <div class="flexCenter imgBox" v-if="params.common === 1">
                     <span class="img"></span>
-                    <span class="text">{{item.username}}</span>
+                    <span class="text username" :title="item.username">{{item.username}}</span>
                   </div>
                   <div class="tags flexCenter">
                     <!-- <span>{{`${item.tags.join('/')}`}}</span> -->
@@ -75,11 +75,13 @@
         </template>
         <empty v-if="dataSetList.length === 0 && !loading"></empty>
         <a-pagination
-          v-if="count > 12"
+          v-if="count > 10"
+          show-size-changer
           v-model:current="params.page"
           :pageSize="params.limit"
           :total="count"
           @change="pageChange"
+          @showSizeChange="showSizeChange"
         />
         <!-- <p
           class="look-more-btn"
@@ -212,6 +214,12 @@ export default defineComponent({
       reactiveData.params.page=current
       getDataList();
     }
+    const showSizeChange = (current: any,size: any) => {
+      // console.log(size);
+      reactiveData.params.page = 1
+      reactiveData.params.limit = size;
+      getDataList();
+    };
     // pageChange
 
     // 移除
@@ -278,6 +286,7 @@ export default defineComponent({
       tagChange,
       lookMore,
       pageChange,
+      showSizeChange,
       remove,
       select,
       bytesToSize,
@@ -336,7 +345,7 @@ export default defineComponent({
   .data-set-base-box {
     // flex: 1;
     height: calc(100% - 150px);
-    overflow: auto;
+    // overflow: auto;
     // padding-top: 25px;
     // padding-right: 24px;
     // padding-left: 24px;
@@ -347,11 +356,13 @@ export default defineComponent({
       margin-bottom: 20px;
       background: var(--white-100);
       border: 1px solid #cdcdcd;
+
       border-radius: 10px;
       transition: 0.2s;
       &:hover {
         // box-shadow: 0 3px 6px 0 var(--black-0-7);
         box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16); 
+        border-color: var(--primary-color);
         .caozuo{
           .iconfont{
             display: block;
@@ -435,6 +446,12 @@ export default defineComponent({
         color: var(--primary-color);
       }
     }
+    .borderCorlor{
+      border-color:var(--primary-color);
+    }
+    .currentColor{
+      border-color: #cdcdcd;
+    }
   }
   .look-more-btn {
     text-align: center;
@@ -456,6 +473,13 @@ export default defineComponent({
     color: var(--black-45);
     font-size: var(--font-size-sm);
   }
+  .username{
+    display: inline-block;
+    width:62px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
   .portrait{
     line-height: 22px;
     .imgBox{
@@ -471,6 +495,7 @@ export default defineComponent({
       margin-right: 6px;
     }
     .tags{
+      width: 400px;
       span{
         color: var(--primary-color);
         font-size: var(--font-size-sm);

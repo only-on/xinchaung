@@ -220,7 +220,7 @@ function dashboardResource(data:any,data1:any,type:any,color:any){
           //   return `${value}G`
           // },
           // formatter: "{value}"+type,
-          formatter:data1!==null?data+type:'--',
+          formatter:data1!==null?data.toFixed(2)+type:'--',
           rich: {
             "<style_name>": {
               align: "left"

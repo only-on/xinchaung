@@ -295,9 +295,6 @@ const clickLoadingMore = (id: number) => {
       color: var(--white-100);
     }
   }
-  .ant-spin-nested-loading {
-    min-height: 80px!important;
-  }
 }
 .forum-content-all{
   :deep(.ql-image){

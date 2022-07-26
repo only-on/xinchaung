@@ -3,6 +3,7 @@ import { TFHttpSend } from "src/typings/getRequest";
 export default {
   getConfigApi: { url: `/api/env/images/config`, method: "GET"},
   imagesList: { url: `/api/env/images`, method: "GET"},
+  imagesSelectList: { url: `/api/env/images/select`, method: "GET"}, // 创建实验（选择镜像）无分页信息
   imgCopy: { url: `/api/env/images/copy/{imageID}`, method: "POST" },
   deleteImg: { url: `/api/env/images/{imageID}`, method: "DELETE" },
   editMyImage: { url: `/api/env/images/{imageID}`, method: "put" ,dataType: 'json'},
@@ -23,6 +24,7 @@ export default {
 export interface ITeacherImageResourcePool {
   getConfigApi:TFHttpSend
   imagesList:TFHttpSend
+  imagesSelectList:TFHttpSend
   imgCopy:TFHttpSend
   editMyImage:TFHttpSend
   getWorkBenchList:TFHttpSend

@@ -177,7 +177,7 @@ onMounted(()=>{
 .header {
   margin-bottom: 20px;
   .btn1 {
-    margin-right: 16px;
+    margin-right: 8px;
   }
 }
 .select {

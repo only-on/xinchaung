@@ -77,7 +77,6 @@ import {
 } from "vue";
 import request from "src/request/getRequest";
 import OnLine from "./OnLine.vue";
-import empty from "src/components/Empty.vue";
 import iconList from "src/utils/iconList";
 // @ts-ignore 类型声明需要完善，此处先用注解压制错误
 import {renderMarkdown} from  '@xianfe/antdv-markdown';
@@ -268,6 +267,8 @@ onMounted(() => {
   padding: 15px;
   word-break: break-all;
   white-space: normal;
+  position: relative;
+  z-index: 10;
 }
 .report-table {
   width: 100%;

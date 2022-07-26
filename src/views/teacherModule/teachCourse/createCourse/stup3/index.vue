@@ -28,22 +28,25 @@
             rowKey="id"
           >
             <template #username="{ record }">
-              <div>{{ record.user?.username }}</div>
+              <div class="single_ellipsis" :title="record.user?.username">{{ record.user?.username }}</div>
             </template>
             <template #name="{ record }">
-              <div>{{ record.userProfile?.name }}</div>
+              <div class="single_ellipsis" :title="record.userProfile?.name">{{ record.userProfile?.name }}</div>
             </template>
             <template #gender="{ record }">
               <div>{{ record.userProfile?.gender }}</div>
             </template>
+            <template #major="{ record }">
+              <div class="single_ellipsis" :title="record.userProfile?.major">{{ record.userProfile?.major }}</div>
+            </template>
             <template #department="{ record }">
-              <div>{{ record.userProfile?.department }}</div>
+              <div class="single_ellipsis" :title="record.userProfile?.department">{{ record.userProfile?.department }}</div>
             </template>
             <template #phone="{ record }">
-              <div>{{ record.userProfile?.phone }}</div>
+              <div class="single_ellipsis" :title="record.userProfile?.phone">{{ record.userProfile?.phone }}</div>
             </template>
             <template #email="{ record }">
-              <div>{{ record.user?.email }}</div>
+              <div  class="single_ellipsis" :title="record.user?.email">{{ record.user?.email }}</div>
             </template>
             <template #stuaction="{ record }">
               <div class="action">
@@ -117,7 +120,8 @@ const columns= [
         },
         {
           title: "专业",
-          dataIndex: "user_id",
+          dataIndex: "major",
+          slots: { customRender: "major" },
           align: "left",
           ellipsis: true,
         },
@@ -263,11 +267,15 @@ onMounted(()=>{
       cursor: pointer;
       span{
         margin: 0 10px;
+        font-size: 14px;
       }
       // .spanleft {
       //   margin-right: 10px;
       // }
     }
+  }
+  .ant-table-thead > tr > th{
+    background: var(--gray-4);
   }
 }
 :deep(.ant-table-pagination.ant-pagination) {

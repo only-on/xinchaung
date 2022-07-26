@@ -34,7 +34,7 @@ var chartData:any=reactive({})
 function viewAtlas(){
   Visible.value=true
   nextTick(()=>{
-    Knowledge3('KnowledgePoints',chartData,50)
+    Knowledge3('KnowledgePoints',chartData,28)
   })
 }
 const courseknowledge=()=>{
@@ -44,7 +44,7 @@ const courseknowledge=()=>{
     chartData={...data}
     // list.push(...data)
     nextTick(()=>{
-      Knowledge3('graph',chartData,50)
+      Knowledge3('graph',chartData,28)
     })
   });
 }
@@ -84,6 +84,7 @@ onMounted(() => {
       background: rgba(0,0,0,0.40);
       color: #ffffff;
       cursor: pointer;
+      z-index: 999;
     }
   }
   .modal-post{

@@ -79,6 +79,9 @@
         </span>
       </template>
     </a-table>
+    <template #renderEmpty>
+      <div v-if="!loading"><Empty :type="EmptyType" /></div>
+    </template>
   </a-config-provider>
   <a-modal
     v-model:visible="visible"
@@ -178,9 +181,12 @@
           :show-upload-list="false"
           accept=".xls,.xlsx"
         >
-          <a-button>
-            <span class="icon iconfont icon-upload"></span>
-            选择文件
+          <a-button :loading="ImportData.loading" :disabled="ImportData.loading">
+            <template v-if="!ImportData.loading">
+              <span class="icon iconfont icon-upload"></span>
+              选择文件
+            </template>
+            <span v-else>导入中...</span>
           </a-button>
         </a-upload>
         <!-- <div>
@@ -403,6 +409,15 @@ const teacherColumns = [
     });
     formState.password_hash = `${formState.username}${suffix}`;
     formState.repassword = `${formState.username}${suffix}`;
+    const EmptyType:any=computed(()=>{
+      let str=''
+      if(ForumSearch.name == '' && ForumSearch.username == '' && ForumSearch.department == ''){
+        str= 'tableEmpty'
+      }else{
+        str= 'tableSearchEmpty'
+      }
+      return str
+    })
     const rules = {
       username: [
         { required: true, message: "请输入账号", trigger: "blur" },
@@ -505,6 +520,7 @@ const teacherColumns = [
       list: [],
       finished: 0,
       unfinished: 0,
+      loading: false
     });
     function initData() {
       loading.value = true;
@@ -567,7 +583,7 @@ const teacherColumns = [
     }
     function batchResetPassword(){
       if (!state.selectedRowKeys.length) {
-        message.warn("请选择要删除的数据");
+        message.warn("请选择要重置密码的数据");
         return;
       }
       Modal.confirm({
@@ -702,7 +718,7 @@ const teacherColumns = [
       visible.value = true;
     }
     function createteacher(){
-      router.push({path: '/admin/adminUserManagement/createTeacher'});
+      router.push({path: '/admin/adminUserManagementTeach/createTeacher'});
     }
     async function clearSearch() {
       // if(ForumSearch.username || ForumSearch.name || ForumSearch.department){
@@ -749,6 +765,7 @@ const teacherColumns = [
         message.warn("文件大小不能为空");
         return false;
       }
+      ImportData.loading = true
       // loading.value=true
       const fd = new FormData();
       fd.append("file", file);
@@ -757,7 +774,10 @@ const teacherColumns = [
         ImportData.unfinished = res.data.total.unfinished;
         ImportData.list = res.data.msg;
         message.success("导入完成");
+        ImportData.loading = false
         initData();
+      }).catch(() => {
+        ImportData.loading = false
       });
       return false
     }
@@ -765,7 +785,7 @@ const teacherColumns = [
       const isDev = process.env.NODE_ENV == "development" ? true : false;
       let url = isDev
         ? "./public/template/Teacher.xlsx"
-        : "api/template/Teacher.xlsx";
+        : "/api/template/Teacher.xlsx";
       const a = document.createElement("a");
       a.href = url;
       a.download = "教师模板.xlsx";
@@ -870,17 +890,7 @@ const teacherColumns = [
     margin: 0 10px;
   }
 }
-.ant-upload {
-  button {
-    background: var(--primary-color);
-    border-radius: 5px;
-    color: #ffffff;
-    .icon-upload {
-      font-size: 12px;
-      padding-right: 6px;
-    }
-  }
-}
+
 .studentList {
   .heard {
     margin-bottom: 22px;
@@ -892,6 +902,17 @@ const teacherColumns = [
       color: red;
       padding-left: 16px;
       font-size: 13px;
+    }
+    .ant-upload {
+      button {
+        background: var(--primary-color);
+        border-radius: 5px;
+        color: #ffffff;
+        .icon-upload {
+          font-size: 12px;
+          padding-right: 6px;
+        }
+      }
     }
   }
   .list {

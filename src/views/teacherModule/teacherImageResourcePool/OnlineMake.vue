@@ -94,9 +94,7 @@
                 <a-input v-model:value="createFormData.name" placeholder="请在这里输入镜像标题" />
               </a-form-item>
               <a-form-item label="添加标签" name="tags">
-                <div>
-                  <LabelList :tag="createFormData.tags" :recommend="recommend" @selectTag="selectTag" />
-                </div>
+                <LabelList :tag="createFormData.tags" :recommend="recommend" @selectTag="selectTag" />
               </a-form-item>
               <a-form-item  label="镜像描述" name="description">
                 <a-textarea
@@ -137,6 +135,7 @@ import { Modal, message } from "ant-design-vue";
 import { ExclamationCircleOutlined,LoadingOutlined } from "@ant-design/icons-vue";
 import { getWorkbenchInfoApi, deleteWorkbenchApi } from "./api";
 import Submit from "src/components/submit/index.vue";
+import _ from "lodash";
 const router = useRouter();
 const route = useRoute();
 const { editId } = route.query;
@@ -347,6 +346,22 @@ const saveImage=()=>{
       saveVisible.value=false
       list[saveIndex.value].generateLoad=false
       saveImageLoad.value=false
+      const iamgeSaveStatus = storage.lStorage.get("iamgeSaveStatus")
+        ? storage.lStorage.get("iamgeSaveStatus")
+        : [];
+      if (_.some(iamgeSaveStatus, { id: imageid.value })) {
+        iamgeSaveStatus.forEach((item: any, index: number) => {
+          if (imageid.value == item.id) {
+            iamgeSaveStatus[index].beginIime = new Date();
+          }
+        });
+      } else {
+        iamgeSaveStatus.push({
+          id: imageid.value,
+          beginIime: new Date(),
+        });
+      }
+      storage.lStorage.set("iamgeSaveStatus", JSON.stringify(iamgeSaveStatus));
     })
     .catch(() => {
       saveImageLoad.value=false
@@ -439,6 +454,7 @@ async function init() {
     width: 384px;
     // height: 224px;
     color: var(--white);
+    box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.07);
     .top {
       display: flex;
       justify-content: space-between;

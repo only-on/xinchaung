@@ -72,6 +72,7 @@ import {
   LocationQueryValue,
   onBeforeRouteUpdate,
 } from "vue-router";
+import { WS_CLOSE_CODE_EXP_ENDED, WS_CLOSE_REASON_EXP_ENDED } from "../../../../utils/vm";
 
 import storage from "src/utils/extStorage";
 import { getVmConnectSetting } from "src/utils/seeting";
@@ -226,9 +227,13 @@ function initWs() {
                   },
                 });
               } else {
-                timerout = setTimeout(() => {
-                  initWs();
-                }, 300);
+                console.log('[newVnc] longWs closed: ', ev.code, ev.reason);
+                // ws主动断开时，不用重连
+                if (ev.code !== WS_CLOSE_CODE_EXP_ENDED) {
+                  timerout = setTimeout(() => {
+                    initWs();
+                  }, 300);
+                }
               }
             }
             // message.success("ws关闭成功");
@@ -247,7 +252,7 @@ function initWs() {
             if (
               ind === 0 &&
               baseInfo.value.base_info &&
-              baseInfo.value.base_info.is_webssh === 1 
+              baseInfo.value.base_info.is_webssh === 1
               // && ((role == 4 && vmsInfo.value.vms[currentVmIndex.value].switch == 0) ||
               //   role != 4)
             ) {
@@ -297,7 +302,7 @@ function initWs() {
                   if (currentClickIndex.value == currentVmIndex.value) {
                     loading.value = false;
                   }
-                  
+
                   initVnc.value();
                 } else {
                   isClose.value = false;
@@ -323,7 +328,7 @@ function initWs() {
           if (typeof(wsJsonData.data)=="string"&&!(baseInfo.value.current.is_teamed==1)) {
             message.warn(wsJsonData.data)
           }
-        }else if (wsJsonData.type=="vm_act_message"){ 
+        }else if (wsJsonData.type=="vm_act_message"){
           // 分组成员在操作或教师在操作
           if (wsJsonData.data?.send_user_id!=user_id && wsJsonData.data?.uuid===currentVm.value.uuid) {
             message.warn(wsJsonData.data.msg)
@@ -372,7 +377,12 @@ function initWs() {
           } else {
             layoutRef.value.vmHeaderRef.finishingExperimentVisible = true
             sendDisconnect();
-            baseInfo.value?.current?.is_teamed==1 && baseInfo.value?.current?.is_lead==0 ? router.go(historyLength - history.length - 1) : '';
+            // baseInfo.value?.current?.is_teamed==1 && baseInfo.value?.current?.is_lead==1 ? '' : router.go(historyLength - history.length - 1);
+            if (opType === 'help' && route.query.isClose) {
+              window.close();
+            } else {
+              baseInfo.value?.current?.is_teamed==1 && baseInfo.value?.current?.is_lead==1 ? '' : router.go(historyLength - history.length - 1);
+            }
           }
         }else if (wsJsonData.type=="recommends") {
           // 推荐
@@ -407,7 +417,12 @@ function initWs() {
               message.warn(wsJsonData.data)
             }
           }
-          router.go(-1)
+          layoutRef.value.vmHeaderRef.finishingExperimentVisible = true
+          if (opType === 'help' && route.query.isClose) {
+            window.close();
+          } else {
+            router.go(historyLength - history.length - 1)
+          }
         }
       }
     },

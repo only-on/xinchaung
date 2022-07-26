@@ -84,9 +84,12 @@
                           : false
                       "
                       >
+                        <template #auth_time_left='{record}'>
+                          <span :class="is_expired?'redColor':''">{{record.auth_time_left}}</span>
+                        </template>
                       </a-table>
                     <template #renderEmpty>
-                    <div v-if="!loading"><Empty type="tableEmpty" /></div>
+                      <div v-if="!loading"><Empty type="tableEmpty" /></div>
                     </template>
                 </a-config-provider>
             </a-spin>
@@ -125,6 +128,7 @@
 const codeRef = ref(null);
 const columns: any = ref();
 const data: any = ref([]);
+const is_expired:any=ref()
 var loading: Ref<boolean> = ref(false);
 const statisData:any=ref()
 const tableData: any = reactive({
@@ -150,8 +154,9 @@ columns.value = [
   },
   {
     title: "授权时间",
-    dataIndex: "auth_time_left",
-    key: "auth_time_left",
+    // dataIndex: "auth_time_left",
+    // key: "auth_time_left",
+    slots: { customRender: "auth_time_left" },
   }
 ];
 const authorizationData:any=reactive({
@@ -202,6 +207,7 @@ function settingAutoKey() {
       http.settingAutoKeyApi().then((res: any) => {
         authorizationData.authorization_code = res.data?.auth_key;
         // authorizationData.authorization_code ='34c9d5719cc75b75330df7b34a490b07ed1316bedae365966538766e22cb554e.d84e1e8e0a064bd62a858ad3b7dbf475'
+       getPowerList()
   });
 }
 function copyCode(e: Event) {
@@ -295,6 +301,7 @@ function copyCode(e: Event) {
           data.value=res.data.auth_data
           tableData.total=res.data.auth_data?.length
           authorizationData.authorization_code =res.data?.auth_code
+          is_expired.value=res.data.is_expired
           // authorizationData.authorization_code ='34c9d5719cc75b75330df7b34a490b07ed1316bedae365966538766e22cb554e.d84e1e8e0a064bd62a858ad3b7dbf475'
         }).catch((res:any)=>{
           console.log(res);
@@ -302,6 +309,7 @@ function copyCode(e: Event) {
           data.value=res.data?.auth_data
           tableData.total=res.data?.auth_data?.length
           authorizationData.authorization_code =res.data?.auth_code
+          is_expired.value=res.data.is_expired
         })
       }
       onMounted(()=>{
@@ -387,5 +395,8 @@ function copyCode(e: Event) {
     .divbox{
       display: flex;
       align-items: center;
+    }
+    .redColor{
+      color: red;
     }
 </style>

@@ -10,7 +10,7 @@
     >
       <div class="form-left">
         <a-form-item name="image" label="选择镜像">
-          <iconInput :icon="selectIcon">
+          <!-- <iconInput :icon="selectIcon"> -->
             <a-select
               v-model:value="reactiveData.ruleForm.image"
               placeholder="选择镜像"
@@ -28,9 +28,11 @@
                 }}</a-select-option>
               </a-select-opt-group>
             </a-select>
-          </iconInput>
+          <!-- </iconInput> -->
         </a-form-item>
-        <div class="configs">镜像配置</div>
+        <div class="configs">
+          <span style="color:red">*</span>
+          镜像配置</div>
         <ImageConfig
           v-if="!AddedSuccessfully"
           @change="configChange"
@@ -74,15 +76,18 @@
             >
               选择</a-button
             >
-            <labelDisplay
+            <div class="data-set-hint">最多可选3个数据集</div>
+  
+          </div>
+          <!-- <div class="data-set-hint">最多可选3个数据集</div> -->
+          <labelDisplay
+          style="margin-top:20px"
               :labels="reactiveData.selectedName"
               @remove="remove"
-            ></labelDisplay>
-          </div>
-          <div class="data-set-hint">最多可选3个数据集</div>
+          ></labelDisplay>
         </a-form-item>
       </div>
-      <Submit @submit="create" @cancel="cancel"></Submit>
+      <Submit @submit="create" @cancel="cancel" :loading="loading"></Submit>
     </a-form>
     <div v-show="AddedSuccessfully" class="ContinueAdding">
       <div class="img"></div>
@@ -239,6 +244,7 @@ const ContinueAdding = () => {
   AddedSuccessfully.value = false;
 };
 const ruleFormDom = ref();
+const loading = ref(false)
 // 创建
 function create() {
   // AddedSuccessfully.value = true;
@@ -259,9 +265,11 @@ function create() {
     };
     console.log(params)
     // reactiveData.loading = true;
+    loading.value = true
     http.createWorkbenchApi({param:{...params}}).then((res: any) => {
       message.success("创建成功!");
       AddedSuccessfully.value = true;
+      loading.value = false
       // reactiveData.loading = false;
       // router.go(-1);
     });
@@ -320,7 +328,7 @@ onMounted(() => {
     font-size: 12px;
     font-style: normal;
     color: var(--black-25);
-    margin-top: 1rem;
+    // margin-top: 1rem;
   }
   .create-form {
     height: 100%;
@@ -373,7 +381,7 @@ onMounted(() => {
       .add-data-set-btn {
         width: 100px;
         font-size: var(--base-font-size);
-        border: 1px solid var(--primary-color);
+        // border: 1px solid var(--primary-color);
       }
       .data-set-item {
         margin-top: 15px;
@@ -400,13 +408,15 @@ onMounted(() => {
     }
     .start-end-date-box {
       display: flex;
-      border: 1px solid #d9d9d9;
-      border-radius: var(--border-radius-default);
+      // border: 1px solid #d9d9d9;
+      // border-radius: var(--border-radius-default);
       height: 32px;
       .and-line {
-        position: relative;
-        right: 50px;
-        color: #d9d9d9;
+        // position: relative;
+        // right: 50px;
+        // color: #d9d9d9;
+        color:var(--gray-5);
+        margin-top:7px;
       }
       input {
         border: none;
@@ -428,6 +438,8 @@ onMounted(() => {
       }
     }
     .datasets-box {
+      display: flex;
+      align-items: center;
       .ant-btn {
         margin-right: 1rem;
       }

@@ -1,5 +1,6 @@
 import {
   createRouter,
+  createWebHistory,
   createWebHashHistory,
   NavigationFailure,
   NavigationGuardNext,
@@ -10,10 +11,12 @@ import {
 import store from "../store/index";
 import RouterModule from "./shareModule"; // 引入公用逻辑模块
 import RouterCommon from "./common"; // 引入通用模块
+import testModule from "./testModule"; // 引入测试路由
 import RoutesTeacherSide from "./teacherSide";
 import RoutesAdminSide from "./adminSide";
 import RoutesStudentSide from "./studentSide";
 import storage from "src/utils/extStorage";
+import menusFn from 'src/routers/menuConfig'
 const PathList = {
   1: "",
   2: "/admin/home",
@@ -25,33 +28,55 @@ const PathList = {
 import { IRouteTuple } from "src/types";
 const routes: Array<RouteRecordRaw> = [
   ...RouterModule,
-  ...RouterCommon,
+  ...testModule,
   ...[RoutesTeacherSide],
   ...[RoutesAdminSide],
   ...[RoutesStudentSide],
+  ...RouterCommon,
 ];
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(), // createWebHistory(process.env.BASE_URL),
   routes,
 });
-// console.log(routes);
-router.beforeEach(
-  (
-    to: RouteLocationNormalized,
-    from: RouteLocationNormalized,
-    next: NavigationGuardNext
-  ) => {
+console.log(routes);
+router.beforeEach((to: RouteLocationNormalized,from: RouteLocationNormalized,next: NavigationGuardNext) => {
     const isLogged = store.getters.isLogged;
-    // 检查是否为公开页面（如登陆页面）
-    if (to.meta && to.meta.outward) {
-      // 登录状态访问登陆页面，跳转到登录后的首页无需再次登录，其它页面无论是否登录直接进入
-      // isLogged && to.name === "Login" ? next("/") : next();
+    const menus: any[] = menusFn();
+    console.log('前去：'+to.path);
+    var CanPass:boolean=false
+    menus.forEach((item:any) => { //to.path.includes(item.url.split('?')[0])  item.url.split('?')[0].includes()
+      if( item.url && to.path.includes(item.url.split('?')[0])){
+        CanPass=true
+      }else if(item.children.length){
+        item.children.forEach((childItem:any) => { // to.path.includes(childItem.url.split('?')[0])   childItem.url.split('?')[0] === to.path
+          if(childItem.url && to.path.includes(childItem.url.split('?')[0])){
+            CanPass=true
+          }
+        })
+      }
+    })
+    const CommonRouter:any=[...RouterModule,RouterCommon[0],RouterCommon[1],{path:'/NotFound'}]
+    CommonRouter.forEach((val:any)=>{
+      if(val.path === to.path){
+        CanPass=true
+      }
+    })
+    if(CanPass){
       next();
-    } else {
-      // 如果不是，判断是否登录，登录则直接进入，否则跳转到登录页面
-      // isLogged ? next() : next("/login");
-      next();
+    }else{
+      next("/NotFound")
     }
+    // next();
+    // 检查是否为公开页面（如登陆页面）
+    // if (to.meta && to.meta.outward) {
+    //   // 登录状态访问登陆页面，跳转到登录后的首页无需再次登录，其它页面无论是否登录直接进入
+    //   // isLogged && to.name === "Login" ? next("/") : next();
+    //   next();
+    // } else {
+    //   // 如果不是，判断是否登录，登录则直接进入，否则跳转到登录页面
+    //   // isLogged ? next() : next("/login");
+    //   next();
+    // }
   }
 );
 
@@ -98,10 +123,8 @@ router.afterEach(
           }).fullPath,
         };
         // console.log('routeTuple:=',routeTuple)
-        // 学生端推荐实验面包屑显示
-        routeSegment.path==='/teacher/teacherExperimentResourcePool'&&role===4 ? 
-        '' : breadcrumbs.push(routeTuple);
-        processedPath.push(routeSegment.path);
+        breadcrumbs.push(routeTuple)
+        processedPath.push(routeSegment.path)
       }
     });
     // console.log("breadcrumbs:=", breadcrumbs);

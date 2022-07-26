@@ -592,6 +592,7 @@ interface IForm {
   background-color: var(--white-100);
   border-radius: var(--border-radius-default);
   padding: 33px 40px;
+  margin-top: 32px;
   :deep(.ant-form) {
     .ant-form-item-label {
       text-align: left;
@@ -722,7 +723,7 @@ interface IForm {
     overflow: auto!important;
   }
   .iconfont{
-    color: var(--purpleblue-6);
+    color: var(--primary-color);
   }
 }
 .cannot{

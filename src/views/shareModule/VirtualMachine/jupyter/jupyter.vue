@@ -1,6 +1,10 @@
 <template>
   <layout :navData="navData">
     <template v-slot:right>
+      <div v-if="isLoading" class="jupyter-loading">
+        <img :src="loadingGif" alt="" srcset="" />
+        <span>虚拟机加载中，请稍后...</span>
+      </div>
       <iframe
         id="iframe"
         :src="'http://' + noteUrl"
@@ -36,6 +40,7 @@ import { Modal, message } from "ant-design-vue";
 import disableStudent from "../component/disableStudent.vue"
 import {IWmc} from "src/typings/wmc";
 import { useStore } from "vuex";
+import loadingGif from "src/assets/images/vmloading.gif";
 
 const route = useRoute();
 const router = useRouter();
@@ -249,6 +254,7 @@ onBeforeRouteLeave(() => {
   clearTimeout(Number(TimerIframe));
 });
 let showIframe = ref(true)
+let isLoading = ref(true)
 onMounted(async () => {
   await getVmBase();
   if (Number(baseInfo.value?.current?.status)<2||role !== 4||recommendType) {
@@ -262,11 +268,17 @@ onMounted(async () => {
       iframe.attachEvent('onload', () => {
         clearInterval(Number(TimerIframe));
         onloadIframe = true
+        setTimeout(() =>{
+          isLoading.value = false
+        }, 2000)
       })
     } else {
       iframe.onload = () => {
         clearInterval(Number(TimerIframe));
         onloadIframe = true
+        setTimeout(() =>{
+          isLoading.value = false
+        }, 2000)
       }
     }
     TimerIframe = setInterval(() => {
@@ -281,10 +293,15 @@ onMounted(async () => {
 });
 </script>
 
-<style lang="less">
-.vm-finish-modal {
-  .ant-btn-ghost {
-    display: none;
+<style lang="less" scoped>
+
+.jupyter-loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  color: var(--white);
+  img {
+    margin-right: 8px;
   }
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div class="detail">
     <div class="header">
-      <div class="img flexCenter" :style="`background-image: url(${state.detail.cover});`">
+      <div class="img flexCenter" :style="`background-image: url('${encodeURI(state.detail.cover)}');`">
       {{state.detail.cover?'':'封面不存在'}}
       </div>
       <div class="header_mid">
@@ -430,6 +430,7 @@ onMounted(() => {
     .img{
       width: 270px;
       height: 150px;
+      border-radius: 6px;
       background: url("src/assets/images/cover2.png") no-repeat;
       background-size: 100% 100%;
       justify-content: center;
@@ -552,8 +553,9 @@ onMounted(() => {
           flex:1;
           padding-left: 2rem;
           .fileItem{
-            padding: 9px 0;
+            padding: 15px 24px;
             justify-content: space-between;
+            background: #f9f9f9;
             .img{
               width: 40px;
               height: 40px;

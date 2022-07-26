@@ -2,12 +2,14 @@
   <div class="forum-square">
     <forumn-top @search="search" :tagList="tagList"></forumn-top>
     <div class="forumn-content" id="scrool">
-      <div class="left">
-        <a-spin :spinning="loading" size="large" tip="Loading...">
-          <forumn :forumnList="forumnList" @pageChange="pageChange" :total="total" :forumSearch="forumSearch"></forumn>
-          <Empty v-if="!forumnList.length && !loading" :type="EmptyType" />
-        </a-spin>
-      </div>
+      <!-- <a-spin :spinning="loading" size="large" tip="Loading..."> -->
+        <div class="left">
+          <a-spin :spinning="loading" size="large" tip="Loading...">
+            <forumn :forumnList="forumnList" @pageChange="pageChange" :total="total" :forumSearch="forumSearch"></forumn>
+            <Empty v-if="!forumnList.length && !loading" :type="EmptyType" />
+          </a-spin>
+        </div>
+      <!-- </a-spin> -->
       <div class="right" v-if="role !== 2">
         <div>
         <div class="post pointer" @click="createPost">发帖</div>
@@ -76,7 +78,6 @@ const EmptyType:any=computed(()=>{
 })
 let forumnList = reactive<IForumnList[]>([]);
 function initData() {
-  loading.value = true
   const param = {
     page: forumSearch.page,
     limit: forumSearch.pageSize,
@@ -89,9 +90,10 @@ function initData() {
       Object.assign(param, {order: 2}) : 
       Object.assign(param, {type: forumSearch.type}))
     forumnList.length = 0
+    total.value=0
   // 获取帖子列表
+  loading.value = true
   http.getForumList({urlParams: {keyword: forumSearch.title}, param}).then((res: IBusinessResp) => {
-    loading.value = false
     const { list, page } = res.data
     list.forEach((v: IForumnList) => {
       v.content = goHtml(v.content)
@@ -101,6 +103,9 @@ function initData() {
     })
     forumnList.push(...list)
     total.value = page.totalCount
+    loading.value = false
+  }).catch((err:any)=>{
+    loading.value=false
   })
 }
 function search(params: IForumSearch) {
@@ -160,6 +165,7 @@ const tags = [
 ]
 let tagList = reactive<ITagList[]>([])
 const getTagsList = () => {
+  loading.value = true
   http.getForumTags().then((res: IBusinessResp) => {
     if (!res) return
     const { data } = res
@@ -170,6 +176,8 @@ const getTagsList = () => {
     tagList.push(...data)
     // forumSearch.type = data[0].name
     initData();
+  }).catch((err:any)=>{
+    loading.value=false
   })
 }
 
@@ -201,9 +209,6 @@ provide("bottomStyle", bottomStyle);
     .left {
       // width: 830px;
       width: 100%;
-      .ant-spin-nested-loading {
-        min-height: 300px;
-      }
     }
     .right {
       width: 300px;

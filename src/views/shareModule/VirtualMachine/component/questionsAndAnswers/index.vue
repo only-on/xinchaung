@@ -54,7 +54,6 @@ import {
   provide,
   inject,
 } from "vue";
-import empty from "src/components/Empty.vue";
 import Forumn from "src/views/teacherModule/teacherForum/components/Forumn.vue";
 import { IForumnList } from "src/views/teacherModule/teacherForum/forumnTyping.d"
 import request from "src/api/index";

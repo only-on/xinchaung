@@ -65,7 +65,7 @@
             </a-tooltip>
           </div>
         </div>
-        <Empty v-if="!experimentList.length && !loading" :type="EmptyType"/>
+        <Empty class="epmty"  v-if="!experimentList.length && !loading" :type="EmptyType"/>
           <!-- -->
         <a-pagination 
           v-if="totalCount > 10&&!loading"
@@ -301,8 +301,9 @@ const initData = () => {
   param.content_type ? '' : delete param.content_type
   loading.value = true;
   experimentList.length = 0
+  totalCount.value=0
   http.getExperimentList({param}).then((res: IBusinessResp) => {
-    loading.value = false
+    
     if (!res) return
     const { list, page }  = res.data
     list.forEach((v: IExperimentList) => {
@@ -316,6 +317,9 @@ const initData = () => {
     });
     experimentList.push(...list)
     totalCount.value = page.totalCount
+    loading.value = false
+  }).catch((err:any)=>{
+    loading.value=false
   })
 };
 const pageChange = async (current: any, pageSize: any) => {
@@ -438,6 +442,7 @@ const getDirection = () => {
   overflow: hidden;
   .labelSearchBox {
     margin-top: 10px;
+    // background-color: #f2f2f3;
   }
 }
 .mainBox {
@@ -530,5 +535,12 @@ const getDirection = () => {
       background: var(--primary-2);
     }
   }
+}
+.epmty{
+  height: 570px;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 </style>

@@ -5,7 +5,7 @@
       <div class="text" @click="Detail(v)">{{v.content_name}}</div>
       <div class="number">{{v.learned}}人学过</div>
     </div>
-    <Empty v-if="!list.length" :text="'暂无推荐'" />
+    <Empty v-if="!list.length" :text="'暂无推荐'" type="tableEmpty" />
   </div>
 
 </template>
@@ -39,31 +39,27 @@ const courseExperimentRecommend=()=>{
 }
 // /teacher/teacherExperimentResourcePool/experimentDetail?id=500043&currentTab=0
 const Detail=(val:any)=>{
-  // if(val.is_public){
-  //   message.warning('未授权课程不能查看公开实验')
-  //   return 
-  // }
   if(!val.is_authorize){
     message.success('该实验未授权，暂不能查看！')
     return
   }
-  const { href } = router.resolve({
-    path:'/teacher/teacherExperimentResourcePool/experimentDetail',
-    query: {
+  var obj={
+    3:'/teacher/teacherCourse/CourseExperimentDetail',
+    4:'/student/studentCourse/StuCourseExperimentDetail',
+    5:'/teacher/teacherCourse/CourseExperimentDetail'
+  }
+  if(!obj[role]){
+    message.success('权限错误')
+    return
+  }
+  router.push({
+    path:obj[role],
+    query:{
       id:val.id,
       currentTab:0,
       type: 'recommend'
-    },
-  });
-  window.open(href, "_blank");
-  // router.push({
-  //   path:'/teacher/teacherExperimentResourcePool/experimentDetail',
-  //   query:{
-  //     id:val.id,
-  //     currentTab:0,
-  //     type: 'recommend'
-  //   }
-  // })
+    }
+  })
 }
 onMounted(() => {
   courseExperimentRecommend()

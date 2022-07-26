@@ -14,11 +14,12 @@
   </div>
   <div class="experiment-content">
     <common-video
-      style="width: 100%; height: 650px"
+      style="width: 100%; height: 570px"
       controls="true"
       :src="fileInfo.tusdVideoUrl"
       v-if="fileInfo.tusdVideoUrl"
     ></common-video>
+    <div v-else><Empty /> </div>
   </div>
   <!-- <Submit @submit="onSubmit" @cancel="cancel" v-if="!fileInfo.id"></Submit> -->
   <!-- 选择视频抽屉 -->

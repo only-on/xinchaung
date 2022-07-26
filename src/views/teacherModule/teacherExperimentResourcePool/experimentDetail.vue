@@ -26,7 +26,7 @@
       </div>
       <div class="info">
         <span class="level" :class="['level' + experimentDetail.level]">{{levelList[experimentDetail.level]}}</span>
-        <a-tooltip placement="top" :color="theme.cyanColor" v-if="experimentDetail.konwledge_map?.length">
+        <a-tooltip placement="top" :color="systemColor.secondary" v-if="experimentDetail.konwledge_map?.length">
           <template #title>
             <div v-for="(v, index) in experimentDetail.konwledge_map" :key="index">{{v}}</div>
           </template>
@@ -36,7 +36,7 @@
               }}</span>
           </span>
         </a-tooltip>
-        <a-tooltip placement="top" :color="theme.themeColor" v-if="experimentDetail.tag?.length">
+        <a-tooltip placement="top" :color="systemColor.primary" v-if="experimentDetail.tag?.length">
           <template #title>
             <div v-for="(v, index) in experimentDetail.tag" :key="index">{{v.name}}</div>
           </template>
@@ -131,7 +131,7 @@ const { lStorage } = extStorage;
 const role = lStorage.get("role") || 3;
 const currentUid = lStorage.get('uid')
 const http = (request as any).teacherExperimentResourcePool;
-const {systemImages} = getThemeData()
+const {systemImages, systemColor} = getThemeData()
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 updata({
@@ -480,7 +480,7 @@ interface IExperimentDetail {
         display: inline-block;
         max-width: 200px;
         color: var(--primary-color);
-        background: var(--orangeyellow-6-24);
+        background: var(--primary-24);
         // border: 1px solid var(--primary-color);
         border-radius: 11px;
         padding: 0 14px;
@@ -492,8 +492,9 @@ interface IExperimentDetail {
         text-overflow: ellipsis;
       }
       .knowledge {
-        color: var(--cyan-100);
-        background: var(--cyan-24);
+        
+        color: var(--brightBtn);
+        background: var(--brightBtn-24);
       }
       .class-num {
       }
@@ -504,7 +505,7 @@ interface IExperimentDetail {
         right: 18px;
         font-size: 14px;
         padding-bottom: 1px;
-        border-bottom: 1px solid var(--primary-color);
+        // border-bottom: 1px solid var(--primary-color);
         .iconfont {
           vertical-align: middle;
           margin-right: 4px;
@@ -512,7 +513,7 @@ interface IExperimentDetail {
       }
       .edit {
         color: var(--cyan-100);
-        border-bottom: 1px solid var(--cyan-100);
+        // border-bottom: 1px solid var(--cyan-100);
         right: 175px;
       }
       .save{

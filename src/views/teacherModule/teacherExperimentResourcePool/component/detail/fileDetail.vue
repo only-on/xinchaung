@@ -120,7 +120,7 @@ watch(
       idDelte.value = false
       activeFile.suffix = 'md'
       experimentContent.value = props.detail.guide;
-    } if (props.detail.content_task_files&&props.detail.content_task_files.length) {
+    } else if (props.detail.content_task_files&&props.detail.content_task_files.length) {
       idDelte.value = false
       Object.assign(activeFile, props.detail.content_task_files[0])
     } else {
@@ -224,15 +224,18 @@ const deleteFile = () => {
   //   experimentContent.value = ''
   //   return
   // }
-  http.deleteDocument({urlParams: {content_id: props.detail.id}})
-  .then((res: any) => {
-    preview.value = false
-    props.detail.content_task_files = [];
-    props.detail.guide = ''
-    experimentContent.value = ''
-    activeFile.file_url = ''
-    activeFile.file_html = ''
-    activeFile.suffix = 'md'
+  return new Promise((resolve) => {
+    http.deleteDocument({urlParams: {content_id: props.detail.id}})
+    .then((res: any) => {
+      preview.value = false
+      props.detail.content_task_files = [];
+      props.detail.guide = ''
+      experimentContent.value = ''
+      activeFile.file_url = ''
+      activeFile.file_html = ''
+      activeFile.suffix = 'md'
+      resolve(1)
+    })
   })
 };
 
@@ -241,28 +244,15 @@ const onSubmit = async () => {
     $message.warn("请上传或选择文件")
     return
   }
-  const param = {}
+  const param = {
+    document_file: {
+      file_path:activeFile.file_url,
+      file_name:activeFile.name,
+      directory_id:directoryId.value
+    },
+  }
   if (activeFile.suffix === 'md' || experimentContent.value) {
-    if (activeFile.id) {
       Object.assign(param, {guide: experimentContent.value})
-    } else {
-      Object.assign(param, {
-        guide: experimentContent.value,
-        document_file: {
-          file_path:activeFile.file_url,
-          file_name:activeFile.name,
-          directory_id:directoryId.value
-        },
-      })
-    }
-  } else {
-    Object.assign(param, {
-      document_file: {
-        "file_path": activeFile.file_url,			// 文档实验-文件
-        "directory_id": directoryId.value, // 实验指导 如果是选择的文件请求的时候不需要传此参数
-        "file_name": activeFile.name // 实验指导 如果是选择的文件请求的时候不需要传此参数
-      }
-    })
   }
   await deleteFile()
   http.updateDocumentGuide({

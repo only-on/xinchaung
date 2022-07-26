@@ -1,5 +1,5 @@
 <template>
-  <a-form :model="formState"  ref="formRef" layout="vertical" :label-col="{ span: 10 }" :wrapperCol="{ span: 20 }" :rules="rules">
+  <a-form :model="formState" :scrollToFirstError="true"  ref="formRef" layout="vertical" :label-col="{ span: 10 }" :wrapperCol="{ span: 20 }" :rules="rules">
     <div class="base-info">
     <h3 class="title">实验基本信息</h3>
     <div class="create-middle">
@@ -50,9 +50,7 @@
           ></knowledge-modal>
         </a-form-item>
         <a-form-item label="添加标签" name="tags">
-          <div>
-              <LabelList :tag="formState.tags" :recommend="formState.recommend" />
-            </div>
+            <LabelList :tag="formState.tags" :recommend="formState.recommend" @finishTag="tagsValidator" />
         </a-form-item>
       </div>
       <div class="right">
@@ -130,7 +128,8 @@
           </div>
           <div class="osd-mode">
             <!-- <span @click="openScreen()"> 进入同屏模式 </span> -->
-            <a-button type="link" @click.stop="openScreen()" :loading="openScreenLoading">{{openScreenLoading?'连接中...':'进入同屏模式'}}</a-button>
+            <!-- <a-button type="link" @click.stop="openScreen()" :loading="openScreenLoading">{{openScreenLoading?'连接中...':'进入同屏模式'}}</a-button> -->
+            <span class="screen" type="link" @click.stop="openScreen()" :loading="openScreenLoading">{{openScreenLoading?'连接中...':'进入同屏模式'}}</span>
           </div>
         </div>
       </div>
@@ -300,7 +299,7 @@
     :closable="true"
     placement="right"
     :visible="formState.drawerVisible"
-    width="640"
+    width="700"
     @close="closeDrawer"
   >
     <select-data-set
@@ -502,9 +501,9 @@ const rules = {
   //   { required: true, message: "" },
   //   { validator: selectedKnowledgeValidator, trigger: "change" },
   // ],
+  // formState.imageConfigs
   tags:[
-    { required: true, message: "" },
-    { validator: tagsValidator, trigger: "blur" },
+    {required: true,validator: tagsValidator,trigger: "blur", message: "请填写标签"},
   ],
   direction:[
     { required: true, message: "请选择所属方向" ,trigger: "change" },
@@ -537,12 +536,19 @@ async function selectedKnowledgeValidator(rule: any, value:any) {
     return Promise.resolve()
   }
 }
-async function tagsValidator(rule: any, value:any) {
-  // console.log(value)
-  if (!value.length) {
+async function tagsValidator(val:any) {
+  console.log(formState)
+  if (!formState.tags.length) {
     return Promise.reject("请填写标签");
+  }else{
+    formRef.value.clearValidate('tags')
+    return Promise.resolve()
   }
 }
+// const finishTag=async (val:any)=>{
+//   console.log(val);
+//   tagsValidator()
+// }
 const closeDrawer = () => {
   formState.drawerVisible = false;
 };
@@ -609,7 +615,7 @@ function create() {
     // console.log(docMp4File);
     (docOrMp4Drawer.activeFile.file_url || docMp4File.suffix === 'md' || formState.document.mdValue) ? '' : docMp4FileObj.directory_id=upDoc.catalogue
     // console.log(ipynbFileObj)
-    if (createTypeNumber === 1 && formState.imageConfigs.length === 0) {
+    if ( [1,2,3].includes(createTypeNumber) && formState.imageConfigs.length === 0) {
       message.warning('请添加实验环境')
       return
     }
@@ -945,7 +951,8 @@ const docBeforeUpload =(file: any) => {
   // docOrMp4Type === 1  文档    docOrMp4Type === 2  视频
   // console.log(file)
   upDoc.docFileList[0]={status: 'done'}
-  const postfix = (file && file.name).split(".")[1];
+  const arr = (file && file.name).split(".")
+  const postfix = arr[arr.length - 1];
   if(postfix === "md" && docOrMp4Type.value === 1){
     // let obj:any={
     //   uid: file.uid,    // ant  渲染的key
@@ -1116,21 +1123,14 @@ onMounted(()=>{
 }
 .datasets-box {
    margin-bottom: 1rem;
-  .ant-btn {
-    // margin-right: 1rem;
-  }
   .add-data-set-btn {
-    width: 100px;
+    // width: 100px;
     font-size: var(--base-font-size);
-    border: 1px solid var(--primary-color);
+    // border: 1px solid var(--primary-color);
     // margin-bottom: 1rem;
   }
 }
-.Knowledge{
-  .ant-btn {
-    // margin-bottom: 1rem;
-  }
-}
+
 .data-set-hint {
   font-size: 12px;
   font-style: normal;
@@ -1144,8 +1144,9 @@ onMounted(()=>{
   padding:  24px;
   // padding-bottom: 30px;
   background-color: var(--white);
+  padding-top: 0px;
   .title {
-    padding: 15px 0;
+    // padding: 15px 0;
     border-bottom: 1px solid #e8e8e8;
     margin-bottom: 16px;
   }
@@ -1167,15 +1168,16 @@ onMounted(()=>{
     width: 50%;
   }
   .right {
-    .reportBox {
-      // justify-content: space-between;
-    }
     .reportName {
       margin-top: 1rem;
       color: var(--black-85);
       .icon-shanchu {
         margin-left: 1rem;
         cursor: pointer;
+        color: var(--black-65);
+      }
+      .icon-shanchu:hover{
+        color: var(--black-85);
       }
       .icon-fujian{
         padding: 0 4px;
@@ -1195,6 +1197,12 @@ onMounted(()=>{
     text-align: center;
     cursor: pointer;
   }
+  span:first-child{
+    border-radius: 18px 0 0 18px;
+  }
+  span:last-child{
+    border-radius: 0 18px 18px 0;
+  }
   .active {
     color: var(--primary-color);
     border-color: var(--primary-color);
@@ -1204,15 +1212,16 @@ onMounted(()=>{
 .zhuomian {
   padding: 24px;
   background-color: var(--white);
-  h3 {
-    margin-left: 24px;
-  }
+  // h3 {
+  //   margin-left: 24px;
+  // }
   .guide-top {
     display: flex;
     .upload-box {
       .upload {
         button {
-          margin: 0 16px;
+          // margin: 0 16px;
+          margin-left: 16px;
         }
       }
     }
@@ -1230,7 +1239,7 @@ onMounted(()=>{
   }
   .markdown__editor {
     height: 400px;
-    padding: 1rem 24px 0;
+    // padding: 1rem 24px 0;
   }
 }
 .markdown__editor {
@@ -1241,9 +1250,6 @@ onMounted(()=>{
   // padding-top: 2rem;
   padding: 0 24px;
   background-color: var(--white);
-  .jupyterBox {
-    // padding: 2rem;
-  }
   .uploadBox {
     width: 40%;
   }
@@ -1253,6 +1259,7 @@ onMounted(()=>{
   padding:  24px;
   background: var(--white);
   overflow: auto;
+  padding-top: 0px;
   .top {
     justify-content: space-between;
   }
@@ -1349,9 +1356,6 @@ onMounted(()=>{
       margin-right: 8px;
     }
   }
-  .docx {
-    // width: 38%;
-  }
   .video-box {
     min-height: 155px;
     // height: 500px;
@@ -1359,8 +1363,8 @@ onMounted(()=>{
     padding: 2rem;
     video {
       width: 100%;
-      height: 100%;
-      object-fit: cover;
+      height: 650px;
+      // object-fit: cover;
     }
   }
 }
@@ -1383,5 +1387,8 @@ onMounted(()=>{
 }
 .submitBox {
   margin: 24px 0;
+}
+.screen:hover{
+  color:var( --cyan-100);
 }
 </style>

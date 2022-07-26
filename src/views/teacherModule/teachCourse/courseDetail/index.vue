@@ -27,7 +27,7 @@
           <a-form-item label="起始时间" name="date">
             <a-range-picker @change="dateChange" v-model:value="formState.date" valueFormat="YYYY-MM-DD" format="YYYY-MM-DD" :disabledDate="disabledDate">
               <template #suffixIcon>
-                <SmileOutlined />
+                <CalendarOutlined />
               </template>
             </a-range-picker>
           </a-form-item>
@@ -46,9 +46,7 @@
             </a-select>
           </a-form-item>
           <a-form-item label="添加标签" name="tags">
-            <div>
-              <LabelList :tag="formState.tags" />
-            </div>
+            <LabelList :tag="formState.tags" />
           </a-form-item>
           <a-form-item label="封面图" class="cover">
             <uploadCover :coverUrl="formState" :isUpload="true" @uploadCoverHandle="uploadCoverHandle" />
@@ -80,7 +78,7 @@
             <a-input v-model:value="formState.content_duration" placeholder="请输入实验时长" />分钟
           </a-form-item>
           <a-form-item label="课程简介" name="introduce">
-             <a-textarea v-model:value="formState.introduce" :auto-size="{ minRows: 6, maxRows: 8 }" placeholder="请输入课程简介" />
+             <a-textarea v-model:value="formState.introduce" :auto-size="{ minRows: 6, maxRows: 8 }" :maxlength="100" placeholder="请输入课程简介" />
           </a-form-item>
         </div>
       </div>
@@ -177,7 +175,7 @@ import {
 } from "vue";
 import { Modal, message } from "ant-design-vue";
 import SelectReport from "src/views/teacherModule/teacherExperimentResourcePool/component/selectReport.vue";
-import { SmileOutlined } from '@ant-design/icons-vue';
+import { CalendarOutlined } from '@ant-design/icons-vue';
 import Submit from "src/components/submit/index.vue";
 import LabelList from 'src/components/LabelList.vue'
 import storage from "src/utils/extStorage";
@@ -508,16 +506,24 @@ onMounted(() => {
       padding: 0 1rem;
       font-size: 12px;
       background: linear-gradient(90deg,rgba(0,0,0,0.04), rgba(84,84,84,0.04));
+      color: var(--black-45);
+      &>span:first-child{
+        margin-right: 4px;
+      }
     }
     .box{
       padding:1rem;
       .item{
         height: 44px;
         justify-content: space-between;
+        color: var(--black-65);
       }
       .report {
-        line-height: 44px;
+        height: 34px;
+        background: rgba(0,0,0,0.04);
+        line-height: 34px;
         display: flex;
+        padding: 0 10px;
         .type{
           width: 56px;
           color: var(--brightBtn);

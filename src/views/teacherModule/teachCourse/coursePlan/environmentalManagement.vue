@@ -69,6 +69,7 @@
       </div>
     </div>
     <div class="environmental-table">
+      <a-spin :spinning="loading" size="large" tip="Loading...">  
         <a-config-provider>
               <a-table
               :dataSource="dataList"
@@ -88,9 +89,10 @@
               </template>
             </a-table>
           <template #renderEmpty>
-            <div><Empty :text='ifSearch?"抱歉，未搜到相关数据！":"抱歉，暂无数据！"' type="tableEmpty" /></div>
+            <div v-if="!loading"><Empty :text='ifSearch?"抱歉，未搜到相关数据！":"抱歉，暂无数据！"' type="tableEmpty" /></div>
           </template>
         </a-config-provider>
+      </a-spin>
     </div>
     <div class="page-box" v-if="formData.total > 10">
       <a-pagination
@@ -109,7 +111,10 @@
     class="disable-modal"
   >
     <div>
-      <h2 class="time-lable">请选择禁用时间段</h2>
+      <div class="flexCenter" style="margin: 1rem 0;">
+        <h2 class="time-lable">请选择禁用时间段 </h2>
+        <span> (结束时间需晚于开始时间)</span>
+      </div>
       <div class="select-time-wrap">
         <span>
           <a-date-picker
@@ -156,6 +161,7 @@ updata({
   componenttype: undefined,
   showNav: true,
 });
+const loading:any=ref(false)
 const columns: any = [
   {
     title: "学号",
@@ -238,11 +244,13 @@ function getList() {
     // 普通查询
   }
   dataList.value=[]
+  loading.value=true
   http
     .envMonitoringList({
       param:params,
     })
     .then((res: any) => {
+      loading.value=false
       const { data, total } = res.data;
       formData.total = total;
       dataList.value.push(...data);
@@ -331,15 +339,15 @@ function disabledDate(current: any) {
   return current && moment(current).add(0, "days") < moment();
 }
 function disabledDate2(current: any) {
-  return moment(current).add(0, "days") < moment();
+  return current && current < moment().endOf('day').subtract(1, 'days')
 }
 function range (start: number, end: number){
-      const result = [];
-      for (let i = start; i < end; i++) {
-        result.push(i);
-      }
+    const result = [];
+    for (let i = start; i < end; i++) {
+      result.push(i);
+    }
 
-      return result;
+    return result;
 }
 function disabledDateTime(date:any){
    let h=(endTime.value.format('YYYY-MM-DD HH:mm:ss').toString().split(' ')[1]).split(':')[0]

@@ -2,7 +2,7 @@
   <div class="create-image-box">
     <a-form layout="vertical" ref="formRef" :model="image" :rules="rules">
       <a-form-item label="镜像文件" name="fileName">
-        <upload-image @upload-imageinfo="uploadImageinfo" @upload-percentage="uploadPercentage"></upload-image>
+        <upload-image class="imageColor" @upload-imageinfo="uploadImageinfo" @upload-percentage="uploadPercentage"></upload-image>
       </a-form-item>
       <div class="create-img-middle">
         <div>
@@ -10,9 +10,7 @@
             <a-input class="form-input" v-model:value="image.name"></a-input>
           </a-form-item>
           <a-form-item label="添加标签" name="tag">
-            <div>
-              <LabelList :tag="image.tag" :recommend="recommend" @selectTag="selectTag" />
-            </div>
+            <LabelList :tag="image.tag" :recommend="recommend" @selectTag="selectTag" @finishTag="fileListValidator" />
           </a-form-item>
           <!-- <a-form-item label="系统类型" name="ostype">
             <a-select
@@ -55,9 +53,7 @@
             </a-select>
           </a-form-item>
           <!-- <a-form-item label="添加标签" name="tag">
-            <div>
-              <LabelList :tag="image.tag" :recommend="recommend" />
-            </div>
+            <LabelList :tag="image.tag" :recommend="recommend" />
           </a-form-item> -->
         </div>
       </div>
@@ -126,7 +122,7 @@ const rules = {
   ostype: [{ required: true, message: "请选择镜像类型" }],
   tag: [
     // { required: true, message: "请选择镜像标签",trigger: "blur"},
-    {required: true,validator: fileListValidator,trigger: "blur"},
+    {required: true,validator: fileListValidator,trigger: "blur", message: "请填写标签"},
   ],
 };
 async function fileListValidator() {
@@ -194,14 +190,10 @@ const create = () => {
   // fileListValidator()
   // return
   formRef.value.validate().then(async () => {
-    // fileListValidator().then((res:any)=>{
-    //   console.log(res)
-    // })
     if(!image.file_path){
       message.warning('请上传镜像文件')
       return
     }
-    const val= await fileListValidator()
     // console.log(image)
     // return
     const parmas = {
@@ -262,6 +254,9 @@ onMounted(() => {
   //           padding: 40px;
   //       }
   //   }
+  .imageColor{
+    background-color: white;
+  }
   .ant-input-desc {
     height: 115px;
     min-height: 115px;

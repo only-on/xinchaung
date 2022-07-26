@@ -44,6 +44,7 @@ export default [
   {
     path: "/:pathMatch(.*)*",
     name: "NotFound",
+    // redirect: '/NotFound',
     component: () => import("src/views/common/NotFound.vue"),
   },
 ];

@@ -34,11 +34,13 @@ import { operatesHandle } from "src/utils/vncInspect";
 import {clearAllCookies} from "../../../../utils/cookieHelper";
 import store from 'src/store';
 import { IWmc } from "src/typings/wmc";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   props: ["visable", "data", "opType", "type", "uuid", "taskId", "current", 'isAutoRemove'],
   emits: ["update:visable"],
   setup(props, { emit }) {
+    const router = useRouter();
     const time = ref(30);
     let timer: any = null;
     const baseInfo: any = inject("baseInfo", ref({}));
@@ -93,8 +95,9 @@ export default defineComponent({
         if (store.state.longWs) {
           (store.state.longWs as IWmc).close();
         }
-        let url = `${window.origin}/#/login`;
-        window.location.href = url;
+        // let url = `${window.origin}/#/login`;
+        // window.location.href = url;
+        router.replace({ path: "/login" }).catch(() => {});
       });
     }
     // 操作虚拟机

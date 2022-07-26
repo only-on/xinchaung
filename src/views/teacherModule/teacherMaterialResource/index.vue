@@ -33,8 +33,8 @@
         @click="detail(list)"
       >
         <div class="item-top" :style="list.cover?`background-image: url('${encodeURI(list.cover)}');`:defaultCover">
-          <div class="labels">
-            <span>{{(list.tags && list.tags.length)?`${list.tags.join(' / ')}`:''}}</span>
+          <div class="labels single_ellipsis" v-if="list.tags && list.tags.length">
+            <span :title="(list.tags && list.tags.length)?`${list.tags.join(' / ')}`:''">{{(list.tags && list.tags.length)?`${list.tags.join(' / ')}`:''}}</span>
           </div>
         </div>
         <div class="item-content">
@@ -210,7 +210,6 @@ interface Iuser {
 }
 let materialList = reactive<IMaterialList[]>([]);
 const initData = () => {
-  materialList.length = 0
   tag.value = !labelSearch.type ? 
       (!labelSearch.label ? '' : labelSearch.label) : 
       (!labelSearch.label ? labelSearch.type : labelSearch.type + ',' + labelSearch.label)
@@ -220,38 +219,23 @@ const initData = () => {
     tags: tag.value,
     ...pageInfo,
   };
-  // if (labelSearch.type === '数据集') {
-  //   http.getDatasetsUidList({param}).then((res: IBusinessResp) => {
-  //     if (!res) return
-  //     // console.log(Object.values(res.data.list))
-  //     http.getDataSetsList({param: {datasets: Object.values(res.data.list)}}).then((res: any) => {
-  //       // console.log(res)
-  //       if (!res) return
-  //       const { data, total} = res
-  //       // data.forEach((v: any) => {
-  //       //   v.id = v.uid
-  //       //   v.item_count = v.amount
-  //       //   v.item_size = v.size
-  //       //   v.tags = v.labels?.map((v: any) => v.name)
-  //       //   v.type_name = '数据集'
-  //       //   v.username = v.username ? v.username : 'teach'
-  //       //   v.avatar = v.cover ? v.cover : 'src/assets/images/user/teacher_p.png'
-  //       // })
-  //       materialList.push(...data);
-  //       pageTotal.value = total;
-  //     })
-  //   })
-  //   return
-  // }
+  materialList.length = 0
+  pageTotal.value=0
+  loading.value=true
   http.dataSets({ param }).then((res: any) => {
     if (!res) return
     const { list, page } = res.data;
-    // list.forEach((v: any) => {
-    //   // v.item_size = bytesToSize(v.item_size)
-    // })
+    list.forEach((v: any) => {
+      if(v.type==1){
+        v.cover = `${v.cover}?data-time=${new Date().getTime()}`
+      }
+    })
     materialList.push(...list);
     pageTotal.value = page.totalCount;
-  });
+    loading.value=false
+  }).catch((err:any)=>{
+    loading.value=false
+  })
 };
 onMounted(() => {
   if (!Number(route.query.currentTab)) {
@@ -356,12 +340,15 @@ const getTypeList = () => {
       background-repeat: no-repeat;
       display: flex;
       align-items: flex-end;
+      border-radius: 6px 6px 0 0 ;
       .labels {
         width: 100%;
-        padding: 1px 6px;
         background: var(--black-5);
         font-size: var(--font-size-sm);
         color: var(--white-85);
+        &>span{
+          padding: 1px 6px;
+        }
       }
     }
     &-content {
@@ -406,6 +393,7 @@ const getTypeList = () => {
           height: 20px;
           // background-color: pink;
           margin-right: 4px;
+          border-radius: 50%;
         }
         .name {
           display: inline-block;

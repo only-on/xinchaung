@@ -187,6 +187,7 @@ function inclassTestList(){
       margin-right: 16px;
       .iconfont {
         color: var(--primary-color);
+        margin-right: 4px;
       }
     }
     .statistic:hover {

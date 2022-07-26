@@ -12,7 +12,7 @@ export default {
     endExperiment: { url: "/api/operate/operates/stop", method: 'POST' },
     recommendExperiment: { url: "/api/operate/operates/action", method: 'POST' },
     operatesHandle: { url: "/api/operate/operates/handle", method: 'POST', dataType: "json" },
-    switchInterfaceApi:{url:"/api/operate/operates/handle",method: 'POST', dataType: "json"},  
+    switchInterfaceApi:{url:"/api/operate/operates/handle",method: 'POST', dataType: "json"},
     /* webide */
     webideVersionsApi: { url: '/api/operate/crypts/versions', method: 'GET' },
     currentVersionApi: { url: "/api/operate/crypts/currentVersion", method: 'GET' },
@@ -25,7 +25,7 @@ export default {
     runCodeApi: { url: "/api/operate/crypts/run", method: 'POST' },
     taskDetailApi: { url: "/api/operate/crypts/info", method: 'GET' },
     deleteVersion: { url: "/api/operate/crypts/deleteVersion", method: 'POST', dataType: 'json'}, // 删除版本
-    
+
     // 实验报告
     experimentalReport: { url: "/api/yii/report/record/create", method: 'POST' },
     updateTemplateReport: { url: '/api/yii/report/record/student-update', method: 'POST', dataType: 'formdata' },
@@ -34,11 +34,11 @@ export default {
     stepActionApi: { url: "/api/operate/operates/step", method: 'POST' },
 
     // 课程笔记
-    getNoteApi:{url: "/api/yii/student-course/note", method: 'GET'},  // 
+    getNoteApi:{url: "/api/yii/student-course/note", method: 'GET'},  //
     saveNoteApi:{url:"/api/yii/student-course/setnote", method: 'POST', dataType: 'json'}, // 课程
 
     // 实训笔记
-    getTrainNoteApi:{url: "/student-train/note", method: 'GET'},  // 
+    getTrainNoteApi:{url: "/student-train/note", method: 'GET'},  //
     saveTrainNoteApi:{url:"/student-train/savenote", method: 'POST', dataType: 'json'}, // 课程
 
     // 实训资源列表
@@ -63,9 +63,11 @@ export default {
     getPrepareEnv: {url: '/api/operate/operates/prepares', method:"POST",dataType: 'json'},
     // 测试ssh服务
     testSSHServe: {url: `/wssh/sniff?hostname={hostname}&port={port}`, method:"POST", dataType: 'json'},
+    // 获取webssh连接id
+    getWsshId: {url: '/?hostname={hostname}&port={port}', method: 'POST', dataType: 'json'},
 }
 
-// 
+//
 export interface IvmApi {
     getQuestionListApi: TFHttpSend
     submitAnswerApi: TFHttpSend
@@ -107,6 +109,7 @@ export interface IvmApi {
     updateReadStatusApi:TFHttpSend
     getPrepareEnv:TFHttpSend
     testSSHServe:TFHttpSend
+    getWsshId:TFHttpSend
 }
 
 export const MODULE_NAME = "vmApi"

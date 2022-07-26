@@ -269,16 +269,23 @@ export default defineComponent({
     background: pink;
     margin-right: 6px;
   }
+  .user-name {
+    word-break: keep-all;
+  }
   .create-time {
     margin: 0 24px;
+    word-break: keep-all;
   }
   .btns {
     padding: 0 22px;
-    background: var(--primary-3);
+    background: var(--primary-2);
     color: var(--primary-color);
     height:28px;
     display: inline-block;
     border-radius: 16px;
+    word-break: keep-all;
+    overflow: hidden;
+    line-height: 28px;
   }
   .reply-num {
     margin-left: 4px;
@@ -344,10 +351,8 @@ export default defineComponent({
       border-radius: 17px;
       background: var(--primary-color);
       color: var(--white-100);
+      word-break: keep-all;
     }
-  }
-  .ant-spin-nested-loading {
-    min-height: 80px!important;
   }
 }
 .bottom {
@@ -355,7 +360,8 @@ export default defineComponent({
   line-height: 54px;
   display: flex;
   justify-content: space-between;
-  background: var(--white-100);
+  // background: var(--white-100);
+  background:var(--primary-color);
   box-shadow: 0px -2px 4px 0px rgba(0, 0, 0, 0.07);
   padding-left: 20px;
   padding-right: 30px;
@@ -365,7 +371,8 @@ export default defineComponent({
   width: 830px;
   z-index: 1;
   .right {
-    color: var(--primary-color);
+    // color: var(--primary-color);
+    color: white;
     margin-left: 12px;
     .iconfont {
       font-size: 14px;
@@ -373,8 +380,12 @@ export default defineComponent({
     }
   }
   .left {
+    span{
+      color: white;
+    }
     span:last-child {
-      color: var(--primary-color);
+      // color: var(--primary-color);
+      color: white;
       margin-left: 4px;
     }
   }

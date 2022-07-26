@@ -174,7 +174,7 @@ function ifCorrect(answers:any,id:any){
       width: 120px;
       text-align: center;
       .correctRate {
-        color: var(--primary-color);
+        color: #FF9544;
         width: 100%;
       }
       .submitRate {
@@ -184,11 +184,11 @@ function ifCorrect(answers:any,id:any){
     }
   }
   .delete {
-    width: 30px;
-    height: 30px;
+    width: 38px;
+    height: 38px;
     background: var(--gray-7);
     border-bottom-left-radius: 100%;
-    line-height: 30px;
+    line-height: 33px;
     text-align: center;
     padding-left: 5px;
   }

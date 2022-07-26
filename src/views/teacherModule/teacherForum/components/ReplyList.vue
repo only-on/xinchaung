@@ -40,7 +40,7 @@
           v-for="item in replyList" 
           :key="item.id" 
           :list="item" 
-          :replyUserName="list.user?.username"
+          :replyUserName="list.user_profile?.name"
         ></reply-list>
         <!-- <reply-list></reply-list> -->
         <div class="reply-all" v-if="totalReply !== replyList.length && replyList.length" @click="clickLoadingMore(list)">
@@ -219,6 +219,8 @@ export default defineComponent({
   display: flex;
   justify-content: space-between;
   .left {
+    display: inline-flex;
+    margin-right: 16px;
     img {
       width: 24px;
       height: 24px;
@@ -226,13 +228,23 @@ export default defineComponent({
       background: pink;
       margin-right: 6px;
     }
+    .user-name {
+      word-break: keep-all;  // 兼容虚机页面问答，拖动条拖动时的样式
+    }
     .rep {
+      word-break: keep-all;
       margin: 0 16px;
       color: var(--black-25);
+    }
+    .reply-name {
+      word-break: keep-all;
     }
   }
   .right {
     color: var(--black-25);
+    span {
+      word-break: keep-all;
+    }
   }
 }
 .reply {
@@ -240,9 +252,6 @@ export default defineComponent({
   padding-bottom: 16px;
   border-bottom: 1px solid var(--lightgray-4);
   
-  .ant-spin-nested-loading {
-    min-height: 80px!important;
-  }
   .reply-info {
     margin: 8px 0 12px;
     line-height: 19px;
@@ -251,6 +260,8 @@ export default defineComponent({
   .reply-btn {
     line-height: 19px;
     color: var(--primary-color);
+    height: 19px;
+    overflow: hidden;
     .view {
       margin: 0 16px;
       // display: none;
@@ -278,6 +289,7 @@ export default defineComponent({
       border-radius: 17px;
       background: var(--primary-color);
       color: var(--white-100);
+      word-break: keep-all;
     }
   }
   .reply-reply {

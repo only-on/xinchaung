@@ -21,12 +21,12 @@
   <a-spin :spinning="docOrMp4Drawer.loading" size="large" tip="Loading...">
     <div class="dataList setScrollbar">
       <div class="list" v-if="docOrMp4Drawer.list.length">
-        <div class="item flexCenter" v-for="v in docOrMp4Drawer.list" :key="v" :class="docOrMp4Drawer.activeFile.id === v.id ? 'active' : ''">
+        <div class="item flexCenter" v-for="v in docOrMp4Drawer.list" :key="v" :class="docOrMp4Drawer.activeFile.id === v.id || docOrMp4Drawer.selectListIds.includes(v.id) ? 'active' : ''">
           <div class="flexCenter left">
             <!-- <a-checkbox v-model:checked="v.checked"></a-checkbox> -->
             <div class="task_type" :style="{ color: v.type_obj.color}">{{v.type_obj.name}}</div>
             <span v-if="v.is_high" class="iconfont icon-gaopei gaopeiColor"></span>
-            <div class="quName single_ellipsis">
+            <div class="quName single_ellipsis" :title="v.name">
               {{v.name}}
             </div>
           </div>
@@ -41,7 +41,7 @@
           </div>
         </div>
       </div>
-      <Empty v-if="!docOrMp4Drawer.list.length && docOrMp4Drawer.loading===false" text="暂无文件" />
+      <Empty v-if="!docOrMp4Drawer.list.length && docOrMp4Drawer.loading===false" :type="EmptyType" />
     </div>
   </a-spin>
   <a-pagination
@@ -120,6 +120,15 @@ const classNum=computed(()=>{
     })
   }
   return num
+})
+const EmptyType:any=computed(()=>{
+  let str=''
+  if(docOrMp4Drawer.name == ''){
+    str= 'empty'
+  }else{
+    str= 'searchEmpty'
+  }
+  return str
 })
 var init_type:Ref<number>=ref(1)
 const changeTab=(v:number)=>{
@@ -203,20 +212,22 @@ onMounted(()=>{
     width: 260px;
   }
   .baocun{
-    .ant-btn-primary{
-      font-size: 14px;
-      box-shadow: none;
-      text-shadow: none;
-      height: 34px;
-      border-radius: 17px;
-      padding: 4px 27px;
-    }
+    // .ant-btn-primary{
+    //   font-size: 14px;
+    //   box-shadow: none;
+    //   text-shadow: none;
+    //   height: 34px;
+    //   border-radius: 17px;
+    //   // padding: 4px 27px;
+    // }
   }
 }
 .Exhibition{
-  padding:0px 1rem 10px;
+  padding:10px 18px;
   margin-bottom: 20px;
   justify-content:space-between;
+  border: 1px solid var(--primary-color);
+  background: var(--primary-1);
   .left{
     .num{
       color:var(--primary-color);
@@ -276,7 +287,7 @@ onMounted(()=>{
         }
       }
       .item:hover {
-        background: #ffeed8;
+        background: var(--primary-1);
         // border: 1px solid #ffcaa1;
         cursor: pointer;
         .tags{
@@ -284,8 +295,8 @@ onMounted(()=>{
         }
       }
       .active {
-        background: #fffbf6;
-        border: 1px solid #ffcaa1;
+        background: var(--primary-1);
+        // border: 1px solid var(--primary-5);
       }
     }
   }

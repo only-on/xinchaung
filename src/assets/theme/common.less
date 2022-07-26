@@ -179,13 +179,16 @@ a {
   }
 }
 /*统一修一个antd默认样式*/
-#app {
+// #app {
   .ant-btn-text {
     color: var(--black-65);
   }
   .ant-pagination {
     width: 100%;
     text-align: center;
+    .ant-pagination-options .ant-select-selector{
+      border-radius: 20px;
+    }
   }
   .demo__container .ant-btn {
     border-radius: 3px;
@@ -238,6 +241,9 @@ a {
   .ant-input-password,.ant-select-selector,.ant-input-search{
     border-radius: 20px;
   }
+  .ant-select:not(.ant-select-customize-input) .ant-select-selector{
+    border-radius: 20px;
+  }
   .greenSearch{
     border-radius: 25px;
   }
@@ -246,14 +252,31 @@ a {
       font-size: 14px;
     }
   }
-  .ant-spin-nested-loading,.ant-spin-spinning{ 
+  .ant-spin-nested-loading > div > .ant-spin{
     min-height: 400px;
     width: 100%;
   }
-  .ant-spin-container{
-    height: 100%;
+  .ant-spin-spinning{
+    min-height: 400px;
+    width: 100%;
   }
-}
+  // ant-spin ant-spin-lg ant-spin-spinning ant-spin-show-text
+  .ant-popover{
+    border-radius: 10px;
+    .ant-popover-inner{
+      border-radius: 10px;
+      box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16); 
+    }
+    .ant-popover-inner-content>p:hover{
+      cursor: pointer;
+      color: var(--primary-color);
+    }
+    .ant-popover-inner-content>div:hover{
+      cursor: pointer;
+      color: var(--primary-color);
+    }
+  }
+// }
 .meanBarOverlay{
   min-width: 86px;
   border-radius: 4px;
@@ -276,6 +299,14 @@ a {
   &.borC{
     box-shadow: 0px 0px 6px 0px rgba(252,109,0,0.44);
     border: 1px solid rgba(252, 109, 0,.44);
+    &.themeB{
+      border: 1px solid var(--primary-color);
+      box-shadow: 0px 0px 6px 0px rgba(5,187,201,0.44); 
+    }
+    &.themeC{
+      border: 0;
+      box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.12); 
+    }
   }
 }
 .ant-modal-root {
@@ -293,13 +324,16 @@ a {
     .ant-input-password,.ant-select-selector,.ant-input-search,.ant-input{
       border-radius: 20px;
     }
+    .ant-select:not(.ant-select-customize-input) .ant-select-selector{
+      border-radius: 20px;
+    }
     .ant-input-search .ant-input {
       border-radius: 0;
     }
   }
   .ant-modal-footer {
     text-align: center;
-    padding-bottom: 30px;
+    padding: 20px;
   }
   .createdSet {
     .ant-modal-close-x {
@@ -314,17 +348,6 @@ a {
     &:hover {
       color: rgba(var(--black-100), 1);
     }
-  }
-  .ant-btn {
-    font-size: 14px;
-    box-shadow: none;
-    text-shadow: none;
-    height: 34px;
-    border-radius: 17px;
-    padding: 4px 27px;
-  }
-  .ant-input {
-    font-size: 14px;
   }
   .ant-form-item-label {
     label {
@@ -346,10 +369,6 @@ a {
   }
 }
 .ant-drawer-body{
-  .ant-pagination {
-    width: 100%;
-    text-align: center;
-  }
   .ant-input-password,.ant-select-selector,.ant-input-search{
     border-radius: 20px;
   }
@@ -370,6 +389,9 @@ a {
 }
 .ant-table-tbody > tr.ant-table-row-selected td {
   background-color: rgba(222, 223, 253, 0.5) !important;
+}
+.ant-table-tbody > tr:hover, .ant-table-tbody > tr.ant-table-row-selected td{
+  background-color: var(--primary-1) !important;
 }
 .ant-table-tbody > tr.ant-table-row-selected:hover {
   background-color: var(--primary-1) !important;
@@ -496,7 +518,6 @@ h3 {
   border-radius: 18px;
   height: 34px;
   background: #ffffff;
-  border: 1px solid rgba(0,0,0,0.14);
   span{
     width: 100px;
     height: 100%;
@@ -504,16 +525,20 @@ h3 {
     line-height: 34px;
     color: var(--black-45);
     cursor: pointer;
+    border: 1px solid rgba(0,0,0,0.14);
   }
   span.left{
     border-radius: 18px 0 0 18px;
+    border-right: 0;
   }
   span.right{
     border-radius: 0 18px 18px 0;
+    border-left: 0;
   }
   .active{
     background-color: var(--primary-color);
     color: var(--white);
+    border-color: var(--primary-color);
   }
 }
 .forumn {

@@ -2,7 +2,9 @@
   <div class="knowledgeMap">
     <div class="left">
       <!-- <div class="saveimg" @click="handleImg"></div> -->
-      <div id="jsmind_container" @click="handleClick" @contextmenu.prevent="handleContextMenu($event)"></div>  
+      <a-spin :spinning="loading" size="large" tip="Loading...">
+      </a-spin>
+      <div id="jsmind_container" @click="handleClick"  @dblclick="handleClick" @contextmenu.prevent="handleContextMenu($event)"></div>  
     </div>
     <div class="right">
       <div class="title">
@@ -26,17 +28,18 @@
   
 </template>
 <script lang="ts">
-import { defineComponent,ref, onMounted, reactive, inject, nextTick } from 'vue'
+import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
+import { defineComponent,ref, onMounted, reactive, inject, nextTick,Ref, createVNode } from 'vue'
 import { useRouter } from 'vue-router'
 import 'jsmind/style/jsmind.css'
 import jsMind from 'jsmind/js/jsmind.js'
 import request from "src/api/index";
 import { Ihttp } from "./typings";
 import { IBusinessResp } from "src/typings/fetch.d";
-import message, {MessageApi} from "ant-design-vue/lib/message"
 import {screenshot} from 'src/utils/manipulatePicture'
 import { theme } from 'src/utils/theme'
 import {lStorage} from 'src/utils/extStorage'
+import { Modal, message } from "ant-design-vue";
 interface IpageInfo{
   count: number,
   index: number,
@@ -69,7 +72,6 @@ export default defineComponent({
   },
   setup(props,{emit}) {
     const http = (request as any).TeachingResourceManagement
-    const $message:MessageApi = inject('$message')!
     const router = useRouter()
     var jm = ref<any>(null)
     var selectNode = reactive<any>({})
@@ -91,12 +93,17 @@ export default defineComponent({
       size: 10,
       knowledge_map_id: ''
     })
+    var loading: Ref<boolean> = ref(false);
     const getMapdata = () => {
+      loading.value=true
       http.knowledgesList().then((res:IBusinessResp) => {
         if (res && res.data) {
           // mapData.role = res.data.role
+          loading.value=false
           initData(res.data)
         }
+      }).catch((err:any)=>{
+        loading.value=false
       })
     }
     const initData = (data: any) => {
@@ -156,6 +163,9 @@ export default defineComponent({
         pageInfo.index = 1
         pageInfo.knowledge_map_id = selectNode.id
         getSelectedNodeData()
+        if (event.type === 'dblclick') {
+          handleBlur('edit')
+        }
       }
     }
     // 鼠标右击事件
@@ -220,10 +230,11 @@ export default defineComponent({
           params.topicName = ele.value;
           ele.removeEventListener('blur', setParams)
           http.addKnowledgeMap({param: params}).then((res:IBusinessResp) => {
-            console.log('添加成功')
             message.success('添加成功')
             getMapdata()
             // initData(res.data)
+          }).catch(()=>{
+            getMapdata()
           })
         } else {
           params.parentID = selectNode.parent.id;
@@ -232,6 +243,8 @@ export default defineComponent({
           ele.removeEventListener('blur', setParams)
           http.editKnowledgeMap({urlParams: {nodeID: selectNode.id}, param: params}).then((res:IBusinessResp) => {
             message.success('修改成功')
+            getMapdata()
+          }).catch(()=>{
             getMapdata()
           })
         }
@@ -243,12 +256,20 @@ export default defineComponent({
           jm.select_clear();
           return false;
       }
-      http.delKnowledgeMap({urlParams: {nodeID: selectNode.id}}).then((res:IBusinessResp) => {
-        jm.remove_node(selectNode.id)
-        message.success('删除成功')
-        contentList.length = 0
-        getMapdata()
-      })
+      Modal.confirm({
+        title: '确定要删除这个知识点吗？',
+        icon: createVNode(ExclamationCircleOutlined),
+        okText: '确认',
+        cancelText: '取消',
+        onOk(){
+          http.delKnowledgeMap({urlParams: {nodeID: selectNode.id}}).then((res:IBusinessResp) => {
+            jm.remove_node(selectNode.id)
+            message.success('删除成功')
+            contentList.length = 0
+            getMapdata()
+          })
+        }
+      });
     }
     const getSelectedNodeData = () => {
       isShow.value = true
@@ -288,7 +309,8 @@ export default defineComponent({
       showMenu,
       showEdit,
       isShow,
-      props
+      props,
+      loading
     }
   },
 })

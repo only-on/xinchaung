@@ -119,10 +119,12 @@
     import request from "src/api/index";
     import { message } from "ant-design-vue";
     import { useRouter ,useRoute } from 'vue-router';
+    import {useStore} from 'vuex';
     const router = useRouter();
     const http = (request as any).systemMaintenance;
     var configuration: any = inject("configuration");
     var updata = inject("updataNav") as Function;
+    const store = useStore();
     updata({
       tabs: [
         { name: "磁盘管理", componenttype: 0 }
@@ -234,6 +236,15 @@ const visible:any=ref(false)
         })
     }
     function jump(url:any){
+        // let obj={
+        //     '/admin/TeachingResourceManagement/courseManagement':'教学资源管理',
+        //     '/admin/TeachingResourceManagement/resourcesManagement':'教学资源管理',
+        //     '/admin/TeachingResourceManagement/mirrorImageManagement':'教学资源管理',
+        // }
+        // if(obj[url]){
+        //     store.commit("changemenuActiveName",obj[url])
+        // }
+        store.commit("changemenuActiveName",'教学资源管理')
         router.push(url)
     }
     function getLogDay(){

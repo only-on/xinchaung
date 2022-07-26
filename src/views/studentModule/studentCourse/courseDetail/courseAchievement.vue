@@ -9,90 +9,90 @@
         <div>实验最低分：{{allData?.max_min_score?.min_socre||allData?.max_min_score?.min_socre==0?allData?.max_min_score?.min_socre:'--'}}分</div>
       </div>
     </div>
-
-    <a-table
-      :columns="columns"
-      :data-source="tableData"
-      bordered
-      size="middle"
-      :pagination="false"
-      rowKey='content_name'
-    >
-      <template #check="{ record }">
-        <span class='recordScreen' :class="record?.video?.length?'table-a-link':'no-link'" @click="record?.video?.length?clickFun(record.video, 'video'):''">录屏</span>
-        <span :class="record?.remark!=='--'?'table-a-link':'no-link'" @click="record?.remark!=='--'?clickFun(record.remark, 'remark'):''">评语</span>
-      </template>
-      <!-- 报告 -->
-      <!-- <template #report_score='{record}'>
-        <span :class="record?.report_score?'table-a-link':'no-link'" @click="record?.remark!=='--'?clickFun(record.report?.pdf_path, 'report',record.report):''" v-if="record?.report_score">
-          {{record?.report_score}}
-        </span>
-        <span class='no-link' v-else-if="!record?.report_score&&record?.report?.length">
-          未评分
-        </span>
-        <span class='no-link' v-else>
-          未提交
-        </span>
-      </template> -->
-      <template #report_score='{record}'>
-        <div>
-          <span :class="['未提交','--'].includes(record?.report_score)?'no-link':'table-a-link'" @click="['未提交','--'].includes(record?.report_score)?'':clickFun(record.report?.pdf_path, 'report',record.report)">
-          {{record?.report_score}}
-        </span>
-        </div>
-      </template>
-      <!-- //随测 -->
-      <!-- <template #question_score='{record}'>
-        <span class='no-link' v-if="record?.question_score==null">
-          未提交
-        </span>
-        <span class='table-a-link' v-else @click="clickFun(record.exper, 'exper')">
-          {{record?.question_score}}
-        </span>
-      </template> -->
-      <template #question_score='{record}'>
-        <div>
-          <span :class="['未提交','--'].includes(record?.question_score)?'no-link':'table-a-link'" @click="['未提交','--'].includes(record?.question_score)?'':clickFun(record.exper, 'exper')">
-          {{record?.question_score}}
-        </span>
-        </div>
-      </template>
-      <!-- //自动评分 -->
-      <!-- <template #auto_score='{record}'>
-        <span class='no-link' v-if="record?.auto_score==null">
-          待提交
-        </span>
-        <span v-else>
-          {{record?.auto_score}}
-        </span>
-      </template>
-      -->
-       <template #auto_score='{record}'>
-        <div>
-          <span :class="['未提交','--'].includes(record?.auto_score)?'no-link':'table_black'">
-          {{record?.auto_score}}
-        </span>
-        </div>
-      </template>
-      <!-- //最终成绩 -->
-      <template #score='{record}'>
-        <span :class="['未提交','--','未评阅'].includes(record?.auto_score)?'no-link':'table_black'">
-          {{record?.score}}
-        </span>
-      </template>
-     
-    </a-table>
-    <a-pagination 
-    v-if="allData?.all?.page?.totalCount>10" 
-    :total="allData?.all?.page?.totalCount" 
-    class="page-wrap" 
-    v-model:current="datapage"
-    v-model:pageSize="datapageSize"
-    @Change='onChangePage' 
-    @showSizeChange="showSizeChange"
-    show-size-changer
-    >
-    </a-pagination>
+    <a-spin :spinning="loading" size="large" tip="Loading...">
+      <a-config-provider>
+        <a-table
+          :columns="columns"
+          :data-source="tableData"
+          rowKey='content_name'
+          :pagination="allData?.all?.page?.totalCount>10?{
+            hideOnSinglePage: false,
+            showSizeChanger:true,
+            total: allData?.all?.page?.totalCount, 
+            pageSize: datapageSize,
+            current: datapage, 
+            onChange: onChangePage,
+            onShowSizeChange: showSizeChange,
+          }:false"
+        >
+          <template #check="{ record }">
+            <span class='recordScreen' :class="record?.video?.length?'table-a-link':'no-link'" @click="record?.video?.length?clickFun(record.video, 'video'):''">录屏</span>
+            <span :class="record?.remark!=='--'?'table-a-link':'no-link'" @click="record?.remark!=='--'?clickFun(record.remark, 'remark'):''">评语</span>
+          </template>
+          <!-- 报告 -->
+          <!-- <template #report_score='{record}'>
+            <span :class="record?.report_score?'table-a-link':'no-link'" @click="record?.remark!=='--'?clickFun(record.report?.pdf_path, 'report',record.report):''" v-if="record?.report_score">
+              {{record?.report_score}}
+            </span>
+            <span class='no-link' v-else-if="!record?.report_score&&record?.report?.length">
+              未评分
+            </span>
+            <span class='no-link' v-else>
+              未提交
+            </span>
+          </template> -->
+          <template #report_score='{record}'>
+            <div>
+              <span :class="['未提交','--'].includes(record?.report_score)?'no-link':'table-a-link'" @click="['未提交','--'].includes(record?.report_score)?'':clickFun(record.report?.pdf_path, 'report',record.report)">
+              {{record?.report_score}}
+            </span>
+            </div>
+          </template>
+          <!-- //随测 -->
+          <!-- <template #question_score='{record}'>
+            <span class='no-link' v-if="record?.question_score==null">
+              未提交
+            </span>
+            <span class='table-a-link' v-else @click="clickFun(record.exper, 'exper')">
+              {{record?.question_score}}
+            </span>
+          </template> -->
+          <template #question_score='{record}'>
+            <div>
+              <span :class="['未提交','--'].includes(record?.question_score)?'no-link':'table-a-link'" @click="['未提交','--'].includes(record?.question_score)?'':clickFun(record.exper, 'exper')">
+              {{record?.question_score}}
+            </span>
+            </div>
+          </template>
+          <!-- //自动评分 -->
+          <!-- <template #auto_score='{record}'>
+            <span class='no-link' v-if="record?.auto_score==null">
+              待提交
+            </span>
+            <span v-else>
+              {{record?.auto_score}}
+            </span>
+          </template>
+          -->
+          <template #auto_score='{record}'>
+            <div>
+              <span :class="['未提交','--'].includes(record?.auto_score)?'no-link':'table_black'">
+              {{record?.auto_score}}
+            </span>
+            </div>
+          </template>
+          <!-- //最终成绩 -->
+          <template #score='{record}'>
+            <span :class="['未提交','--','未评阅'].includes(record?.auto_score)?'no-link':'table_black'">
+              {{record?.score}}
+            </span>
+          </template>
+        </a-table>
+        <template #renderEmpty>
+              <div v-if="!loading"><Empty type="tableEmpty" /></div>
+        </template>
+      </a-config-provider>
+    </a-spin>
 
     <div class="footer">
       <div class="footer-left">
@@ -141,9 +141,8 @@
 </template>
 
 <script lang="ts" setup>
-import { log } from "console";
 import * as echarts from "echarts";
-import { ref, toRefs, onMounted,reactive} from "vue";
+import { ref, toRefs, onMounted,reactive,Ref} from "vue";
 import request from "src/api/index";
 import { useRouter ,useRoute } from 'vue-router';
 import exper from "../courseDetail/components/exper.vue";
@@ -164,6 +163,7 @@ const columns = [
     dataIndex: "content_name",
     key: "content_name",
     width:180,
+    ellipsis: true,
   },
   {
     title: "开启时间",
@@ -191,7 +191,8 @@ const columns = [
         dataIndex: "report_score",
         key: "report_score",
         slots: { customRender: "report_score" },
-        align:'center'
+        align:'center',
+        width:100,
         // report为空为未提交 report-score为空 未评分
       },
       {
@@ -199,28 +200,33 @@ const columns = [
         dataIndex: "question_score",
         key: "question_score",
         slots: { customRender: "question_score" },
-        align:'center'
+        align:'center',
+        width:100,
       },
       {
         title: "自动评分",
         dataIndex: "auto_score",
         key: "auto_score",
         slots: { customRender: "auto_score" },
-        align:'center'
+        align:'center',
+        width:100,
       },
     ],
   },
   {
     title: "查看",
     dataIndex: "check",
-    slots: { customRender: "check" }
+    slots: { customRender: "check" },
+    align:'center',
+    width:160,
   },
   {
     title: "最终成绩",
     dataIndex: "score",
     key: "score",
     slots: { customRender: "score" },
-    align:'center'
+    align:'center',
+    width:140,
   },
 ];
 // table数据
@@ -389,15 +395,20 @@ function drawCharts() {
   );
   myChart.setOption(setChart(studyEffectData));
 }
+var loading: Ref<boolean> = ref(false);
 // 获取成绩列表
 function getallScoreList() {
   console.log('111111')
   // courseId
+  loading.value=true
   http.allScoreList({ param: { course_id: courseId,page:datapage.value,limit:datapageSize.value} }).then((res: any) => {
     // console.log("allScoreList成功！！！");
     tableData.value = res.data.all.list;
     allData.value=res.data
-  });
+    loading.value=false
+  }).catch((err:any)=>{
+      loading.value = false
+  })
 }
 function onChangePage(page:any){
   console.log(page)

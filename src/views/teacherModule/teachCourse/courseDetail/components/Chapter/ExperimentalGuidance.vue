@@ -26,14 +26,20 @@
     <template v-if="props.activeExperimentObj.type===6">
       <!-- 视频 -->
       <div class="video-box" :class="privateCourse?'video-box2':''">
-        <common-video v-if="props.activeExperimentObj.Newguidance.id" :src="env ? '/proxyPrefix' +props.activeExperimentObj.Newguidance.file_url : props.activeExperimentObj.Newguidance.file_url" controls="true">
+        <common-video v-if="props.activeExperimentObj.Newguidance.id && props.activeExperimentObj.Newguidance.file_url" :src="env ? '/proxyPrefix' +props.activeExperimentObj.Newguidance.file_url : props.activeExperimentObj.Newguidance.file_url" controls="true">
         </common-video>
+        <div v-else>
+          <Empty />
+        </div>
       </div>
     </template>
     <template v-if="props.activeExperimentObj.type===7">
       <!-- 文档实验 -->
       <div v-if="!props.activeExperimentObj.Newguidance.content_task_files.length">
-        <marked-editor v-model="props.activeExperimentObj.Newguidance.guide" :preview="true" />
+        <marked-editor v-if="props.activeExperimentObj.Newguidance.guide" v-model="props.activeExperimentObj.Newguidance.guide" :preview="true" />
+        <div v-if="!props.activeExperimentObj.Newguidance.guide">
+          <Empty />
+        </div>
       </div>
       <div class="pdfBox" :class="privateCourse?'pdfBox2':''" v-else>
         <PdfVue  :url="props.activeExperimentObj.Newguidance.content_task_files[0].file_html" />

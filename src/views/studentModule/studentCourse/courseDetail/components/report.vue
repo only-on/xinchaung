@@ -65,7 +65,7 @@ export default defineComponent({
 }
 .pdfshow {
   width: 100%;
-  height: 700px;
+  height: 800px;
   display: flex;
   align-items: center;
   justify-content: center;

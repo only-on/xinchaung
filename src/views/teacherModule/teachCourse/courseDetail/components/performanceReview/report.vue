@@ -108,7 +108,7 @@ function submit() {
       }
     }
     .report-pdf{
-      height: 668px;
+      height: 800px;
       padding:0 40px 0 40px;
     }
   }

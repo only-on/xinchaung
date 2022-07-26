@@ -267,7 +267,7 @@ const edit=()=>{
           }
           .tags{
             padding: 0 1rem;
-            background: rgba(255,149,68,0.24);
+            background: var(--primary-24);
             border-radius: 10px;
             span{
               color: var(--primary-color);
@@ -372,6 +372,7 @@ const edit=()=>{
       padding-top: 34px;
       border-top: 1px dashed rgba(255,255,255,0.24);
       span{
+        font-size: 18px;
         border-bottom: 4px solid transparent;
         margin-right: 70px;
         padding-bottom: 8px;

@@ -18,56 +18,58 @@
           >
         </div>
         <logicDiagram v-if="i == 3" :tabsName="tabsName"/>
-        <a-config-provider>
-            <a-table
-            v-if="i !== 3"
-            :data-source="tableData.data"
-            :columns="columns"
-            rowKey="id"
-            :pagination="
-            tableData.total > 10
-              ? {
-                  hideOnSinglePage: false,
-                  showSizeChanger:true,
-                  current: searchParams.page,
-                  pageSize: searchParams.limit,
-                  total: tableData.total,
-                  onChange: onChangePage,
-                  onShowSizeChange: onShowSizeChange,
-                }
-              : false
-          ">
-            <template #name="{ text, index }">
-              <div class="editable-cell">
-                <div
-                  v-if="editableData[index]"
-                  class="editable-cell-input-wrapper"
-                >
-                  <a-input
-                    v-model:value="editableData[index].name"
-                    @pressEnter="save(index)"
-                  />
+        <a-spin :spinning="loading" size="large" tip="Loading...">
+          <a-config-provider>
+              <a-table
+              v-if="i !== 3"
+              :data-source="tableData.data"
+              :columns="columns"
+              rowKey="id"
+              :pagination="
+              tableData.total > 10
+                ? {
+                    hideOnSinglePage: false,
+                    showSizeChanger:true,
+                    current: searchParams.page,
+                    pageSize: searchParams.limit,
+                    total: tableData.total,
+                    onChange: onChangePage,
+                    onShowSizeChange: onShowSizeChange,
+                  }
+                : false
+            ">
+              <template #name="{ text, index }">
+                <div class="editable-cell">
+                  <div
+                    v-if="editableData[index]"
+                    class="editable-cell-input-wrapper"
+                  >
+                    <a-input
+                      v-model:value="editableData[index].name"
+                      @pressEnter="save(index)"
+                    />
+                  </div>
+                  <div v-else class="editable-cell-text-wrapper">
+                    {{ text || " " }}
+                  </div>
                 </div>
-                <div v-else class="editable-cell-text-wrapper">
-                  {{ text || " " }}
-                </div>
-              </div>
+              </template>
+              <template #operation="{ record, index }">
+                <span class="functionButton" v-if="editableData[index]">
+                  <a @click="cancelSave(index)">取消</a>
+                  <a @click="save(index)">确定</a>
+                </span>
+                <span class="functionButton" v-else>
+                  <a @click="edit(record, index)">修改</a>
+                  <a @click="onDelete(record.id)">删除</a>
+                </span>
+              </template>
+            </a-table>
+            <template #renderEmpty>
+              <Empty :type="EmptyType"/>
             </template>
-            <template #operation="{ record, index }">
-              <span class="functionButton" v-if="editableData[index]">
-                <a @click="cancelSave(index)">取消</a>
-                <a @click="save(index)">确定</a>
-              </span>
-              <span class="functionButton" v-else>
-                <a @click="edit(record, index)">修改</a>
-                <a @click="onDelete(record.id)">删除</a>
-              </span>
-            </template>
-          </a-table>
-          <template #renderEmpty>
-            <Empty :type="EmptyType"/>
-          </template>
-        </a-config-provider>
+          </a-config-provider>
+        </a-spin>
       </a-tab-pane>
     </a-tabs>
   </div>
@@ -100,12 +102,15 @@
 import {
   defineComponent,
   ref,
+  Ref,
   onMounted,
   reactive,
   inject,
   UnwrapRef,
-  computed
+  computed,
+  createVNode
 } from "vue";
+import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { useRouter, useRoute } from "vue-router";
 import { SelectTypes } from "ant-design-vue/es/select";
 import request from "src/api/index";
@@ -219,13 +224,15 @@ const columns = reactive<any>([
     slots: { customRender: "operation" },
   }
 ])
-
+var loading: Ref<boolean> = ref(false);
 function getList () {
   if (activeKey.value !== 3) {
     let newhttp = http[obj[activeKey.value]["list"]]({
       param: searchParams
     });
+    loading.value=true
     newhttp.then((res: IBusinessResp) => {
+      loading.value=false
       tableData.data = res.data.list;
       tableData.total = res.data.page.totalCount
     });
@@ -288,10 +295,10 @@ const cancelSave=(key: number)=>{
 }
 const onDelete = (id: number) => {
   Modal.confirm({
-    title: "删除",
-    content: "确定删除该项吗",
-    okText: "确认",
-    cancelText: "取消",
+    title: '确定要删除该项吗？',
+    icon: createVNode(ExclamationCircleOutlined),
+    okText: '确认',
+    cancelText: '取消',
     onOk: () => {
       if (!id) return
       let newhttp = http[obj[activeKey.value]["delete"]]({

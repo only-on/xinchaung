@@ -1,7 +1,7 @@
 <template>
   <div class="app_content">
     <div class="header">
-      <div :class="['headerBox', 'theme'+systemTheme]">
+      <div :class="['headerBox', 'theme'+ store.state.systemInfo.theme]">
         <Header />
       </div>
       <NavTab @tabSwitch="tabSwitch" />
@@ -28,8 +28,8 @@ import {
   computed,
 } from "vue";
 import { useRouter } from "vue-router";
+import { useStore } from "vuex";
 import {getThemeData} from 'src/utils/theme'
-const {systemTheme} = getThemeData()
 // import router from "../../routers/index";
 interface tab {
   name: string;
@@ -49,6 +49,7 @@ export default defineComponent({
   },
   setup: () => {
     const router = useRouter();
+    const store = useStore()
     var configuration: config = reactive({
       showNav: true, // 是否需要导航条
       tabs: [], // tab切换项 例 [{name:'随堂论坛',componenttype:0}]
@@ -57,9 +58,6 @@ export default defineComponent({
     });
     function updataNav(val: config) {
       // console.log(val)
-      // if(!val.activeMenuName){
-      //   configuration.activeMenuName=''
-      // }
       Object.assign(configuration, val);
     }
     provide("configuration", configuration);
@@ -78,7 +76,7 @@ export default defineComponent({
       },
       () => {}
     );
-    return { tabSwitch, configuration ,systemTheme};
+    return { tabSwitch, configuration ,store};
   },
 });
 </script>

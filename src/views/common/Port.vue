@@ -1,7 +1,7 @@
 <template>
   <div class="port">
-    <a-spin size="large" />
-    <p>请稍候...</p>
+    <a-spin size="large" tip="请稍候..." />
+    <!-- <p>请稍候...</p> -->
   </div>
 </template>
 
@@ -19,7 +19,7 @@ api.common
       router.replace(getHomePath(res.data.role));
     }
   })
-  .catch((err) => {
+  .catch((err:any) => {
     router.replace(getHomePath(9));
   });
 </script>

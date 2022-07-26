@@ -17,20 +17,28 @@
             {{ assistText }}
           </template>
           <template v-else>
-            <div class="help-question-warp setScrollbar">
+            <div class="help-question-warp textScrollbar">
               <div
                 v-for="(item, index) in helpInfoList"
-                class="help-item"
-                @click="toHelp(item, index)"
                 :key="item.id"
+                class="help-question-item"
               >
-                <div class="help-base-info">
-                  <span>{{ item.user }}</span>
-                  <span class="time">{{ item.created_at }}</span>
+                <div
+                  class="help-item pointer"
+                  @click="toHelp(item, index)"
+                  :class="{'help-item-loading': jumpLoading&&item.id!=currentHelpId, 'current-help': item.id==currentHelpId}"
+                >
+                  <div class="help-base-info">
+                    <span>{{ item.user }}</span>
+                    <span class="time">{{ item.created_at }}</span>
+                  </div>
+                  <p class="assist" :title="item.question">
+                    {{ item.question }}
+                  </p>
                 </div>
-                <p class="assist" :title="item.question">
-                  {{ item.question }}
-                </p>
+                <div v-if="jumpLoading&&item.id==currentHelpId" class="help-loading">
+                  <a-spin />链接中，请稍后...
+                </div>
               </div>
             </div>
           </template>
@@ -96,7 +104,6 @@ export default defineComponent({
   components: { MenuBar },
   setup() {
     const env = process.env.NODE_ENV == "development" ? true : false;
-    const activeMenu = ref<string>('')
     const router = useRouter();
     const store = useStore()
     const { lStorage,sStorage } = extStorage;
@@ -136,9 +143,10 @@ export default defineComponent({
       return env?'/proxyPrefix' + logo_url : logo_url
     })
     const userName = ref<string>(lStorage.get("username"));
+    let kickingOut = false;
 
     function information() {
-      router.push("/teacher/personalInformation");
+      router.push("/personalInformation");
     }
     function loginOut() {
       http.loginOut().then((res: IBusinessResp) => {
@@ -148,12 +156,13 @@ export default defineComponent({
         if (longWs1.value) {
           longWs1.value.close();
         }
+        message.destroy(); // 登出，移除所有消息弹窗
         router.replace({ path: "/login" }).catch(() => {});
       });
     }
     function helpMessage() {}
     function modifyPassword() {
-      router.push("/teacher/personalInformation");
+      router.push("/personalInformation");
       // http.resetPassword({param:{}}).then((res:IBusinessResp)=>{
       //   console.log(res)
       // })
@@ -165,30 +174,16 @@ export default defineComponent({
     var activeName: Ref<string> = ref(lStorage.get("menuActiveName") || "");
     function goHome() {
       console.log("回首页");
-      // router.push(`${homePath}`);
-      if (role == 3) {
-        // return "/teacher" // 教师端首页
-        activeMenu.value='首页'
-        router.push("/teacher");
+      const obj={
+        1:'',
+        2:'/admin',
+        3:'/teacher',
+        4:'/student',
+        5:'/teacher/teacherCourse?currentTab=0'
       }
-      if (role == 4) {
-        activeMenu.value='首页'
-        router.push("/student");
-      }
-      if (role == 1) {
-        // return "/init-course/init" // 初始端
-        // router.push("/teacher");
-      }
-      if (role == 2) {
-        activeMenu.value='首页'
-        // return "/admin" // 管理端
-        router.push("/admin");
-      }
-      if (role == 5) {
-        activeMenu.value='教学过程'
-        router.push("/teacher/teacherCourse?currentTab=0"); // 助教端
-        // router.push("/");
-      }
+      router.push(obj[role])
+      const menuActiveName=role == 5?'教学过程':'首页'
+      store.commit("changemenuActiveName",menuActiveName)
     }
     window.XC_ROLE=2
 
@@ -236,6 +231,7 @@ export default defineComponent({
         getHelpFinfo()
         setWs()
       }
+      kickingOut = false;
     });
     const helpInfoList: Ref<any> = ref([])
     const isRead: Ref<boolean> = ref(false)
@@ -273,6 +269,7 @@ export default defineComponent({
           if (ev.type === "close") {
             console.log('[Header] longWs1: ', longWs1);
             if (longWs1.value && longWs1.value.isReset()) {
+              message.destroy();
               message.warn(resetMsgNode, 0);
             }
           }
@@ -302,6 +299,13 @@ export default defineComponent({
                 store.commit('setIsWsConnect', false)
                 store.commit('setConnectStatus', 0)
               }
+            } else if (data.type === 'kick_out') {
+              if (kickingOut) {
+                return;
+              }
+              kickingOut = true;
+              store.commit('kickOut', true);
+              loginOut();
             }
           }
         }
@@ -321,11 +325,16 @@ export default defineComponent({
       })
     }
 
+    const jumpLoading = ref(false)
+    const currentHelpId = ref(0)
     function toHelp(val: any, index: any) {
+      // if(jumpLoading.value) return
       let params: any = {
         opType: "help",
         study_id: val.study_id,
       };
+      jumpLoading.value = true
+      currentHelpId.value = val.id
       vmApi.updateReadStatusApi({
         param: {
           action: "read",
@@ -335,6 +344,10 @@ export default defineComponent({
         },
       })
       .then(() => {
+        // helpInfoList.value.splice(index, 1);
+      }).catch(() => {
+        jumpLoading.value = false
+        currentHelpId.value = 0
         helpInfoList.value.splice(index, 1);
       });
       vmApi.createExamples({ param: params }).then((res: any) => {
@@ -352,7 +365,15 @@ export default defineComponent({
               experType: 1
             },
           });
+        } else {
+          jumpLoading.value = false
+          currentHelpId.value = 0
+          helpInfoList.value.splice(index, 1);
         }
+      }).catch(() => {
+        jumpLoading.value = false
+        currentHelpId.value = 0
+        helpInfoList.value.splice(index, 1);
       })
     }
     onBeforeRouteLeave(()=>{
@@ -372,13 +393,11 @@ export default defineComponent({
       // console.log(newVal);
       // menus.forEach((item:any) => {
       //   if(item.url && item.url.includes(newVal)){
-      //     activeMenu.value = item.name
       //     lStorage.set("menuActiveName", item.name);
       //   }
       //   if (item.children.length) {
       //     item.children.forEach((childItem:any) => {
       //       if(childItem.url && childItem.url.includes(newVal)){
-      //         activeMenu.value = item.name
       //         lStorage.set("menuActiveName", item.name);
       //       }
       //     })
@@ -398,6 +417,8 @@ export default defineComponent({
     },{immediate: true,deep:true})
     onUnmounted(() => {
       closeWs()
+      jumpLoading.value = false
+      currentHelpId.value = 0
     })
     return {
       env,
@@ -413,14 +434,14 @@ export default defineComponent({
       activeName,
       handImg,
       userImg,
-      homePath,
       goHome,
       helpInfoList,
       toHelp,
       store,
       logoImg,
       getLogoUrl,
-      activeMenu
+      jumpLoading,
+      currentHelpId,
     };
   },
 });
@@ -486,7 +507,7 @@ export default defineComponent({
     align-items: center;
     cursor: pointer;
     .help-message {
-      color: var(--white-75);
+      color: var(--menu-text);
       margin-right: 53px;
       position: relative;
       img {
@@ -495,7 +516,7 @@ export default defineComponent({
         margin-right: 7px;
       }
       .iconfont {
-        color: var(--white-75);
+        color: var(--menu-text);
         margin-right: 5px;
         font-size: 18px;
         vertical-align: middle;
@@ -554,52 +575,85 @@ export default defineComponent({
     margin-bottom: 0;
     padding: 0.5em;
   }
-  .operation:hover {
-    cursor: pointer;
-    color: var(--primary-color);
-  }
 }
 .help-question-warp {
   width: 255px;
   max-height: 292px;
   overflow: auto;
   padding: 0 8px;
-  .help-item {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    border-bottom: 1px dashed var(--black-15);
-    padding-top: 10px;
-    padding-bottom: 10px;
+  .help-question-item {
+    position: relative;
     &:last-child {
       border-bottom: none;
     }
-  }
-  .help-item:hover {
-    .assist {
+    .help-loading {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: linear-gradient(90deg,rgba(255,255,255,0.00), #ffffff 13%, #ffffff);
+      width: 183px;
+      height: 61px;
+      text-align: center;
+      line-height: 62px;
       color: var(--primary-color);
+      padding-left: 16px;
+      .ant-spin {
+        :deep(.ant-spin-dot) {
+          margin-right: 8px;
+        }
+        &.ant-spin-spinning {
+          min-height: 1px;
+        }
+      }
     }
-  }
-  .help-base-info {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    width: 100%;
-    color: var(--black-45);
-    font-size: var(--font-size-sm);
-    .time {
-      color: var(--black-25);
+    .help-item {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      border-bottom: 1px dashed var(--black-15);
+      padding-top: 10px;
+      padding-bottom: 10px;
+      &:hover {
+        .assist {
+          color: var(--primary-color);
+        }
+      }
+      &.current-help {
+        cursor: auto;
+        pointer-events: none;
+        .assist {
+          color: var(--black-65);
+        }
+      }
+      &.help-item-loading {
+        cursor: auto;
+        pointer-events: none;
+        .assist, .help-base-info {
+          color: var(--black-25);
+        }
+      }
+      .help-base-info {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        width: 100%;
+        color: var(--black-45);
+        font-size: var(--font-size-sm);
+        .time {
+          color: var(--black-25);
+        }
+      }
+      p {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow-x: hidden;
+        // cursor: pointer;
+        width: 100%;
+        color: var(--black-65);
+        margin-bottom: 0;
+      }
     }
-  }
-  p {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow-x: hidden;
-    cursor: pointer;
-    width: 100%;
-    color: var(--black-65);
-    margin-bottom: 0;
   }
 }
 </style>

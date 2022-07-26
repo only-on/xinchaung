@@ -46,10 +46,10 @@
         class="delayed"
         v-if="roleArry.includes('delayed')"
       >
-        <span>
+        <span class="delayed-time">
           {{ experimentTime?.h + ":" + experimentTime?.m + ":" + experimentTime?.s }}
         </span>
-        <span class="pointer" @click="delayedTime" v-if="isShowDelayBtn">延时</span>
+        <span class="pointer delayed-btn" @click="delayedTime" v-if="isShowDelayBtn">延时</span>
       </div>
       <div
         class="vnc-change pointer"
@@ -481,7 +481,7 @@
     <div v-if="uploadFile.fileList.length" class="progress-box">
       <div class="file-base-info">
         <span>文件名称：{{ uploadFile.fileList[0].name }}</span
-        ><span class="icon-shanchu iconfont" @click="remove"></span>
+        ><span class="icon-shanchu iconfont pointer" @click="remove"></span>
       </div>
       <a-progress :percent="uploadPercent" />
     </div>
@@ -548,6 +548,9 @@ import storage from "src/utils/extStorage";
 import tusFileUpload from 'src/utils/tusFileUpload'
 import Submit from "src/components/submit/index.vue";
 import { IBusinessResp } from "src/typings/fetch.d";
+import {useStore} from "vuex";
+import {IWmc} from "../../../../typings/wmc";
+import {WS_CLOSE_CODE_EXP_ENDED, WS_CLOSE_REASON_EXP_ENDED} from "../../../../utils/vm";
 
 const route = useRoute();
 const router = useRouter();
@@ -614,6 +617,7 @@ const quizPaperList: Ref<any> = ref([]);   // 没有答完的题
 const currentQuizIndex: Ref<number> = ref(0);  // 当前在答的题目的索引
 const currentShowType: Ref<any> = ref(0); // 0 未答完 1提交结果 2 随测记录
 const answerPaperList: Ref<any> = ref([]);  // 带答案的试题
+const store = useStore();
 
 const answerNum = computed(() => {
   let num = 0;
@@ -789,6 +793,11 @@ function back() {
 }
 
 // 下拉选择虚拟机
+function sendDisconnect() {
+  if (novncEl.value) {
+    novncEl.value.sendDisconnect();
+  }
+}
 async function switchVm() {
   if (isScreenRecording.value) {
     await startEndRecord();
@@ -802,11 +811,12 @@ async function switchVm() {
     if (
       baseInfo.value &&
       baseInfo.value.base_info &&
-      baseInfo.value.base_info.is_webssh === 1 
+      baseInfo.value.base_info.is_webssh === 1
       // && ((role == 4 && vmsInfo.value.vms[currentVmIndex.value].switch == 0) || role != 4)
     ) {
       currentInterface.value = "ssh";
       sshIsOpen.value = false
+      sendDisconnect()
     } else {
       if (currentInterface.value == "ssh") {
       } else {
@@ -821,11 +831,12 @@ async function switchVm() {
     if (
       baseInfo.value &&
       baseInfo.value.base_info &&
-      baseInfo.value.base_info.is_webssh === 1 
+      baseInfo.value.base_info.is_webssh === 1
       // && ((role == 4 && vmsInfo.value.vms[currentVmIndex.value].switch == 0) || role != 4)
     ) {
       currentInterface.value = "ssh";
       sshIsOpen.value = true
+      sendDisconnect()
     } else {
       vncLoading.value = true;
       isClose.value = false;
@@ -856,7 +867,7 @@ function delayedTime() {
       use_time.value = res.data.remaining_time;
       delayNum.value ++
       times();
-    } 
+    }
   });
 }
 
@@ -925,6 +936,11 @@ function finishExperiment() {
 
 // 检查脚本并结束实验
 async function finishTest() {
+  // 主动断开ws连接
+  if (store.state.longWs) {
+    (store.state.longWs as IWmc).close(WS_CLOSE_CODE_EXP_ENDED, WS_CLOSE_REASON_EXP_ENDED);
+  }
+
   if (isScreenRecording.value) {
     await startEndRecord();
   }
@@ -967,7 +983,7 @@ function endVmEnvirment() {
       taskId: taskId,
     };
   }
-  recommendType ? Object.assign(params, {recommendType}) : ''    
+  recommendType ? Object.assign(params, {recommendType}) : ''
   setTimeout(() => {
     endExperiment(params).then((res: any) => {
       if (
@@ -1032,7 +1048,7 @@ function colseOrStart() {
       // loading.vaue=true
     // },2000)
   // }
-  
+
   Modal.confirm({
     title: "提示",
     content: `是否确认${vmStartStatus.value?'关机':'开机'}？`,
@@ -1083,7 +1099,7 @@ async function startVm() {
   initVnc.value();
 }
 // 重置
-async function resetVm() { 
+async function resetVm() {
   Modal.confirm({
     title: "提示",
     content: `是否确认重置？`,
@@ -1196,6 +1212,7 @@ const beforeUpload = (file: any) => {
   //   uploadFilePath.value = res.data.full_url
   // })
   // return false;
+  uploadFilePath.value = ''
   fileLoading.value = true
 }
 const remove = () => {
@@ -1217,6 +1234,9 @@ const onChange = (info: any) => {
     uploadPercent.value = 100
     uploadFilePath.value = file.response?.data?.full_url
   } else if(file.status === 'done') {
+    fileLoading.value = false
+    uploadPercent.value = 0
+    uploadFilePath.value = ''
     message.warn(file.response?.msg)
   }
 }
@@ -1293,7 +1313,7 @@ function shareDesktop() {
       tempVmUrl.value = "";
       shareVisible.value = true;
       let env = process.env.NODE_ENV === "development" ? true : false;
-      tempVmUrl.value = `${window.location.protocol}//${window.location.host}/#/vm/vm?wsUrl=${currentOption.value.wsUrl}`;
+      tempVmUrl.value = `${window.location.protocol}//${window.location.host}/vm/vm?wsUrl=${currentOption.value.wsUrl}`;
     },
   });
 }
@@ -1507,7 +1527,7 @@ async function openQuizModal() {
           tempData[i].student_answer = [];
         }
       }
-      
+
     quizPaperList.value = tempData;
     currentQuizIndex.value = 0;
     }
@@ -1848,7 +1868,7 @@ i {
     .delayed {
       // border: none;
       color: var(--primary-color);
-      span:last-child {
+      .delayed-btn {
         display: inline-block;
         height: 18px;
         line-height: 20px;

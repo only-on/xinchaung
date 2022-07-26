@@ -14,6 +14,7 @@
           </div>
         </div>
         <div class="iframe" ref="jupyteIframe">
+          <vm-loading v-if="isLoading"></vm-loading>
           <iframe id="image-jupyter-iframe" v-show="showIframe" :src="jupyteUrl" frameborder="0"></iframe>
         </div>
         <a-modal class="save-image-modal" :visible="saveVisible"  :closable="false">
@@ -24,9 +25,7 @@
                 <a-input v-model:value="createFormData.name" />
               </a-form-item>
               <a-form-item label="添加标签" name="tags">
-                <div>
-                  <LabelList :tag="createFormData.tags" :recommend="recommend" @selectTag="selectTag" />
-                </div>
+                <LabelList :tag="createFormData.tags" :recommend="recommend" @selectTag="selectTag" />
               </a-form-item>
               <a-form-item  label="镜像描述" name="description">
                 <a-textarea
@@ -68,6 +67,7 @@ import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
 import { message } from "ant-design-vue";
 import LabelList from 'src/components/LabelList.vue'
 import Submit from "src/components/submit/index.vue";
+import vmLoading from "src/components/noVnc/vmLoading.vue"
 import request from "src/api/index";
 const http = (request as any).teacherImageResourcePool;
 type TreactiveData = {
@@ -91,7 +91,8 @@ type TreactiveData = {
 export default defineComponent({
   components: {
     LabelList,
-    Submit
+    Submit,
+    vmLoading,
   },
   setup() {
     const env = process.env.NODE_ENV == "development" ? true : false;
@@ -215,15 +216,15 @@ export default defineComponent({
               const iamgeSaveStatus = storage.lStorage.get("iamgeSaveStatus")
                 ? storage.lStorage.get("iamgeSaveStatus")
                 : [];
-              if (_.some(iamgeSaveStatus, { id: reactiveData.id })) {
+              if (_.some(iamgeSaveStatus, { id: Number(reactiveData.id) })) {
                 iamgeSaveStatus.forEach((item: any, index: number) => {
-                  if (reactiveData.id === item.id) {
+                  if (reactiveData.id == item.id) {
                     iamgeSaveStatus[index].beginIime = new Date();
                   }
                 });
               } else {
                 iamgeSaveStatus.push({
-                  id: reactiveData.id,
+                  id: Number(reactiveData.id),
                   beginIime: new Date(),
                 });
               }
@@ -275,9 +276,9 @@ export default defineComponent({
         var iamgeSaveStatus = storage.lStorage.get("iamgeSaveStatus")
           ? storage.lStorage.get("iamgeSaveStatus")
           : [];
-        if (_.some(iamgeSaveStatus, { id: reactiveData.id })) {
+        if (_.some(iamgeSaveStatus, { id: Number(reactiveData.id) })) {
           iamgeSaveStatus.forEach((item: any, index: number) => {
-            if (reactiveData.id === item.id) {
+            if (reactiveData.id == item.id) {
               // 10分钟秒数
               /* eslint-disable */
               var time =
@@ -333,6 +334,7 @@ export default defineComponent({
       (jupyteIframe.value as any).appendChild(frm);
     }
     const showIframe = ref(true)
+    let isLoading = ref(true)
     let TimerIframe: NodeJS.Timeout | null = null;
     function loadIframe() {
       const iframe: any = document.querySelector('#image-jupyter-iframe')
@@ -342,11 +344,17 @@ export default defineComponent({
         iframe.attachEvent('onload', () => {
           clearInterval(Number(TimerIframe));
           onloadIframe = true
+          setTimeout(() =>{
+            isLoading.value = false
+          }, 2000)
         })
       } else {
         iframe.onload = () => {
           clearInterval(Number(TimerIframe));
           onloadIframe = true
+          setTimeout(() =>{
+            isLoading.value = false
+          }, 2000)
         }
       }
       TimerIframe = setInterval(() => {
@@ -392,6 +400,7 @@ export default defineComponent({
       selectTag,
       saveImageLoad,
       showIframe,
+      isLoading,
     };
   },
 });
@@ -428,6 +437,8 @@ export default defineComponent({
   padding-top: 4px;
   display: flex;
   flex-direction: column;
+  z-index: 2;
+  overflow: hidden;
 
   .jupyte-detail-info {
     display: flex;

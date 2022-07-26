@@ -22,7 +22,7 @@
             <!-- <span class="fileIcon" :style="`background-image: url(${iconList[props.docOrMp4Type === 1?'ppt':'mp4']});`"></span> -->
             <div class="docBg" :style="`background-image: url(${v.cover});`"></div>
             <div class="info">
-              <div class="quName single_ellipsis">{{v.name}}</div>
+              <div class="quName single_ellipsis" :title="v.name">{{v.name}}</div>
               <div class="information">
                 <div class="portrait flexCenter">
                   <div class="flexCenter imgBox" v-if="is_public === 1">
@@ -58,24 +58,24 @@
           <!-- 是否有文件列表 -->
           <div class="fileList" v-if="v.show && v.fileList.length" :class="(v.show && v.fileList.length)?'openFile':''">
             <a-spin :spinning="v.loading" size="large" tip="Loading...">
-              <div v-for="i in v.fileList" class="flexCenter fileItem" :class="docOrMp4Drawer.activeFile.id === i.id ? 'activeFileItem':''">
+              <div v-for="(i,index) in v.fileList" class="flexCenter fileItem" :class="docOrMp4Drawer.selectListIds.includes(i.id) ? 'activeFileItem':''" :key="index">
                 <div class="flexCenter fileLeft">
                   <!-- <span class="fileIcon" :style="`background-image: url(${iconList[props.docOrMp4Type === 1?'ppt':'mp4']});`"></span> -->
-                  <span class="fileIcon" :style="`background-image: url(${iconList[getFileTypeIcon(v.file_name)]});`"></span>
-                  <span class="single_ellipsis">{{i.file_name}}</span>
+                  <span class="fileIcon" :style="`background-image: url(${getFileTypeIcon(v.file_name)});`"></span>
+                  <span class="single_ellipsis" :title="i.file_name">{{i.file_name}}</span>
                 </div>
                 <div class="flexCenter fileRight">
                   <span>{{bytesToSize(i.size)}}</span>
-                  <span class="select"  @click="selectDocOrMp4File(i)">
-                    {{ docOrMp4Drawer.activeFile.id === i.id ? "取消" : "选择" }}
-                  </span>
+                  <a-button class="select" @click="selectDocOrMp4File(i)" type="text" :disabled="docOrMp4Drawer.selectListIds.includes(i.id)">
+                    {{ docOrMp4Drawer.selectListIds.includes(i.id) ? "取消" : "选择" }}
+                  </a-button>
                 </div>
               </div>
             </a-spin>  
           </div>
         </div>
       </div>
-      <Empty v-if="!docOrMp4Drawer.list.length && docOrMp4Drawer.loading===false" text="暂无文件" />
+      <Empty v-if="!docOrMp4Drawer.list.length && docOrMp4Drawer.loading===false" :type="EmptyType" />
     </div>
   </a-spin>
   <a-pagination
@@ -111,11 +111,13 @@ import request from "src/api/index";
 const http = (request as any).teacherMaterialResource;
 interface Props { 
   activeFile:any;     // 选中的文件对象
-  tags:string         //  资源标签名称
+  tags:string;        //  资源标签名称
+  selectList:any    // 选中的资源
 }
 const props = withDefaults(defineProps<Props>(),{
   activeFile: () => {},
-  tags:''
+  tags:'',
+  selectList: () => []
 });
 
 const emit = defineEmits<{
@@ -128,9 +130,25 @@ const docOrMp4Drawer: any = reactive({
   totalCount: 0,
   loading: false,
   file_name: "",
-  activeFile: {}, //  选择或上传的文档、视频
+  activeFile: {
+    id: props.activeFile.id
+  }, //  选择或上传的文档、视频
+  selectListIds: []
 });
-console.log(props.activeFile)
+if(props.selectList.length){
+  props.selectList.forEach((v:any)=>{
+    docOrMp4Drawer.selectListIds.push(v.id)
+  })
+}
+const EmptyType:any=computed(()=>{
+  let str=''
+  if(docOrMp4Drawer.file_name == ''){
+    str= 'empty'
+  }else{
+    str= 'searchEmpty'
+  }
+  return str
+})
 var is_public:Ref<number>=ref(1)
 const changeTab=(v:number)=>{
   is_public.value=v
@@ -282,6 +300,8 @@ onMounted(()=>{
                 margin-right: 6px;
               }
               .tags{
+                background: var(--primary-1);
+                padding: 0 14px;
                 span{
                   color: var(--primary-color);
                   font-size: var(--font-size-sm);
@@ -324,23 +344,19 @@ onMounted(()=>{
               padding-left: 2rem;
             }
             .select{
-              width: 60px;
-              text-align: center;
-              cursor: pointer;
+              // width: 60px;
+              // text-align: center;
+              // cursor: pointer;
               color: var(--primary-color);
               // justify-content: center;
             }
           }
           .fileItem:hover{
-            background: rgb(255, 238, 217,.24);
+            background: var(--primary-1);
           }
           .activeFileItem{
-            background: #fffbf6;
-            border: 1px solid #ffcaa1;
+            background: var(--primary-1);
           }
-        }
-        .openFile{
-          // margin: 1rem 0;
         }
         .fileIcon {
           width: 20px;
@@ -382,4 +398,5 @@ onMounted(()=>{
       }
     }
   }
+
 </style>

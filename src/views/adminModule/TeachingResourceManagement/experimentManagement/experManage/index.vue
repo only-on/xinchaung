@@ -48,56 +48,58 @@
           <a-button type="primary" @click="batchDelete">批量删除</a-button>
         </div>
     </div>
-    <a-config-provider>
-      <a-table
-      :columns="columns"
-      :data-source="listdata"
-      rowKey='id'
-      :pagination="
-        total > 10
-          ? {
-              hideOnSinglePage: false,
-              showSizeChanger:true,
-              total:total,
-              current: params.page,
-              pageSize: params.pageSize,
-              onChange: onChange,
-              onShowSizeChange: onShowSizeChange,
-            }
-          : false
-      "
-      :row-selection="{
-        selectedRowKeys: tableData.selectedRowKeys,
-        onChange: onSelectChange,
-        getCheckboxProps: getCheckboxProps,
-      }"
-    >
-    <!-- detail -->
-    <template #contentName='{record}'>
-      <div class="detail" :title="record.contentName" @click="detail(record,record.contentAttribute)">
-        {{record.contentName}}
-      </div>
-    </template>
-    <template #contentTechnicalDirectionGroup='{record}'>
-        <div class="detailDirName" :title="record.contentTechnicalDirectionGroup">
-        {{record.contentTechnicalDirectionGroup}}
-      </div>
-    </template>
-    <template #action="{record}">
-      <a-button type="link" @click="dleDelete(record)">删除</a-button>
-      <!-- <span class="action detail" @click="dleDelete(record)">删除</span> -->
-    </template>
-    </a-table>
-      <template #renderEmpty>
-          <div><Empty :height='80' :text='ifSearch?"抱歉，未搜到相关数据！":"抱歉，暂无数据！"' type="tableEmpty" /></div>
+      <a-spin :spinning="loading" size="large" tip="Loading...">
+      <a-config-provider>
+        <a-table
+        :columns="columns"
+        :data-source="listdata"
+        rowKey='id'
+        :pagination="
+          total > 10
+            ? {
+                hideOnSinglePage: false,
+                showSizeChanger:true,
+                total:total,
+                current: params.page,
+                pageSize: params.pageSize,
+                onChange: onChange,
+                onShowSizeChange: onShowSizeChange,
+              }
+            : false
+        "
+        :row-selection="{
+          selectedRowKeys: tableData.selectedRowKeys,
+          onChange: onSelectChange,
+          getCheckboxProps: getCheckboxProps,
+        }"
+      >
+      <!-- detail -->
+      <template #contentName='{record}'>
+        <div class="detail" :title="record.contentName" @click="detail(record,record.contentAttribute)">
+          {{record.contentName}}
+        </div>
       </template>
-    </a-config-provider>
+      <template #contentTechnicalDirectionGroup='{record}'>
+          <div class="detailDirName" :title="record.contentTechnicalDirectionGroup">
+          {{record.contentTechnicalDirectionGroup}}
+        </div>
+      </template>
+      <template #action="{record}">
+        <a-button type="link" @click="dleDelete(record)">删除</a-button>
+        <!-- <span class="action detail" @click="dleDelete(record)">删除</span> -->
+      </template>
+      </a-table>
+        <template #renderEmpty>
+            <div v-if="listdata?.length==0"><Empty :type="EmptyType" /></div>
+        </template>
+      </a-config-provider>
+    </a-spin>
     </div>
 </template>
 <script lang="ts" setup>
 import { message,Modal } from "ant-design-vue";
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
-import { ref, toRefs, onMounted,inject, reactive,createVNode} from "vue";
+import { ref, toRefs, onMounted,inject, reactive,createVNode, computed} from "vue";
 import { useRouter, useRoute } from "vue-router";
 import request from "src/api/index";
 const http = (request as any).TeachingResourceManagement;
@@ -113,18 +115,19 @@ const allexperTypes:any=ref([
   {name:'视频实验',type:6},
   {name:'文档实验',type:7},
 ])
-const ifSearch:any=ref(false)
     const ForumSearch:any=reactive({
       type:'',
       attribute:''
     })
     interface Props {
       listdata: any[]; 
-      total:any
+      total:any;
+      loading:boolean;
     }
     const props = withDefaults(defineProps<Props>(), {
       listdata: () => [],
-      total:()=>{}
+      total:()=>{},
+      loading:false
     });
     const columns = [
         {
@@ -173,12 +176,16 @@ const ifSearch:any=ref(false)
     const emit = defineEmits<{
       (e: "updateData", val: any): void;
     }>();
+    const EmptyType:any=computed(()=>{
+      let str=''
+      if(ForumSearch.name == '' && ForumSearch.attribute == '' && ForumSearch.type == ''){
+        str= 'tableEmpty'
+      }else{
+        str= 'tableSearchEmpty'
+      }
+      return str
+    })
     function search(){
-      if(ForumSearch.name||ForumSearch.attribute||ForumSearch.type){
-          ifSearch.value=true
-        }else{
-          ifSearch.value=false
-        }
         params.page=1
         emit('updateData',{name:ForumSearch.name,page:params.page,pageSize:params.pageSize,type:ForumSearch.type,attribute:ForumSearch.attribute})
     }
@@ -280,9 +287,6 @@ const ifSearch:any=ref(false)
  }
  .custom_input{
   width: 270px;
- }
- .custom_input:deep(.ant-select:not(.ant-select-customize-input) .ant-select-selector){
-   border-radius: 20px;
  }
  .detail{
    color: var(--primary-color);

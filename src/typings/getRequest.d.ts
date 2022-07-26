@@ -21,4 +21,5 @@ export interface IRequestConfig {
     urlParams?: object;
     success?: (resp: IBusinessResp) => void;
     silent?: boolean;
+    baseUrl?: string; // 部分服务比较特殊，经过代理后会有问题，因此给这些服务开辟专用通路，一般情况下，不能使用这个参数
 }

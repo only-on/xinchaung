@@ -17,10 +17,7 @@
         </a-form-item>
         <div class="type">
           <a-form-item class="forum-label" label="添加标签" name="label">
-            <!-- <span class="pointer add-btn"><i class="iconfont icon-tianjia"></i>添加标签</span> -->
-            <div class="label-list">
-              <LabelList :tag="formState.label_name" />
-            </div>
+            <LabelList :tag="formState.label_name" />
           </a-form-item>
           <a-form-item class="forum-type" label="帖子类型" name="type" v-if="role !== 2">
             <a-select

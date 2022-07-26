@@ -673,29 +673,37 @@ function setTagData(knowledge_map: any,size:number) {
         // const {id}=knowledage.knowledge_map
         // knowledage.id=content_id
         // var id=knowledage.id
-        data.push({
-          name: knowledge_map_name,
-          id: String(item.contentvia.id + "->" +id),
-          symbolSize: size,
-          draggable: true,
-          itemStyle: {
-            // borderColor: theme.themeColor,
-            // borderWidth: 6,
-            // shadowBlur: 10,
-            // shadowColor: theme.themeColor,
-            color: '#758AEE'
-            // color: 'red'
-          },
-          category: 1,
-        })
-        links.push({
-          source: item.contentvia.id,
-          target: item.contentvia.id + "->" + id,
-        })
+        if(knowledage.knowledge_map!==null){
+          data.push({
+            name: knowledge_map_name,
+            id: String(item.contentvia.id + "->" +id),
+            symbolSize: size,
+            draggable: true,
+            itemStyle: {
+              // borderColor: theme.themeColor,
+              // borderWidth: 6,
+              // shadowBlur: 10,
+              // shadowColor: theme.themeColor,
+              color: '#758AEE'
+              // color: 'red'
+            },
+            category: 1,
+          })
+          links.push({
+            source: item.contentvia.id,
+            target: item.contentvia.id + "->" + id,
+          })
+        }
       }):''
     }
   })
   return { data, links}
+}
+function getNameFromId(id:any,datas:any){
+  const filterdata1=datas.data.filter((item:any)=>{
+    return item.id==id
+  })
+  return filterdata1[0]?.name
 }
 export const graphOptions = (data: any,size:number) => {
   let datas = setTagData(data,size)
@@ -703,7 +711,17 @@ export const graphOptions = (data: any,size:number) => {
   let options = {
     tooltip: {
       formatter: function (val: any) {
-        return val.name
+        if(val.dataType=="edge"){
+            if(val.data.target.split('->').length>1){
+              let id1=val.data.target.split('->')[0]
+              let id2=val.data.target
+              return getNameFromId(id1,datas)+'->'+getNameFromId(id2,datas)
+            }else{
+              return val.data.source+'->'+getNameFromId(val.data.target,datas)
+            }
+        }else{
+          return val.name
+        }
       }
     },
     animationDurationUpdate: 1500,

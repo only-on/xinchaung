@@ -16,7 +16,7 @@
             :title="item.fields[0].value"
             :align="item.fields[0].align"
           >
-            {{ item.fields[0].value }}
+            <div class="title">{{ item.fields[0].value }}</div>
             <!-- <div v-if="reportTemplateData.can_student_update&&cid!==0">
                 <a-input :placeholder='item.placeholder' v-model:value="item.fields[0].value"></a-input>
             </div>
@@ -30,7 +30,7 @@
             :title="item.fields[0].value"
             :align="item.fields[0].align"
           >
-            {{ item.fields[0].value }}
+            <div class="title">{{ item.fields[0].value }}</div>
           </td>
           <td colspan="5" class="title-text" style="word-break: break-all">
             <!-- {{ item.fields[1].value }} -->
@@ -50,7 +50,7 @@
             class="title-text"
             :align="item.fields[0].align"
           >
-            {{ item.fields[0].value }}
+            <div class="title">{{ item.fields[0].value }}</div>
           </td>
           <td colspan="2" style="word-break: break-all">
             <!-- {{ item.fields[1].value }} -->
@@ -68,7 +68,7 @@
             class="title-text"
             :align="item.fields[0].align"
           >
-            {{ item.fields[2].value }}
+            <div class="title">{{ item.fields[2].value }}</div>
           </td>
           <td colspan="2" style="word-break: break-all">
             <!-- {{ item.fields[3].value }} -->
@@ -89,7 +89,7 @@
             :align="item.fields[0].align"
             style="height: 30px"
           >
-            {{ item.fields[0].value }}
+            <div class="title">{{ item.fields[0].value }}</div>
           </td>
         </tr>
         <tr v-if="['w4', 'w6'].includes(item.type)">
@@ -111,7 +111,7 @@
             style="width: 20%"
             :align="item.fields[0].align"
           >
-            {{ item.fields[0].value }}
+            <div class="title">{{ item.fields[0].value }}</div>
           </td>
           <td class="" colspan="5">
             <div>
@@ -134,7 +134,7 @@
             style="height: 30px"
             :align="item.fields[0].align"
           >
-            {{ item.fields[0].value }}
+            <div class="title">{{ item.fields[0].value }}</div>
           </td>
         </tr>
         <tr v-if="item.type === 'w8'" class="editable-markdown">
@@ -179,6 +179,29 @@ export default defineComponent({
     text-align: center;
     font-size: 16px;
   }
+  table td .title {
+    min-height: 52px;
+    max-height: 140px;
+    overflow: auto;
+    background-color: var(--white);
+  }
+  .editable-markdown td .title {
+    max-height: 272px;
+  }
+  :deep(.mark__container--fullscreen) {
+    .mark__body {
+      .mark__editor, .mark__preview {
+        max-height: 100%;
+      }
+    }
+  }
+  :deep(.mark__body) {
+    .mark__editor, .mark__preview {
+      max-height: 200px;
+      overflow: auto;
+      min-width: 50%;
+    }
+  }
   .mark__body .mark__editor {
     min-width: auto;
   }
@@ -199,6 +222,7 @@ export default defineComponent({
   :deep(.ant-input) {
     border-radius: 0;
     box-shadow: none;
+    background-color: var(--gray-3);
     &:hover {
       border-color: var(--gray-5);
     }

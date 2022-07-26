@@ -13,5 +13,7 @@
 <style lang="less" scoped>
  .remark{
    min-height: 200px;
+   background: rgba(0,0,0,0.04);
+   padding: 24px;
  } 
 </style>

@@ -1,7 +1,10 @@
 <script lang="ts" setup>
-import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
-import { Modal, message } from "ant-design-vue";
-import { reactive, ref, watch, createVNode } from "vue";
+import {
+  ExclamationCircleOutlined,
+  CloseOutlined,
+} from "@ant-design/icons-vue";
+import { Modal, message, Button } from "ant-design-vue";
+import { reactive, ref, watch, createVNode, onMounted, h } from "vue";
 import { useRouter, useRoute } from "vue-router";
 // import http from "src/api";
 import extStorage from "src/utils/extStorage";
@@ -25,11 +28,11 @@ const { lStorage, sStorage } = extStorage;
 const router = useRouter();
 const route = useRoute();
 const store = useStore();
-const loginInfo = ref<any>({
-  src: loginBg[store.state.systemInfo.theme],
-  logo: store.state.systemInfo.logo_url,
-  name: store.state.systemInfo.site_name,
-  class: "login" + store.state.systemInfo.theme,
+const loginInfo = reactive<any>({
+  src: "",
+  logo: "",
+  name: "",
+  class: "",
 });
 interface FormState {
   username: string;
@@ -116,19 +119,21 @@ http.onlineUserInfo({}).then((res: IBusinessResp | null) => {
   if (res!.data.site_setting) {
     store.commit("setSystemInfo", res!.data.site_setting);
   }
-  const site_setting = res!.data.site_setting;
-  // site_setting.theme?loginInfo.src=loginBg[site_setting.theme]:''
 });
 watch(
   () => {
     return store.state.systemInfo;
   },
-  (val: any) => {
-    console.log(val);
+  (newVal: any) => {
+    loginInfo.src = loginBg[newVal.theme];
+    loginInfo.logo = newVal.logo_url;
+    loginInfo.name = newVal.site_name;
+    loginInfo.class = "login" + newVal.theme;
   },
-  { deep: true }
+  { deep: true, immediate: true }
 );
 const login = (repeat?: boolean) => {
+  message.destroy();
   refForm.value
     .validate()
     .then(() => {
@@ -167,11 +172,12 @@ const login = (repeat?: boolean) => {
             router.replace("/teacher/teacherCourse");
             getTeacherInfo();
           }
+          const menuActiveName = res!.data.role === 5 ? "教学过程" : "首页";
+          store.commit("changemenuActiveName", menuActiveName);
           store.commit("saveTheme");
           submitLoading.value = false;
         })
         .catch((res: any) => {
-          console.error("login failed: ", res);
           if (res.data.unique_confirm && res.data.unique_confirm === true) {
             againLogin();
             return;
@@ -217,6 +223,33 @@ const getTeacherInfo = () => {
     lStorage.set("tuid", res!.data?.user.id);
   });
 };
+
+onMounted(() => {
+  const kickOutMsg = createVNode("span", {}, [
+    "当前账号已在其他终端登录，您已被强制下线。",
+    createVNode(
+      Button,
+      {
+        type: "link",
+        style: {
+          padding: 0,
+          height: "auto",
+          lineHeight: "normal",
+          borderRadius: "4px",
+        },
+        onClick: () => {
+          message.destroy();
+        },
+      },
+      () => createVNode(CloseOutlined)
+    ),
+  ]);
+  if (store.state.kickedOut) {
+    message.destroy();
+    message.warn(kickOutMsg, 0);
+    store.commit("kickOutReset");
+  }
+});
 </script>
 <template>
   <!-- :style="v.url?`background-image: url(${v.url});`:''"  loginInfo.class  -->

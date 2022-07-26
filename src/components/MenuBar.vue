@@ -1,14 +1,13 @@
 <template>
   <div class="nav__menu">
     <a-dropdown v-for="v in menus" :key="v" trigger="hover" 
-    :overlayClassName="`${v.children && v.children.length?'meanBarOverlay borC':'meanBarOverlay'}`"
+    :overlayClassName="`${v.children && v.children.length? dropClass:'meanBarOverlay'}`"
      @visibleChange="visibleChange">
       <div
         class="menu__top-item ant-dropdown-trigger flexCenter"
         :class="v.name === activeName ? 'active' : ''"
         @click="!v.children.length ? select('Parent', v) : ''"
       >
-        
         <span class="iconfont" style="padding-right:4px;" :class="v.icon"></span>
         <span>{{ v.name }}</span>
       </div>
@@ -44,63 +43,47 @@ import { useStore } from "vuex";
 import menusFn from 'src/routers/menuConfig'
 export default defineComponent({
   name: "MenuBar",
-  props: {
-    menus: {
-      required: false,
-      type: Array,
-      // type: Array as PropType<MenuItem>,
-      default: () => [],
-    },
-    activeMenu: {
-      default: ''
-    }
-  },
   setup(props, context) {
     const renderFlag: Ref<boolean> = ref(true);
     const router = useRouter();
     const route = useRoute();
     const { lStorage } = extStorage;
     const store = useStore();
+    const dropClass = ref(store.state.systemInfo.theme ? `meanBarOverlay borC theme${store.state.systemInfo.theme}` : 'meanBarOverlay borC')
     // var menus:MenuItem[]=reactive([])
     var menus: any[] = menusFn();
-    console.log(menus);
+    // console.log(menus);
     
     var activeName: Ref<string> = ref(lStorage.get("menuActiveName") || "");
 
-    function select(level: string, val: MenuItem){
-      // console.log(val)
+    function select(level: string, val: MenuItem){ // MenuItem
       console.log("to：path：" + val.url);
       router.replace(String(val.url));
       if (level === "Parent") {
         activeName.value = val.name;
       } else {
         menus.forEach((v: MenuItem) => {
-          v.children
-            ? v.children.forEach((i: MenuItem) => {
+          v.children? v.children.forEach((i: MenuItem) => {
                 if (i.name === val.name) {
                   activeName.value = v.name;
                   return;
-                }
-              })
+                } })
             : "";
         });
       }
       lStorage.set("menuActiveName", activeName.value);
       store.commit("changemenuActiveName",activeName.value)
     }
+    watch(()=>store.state.systemInfo.theme, newVal => {
+      dropClass.value = `meanBarOverlay borC theme${newVal}`
+    })
     // store
     watch(()=>store.state.menuActiveName, newVal => {
       // console.log(newVal);
       activeName.value = newVal
       lStorage.set("menuActiveName", activeName.value);
-    })
-    watch(()=>props.activeMenu, newVal => {
-      // console.log(newVal);
-      activeName.value = newVal
-      lStorage.set("menuActiveName", activeName.value);
-    })
+    },{immediate: true })
     const http = (request as any).common;
-
     const visibleChange=(val:any)=>{
       // console.log(val);
       nextTick(()=>{
@@ -115,7 +98,7 @@ export default defineComponent({
     onMounted(() => {
       
     });
-    return { menus, select, activeName ,visibleChange};
+    return { menus, select, activeName ,visibleChange, dropClass};
   },
   components: {},
 });

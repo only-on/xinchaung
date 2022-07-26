@@ -12,10 +12,10 @@
     <div class="tabsTable">
      <a-tabs v-model:activeKey="activeKey" @change='callBack'>
         <a-tab-pane key="1" tab="实验管理">
-          <experManage v-if="activeKey==1"   :total='tableData.total' :listdata='tableData.data' @updateData='updateData'></experManage>
+          <experManage v-if="activeKey==1" :loading='loading'   :total='tableData.total' :listdata='tableData.data' @updateData='updateData'></experManage>
         </a-tab-pane>
         <a-tab-pane key="2" tab="实验报告模版管理">
-          <experTemplateManage v-if="activeKey==2"  :total='tableData.total' :listdata='tableData.data' @updateData='updateData'></experTemplateManage>
+          <experTemplateManage v-if="activeKey==2" :loading='loading'   :total='tableData.total' :listdata='tableData.data' @updateData='updateData'></experTemplateManage>
         </a-tab-pane>
       </a-tabs>
     </div>
@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, toRefs, onMounted,inject,reactive} from "vue";
+import { ref, toRefs, onMounted,inject,reactive,watch} from "vue";
 import StatisticsPie from '../components/StatisticsPie.vue'
 import experManage from './experManage/index.vue'
 import experTemplateManage from './experTemplateManage/index.vue'
@@ -76,6 +76,7 @@ const echartsData:any=reactive({
     numbers:[]
   }
 })
+const loading:any=ref(false)
 function daWithdata(res:any){
     echartsData.experType={
       names:[],
@@ -104,6 +105,8 @@ function daWithdata(res:any){
 }
 function updateData(val:any){
   console.log(val)
+    tableData.data=[]
+    tableData.total=0
   if(activeKey.value==1){
     experParams.search.contentName=val?.name
     experParams.search.contentAttribute=val?.attribute
@@ -121,16 +124,19 @@ function updateData(val:any){
 const experTypes:any=ref([])
 function experTemplateData(){
   console.log(experParams.search.templateName,'jjj')
+   loading.value=true
   const param:any={
     'search[templateName]':experTemplateParams.search.templateName?experTemplateParams.search.templateName:'',
     page:experTemplateParams.page,
     limit:experTemplateParams.limit
   }
   http.experTemplateList({param:param}).then((res:any)=>{
+     loading.value=false
     daWithdata(res)
   })
 }
 function experData(){
+  loading.value=true
   const param:any={
     'search[contentName]':experParams.search.contentName?experParams.search.contentName:'',
     'search[contentAttribute]':experParams.search.contentAttribute?experParams.search.contentAttribute:'',
@@ -139,6 +145,7 @@ function experData(){
     limit:experParams.limit
   }
   http.experList({param:param}).then((res:any)=>{
+    loading.value=false
     daWithdata(res)
   })
 }
@@ -175,6 +182,8 @@ function callBack(key:any){
     experParams.search.contentAttribute=''
     experParams.search.contentType=''
     experTemplateParams.search.templateName=''
+    tableData.data=[]
+    tableData.total=0
     key==1?experData():experTemplateData()
 }
 onMounted(()=>{
@@ -185,7 +194,12 @@ onMounted(()=>{
     page:experParams.page,
     limit:experParams.limit
   }
+  echartsBar('experType',echartsData.experType)
+  HotWords('directPoints',doHotData(echartsData.hotLabelList))
+  loading.value=true;
+  tableData.data=[]
   http.experList({param:param}).then((res:any)=>{
+    loading.value=false;
     echartsData.experType={
       names:[],
       numbers:[]

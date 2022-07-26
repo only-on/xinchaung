@@ -1,18 +1,22 @@
 <template>
   <div class="labelSearchBox">
-    <div v-for="v in props.list" :key="v.value" class="labelSearch">
+    <div v-for="(v, itemIndex) in props.list" :key="v.value" class="labelSearch">
       <div class="title" v-if="v.title">{{ v.title }}：</div>
-      <div class="labelBox">
+      <div :class="['labelBox','textScrollbar',isOpen[itemIndex] ? 'open' : '']">
         <div
-          v-for="i in v.data"
+          v-for="(i,index) in v.data"
           :key="`${v.keyName}${i.name}`"
           class="label-btn"
-          :class="(i.name && i.value === v.value) ? 'current' : ''"
+          :class="{'current': i.name && i.value === v.value, 'isEnd': index === (v.data.length && v.data.length-1) }"
           @click="change(v, i)"
         >
           {{ i.name }}
         </div>
       </div>
+      <span class="fold-btn" v-show="showFold[itemIndex]" @click="handleFold(itemIndex)">
+        更多
+        <i :class="['iconfont', isOpen[itemIndex] ? 'icon-shouqi' : 'icon-zhankai']"></i>
+      </span>
     </div>
   </div>
 </template>
@@ -31,6 +35,7 @@ import {
   defineProps,
   withDefaults,
   useAttrs,
+  nextTick
 } from "vue";
 interface ILabelData {
   title?: string; // 分类的标题
@@ -49,6 +54,8 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   list: () => [],
 });
+const isOpen = reactive<boolean[]>([false, false])
+const showFold = reactive<boolean[]>([false, false])
 
 let labelObj: any = reactive({});
 props.list && props.list.length
@@ -60,6 +67,9 @@ props.list && props.list.length
 const emit = defineEmits<{
   (e: "change", obj: any): void;
 }>();
+const handleFold = (index:any) => {
+  isOpen[index] = !isOpen[index]
+}
 const change = (v: any, i: any) => {
   v.value = i.value;
   labelObj[v.keyName] = i.value;
@@ -68,6 +78,27 @@ const change = (v: any, i: any) => {
 
 watch(() => props.list, (val) => {
   labelObj = {}
+  isOpen.length = 0
+  showFold.length = 0
+  for(let i =0; i < val.length; i++) {
+    isOpen[i]=false
+    showFold[i] = false
+  }
+  nextTick(()=>{
+      let isEnd = document.getElementsByClassName('isEnd')
+      if (isEnd.length) {
+        let labelBox = document.getElementsByClassName('labelBox')
+        for (let i = 0; i < labelBox.length; i++) {
+          let labelBoxTop = (labelBox[i] as any).offsetTop
+          let endLabelTop = (isEnd[i] as any).offsetTop
+          // 最后一个标签距离labelBox顶部的距离
+          if (endLabelTop - labelBoxTop > 0) {
+            showFold[i] = true
+          }
+        }
+        
+      }
+    })
 }, {
   deep: true
 })
@@ -79,18 +110,40 @@ defineExpose({
 <style scoped lang="less">
 .labelSearch {
   color: var(--black-65);
-  margin-bottom: 18px;
+  margin-bottom: 16px;
   display: flex;
+  justify-content: space-between;
+  position:relative;
   // align-items: center;
   .title {
     // margin-right: 16px;
     width: 80px;
-    // line-height: 44px;
+    line-height: 30px;
   }
   .labelBox{
     flex:1;
     // line-height: 44px;
+    max-height:30px;
+    overflow: hidden;
+    margin-right: 50px;
+    &.open{
+        max-height: 120px;
+        overflow: auto;
+      }
   }
+    .fold-btn{
+        cursor: pointer;
+        color: var(--black-45);
+        position: absolute;
+        right: 0;
+        top: 4px;
+        i{
+          font-size: 14px;
+        }
+        &:hover{
+          color: var(--primary-color);
+        }
+      }
   .label-btn {
     display: inline-block;
     height: 30px;

@@ -29,25 +29,32 @@
         </a-select>
       </div>
     </div>
-    <a-table
-      :columns="columns"
-      :data-source="state.data"
-      rowKey="id"
-      :pagination="
-        tableData.total > 10
-          ? {
-              hideOnSinglePage: false,
-              showSizeChanger:true,
-              total: tableData.total,
-              current: tableData.page,
-              pageSize: tableData.limit,
-              onChange: onChange,
-              onShowSizeChange: onShowSizeChange,
-            }
-          : false
-      "
-    >
-    </a-table>
+    <a-spin :spinning="loading" size="large" tip="Loading...">
+      <a-config-provider>
+          <a-table
+            :columns="columns"
+            :data-source="state.data"
+            rowKey="id"
+            :pagination="
+              tableData.total > 10
+                ? {
+                    hideOnSinglePage: false,
+                    showSizeChanger:true,
+                    total: tableData.total,
+                    current: tableData.page,
+                    pageSize: tableData.limit,
+                    onChange: onChange,
+                    onShowSizeChange: onShowSizeChange,
+                  }
+                : false
+            "
+          >
+          </a-table>
+          <template #renderEmpty>
+            <Empty :type="EmptyType"/>
+          </template>
+      </a-config-provider>
+    </a-spin>
   </div>
 </template>
 <script lang="ts" setup>
@@ -57,8 +64,10 @@ import {
   reactive,
   onMounted,
   toRefs,
+  Ref,
   inject,
   watch,
+  computed
 } from "vue";
 import request from "src/api/index";
 const http = (request as any).systemMaintenance;
@@ -118,6 +127,17 @@ const state: any = reactive({
     { value: "退出", label: "退出" }
   ]
 });
+var loading: Ref<boolean> = ref(false);
+const EmptyType:any=computed(()=>{
+  let str=''
+  if(state.query.user_name === '' && state.query.type === ''){
+    str= 'tableEmpty'
+  }else{
+    str= 'tableSearchEmpty'
+  }
+  console.log(str)
+  return str
+})
 function getSystemList() {
   let search = {
     // ...ForumSearch,
@@ -126,8 +146,12 @@ function getSystemList() {
     "search[user_name]": state.query.user_name,
     "search[type]": state.query.type
   };
+  loading.value=true
+  state.data=[]
+  tableData.total=0
   http.systemLogList({ param: search }).then((res: any) => {
     console.log(res);
+    loading.value=false
     state.data = res.data.list;
     tableData.total = res.data.page.totalCount;
   });

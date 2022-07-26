@@ -834,16 +834,6 @@ export default defineComponent({
 .ant-table-tbody > tr > td > .iconfont {
   color: var(--primary-color);
 }
-.quesComonTable {
-  // .ant-select:not(.ant-select-customize-input) .ant-select-selector{
-  // border-bottom-right-radius: 0px;
-  // border-top-right-radius: 0px;
-  // }
-  // .ant-input-affix-wrapper{
-  // border-bottom-left-radius: 0px;
-  // border-top-left-radius: 0px;
-  // }
-}
 .question-content-operate {
   display: flex;
   justify-content: space-between;
@@ -861,9 +851,6 @@ export default defineComponent({
     }
     .input-search {
       margin-right: 20px;
-    }
-    .ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
-      height: 35px !important;
     }
   }
   .question-btn {

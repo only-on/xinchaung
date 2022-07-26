@@ -1,6 +1,7 @@
 import Layout from 'src/views/common/Layout.vue';
 import { LocationQuery, RouteParams } from 'vue-router';
 import extStorage from "src/utils/extStorage";
+import RouterViews from "src/components/RouterView.vue";
 const { lStorage } = extStorage;
 const role = Number(lStorage.get("role"));
 export default {
@@ -8,15 +9,6 @@ export default {
   component: Layout,
   name:'teacherCourse',
   meta: {
-    // title: (params?: RouteParams, query?: RouteParams) => {
-    //   const dataDetailMap = {
-    //       '2': '教学资源管理',
-    //       '3': '教学过程',
-    //       '4': '教学过程',
-    //       '5': '教学过程',
-    //   }
-    //   return dataDetailMap[query!.role && query!.role.toString()] || dataDetailMap[3]
-    // },
     title:'教学过程',
     authCode: 'courseList'
   },
@@ -25,11 +17,7 @@ export default {
       path:"",
       name:"",
       component: () => {
-        // if(role===2){
-        //   return import("src/views/adminModule/TeachingResourceManagement/courseManagement/courseManagement.vue")
-        // }else{
-          return import("src/views/teacherModule/teachCourse/courseList/index.vue")
-        // }
+        return import("src/views/teacherModule/teachCourse/courseList/index.vue")
       },
       meta: {
         title: "课程列表",
@@ -43,13 +31,6 @@ export default {
       meta: {
         // title: "创建课程",  // EditId
         title: (params?: RouteParams, query?: RouteParams) => {
-          // const dataDetailMap = {
-          //     '2': '教学资源管理',
-          //     '3': '教学过程',
-          //     '4': '教学过程',
-          //     '5': '教学过程',
-          // }
-          // return dataDetailMap[query!.EditId && query!.EditId.toString()] || dataDetailMap[3]
           return query!.EditId?'复用课程':'创建课程'
         },
         authCode: 'CreateCourse'
@@ -67,9 +48,19 @@ export default {
       path: "Detail",
       name:'课程详情',
       component: () => import("src/views/teacherModule/teachCourse/courseDetail/index.vue"),
+      // component: RouterViews,
       meta: {
         title: "课程详情",
         authCode: 'Detail'
+      },
+    },
+    {
+      path: "CourseExperimentDetail",
+      name: "CourseExperimentDetail",
+      component: () =>import("src/views/teacherModule/teacherExperimentResourcePool/experimentDetail.vue"),
+      meta: {
+        title: "推荐实验详情",
+        icon: "",
       },
     },
     {

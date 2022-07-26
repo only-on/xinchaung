@@ -23,7 +23,7 @@
           <a-button type="primary" @click="Reselection()" v-if="state.activeExperimentObj.TeachingAids">重新选择</a-button>
           <div class="reports flexCenter" v-if="!state.activeExperimentObj.TeachingAids">
             <div class="report flexCenter" @click="viewReport()">
-              <span class="iconfont icon-timu"></span>
+              <span class="iconfont icon-baogao"></span>
               <span>报告模板</span>
             </div>
             <div class="Lesson flexCenter" @click="lessonPreparation" v-if="!props.create" :class="currentState===2&&connectStatus===1 || currentState===3 ? 'none-event':''">
@@ -343,14 +343,13 @@ onMounted(() => {
       margin-left: 16px;
       // margin-right: 16px;
       flex: 1;
-      padding:10px 22px 22px 30px;
+      padding:16px 22px 22px 30px;
       .title{
+        padding-bottom: 16px;
         justify-content: space-between;
+        border-bottom: 1px solid #e8e8e8;
         .report,.Lesson{
           line-height: 25px;
-          .iconfont{
-            padding-right: 6px;
-          }
         }
         .report{
           color: var(--primary-color);
@@ -382,7 +381,7 @@ onMounted(() => {
         height: 800px;
         overflow: auto;
         // border: 1px solid rgba(0,0,0,0.15);
-        padding: 24px 10px 20px 0px;
+        padding: 8px 10px 16px 0px;
         // max-height: 500px;
         // overflow: auto;
         max-width: 782px;

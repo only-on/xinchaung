@@ -70,7 +70,7 @@
     </template>
     </a-table>
           <template #renderEmpty>
-            <div><Empty :height='80' :text='ifSearch?"抱歉，未搜到相关数据！":"抱歉，暂无数据！"' type="tableEmpty" /></div>
+            <div><Empty :type="EmptyType"/></div>
           </template>
         </a-config-provider> 
     </div>
@@ -94,7 +94,7 @@
     </a-modal>
 </template>
 <script lang="ts" setup>
-import { ref, toRefs, onMounted,reactive } from "vue";
+import { ref, toRefs, onMounted,reactive, computed } from "vue";
 import addstudent from "src/views/teacherModule/teachCourse/component/common/addStudent/index.vue";
 import batchImportStu from "./batchImportStudent/index.vue";
 import request from 'src/api/index'
@@ -204,6 +204,15 @@ const params:any=reactive({
   limit: 10
 })
 const ifSearch:any=ref(false)
+const EmptyType:any=computed(()=>{
+  let str=''
+  if(params.nick == '' && params.grade == '' && params.class == ''){
+    str= 'tableEmpty'
+  }else{
+    str= 'tableSearchEmpty'
+  }
+  return str
+})
 function handleChange() {}
 function onSearch(value: any) {
   tableData.page=1
@@ -336,7 +345,7 @@ onMounted(()=>{
     }
     .header-right {
       .marginBtn {
-        margin-left: 20px;
+        margin-left: 8px;
       }
     }
   }

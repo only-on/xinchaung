@@ -1,4 +1,4 @@
-import RouterViews from "../../components/RouterView.vue";
+import RouterViews from "src/components/RouterView.vue";
 
 export default {
   path: "/vm",
