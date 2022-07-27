@@ -17,7 +17,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, reactive, toRefs, inject } from 'vue'
-import moment, {Moment} from 'moment'
+import dayjs, { Dayjs } from 'dayjs';
 import { message } from "ant-design-vue";
 import request from 'src/api/index'
 interface IOptions {
@@ -38,8 +38,8 @@ export default defineComponent({
       id: undefined,
       callbackOk: () => {},
     })
-    const startTime = ref<Moment>()
-    const endTime = ref<Moment>()
+    const startTime = ref<Dayjs>()
+    const endTime = ref<Dayjs>()
 
     const showModal = (option: IOptions) => {
       Object.assign(options, option)
@@ -50,8 +50,8 @@ export default defineComponent({
         edit.value = false
       } else {
         if (option.dayTime) {
-          startTime.value = moment(option.dayTime.start, 'HH:mm')
-          endTime.value = moment(option.dayTime.end, 'HH:mm')
+          startTime.value = dayjs(option.dayTime.start, 'HH:mm')
+          endTime.value = dayjs(option.dayTime.end, 'HH:mm')
         }
         edit.value = true
       }
@@ -59,8 +59,8 @@ export default defineComponent({
 
     const handleOk = (e: MouseEvent) => {
       let param = {
-        start: moment(startTime.value).format('HH:mm'),
-        end: moment(endTime.value).format('HH:mm'),
+        start:dayjs(startTime.value).format('HH:mm'),
+        end: dayjs(endTime.value).format('HH:mm'),
       }
       if (edit.value) {
         http.updateTimeTable({

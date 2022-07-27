@@ -20,7 +20,7 @@
           </a-form-item>
         </a-col>
         <a-col span="22">
-          <a-form-item
+          <a-form-item-rest
             v-if="checkDate"
             label="循环时段："
             :label-col="{ span: 2 }"
@@ -33,7 +33,7 @@
               <span class="division">～</span>
               <a-date-picker v-model:value="form.endDate" format="YYYY-MM-DD" :disabled-date="disabledDate" />
             </div>
-          </a-form-item>
+          </a-form-item-rest>
         </a-col>
       </a-row>
       <div class="listTitle">
@@ -82,14 +82,16 @@
               size="middle"
               :scroll="{ y: 280 }"
             >
-              <template v-slot:action="{record}">
-                <a-popconfirm
+              <template #bodyCell="{ column, record }">
+                <template v-if="column.key === 'action'">
+                   <a-popconfirm
                   v-if="selectedClassesData.length"
                   title="确定移除吗?"
                   @confirm="() => onDeleteClass(record.class_id)"
                 >
                   <span class="iconfont icon-yichu1"></span>
                 </a-popconfirm>
+                </template>
               </template>
             </a-table>
             <a-table
@@ -102,14 +104,16 @@
               size="middle"
               :scroll="{ y: 280 }"
             >
-              <template #action="{record}">
-                <a-popconfirm
+               <template #bodyCell="{ column, record }">
+                <template v-if="column.key === 'action'">
+                   <a-popconfirm
                   v-if="selectedStudentsData.length"
                   title="确定移除吗?"
                   @confirm="() => onDeleteStudent(record.stu_id)"
                 >
                   <span class="iconfont icon-yichu1"></span>
                 </a-popconfirm>
+                </template>
               </template>
             </a-table>
           </div>
@@ -126,7 +130,7 @@
 
 <script lang="ts">
 import { defineComponent, reactive, ref, toRefs, onMounted, provide, inject, watch, nextTick, PropType, computed } from 'vue'
-import moment, { Moment } from 'moment'
+import dayjs, { Dayjs } from 'dayjs';
 import { useRouter, useRoute } from 'vue-router'
 import selectStu from './selectStu.vue'
 import message, { MessageApi } from "ant-design-vue/lib/message";
@@ -250,7 +254,7 @@ export default defineComponent({
 
           form.course_name = data.course_name
           form.week_recycle = data.week_recycle === '1' ? true : false
-          form.endDate = moment(data.end)
+          form.endDate = dayjs(data.end)
           form.teacher_occupied = data.teacher_occupied === '1' ? true : false
           checkDate.value = data.week_recycle === '1' ? true : false
           teacherOccupied.value = form.teacher_occupied ? 1 : 0
@@ -369,6 +373,10 @@ export default defineComponent({
     // 保存
     function handleSubmit () {
       ruleForm.value.validate().then(() => {
+        if(checkDate.value&&!form.endDate){
+           $message.warning('周循环结束日期不能为空')
+          return
+        }
         if (!id&&!tableParams.student_id?.length) {
           $message.warning('请选择学生')
           return
@@ -426,10 +434,10 @@ export default defineComponent({
       return Promise.resolve();
     }
     function disabledDate(current: any) {
-      return startDate && current && moment(current) < moment(startDate)
+      return startDate && current && dayjs(current) < dayjs(startDate)
     }
     function momentStartDate() {
-      return startDate ? moment(startDate) : ''
+      return startDate ? dayjs(startDate) : ''
     }
     function handleChangeWeekRecycle(e: { target: { checked: any } }) {
       checkDate.value = e.target.checked
@@ -527,7 +535,8 @@ const selectedClassesColumns = [
     title: '操作',
     // width: '20%',
     align: 'center',
-    slots: { customRender: 'action' },
+    key:'action'
+    // slots: { customRender: 'action' },
   },
 ]
 const selectedStudentsColumns = [
@@ -564,7 +573,8 @@ const selectedStudentsColumns = [
     title: '操作',
     // width: '20%',
     align: 'center',
-    slots: { customRender: 'action' },
+    key:'action'
+    // slots: { customRender: 'action' },
   },
 ]
 interface ISelectedIds {
@@ -576,7 +586,7 @@ interface IForm {
   course_name: string
   week_recycle: boolean
   teacher_occupied: boolean
-  endDate: Moment | undefined
+  endDate: Dayjs | undefined
 }
 </script>
 
