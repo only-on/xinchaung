@@ -27,7 +27,7 @@
         <div class="tipInfo" v-if="role!== 2"> <span class="icon iconfont icon-zhuyi"></span> 如有冲突可联系管理员</div>
       </div>
       <div class="course-plan-title">
-        {{ moment(new Date()).format("YYYY年MM月DD日") }}
+        {{ dayjs(new Date()).format("YYYY年MM月DD日") }}
         {{ tableWeekName[new Date().getDay() - 1] }}
       </div>
       <div class="top-right">
@@ -61,7 +61,7 @@
               :class="
                 currentDate.getFullYear() == new Date(weekTime).getFullYear() &&
                 currentDate.getMonth() == new Date(weekTime).getMonth() &&
-                toDayList(index) == moment(currentDate).format('MM.DD')
+                toDayList(index) == dayjs(currentDate).format('MM.DD')
                   ? 'active'
                   : ''
               "
@@ -91,10 +91,10 @@
                   <i>{{ index + 1 }}</i>
                 </div>
                 <div class="table-time-value">
-                  {{ moment(item.start, "HH:mm").format("HH:mm") }}
+                  {{ dayjs(item.start, "HH:mm").format("HH:mm") }}
                 </div>
                 <div class="table-time-value">
-                  {{ moment(item.end, "HH:mm").format("HH:mm") }}
+                  {{ dayjs(item.end, "HH:mm").format("HH:mm") }}
                 </div>
               </div>
               <div v-if="role == 2" class="table-time-operate flex-center">
@@ -355,7 +355,6 @@
 
 <script lang="ts" setup>
 import { ref, toRefs, onMounted, Ref, inject, computed, reactive, watch } from "vue";
-import moment, { Moment } from "moment";
 import request from "src/api/index";
 import extStorage from "src/utils/extStorage";
 import { message, Modal } from "ant-design-vue";
@@ -444,10 +443,9 @@ const dateArr: string[] = [
 ];
 
 const settingTimeModalRef = ref();
-// const weekTime: Ref<any> = ref(moment(new Date(), "YYYY-MM"));
 const weekTime: Ref<any> = ref<any>(dayjs());
 const isNewData: Ref<any> = ref(false);
-let toDayTime = ref(moment());
+let toDayTime = ref(dayjs());
 const currentDate = new Date();
 let datas = reactive<ITableList>({
   tableList: {},
@@ -459,7 +457,7 @@ const changeWeek = computed(() => {
 const mapperWeekDate = computed(() => {
   var weekDateMapper = [];
   for (let i = 0; i < 7; i++) {
-    weekDateMapper.push(moment(toDayTime.value.isoWeekday(i + 1)));
+    weekDateMapper.push(toDayTime.value.isoWeekday(i + 1));
   }
   return weekDateMapper;
 });
@@ -490,22 +488,20 @@ function getTimeTable(data: string) {
     datas.tableList = res.data;
   });
 }
-function monthChange(date: Moment, dateString: string[]) {
+function monthChange(date:any, dateString: string[]) {
   console.log(date, dateString);
-  // const date = moment(weekTime.value.add(-1, "M"));
-  // weekTime.value = date;
   getTimeTable(weekTime.value.format("YYYY-MM-DD"));
 }
 
 // 上一周
 function pre() {
-  const date = moment(weekTime.value.add(-1, "w"));
+  const date = dayjs(weekTime.value.add(-1, "w"));
   weekTime.value = date;
   getTimeTable(date.format("YYYY-MM-DD"));
 }
 // 下一周
 function next() {
-  const date = moment(weekTime.value.add(1, "w"));
+  const date = dayjs(weekTime.value.add(1, "w"));
   weekTime.value = date;
   getTimeTable(date.format("YYYY-MM-DD"));
 }
@@ -561,19 +557,19 @@ function compareTime(weekIndex: number, classIndex: number, hasTime?: boolean) {
   if (hasTime) {
     const currentTimeStart = dayTimes.value[classIndex].start + ":00";
     const currentTimeEnd = dayTimes.value[classIndex].end + ":00";
-    const startUnix = moment(
+    const startUnix = dayjs(
       currentTimeYMD + " " + currentTimeStart,
       "YYYY-MM-DD hh:mm:ss"
     ).unix();
-    const endUnix = moment(
+    const endUnix = dayjs(
       currentTimeYMD + " " + currentTimeEnd,
       "YYYY-MM-DD hh:mm:ss"
     ).unix();
-    return startUnix < moment().unix() && moment().unix() < endUnix;
+    return startUnix < dayjs().unix() && dayjs().unix() < endUnix;
   } else {
     return (
-      moment(currentTimeYMD + " " + currentTimeHMS, "YYYY-MM-DD hh:mm:ss").unix() <
-      moment().unix()
+      dayjs(currentTimeYMD + " " + currentTimeHMS, "YYYY-MM-DD hh:mm:ss").unix() <
+      dayjs().unix()
     );
   }
 }
@@ -622,8 +618,8 @@ function cancelScheduleConfirm(id: number) {
 }
 function toDayList(index: number) {
   // return weekTime.value.isoWeekday(index + 1).format("MM.DD");
-  console.log(dayjs(weekTime.value).isoWeekday(index+1).format('MM.DD'),'vvvvv')
-  console.log(weekTime.value,'weekTime.value111')
+  // console.log(dayjs(weekTime.value).isoWeekday(index+1).format('MM.DD'),'vvvvv')
+  // console.log(weekTime.value,'weekTime.value111')
   return dayjs(weekTime.value).isoWeekday(index+1).format('MM.DD')
 }
 
@@ -688,7 +684,7 @@ function roleName() {
 onMounted(() => {
   console.log(1111);
   getLeftTime();
-  getTimeTable(moment(new Date()).format("YYYY-MM-DD"));
+  getTimeTable(dayjs(new Date()).format("YYYY-MM-DD"));
 });
 </script>
 
@@ -725,7 +721,7 @@ onMounted(() => {
   width: 170px;
   display: inline-block;
 
-  :deep(.ant-picker) {
+  :deep(.ant-picker-input > input) {
     word-spacing: 2px;
     letter-spacing: 2px;
     font-size: 20px !important;
