@@ -3,20 +3,21 @@
     <div class="c-p-header">
       <div class="top-left">
         <div class="top-left-time">
-          <a-month-picker
+          <a-date-picker  
           class="month-picker"
           placeholder="请选择月份"
           format="YYYY年MM月"
           :allowClear="false"
           v-model:value="weekTime"
-          @change="monthChange"
-        >
+          @change="monthChange" 
+          picker="month" 
+          >
           <template #suffixIcon>
             <span>
               <span class="month-suffix-icon icon-zhankai iconfont"></span>
             </span>
           </template>
-        </a-month-picker>
+        </a-date-picker>
         <div class="week-picker">
           <span @click="pre" class="left-btn">&lt;</span>
           <span class="week">{{ changeWeek }}</span>
@@ -621,6 +622,8 @@ function cancelScheduleConfirm(id: number) {
 }
 function toDayList(index: number) {
   // return weekTime.value.isoWeekday(index + 1).format("MM.DD");
+  console.log(dayjs(weekTime.value).isoWeekday(index+1).format('MM.DD'),'vvvvv')
+  console.log(weekTime.value,'weekTime.value111')
   return dayjs(weekTime.value).isoWeekday(index+1).format('MM.DD')
 }
 
