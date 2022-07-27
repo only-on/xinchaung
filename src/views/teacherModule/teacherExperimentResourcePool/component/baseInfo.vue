@@ -151,7 +151,7 @@ import selectDataSet from "src/components/selectDataSet/selectDataSet.vue";
 import Environment from "./Environment.vue";
 import SelectReport from "./selectReport.vue";
 import { ModalFunc } from "ant-design-vue/lib/modal/Modal";
-import _ from "lodash";
+// import _ from "lodash";
 import { bytesToSize } from "src/utils/common"
 import LabelList from 'src/components/LabelList.vue'
 import {

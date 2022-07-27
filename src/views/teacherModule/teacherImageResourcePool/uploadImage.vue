@@ -4,7 +4,7 @@
       name="file"
       :multiple="true"
       :before-upload="beforeUpload"
-      :remove="remove"
+      @remove="remove"
       :fileList="fileList"
       accept=".tar,.qcow2"
       class="upload"
