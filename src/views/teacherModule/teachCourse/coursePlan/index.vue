@@ -360,6 +360,10 @@ import extStorage from "src/utils/extStorage";
 import { message, Modal } from "ant-design-vue";
 import { useRouter } from "vue-router";
 import settingTimeModal from "./settingTimeModal.vue";
+import dayjs, { Dayjs } from 'dayjs';
+// var isoWeek = require('dayjs/plugin/isoWeek')
+
+// dayjs.extend(isoWeek)
 
 interface IArrangements {
   cid: number;
@@ -439,7 +443,8 @@ const dateArr: string[] = [
 ];
 
 const settingTimeModalRef = ref();
-const weekTime: Ref<any> = ref(moment(new Date(), "YYYY-MM"));
+// const weekTime: Ref<any> = ref(moment(new Date(), "YYYY-MM"));
+const weekTime: Ref<any> = ref<any>(dayjs());
 const isNewData: Ref<any> = ref(false);
 let toDayTime = ref(moment());
 const currentDate = new Date();
@@ -615,7 +620,8 @@ function cancelScheduleConfirm(id: number) {
   });
 }
 function toDayList(index: number) {
-  return weekTime.value.isoWeekday(index + 1).format("MM.DD");
+  // return weekTime.value.isoWeekday(index + 1).format("MM.DD");
+  return dayjs(weekTime.value).isoWeekday(index+1).format('MM.DD')
 }
 
 // 管理员编辑

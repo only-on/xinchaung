@@ -20,6 +20,9 @@ import "@xianfe/vue3-quill/dist/style.css"
 
 import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn';
+import  isoWeek from 'dayjs/plugin/isoWeek';
+dayjs.extend(isoWeek)
+
 dayjs.locale('en');
 
 const app = createApp(App);
