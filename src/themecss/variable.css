@@ -255,10 +255,10 @@
   --menu-active: var(--white-100);
   
 
-  /* --primary-atn-hover: var(--blue-5);   */
-  --primary-atn-hover: var(--primary-5);
-   /* var(--blue-5);     */
-  --primary-atn-hover-shadow:var(--primary-5);
+  /* box-shadow: 0 0 0 2px rgba(250, 173, 20, 0.2); 输入框的焦点阴影   需跟随主题*/
+
+  /* --primary-atn-hover 已弃用copy2使用之后全局删除此 */
+  --primary-atn-hover: var(--primary-5);   
 
   --text-color: var(--black-85);
   --border-color-base: hsv(0, 0, 85%);
