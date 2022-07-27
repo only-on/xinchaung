@@ -27,6 +27,7 @@
       <div v-show="reportActive === 1" class="contentLeft">
         <div class="reportList flexCenter">
           <div class="search">
+            <a-input-search v-model:value="TemplaName" placeholder="请输入关键字搜索" @keyup.enter="getTemplateList" />
             <a-input-search  enter-button v-model:value="TemplaName" placeholder="请输入关键字搜索" @keyup.enter="getTemplateList" />
           </div>
           <div class="item flexCenter" v-for="v in TemplateList" :key="v">

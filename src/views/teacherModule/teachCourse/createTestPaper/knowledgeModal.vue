@@ -27,7 +27,7 @@
       @check="onCheck"
       v-model:checkedKeys="checkedKeys"
       :tree-data="treeData"
-      :replace-fields="replaceFields"
+      :fieldNames="replaceFields"
     >
       <!-- <template #switcherIcon><down-outlined /></template> -->
     </a-tree>
@@ -136,9 +136,9 @@ export default defineComponent({
       } else {
         // checkedNodes = []
         arr.forEach((v:any) => {
-          if (!(v.props.dataRef.children && v.props.dataRef.children.length)) {
-            if (!checkedNodes.filter((vv: any) => vv.id===v.props.dataRef?.id)[0]) {
-              checkedNodes.push(v.props.dataRef)
+          if (!(v.children && v.children.length)) {
+            if (!checkedNodes.filter((vv: any) => vv.id===v?.id)[0]) {
+              checkedNodes.push(v)
             }
           }
         })

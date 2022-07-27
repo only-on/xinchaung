@@ -25,56 +25,23 @@
           <div class='selected'>
             <a-tree
             checkable
+            :tree-data="treeData"
             @select="selectTree"
             @check='checkGroupStu'
             v-model:checkedKeys="groupedKeys"
             v-if="flag === true"
           >
-            <template #switcherIcon>
-              <down-outlined />
-            </template>
-            <a-tree-node
-              :checkable="false"
-              v-for="(item, index) in treeData"
-              :key="index.toString()"
-            >
-              <template #title>
+              <template #switcherIcon="{ switcherCls }"><down-outlined :class="switcherCls" /></template>
+              <template #title="{ dataRef }">
                 <div class="tree-title title">
-                  <template v-if="currentEditData === index">
-                    <a-input
-                      class="name inputname"
-                      v-model:value="item.name"
-                      @blur="titleBlurs"
-                    ></a-input>
-                  </template>
-                  <template v-else>
-                    <span class="name"
-                      >
-                      <span class="itemName">{{ item.name }}</span>
-                      <!-- <i
-                        class="edit icon-bianji1 iconfont"
-                        @click="editTreeTittle(index)"
-                      ></i> -->
-                      <i
-                        v-if="!ifautoGroupEdit"
-                        class="delete icon-shanchu-copy iconfont"
-                        @click="deleteTree(index)"
-                      ></i>
+                    <span class="name">
+                      <span class="itemName">{{ dataRef.title }}</span>
                       <span class="itemNumber">
-                        {{item?.student_list?.length}}
+                        {{dataRef?.children?.length}}
                       </span>
                     </span>
-                  </template>
                 </div>
               </template>
-              <a-tree-node
-                :checkable="true"
-                v-for="it in item?.student_list"
-                :key="index + '-' + it?.userProfile?.id"
-                :title="it?.userProfile?.name"
-              >
-              </a-tree-node>
-            </a-tree-node>
             </a-tree>
           </div>
         </div>
@@ -110,9 +77,9 @@
           </div>
           <div class="unselect">
             <a-checkbox-group v-model:value="checkedValues" @change='changeChecks'>
-            <div v-for="(item, index) in unGroupData" :key="item.userProfile.id">
-              <a-checkbox :value="item.userProfile.id">
-                {{ item.userProfile.name }}
+            <div v-for="(item, index) in unGroupData" :key="item.id">
+              <a-checkbox :value="item.id">
+                {{ item.name }}
               </a-checkbox>
             </div>
           </a-checkbox-group>
@@ -163,7 +130,7 @@ function onCheckAllChange(e:any){
   checkedValues.value=[]
   console.log(e)
   unGroupData.value.forEach((item: any, index: any) => {
-    checkedValues.value.push(item.userProfile.id);
+    checkedValues.value.push(item.id);
   });
   checkedValues.value=e.target.checked ?checkedValues.value : []
   // indeterminate.value=e.target.checked ?true:false
@@ -190,8 +157,8 @@ function handleOk(){
             members:[]
           }
           editData.forEach((item:any) => {
-              params.name=item.name;
-              item.student_list.forEach((it: any) => {
+              params.name=item.title;
+              item.children.forEach((it: any) => {
                       params.members.push(it.id);
               });
           });
@@ -211,8 +178,8 @@ function handleOk(){
             if(createData?.length){
               const groups:any=[]
               createData.forEach((item:any,index:any)=> {
-                groups.push({name:item.name,members:[]})
-                item.student_list.forEach((it:any)=>{
+                groups.push({name:item.title,members:[]})
+                item.children.forEach((it:any)=>{
                   groups[index].members.push(it.id)
                 })
               });
@@ -228,8 +195,8 @@ function handleOk(){
   }else{
     const groups:any=[]
     treeData.value.forEach((item:any,index:any)=> {
-      groups.push({name:item.name,members:[]})
-      item.student_list.forEach((it:any)=>{
+      groups.push({name:item.title,members:[]})
+      item.children.forEach((it:any)=>{
         groups[index].members.push(it.id)
       })
     });
@@ -247,7 +214,8 @@ function handleCancel(){
 }
 function createGroup(){
   if(groupName.value){
-    const newGroupData={name:groupName.value,student_list:[]}
+    const newGroupData={title:groupName.value,children:[],key:treeData.value.length}
+    console.log(newGroupData)
   treeData.value.push(newGroupData)
   }
   groupName.value=''
@@ -257,6 +225,7 @@ function onSearch() {
 }
 //选择要把学生放进的分组
 function selectTree(selectedKeys:any,e:any){
+  console.log(selectedKeys)
   selectedGroup.value=selectedKeys[0]
 }
 function editTreeTittle(index:any){
@@ -279,21 +248,25 @@ function changeChecks(){
 //把学生添加到分组里
 function toLeft(){
   console.log(selectedGroup.value,treeData.value)
-  if (!selectedGroup.value && selectedGroup.value !== 0) {
+  if (selectedGroup.value === '' ) {
     message.warning("请选择或者创建分组!");
     return;
   }
   const selectstu:any=unGroupData.value.filter((item:any)=>{
-      return checkedValues.value.includes(item.userProfile.id)
+      return checkedValues.value.includes(item.id)
   })
   console.log(checkedValues.value,'checkedValues.value',selectstu,'selectstu',selectedGroup.value,'selectedGroup.value')
   selectstu.forEach((item:any)=> {
-    treeData.value[selectedGroup.value].student_list.push(item)
+    treeData.value[selectedGroup.value].children.push({
+      title: item.name,
+      key: item.id,
+      id: item.id
+    })
   });
   treeData.value=[...treeData.value]
   //过滤学生列表数据
   unGroupData.value=unGroupData.value.filter((item:any)=>{
-      return !checkedValues.value.includes(item.userProfile.id)
+      return !checkedValues.value.includes(item.id)
   })
   checkedValues.value=[]
 }
@@ -302,23 +275,17 @@ function toRight(){
   const allstuids:any=[]
   const numberNum:any=[]
     groupedKeys.value.forEach((item:any) => {
-        const i=item.split('-')[0] //treeData里的第几个数据
-        const id=item.split('-')[1]  //学生id
-        allstuids.push(id)
-        const j=treeData.value[i].student_list.filter((it:any,n:any)=>{
-          return it.userProfile.id==id;
+      treeData.value.forEach((treeItem:any) => {
+        treeItem.children.forEach((treeChild:any, index:any) => {
+          if (treeChild.id === item) {
+            treeItem.children.splice(index,1)
+            unGroupData.value.push({
+              id: item,
+              name: treeChild.title
+            }) 
+          }
         })
-        console.log(j,'jjjjjjjjjjjjjjj')
-        j.forEach((item:any,index:any)=> {
-          unGroupData.value.push(item) 
-
-          // treeData.value[i].student_list.splice(index,1)
-        });
-       treeData.value[i].student_list.forEach((it:any,n:any)=>{
-         if(it.userProfile.id==id){
-          treeData.value[i].student_list.splice(n,1)
-         }
-        })
+      })
     }) 
     groupedKeys.value=[]
 }
@@ -330,14 +297,28 @@ function ifselect(keys:any){
 function getUngroupStu(){
    http.unGroupstuList({param:{id:courseId,type:1,name:searchvalue.value}}).then((res:any)=>{
       if(res.code){
-        unGroupData.value=res.data.data
+        unGroupData.value.length = 0
+        res.data.data.forEach((item:any) => {
+          unGroupData.value.push({
+            id: item.userProfile.id,
+            name: item.userProfile.name
+          })
+        })
       }
    })
 }
 function groupNumberList(){
   http.groupNumberList({urlParams:{group:props.group_id}}).then((res:any)=>{
     if(res.code){
-      treeData.value=[{id:props.group_id,name:props.editGroupname,student_list:res.data.list}]
+      let children:any = []
+      res.data.list.forEach((item:any) => {
+        children.push({
+          id: item.userProfile.id,
+          key: item.userProfile.id,
+          title: item.userProfile.name
+        })
+      })
+      treeData.value=[{id:props.group_id,key:props.group_id,title:props.editGroupname,children:children}]
     }
   })
 }

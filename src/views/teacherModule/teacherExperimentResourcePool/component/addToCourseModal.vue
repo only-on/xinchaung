@@ -9,30 +9,21 @@
       :show-line="true"
       :show-icon="true"
       :default-expanded-keys="defaultExpandedKeys"
+      :tree-data="courseList"
       @select="onSelect"
     >
-      <!-- <template #icon><carry-out-outlined /></template> -->
-      <a-tree-node v-for="list in courseList" :key="list.id" :title="list.name" :courseId="list.id">
-        <template #icon>
+      <template #icon="{ dataRef }">
+        <template v-if="dataRef.children && dataRef.children.length">
           <svg class="icon svg-icon" aria-hidden="true">
             <use xlink:href="#icon-kecheng1"></use>
           </svg>
         </template>
-        <a-tree-node
-          v-for="item in list.chapters"
-          :title="item.chapter_name"
-          :key="item.chapter_id"
-          :courseId="item.course_id"
-          :chapterId="item.chapter_id"
-        >
-          <template #icon>
-            <svg class="icon svg-icon" aria-hidden="true">
-              <use xlink:href="#icon-zhangjie"></use>
-            </svg>
-          </template>
-          <template #switcherIcon></template>
-        </a-tree-node>
-      </a-tree-node>
+        <template v-if="dataRef.chapter_id">
+          <svg class="icon svg-icon" aria-hidden="true">
+            <use xlink:href="#icon-zhangjie"></use>
+          </svg>
+        </template>
+      </template>
     </a-tree>
   </a-modal>
 </template>
@@ -48,6 +39,7 @@ import {
   watch,
   nextTick,
 } from "vue";
+import { DownOutlined, SmileOutlined, FrownOutlined, FrownFilled } from '@ant-design/icons-vue';
 import { SelectEvent } from "ant-design-vue/es/tree/Tree";
 import { CarryOutOutlined, FormOutlined } from "@ant-design/icons-vue";
 import { IBusinessResp } from "src/typings/fetch.d";
@@ -66,14 +58,14 @@ const emit = defineEmits<{
 const selectNode: any = ref({})
 
 const handleOk = () => {
-  if (!selectNode.value.chapterId) {
+  if (!selectNode.value.chapter_id) {
     message.warn("请选择课程下的章节！")
     return
   }
   http.addCoursesChapter({
     urlParams: {
-      courseId: selectNode.value.courseId,
-      chapterId: selectNode.value.chapterId
+      courseId: selectNode.value.course_id,
+      chapterId: selectNode.value.chapter_id
     },
     param: {
       "content_ids":[id],
@@ -91,13 +83,31 @@ const handleCancel = () => {
 
 const onSelect = (selectedKeys: string[], info: SelectEvent) => {
   // console.log("selected", selectedKeys, info);
-  selectNode.value = info.selectedNodes.length ? info.selectedNodes[0].props : {}
+  selectNode.value = info.selectedNodes.length ? info.selectedNodes[0] : {}
 };
 let courseList: any = ref([]);
 let defaultExpandedKeys = reactive([1]);
 const getCourseChaptersTree = () => {
   http.coursesChaptersTree().then((res: IBusinessResp) => {
-    courseList.value = res.data
+    courseList.value.length = 0
+    res.data.forEach((item:any) => {
+      let obj:any = {
+        title: item.name,
+        key: item.id,
+        children: []
+      }
+      item.chapters.forEach((itemChapter:any) => {
+        obj.children.push({
+          title: itemChapter.chapter_name,
+          key: itemChapter.chapter_id,
+          course_id: itemChapter.course_id,
+          chapter_id:itemChapter.chapter_id
+        })
+      })
+      courseList.value.push(obj)
+      console.log(courseList.value)
+    })
+
   })
 }
 onMounted(() => {
@@ -115,4 +125,9 @@ onMounted(() => {
     margin-bottom: -2px;
   }
 }
+</style>
+<style lang="less">
+  .ant-tree-treenode .ant-tree-switcher-noop{
+    display: none;
+  }
 </style>
