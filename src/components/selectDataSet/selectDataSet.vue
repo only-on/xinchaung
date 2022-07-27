@@ -1,31 +1,12 @@
 <template>
   <div class="data-set-box">
-    <!-- <a-radio-group
-      class="data-set-type"
-      v-model:value="params.common"
-      button-style="solid"
-      @change="dataSetChange"
-    >
-      <a-radio-button :value="1">公共数据集</a-radio-button>
-      <a-radio-button :value="0">我的数据集</a-radio-button>
-    </a-radio-group> -->
-    <!-- <div class="data-set-tag-box">
-      类型
-      <a-input-search
-        class="select-keyword"
-        placeholder="请输入关键字查询"
-        v-model:value="params.keyword"
-        style="width: 300px"
-        @search="onSearch"
-      />
-    </div> -->
     <div class="search flexCenter">
       <div class="flexCenter classifyTabs">
         <span class="left" :class="params.common === 1? 'active':''" @click="changeTab(1)">公开素材</span>
         <span class="right" :class="params.common === 0? 'active':''" @click="changeTab(0)">私有素材</span>
       </div>
       <div class="item custom_input">
-        <a-input-search
+        <a-input-search  enter-button
           v-model:value="params.name"
           placeholder="请输入搜索关键字"
           @search="searchFn()"

@@ -3,7 +3,7 @@
     <a-tabs v-model:activeKey="activeKey" @change="tabChange">
       <a-tab-pane key="0" tab="论坛广场">
         <div>
-          <a-input-search
+          <a-input-search  enter-button
             v-model:value="forumSearch.title"
             placeholder="请输入搜索关键字"
             style="width: 90%; max-width: 314px"
@@ -21,7 +21,7 @@
       </a-tab-pane>
       <a-tab-pane key="1" tab="我的帖子">
         <div>
-          <a-input-search
+          <a-input-search  enter-button
             v-model:value="forumSearch.title"
             placeholder="请输入搜索关键字"
             style="width: 90%; max-width: 314px"

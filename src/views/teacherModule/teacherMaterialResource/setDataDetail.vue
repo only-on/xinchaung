@@ -77,7 +77,7 @@
         <div v-show="activeTab==='文件列表'" class="fileBox">
           <div class="left">
             <div class="custom_input">
-              <a-input-search v-model:value="state.fileKeyWord" placeholder="请输入搜索关键字"/>
+              <a-input-search  enter-button v-model:value="state.fileKeyWord" placeholder="请输入搜索关键字"/>
             </div>
             <div class="file textScrollbar">
               <FileList :FileList="state.fileKeyWord?searchFileList:state.fileList" @selectFile="selectFile" :activeItem="state" />

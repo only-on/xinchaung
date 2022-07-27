@@ -3,12 +3,11 @@
     <div class="addBox">
       <div class="add flexCenter fr">
         <div @mouseover="isMouseOver = true" @mouseout="isMouseOver = false" v-if="props.isShowSearch">
-          <a-input-search
+          <a-input-search  enter-button 
             class="greenSearch"
             :class="{ mouseover: isMouseOver }"
             v-model:value="searchKey"
             @search="searchFn"
-            enter-button
             placeholder="请输入关键词查询"
           />
         </div>

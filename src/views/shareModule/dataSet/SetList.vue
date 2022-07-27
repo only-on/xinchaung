@@ -10,7 +10,7 @@
       </div>
       <div class="right fix">
         <div class="search-box">
-          <a-input-search
+          <a-input-search  enter-button
             v-model:value="search.keyword"
             placeholder="请输入搜索关键字查询"
             @search="searchData"

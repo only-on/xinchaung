@@ -5,7 +5,7 @@
       <span class="right" :class="is_public === 0? 'active':''" @click="changeTab(0)">私有素材</span>
     </div>
     <div class="item custom_input">
-      <a-input-search
+      <a-input-search  enter-button
         v-model:value="docOrMp4Drawer.file_name"
         placeholder="请输入搜索关键字"
         @search="searchDocOrMp4List"

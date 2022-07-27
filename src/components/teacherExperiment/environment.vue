@@ -15,7 +15,7 @@
       </span>
     </div>
     <div class="search-box">
-      <a-input-search
+      <a-input-search  enter-button
         v-model:value="searchVal"
         class="search-inbput"
         placeholder="请输入关键字查询"

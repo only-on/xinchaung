@@ -100,7 +100,7 @@
             </a-checkbox>
             </div>
           <div class="searchvalue">
-            <a-input-search
+            <a-input-search  enter-button
               v-model:value="searchvalue"
               placeholder="请输入搜索关键字"
               @search="onSearch"

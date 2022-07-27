@@ -2,7 +2,7 @@
   <div class="forumn-top">
     <div class="top-content">
       <div class="search_input">
-        <a-input-search
+        <a-input-search  enter-button
           v-model:value="ForumSearch.title"
           placeholder="请输入搜索关键词"
           @search="search"

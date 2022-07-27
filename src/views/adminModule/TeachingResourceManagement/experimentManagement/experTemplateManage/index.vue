@@ -4,7 +4,7 @@
           <div>
             <div class="item custom_input custom_input2">
         <!-- <span style="width:50px">实验名称</span> -->
-            <a-input-search
+            <a-input-search  enter-button
             style="width:224px"
             v-model:value="ForumSearch.name"
             placeholder="请输入搜索关键字"
