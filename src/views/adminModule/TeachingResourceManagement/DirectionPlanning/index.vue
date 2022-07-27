@@ -38,31 +38,33 @@
                   }
                 : false
             ">
-              <template #name="{ text, index }">
-                <div class="editable-cell">
-                  <div
-                    v-if="editableData[index]"
-                    class="editable-cell-input-wrapper"
-                  >
-                    <a-input
-                      v-model:value="editableData[index].name"
-                      @pressEnter="save(index)"
-                    />
-                  </div>
-                  <div v-else class="editable-cell-text-wrapper">
-                    {{ text || " " }}
-                  </div>
-                </div>
-              </template>
-              <template #operation="{ record, index }">
-                <span class="functionButton" v-if="editableData[index]">
-                  <a @click="cancelSave(index)">取消</a>
-                  <a @click="save(index)">确定</a>
-                </span>
-                <span class="functionButton" v-else>
-                  <a @click="edit(record, index)">修改</a>
-                  <a @click="onDelete(record.id)">删除</a>
-                </span>
+              <template #bodyCell="{ column,text,record }">
+                  <template v-if="column.dataIndex === 'name'">
+                    <div class="editable-cell">
+                      <div
+                        v-if="editableData[index]"
+                        class="editable-cell-input-wrapper"
+                      >
+                        <a-input
+                          v-model:value="editableData[index].name"
+                          @pressEnter="save(index)"
+                        />
+                      </div>
+                      <div v-else class="editable-cell-text-wrapper">
+                        {{ text || " " }}
+                      </div>
+                    </div>
+                  </template>
+                  <template v-if="column.dataIndex === 'operation'">
+                    <span class="functionButton" v-if="editableData[index]">
+                      <a @click="cancelSave(index)">取消</a>
+                      <a @click="save(index)">确定</a>
+                    </span>
+                    <span class="functionButton" v-else>
+                      <a @click="edit(record, index)">修改</a>
+                      <a @click="onDelete(record.id)">删除</a>
+                    </span>
+                  </template>
               </template>
             </a-table>
             <template #renderEmpty>
@@ -214,14 +216,12 @@ const columns = reactive<any>([
     title: "课程方向",
     dataIndex: "name",
     width: "50%",
-    align: "center",
-    slots: { customRender: "name" },
+    align: "center"
   },
   {
     title: "操作",
     dataIndex: "operation",
-    align: "center",
-    slots: { customRender: "operation" },
+    align: "center"
   }
 ])
 var loading: Ref<boolean> = ref(false);

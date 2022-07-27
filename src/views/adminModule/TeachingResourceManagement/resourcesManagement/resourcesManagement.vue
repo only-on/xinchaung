@@ -62,16 +62,18 @@
               "
               :row-selection="{ selectedRowKeys: searchInfo.selectedRowKeys, onChange: onSelectChange,}"
               rowKey="id">
-              <template #tags="{ record }">
-                <span :title="(record.tags && record.tags.length)?`${record.tags.join(' / ')}`:''">{{(record.tags && record.tags.length)?`${record.tags.join(' / ')}`:''}}</span>
+              <template #bodyCell="{ column, record }">
+                <template v-if="column.dataIndex === 'tags'">
+                  <span :title="(record.tags && record.tags.length)?`${record.tags.join(' / ')}`:''">{{(record.tags && record.tags.length)?`${record.tags.join(' / ')}`:''}}</span>
+                </template>
+                <template v-if="column.dataIndex === 'name'">
+                  <span class="courseName" :title="record.name" @click="viewDetail(record)">{{record.name}}</span>
+                </template>
+                <template v-if="column.dataIndex === 'action'">
+                  <a-button type="link" @click="dleDelete(record)">删除</a-button>
+                </template>
               </template>
-              <template #name="{ record }">
-                <span class="courseName" :title="record.name" @click="viewDetail(record)">{{record.name}}</span>
-              </template>
-              <template #action="{record}">
-                <a-button type="link" @click="dleDelete(record)">删除</a-button>
-                <!-- <span class="action courseName" @click="dleDelete(record)">删除</span> -->
-              </template>
+              
             </a-table>
             <template #renderEmpty>
               <div v-if="!loading"><Empty :type="EmptyType" /></div>
@@ -118,8 +120,7 @@ const columns= [
     title: "目录名称",
     dataIndex: "name",
     align: "left",
-    ellipsis: true,
-    slots: { customRender: "name" },
+    ellipsis: true
   },
   {
     title: "素材属性",
@@ -152,8 +153,7 @@ const columns= [
     title: "标签",
     dataIndex: "tags",
     align: "center",
-    ellipsis: true,
-    slots: { customRender: "tags" },
+    ellipsis: true
   },
   {
     title: "描述",
@@ -165,8 +165,7 @@ const columns= [
   {
     title: '操作',
     width:150,
-    key: 'action',
-    slots: { customRender: 'action'},
+   dataIndex: 'action'
   }
 ]
 var searchInfo:any=reactive({

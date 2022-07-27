@@ -43,12 +43,13 @@
           getCheckboxProps: getCheckboxProps,
         }"
       >
-      <template #templateName='{record}'>
-        <div class="detail" :title="record.templateName" @click="detail(record.id,record.templateType,record.pdfPath)">
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.dataIndex === 'templateName'">
+           <div class="detail" :title="record.templateName" @click="detail(record.id,record.templateType,record.pdfPath)">
           {{record.templateName}}
         </div>
-      </template>
-          <template #action="{record}">
+        </template>
+        <template v-if="column.dataIndex === 'action'">
               <div class="flexCenter">
                 <a-button type="link" @click="dleDelete(record)" :disabled="record.is_init">删除</a-button>
                 <a-button type="link" @click="downLoad(record)" v-if="record.templateType=='离线'">下载</a-button>
@@ -58,6 +59,7 @@
                   下载
               </span> -->
           </template>
+      </template>
       </a-table>
         <template #renderEmpty>
             <div v-if="listdata?.length==0"><Empty :type="EmptyType" /></div>
@@ -116,8 +118,7 @@ import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
         {
           title: '报告模版名称',
           key: 'templateName',
-          dataIndex: 'templateName',
-          slots: { customRender: 'templateName' },
+          dataIndex: 'templateName'
         },
         {
           title: '所属人',
@@ -137,9 +138,8 @@ import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
         {
           title: '操作',
           // width:120,
-          key: 'action',
-          align:'center',
-          slots: { customRender: 'action' },
+          dataIndex: 'action',
+          align:'center'
         }
       ];
     const data:any=ref([]) 

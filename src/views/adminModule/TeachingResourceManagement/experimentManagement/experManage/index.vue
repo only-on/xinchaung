@@ -74,20 +74,22 @@
         }"
       >
       <!-- detail -->
-      <template #contentName='{record}'>
+      <template #bodyCell="{ column, record }">
+        <template v-if="column.dataIndex === 'contentName'">
         <div class="detail" :title="record.contentName" @click="detail(record,record.contentAttribute)">
           {{record.contentName}}
         </div>
       </template>
-      <template #contentTechnicalDirectionGroup='{record}'>
+      <template v-if="column.dataIndex === 'contentTechnicalDirectionGroup'">
           <div class="detailDirName" :title="record.contentTechnicalDirectionGroup">
           {{record.contentTechnicalDirectionGroup}}
         </div>
       </template>
-      <template #action="{record}">
+      <template v-if="column.dataIndex === 'action'">
         <a-button type="link" @click="dleDelete(record)">删除</a-button>
         <!-- <span class="action detail" @click="dleDelete(record)">删除</span> -->
       </template>
+    </template>
       </a-table>
         <template #renderEmpty>
             <div v-if="listdata?.length==0"><Empty :type="EmptyType" /></div>
@@ -133,8 +135,7 @@ const allexperTypes:any=ref([
         {
           title: '实验名称',
           key: 'contentName',
-          dataIndex: 'contentName',
-          slots: { customRender: 'contentName' },
+          dataIndex: 'contentName'
         },
         {
           title: '实验属性',
@@ -153,8 +154,6 @@ const allexperTypes:any=ref([
         {
           title: '所属技术方向',
           dataIndex: 'contentTechnicalDirectionGroup',
-          // ellipsis:true,
-          slots: { customRender: 'contentTechnicalDirectionGroup' },
         },
         {
           title: '课时',
@@ -163,9 +162,8 @@ const allexperTypes:any=ref([
         {
           title: '操作',
           width:150,
-          key: 'action',
-          align:'center',
-          slots: { customRender: 'action' },
+          dataIndex: 'action',
+          align:'center'
         }
       ];
     const tableData:any=reactive({})

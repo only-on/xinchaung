@@ -101,15 +101,17 @@
               "
               :row-selection="{ selectedRowKeys: searchInfo.selectedRowKeys, onChange: onSelectChange,}"
               rowKey="id">
-              <template #courseState="{ record }">
+              <template #bodyCell="{ column,record }">
+                 <template  v-if="column.dataIndex === 'courseState'">
                 <div :class="{'进行中':'in','未开始':'nostarted','已结束':'end'}[record.courseState]">{{record.courseState}}</div>
               </template>
-              <template #courseName="{ record }">
+              <template v-if="column.dataIndex === 'courseName'">
                 <span class="courseName" :title="record.courseName" @click="viewDetail(record)">{{record.courseName}}</span>
               </template>
-              <template #action="{record}">
+              <template v-if="column.dataIndex === 'action'">
                 <a-button type="link" @click="dleDelete(record)">删除</a-button>
                 <!-- <span class="action courseName" @click="dleDelete(record)">删除</span> -->
+              </template>
               </template>
             </a-table>
             <template #renderEmpty>
@@ -145,14 +147,12 @@ const columns= [
           title: "课程名称",
           dataIndex: "courseName",
           align: "left",
-          ellipsis: true,
-          slots: { customRender: "courseName" },
+          ellipsis: true
         },
         {
           title: "课程属性",
           dataIndex: "courseAttribute",
-          align: "center",
-          // slots: { customRender: "is_public" },
+          align: "center"
         },
         {
           title: "课程所属",
@@ -164,8 +164,7 @@ const columns= [
         {
           title: "课程状态",
           dataIndex: "courseState",
-          align: "center",
-          slots: { customRender: "courseState" },
+          align: "center"
         },
         {
           title: "实验数",
@@ -186,8 +185,7 @@ const columns= [
         {
           title: '操作',
           width:150,
-          key: 'action',
-          slots: { customRender: 'action' },
+         dataIndex: 'action'
         }
       ]
 var searchInfo:any=reactive({

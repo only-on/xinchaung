@@ -99,10 +99,11 @@
               "
               :row-selection="{ selectedRowKeys: searchInfo.selectedRowKeys, onChange: onSelectChange,getCheckboxProps:getCheckboxProps}"
               rowKey="id">
-              <template #action="{record}">
-                <a-button type="link" @click="dleDelete(record)" :disabled="!record.imageCanDelete">删除</a-button>
-                <!-- <span class="action detail" @click="dleDelete(record)">删除</span> -->
-              </template>
+               <template #bodyCell="{ column, record }">
+                  <template v-if="column.dataIndex === 'action'">
+                  <a-button type="link" @click="dleDelete(record)" :disabled="!record.imageCanDelete">删除</a-button>
+                  </template>
+                </template>
             </a-table>
             <template #renderEmpty>
               <div v-if="!loading"><Empty :type="EmptyType" /></div>
@@ -170,8 +171,7 @@ const columns= [
         },
         {
           title: '操作',
-          key: 'action',
-          slots: { customRender: 'action' },
+          dataIndex: 'action'
         }
       ]
 var searchInfo:any=reactive({

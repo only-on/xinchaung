@@ -252,11 +252,13 @@
           row-key="username"
           class="components-table-demo-nested"
         >
-          <template #result='{record}'>
-            <div :class='record.result=="添加成功"?"success":"wrong"'>
+         <template #bodyCell="{ column, record }">
+          <template v-if="column.dataIndex === 'result'">
+           <div :class='record.result=="添加成功"?"success":"wrong"'>
               {{record?.result}}
             </div>
           </template>
+        </template>
         </a-table>
         <div v-else>
           <a-spin tip="Loading...">
@@ -370,7 +372,7 @@ const studentColumns = [
   {
     title: "导入情况",
     dataIndex: "result",
-    slots: { customRender: "result" },
+    // slots: { customRender: "result" },
   },
 ]; 
     const router = useRouter();
