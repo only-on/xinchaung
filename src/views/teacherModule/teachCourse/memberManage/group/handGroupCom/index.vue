@@ -77,8 +77,8 @@
           </div>
           <div class="unselect">
             <a-checkbox-group v-model:value="checkedValues" @change='changeChecks'>
-            <div v-for="(item, index) in unGroupData" :key="item.id">
-              <a-checkbox :value="item.id">
+            <div v-for="(item, index) in unGroupData" :key="item.key">
+              <a-checkbox :value="item.key">
                 {{ item.name }}
               </a-checkbox>
             </div>
@@ -128,7 +128,6 @@ const indeterminate:any=ref(false)
 const allStuIdsValues:any=ref([])
 function onCheckAllChange(e:any){
   checkedValues.value=[]
-  console.log(e)
   unGroupData.value.forEach((item: any, index: any) => {
     checkedValues.value.push(item.id);
   });
@@ -141,15 +140,12 @@ function toDoKey(index:any,it:any){
 }
 const emit = defineEmits<{ (e: "updateVisable", val: any,groupok:any): void }>();
 function handleOk(){
-  console.log(treeData.value)
   if(props.ifedit){
           const arryData: any = Array.from(treeData.value);
           const editData: any = arryData.filter((item: any) => {
-            console.log(item.id !== undefined, item.id, "edit");
             return item.id !== undefined;
           });
           const createData: any = arryData.filter((item: any) => {
-            console.log(item.id === undefined);
             return item.id === undefined;
           });
           const params:any={
@@ -214,8 +210,7 @@ function handleCancel(){
 }
 function createGroup(){
   if(groupName.value){
-    const newGroupData={title:groupName.value,children:[],key:treeData.value.length}
-    console.log(newGroupData)
+    const newGroupData={title:groupName.value,children:[],key:treeData.value.length,id:treeData.value.length}
   treeData.value.push(newGroupData)
   }
   groupName.value=''
@@ -247,22 +242,26 @@ function changeChecks(){
 }
 //把学生添加到分组里
 function toLeft(){
-  console.log(selectedGroup.value,treeData.value)
-  if (selectedGroup.value === '' ) {
+  console.log(selectedGroup.value)
+  console.log(treeData.value)
+  if (selectedGroup.value === '' ||  selectedGroup.value === undefined) {
     message.warning("请选择或者创建分组!");
     return;
   }
   const selectstu:any=unGroupData.value.filter((item:any)=>{
-      return checkedValues.value.includes(item.id)
+      return checkedValues.value.includes(item.key)
   })
-  console.log(checkedValues.value,'checkedValues.value',selectstu,'selectstu',selectedGroup.value,'selectedGroup.value')
-  selectstu.forEach((item:any)=> {
-    treeData.value[selectedGroup.value].children.push({
-      title: item.name,
-      key: item.id,
-      id: item.id
-    })
-  });
+  treeData.value.forEach((treeItem:any,index:any) => {
+    if (selectedGroup.value == treeItem.key) {
+      selectstu.forEach((item:any)=> {
+        treeData.value[index].children.push({
+          title: item.name,
+          key: item.key,
+          id: item.id
+        })
+      });
+    }
+  })
   treeData.value=[...treeData.value]
   //过滤学生列表数据
   unGroupData.value=unGroupData.value.filter((item:any)=>{
@@ -277,10 +276,11 @@ function toRight(){
     groupedKeys.value.forEach((item:any) => {
       treeData.value.forEach((treeItem:any) => {
         treeItem.children.forEach((treeChild:any, index:any) => {
-          if (treeChild.id === item) {
+          if (treeChild.key === item) {
             treeItem.children.splice(index,1)
             unGroupData.value.push({
-              id: item,
+              id: treeChild.id,
+              key: treeChild.key,
               name: treeChild.title
             }) 
           }
@@ -300,7 +300,8 @@ function getUngroupStu(){
         unGroupData.value.length = 0
         res.data.data.forEach((item:any) => {
           unGroupData.value.push({
-            id: item.userProfile.id,
+            id: item.id,
+            key: item.userProfile.id,
             name: item.userProfile.name
           })
         })
@@ -313,7 +314,7 @@ function groupNumberList(){
       let children:any = []
       res.data.list.forEach((item:any) => {
         children.push({
-          id: item.userProfile.id,
+          id: item.id,
           key: item.userProfile.id,
           title: item.userProfile.name
         })
@@ -325,7 +326,6 @@ function groupNumberList(){
 watch(
       () => checkedValues.value,
       val => {
-        console.log(val.length,unGroupData.value.length,'valvalval')
         indeterminate.value = !!val.length && val.length < unGroupData.value.length;
         checkAll.value = val.length === unGroupData.value.length&&unGroupData.value.length!==0;
       }
@@ -333,14 +333,11 @@ watch(
 watch(
       () =>props.visable,
       () => {
-        // console.log(props.visable);
-        
         if(props.visable){
           //分组列表置空
           treeData.value=[]
           //学生列表
           unGroupData.value=[]
-          console.log(props.ifedit,'props.ifedit')
           //勾选的数据
           checkedValues.value=[]
           //选择的分组
@@ -410,6 +407,12 @@ onMounted(()=>{
     .createBtn:hover{
       cursor: pointer;
     }
+  }
+  :deep(.ant-tree-switcher_open)+.ant-tree-checkbox{
+    display: none;
+  }
+  :deep(.ant-tree-switcher_close)+.ant-tree-checkbox{
+    display: none;
   }
 }
 .unGroup{

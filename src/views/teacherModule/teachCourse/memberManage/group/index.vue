@@ -5,33 +5,39 @@
       <a-button type="primary" @click="handGroup">手动分组</a-button>
     </div>
     <div class="tableScrollbar">
-      <a-table
-      rowKey='id'
-      :columns="columns"
-      :data-source="data"
-      :pagination="
-        tableData.total > 10
-          ? {
-              hideOnSinglePage: false,
-              showSizeChanger: true,
-              total: tableData.total,
-              current: groupListParams.page,
-              pageSize:groupListParams.limit,
-              onChange: onChange,
-              onShowSizeChange: onShowSizeChange,
-            }
-          : false
-      "
-    >
-      <template v-slot:bodyCell="{column,record}">
-        <template v-if="column.dataIndex === 'action'">
-          <div class="action">
-            <span class='delete actionBtn' @click="deleteGroup(record.id)">删除</span>
-            <span class="actionBtn" @click="editGroup(record.id,record.name)">编辑</span>
-          </div>
-        </template>
-      </template>
-    </a-table>
+      <a-config-provider>
+         <a-table
+            rowKey='id'
+            :columns="columns"
+            :data-source="data"
+            :pagination="
+              tableData.total > 10
+                ? {
+                    hideOnSinglePage: false,
+                    showSizeChanger: true,
+                    total: tableData.total,
+                    current: groupListParams.page,
+                    pageSize:groupListParams.limit,
+                    onChange: onChange,
+                    onShowSizeChange: onShowSizeChange,
+                  }
+                : false
+            "
+          >
+            <template v-slot:bodyCell="{column,record}">
+              <template v-if="column.dataIndex === 'action'">
+                <div class="action">
+                  <span class='delete actionBtn' @click="deleteGroup(record.id)">删除</span>
+                  <span class="actionBtn" @click="editGroup(record.id,record.name)">编辑</span>
+                </div>
+              </template>
+            </template>
+          </a-table>
+          <template #renderEmpty>
+            <div><Empty type="tableEmpty"/></div>
+          </template>
+      </a-config-provider>
+     
     </div>
     <autoGroupCom v-if="groupType=='auto'" :visable='modalVisable' @updateVisable='updateVisable'></autoGroupCom>
     <handGroupCom v-if="groupType=='hand'" :ifedit='ifedit' :editGroupname='editGroupname' :group_id='group_id' :visable='modalVisable' @updateVisable='updateVisable'></handGroupCom>
@@ -89,6 +95,7 @@ const groupListParams:any=reactive({
     page:1,
     limit:10,
 })
+
 function focus() {
   console.log("focus");
 }
