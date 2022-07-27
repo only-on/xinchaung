@@ -82,14 +82,16 @@
                 getCheckboxProps: getCheckboxProps,
               }"
             >
-              <template #gpu>
+            <template v-slot:bodyCell="{column}">
+              <template v-if="column.dataIndex === 'gpu'">
                 <div>
                   --
                 </div>
               </template>
+            </template>
             </a-table>
           <template #renderEmpty>
-            <div v-if="!loading"><Empty :text='ifSearch?"抱歉，未搜到相关数据！":"抱歉，暂无数据！"' type="tableEmpty" /></div>
+            <div v-if="!loading"><Empty :type="EmptyType" /></div>
           </template>
         </a-config-provider>
       </a-spin>
@@ -144,7 +146,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, toRefs, onMounted, Ref, inject, reactive } from "vue";
+import { ref, toRefs, onMounted, Ref, inject, reactive, computed } from "vue";
 import { message } from "ant-design-vue";
 import request from "src/api/index";
 import moment, { Moment } from "moment";
@@ -196,8 +198,7 @@ const columns: any = [
   {
     title: "占用GPU",
     dataIndex: "gpu",
-    key: "gpu",
-    slots: { customRender: "gpu" },
+    key: "gpu"
   },
 ];
 const selectedRowKeys: Ref<any> = ref([]);
@@ -221,6 +222,15 @@ const beginTime = ref<Moment>(moment(new Date()));
 let endTime = ref<any>();
 const searchMode = ref(false); // false 简单  true高级
 const ifSearch:any=ref(false)
+const EmptyType:any=computed(()=>{
+  let str=''
+  if(formData.name === '' && formData.class === '' && formData.gpu === '' && formData.memory === '' && formData.cpu === ''){
+    str= 'tableEmpty'
+  }else{
+    str= 'tableSearchEmpty'
+  }
+  return str
+})
 function getList() {
   let params = {
     name:formData.name,
@@ -274,7 +284,6 @@ function switchSearchMode() {
 }
 // 搜索
 function search() {
-  console.log(formData);
   formData.page=1
   formData.pageSize=10
   getList()
@@ -285,7 +294,6 @@ function search() {
   }
 }
 function pageChange (page: any) {
-  console.log(page,'page111')
   formData.page = page
   getList()
 }
@@ -353,7 +361,6 @@ function disabledDateTime(date:any){
    let h=(endTime.value.format('YYYY-MM-DD HH:mm:ss').toString().split(' ')[1]).split(':')[0]
    let m=(endTime.value.format('YYYY-MM-DD HH:mm:ss').toString().split(' ')[1]).split(':')[1]
    let s=(endTime.value.format('YYYY-MM-DD HH:mm:ss').toString().split(' ')[1]).split(':')[2]
-   console.log(h,m,s,'hhhhhhhh')
       return {
         disabledHours: () =>range(0, 24).splice(0,h),
         disabledMinutes: () =>range(0,60).splice(0,m),

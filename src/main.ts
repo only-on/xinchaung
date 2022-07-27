@@ -14,9 +14,13 @@ import '@xianfe/antdv-markdown/dist/style.css'
 import '@xianfe/icons/dist/style.css'
 import "@xianfe/vue3-quill/dist/style.css"
 
-import moment from 'moment';
-import 'moment/dist/locale/zh-cn';
-moment.locale('zh-cn');
+// import moment from 'moment';
+// import 'moment/dist/locale/zh-cn';
+// moment.locale('zh-cn');
+
+import dayjs from 'dayjs';
+import 'dayjs/locale/zh-cn';
+dayjs.locale('en');
 
 const app = createApp(App);
 initProject(app)

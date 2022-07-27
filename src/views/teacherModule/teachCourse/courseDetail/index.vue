@@ -477,6 +477,9 @@ onMounted(() => {
       .left,.right{
         width: 40%;
       }
+      .ant-picker{
+        width: 100%;
+      }
       .class-total {
         position: relative;
         :deep(.ant-form-item-extra){
