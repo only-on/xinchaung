@@ -15,12 +15,12 @@
           <span class="tit">岗位对应的课程成绩分布情况</span>
         </div>
         <template v-if="categoryTags.length">
+           <!-- @prevClick="changeTabs"
+            @nextClick="changeTabs" -->
           <a-tabs
             tab-position="top"
             :style="{ height: '45px' }"
-            @prevClick="changeTabs"
-            @nextClick="changeTabs"
-            @change="changeTabs"
+            @tabScroll="changeTabs"
             v-model:activeKey="activeKey"
           >
             <a-tab-pane
