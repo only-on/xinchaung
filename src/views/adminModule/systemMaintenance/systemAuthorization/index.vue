@@ -84,9 +84,11 @@
                           : false
                       "
                       >
-                        <template #auth_time_left='{record}'>
-                          <span :class="is_expired?'redColor':''">{{record.auth_time_left}}</span>
-                        </template>
+                       <template #bodyCell="{ column, record }">
+                             <template v-if="column.dataIndex === 'auth_time_left'">
+                              <span :class="is_expired?'redColor':''">{{record.auth_time_left}}</span>
+                            </template>
+                         </template>
                       </a-table>
                     <template #renderEmpty>
                       <div v-if="!loading"><Empty type="tableEmpty" /></div>
@@ -154,9 +156,7 @@ columns.value = [
   },
   {
     title: "授权时间",
-    // dataIndex: "auth_time_left",
-    // key: "auth_time_left",
-    slots: { customRender: "auth_time_left" },
+    dataIndex: "auth_time_left",
   }
 ];
 const authorizationData:any=reactive({

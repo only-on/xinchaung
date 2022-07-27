@@ -92,6 +92,14 @@
                             : false
                         "
                         >
+                         <template #bodyCell="{ column, record }">
+                            <template v-if="column.dataIndex === 'type'">
+                                <a>{{ record.detail.type }}</a>
+                            </template>
+                            <template v-if="column.dataIndex === 'size'">
+                                <a>{{ record.detail.free_size }}</a>
+                            </template>
+                         </template>
                         </a-table>
                         <template #renderEmpty>
                         <div v-if="!loading"><Empty type="tableEmpty" /></div>
@@ -151,13 +159,12 @@ columns.value = [
   },
   {
     title: "清理内容",
-    dataIndex: "detail.type",
-    key: "detail.type",
+    // dataIndex: 'detail.type',
+    dataIndex: 'type',
   },
   {
     title: "释放空间",
-    dataIndex: "detail.free_size",
-    key: "detail.free_size",
+    dataIndex: "size"
   }
 ];
 const chartdata:any=ref('')
@@ -385,15 +392,15 @@ const visible:any=ref(false)
             background-size: 100% 100%;
         }
         .managementBottom{
-            display: flex;
-            justify-content: space-between;
+            // display: flex;
+            // justify-content: space-between;
             height:580px;
             .diskTitle{
                 font-size: 18px;
                 margin-bottom: 20px;
             }
-            .diskStatistic,.diskOperateRecord{
-                // width: 49.5%;
+            .diskOperateRecord{
+                width:100%;
                 padding: 20px;
                 background-color: var(--white);
             }
