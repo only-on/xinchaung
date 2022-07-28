@@ -39,10 +39,10 @@
         "
         :row-selection="{
           selectedRowKeys: tableData.selectedRowKeys,
-          onChange: onSelectChange,
-          getCheckboxProps: getCheckboxProps,
+          onChange: onSelectChange
         }"
       >
+       <!-- getCheckboxProps: getCheckboxProps, -->
       <template #bodyCell="{ column, record }">
         <template v-if="column.dataIndex === 'templateName'">
            <div class="detail" :title="record.templateName" @click="detail(record.id,record.templateType,record.pdfPath)">

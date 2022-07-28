@@ -69,10 +69,10 @@
         "
         :row-selection="{
           selectedRowKeys: tableData.selectedRowKeys,
-          onChange: onSelectChange,
-          getCheckboxProps: getCheckboxProps,
+          onChange: onSelectChange
         }"
       >
+      <!-- getCheckboxProps: getCheckboxProps, -->
       <!-- detail -->
       <template #bodyCell="{ column, record }">
         <template v-if="column.dataIndex === 'contentName'">
