@@ -199,10 +199,11 @@ a {
     font-size: 14px;
     box-shadow: none;
     text-shadow: none;
-    height: 34px;
+    height: 33px;
     border-radius: 17px;
     padding: 0px 27px;
-    line-height: 34px;
+    line-height: 33px;
+    // line-height: 34px;
   }
   .ant-btn-primary {
     //   height: 34px;
@@ -249,7 +250,11 @@ a {
       border-radius: 20px 0 0 20px;
     }
     .ant-input-group-addon:last-child >.ant-input-search-button{
+      padding: 0 ;
       border-radius: 0px 20px 20px 0px;
+      &.ant-btn-icon-only{
+        width: 50px;
+      }
     }
   }
   .greenSearch{
@@ -528,13 +533,13 @@ h3 {
 }
 .classifyTabs{
   border-radius: 18px;
-  height: 34px;
+  height: 32px;
   background: #ffffff;
   span{
     width: 100px;
     height: 100%;
     text-align: center;
-    line-height: 34px;
+    line-height: 32px;
     color: var(--black-45);
     cursor: pointer;
     border: 1px solid rgba(0,0,0,0.14);

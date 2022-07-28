@@ -9,7 +9,7 @@
       >
         <a-select-option v-for="v in videoDirectoryList" :value="v.id" :key="v.id">{{v.name}}</a-select-option>
       </a-select>
-      <a-input-search  enter-button
+      <a-input-search 
         v-model:value="searchInfo.file_name"
         placeholder="请输入要搜索的关键字"
         style="width: 240px"

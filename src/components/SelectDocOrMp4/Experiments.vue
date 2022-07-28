@@ -9,7 +9,7 @@
     </div>
   </div>
   <div style="margin-bottom: 24px;">
-    <a-input-search  enter-button style="width:364px"  v-model:value="docOrMp4Drawer.name" placeholder="请输入搜索关键词" @search="searchDocOrMp4List" @keyup.enter="searchDocOrMp4List()" />
+    <a-input-search style="width:364px"  v-model:value="docOrMp4Drawer.name" placeholder="请输入搜索关键词" @search="searchDocOrMp4List" @keyup.enter="searchDocOrMp4List()" />
   </div>
   <div class="Exhibition flexCenter">
     <div class="left">

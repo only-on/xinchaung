@@ -10,7 +10,7 @@
 >
   <div class="prompt">最多选择3个知识点</div>
   <div class="search_input">
-    <a-input-search  enter-button
+    <a-input-search 
       v-model:value="keyword"
       placeholder="请输入搜索关键词"
       @search="onSearch"

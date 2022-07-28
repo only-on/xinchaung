@@ -6,7 +6,7 @@
         <span class="right" :class="params.common === 0? 'active':''" @click="changeTab(0)">私有素材</span>
       </div>
       <div class="item custom_input">
-        <a-input-search  enter-button
+        <a-input-search 
           v-model:value="params.name"
           placeholder="请输入搜索关键字"
           @search="searchFn()"

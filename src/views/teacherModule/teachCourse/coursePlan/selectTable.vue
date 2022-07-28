@@ -1,6 +1,6 @@
 <template>
   <div class="select-table">
-    <a-input-search  enter-button
+    <a-input-search 
       :placeholder="'请输入' + (currentType === 'student' ? '学生' : '班级') + '相关词'"
       @search="onSearch"
       v-model:value="name"
