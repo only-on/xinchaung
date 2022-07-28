@@ -31,19 +31,21 @@
                 onChange: onSelectChange,
               }"
             >
-              <template #title='{record}'>
+            <template v-slot:bodyCell="{column,record}">
+              <template v-if="column.dataIndex === 'title'">
                 <div class="title pointer single_ellipsis" :title="record?.title">
                   <span class='delete' @click="detail(record.id)">{{record?.title}}</span>
                 </div>
               </template>
-              <template #time='{record}'>
+              <template v-if="column.dataIndex === 'time'">
                 <div class="time">{{dateFormat(record.created_at*1000)}}</div>
               </template>
-              <template #action='{record}'>
+              <template v-if="column.dataIndex === 'action'">
                 <div class="action pointer">
                   <span class='delete' @click="deleteForumn(record.id)">删除</span>
                 </div>
               </template>
+            </template>
             </a-table>
             <template #renderEmpty>
               <div><Empty :height='80' :text='forumSearch.title?"抱歉，未搜到相关数据！":"抱歉，暂无数据！"' type="tableEmpty" /></div>
@@ -107,7 +109,7 @@ const columns = [
   {
     title: "帖子名称",
     key: "action",
-    slots: { customRender: "title" },
+    dataIndex: "action"
   },
   {
     title: "发帖人",
@@ -117,7 +119,7 @@ const columns = [
   },
   {
     title: "发帖时间",
-    slots: { customRender: "time" },
+    dataIndex: "time",
     key: "created_at",
     width:230,
   },
@@ -130,7 +132,7 @@ const columns = [
   {
     title: "操作",
     key: "action",
-    slots: { customRender: "action" },
+    dataIndex: "action",
     width:80,
   },
 ];

@@ -74,10 +74,11 @@
           :pagination="false"
           :data-source="tabledata"
         >
-          <template #difficulty="{ record }">
+        <template v-slot:bodyCell="{column,record}">
+          <template v-if="column.dataIndex === 'difficulty'">
             <span>{{ record.level.name }}</span>
           </template>
-          <template #operation="{ record }">
+          <template v-if="column.dataIndex === 'operation'">
             <div>
               <span
                 class="iconfont icon-bianji1 a-link"
@@ -89,12 +90,13 @@
               ></span>
             </div>
           </template>
-          <template #select-answers="{ record }">
+          <template v-if="column.dataIndex === 'select-answers'">
             <div v-if="record.type_id !== 5" class="select-answers">
               {{ answer(record) }}
             </div>
             <div v-else @click="viewAnswers(record)"><a>查看</a></div>
           </template>
+        </template>
         </a-table>
         <template #renderEmpty>
           <div v-if="!searchExercise"><empty type="tableEmpty"></empty></div>
@@ -354,13 +356,11 @@ export default defineComponent({
       },
       {
         title: "难度",
-        dataIndex: "difficulty",
-        slots: { customRender: "difficulty" },
+        dataIndex: "difficulty"
       },
       {
         title: "答案",
         dataIndex: "select-answers",
-        slots: { customRender: "select-answers" },
         ellipsis: true,
       },
       {
@@ -372,8 +372,7 @@ export default defineComponent({
         title: "操作",
         dataIndex: "operation",
         width: 100,
-        align: "center",
-        slots: { customRender: "operation" },
+        align: "center"
       },
     ];
     const state: State = reactive({

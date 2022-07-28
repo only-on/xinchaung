@@ -42,7 +42,8 @@
         : false
     "
   >
-          <template #success='{record}'>
+        <template v-slot:bodyCell="{column,record}">
+          <template v-if="column.dataIndex === 'success'">
             <div>
               <span v-if="record.success">
                 <span class="yellow"  v-if="record.result!==''">{{record.result}}</span>
@@ -51,6 +52,7 @@
               <span class="red" v-else>{{record.result}}</span>
             </div>
           </template>
+        </template>
   </a-table>
 </template>
 
@@ -87,8 +89,7 @@ columns.value = [
   {
     title: "导入情况",
     dataIndex: "success",
-    key: "success",
-    slots: { customRender: "success" },
+    key: "success"
   }
 ];
 const tableData: any = reactive({

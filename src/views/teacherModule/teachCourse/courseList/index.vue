@@ -197,11 +197,13 @@
             }"
             rowKey="name"
           >
-            <template #operation="{ record }">
+          <template v-slot:bodyCell="{column,record}">
+             <template v-if="column.dataIndex === 'operation'">
               <a-button type="link" @click="Save('video', record)"
                 >下载</a-button
               >
             </template>
+          </template>
           </a-table>
           <template #renderEmpty>
             <div><Empty type="tableEmpty" /></div>
@@ -565,8 +567,7 @@ const columns = [
   {
     title: "操作",
     dataIndex: "operation",
-    align: "center",
-    slots: { customRender: "operation" },
+    align: "center"
   },
 ];
 const RecordingScreen: any = reactive({

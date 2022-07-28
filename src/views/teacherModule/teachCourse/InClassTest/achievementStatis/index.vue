@@ -37,14 +37,16 @@
                   }
                 : false
             "> 
-            <template #score_total='{record}'>
+            <template v-slot:bodyCell="{column,record}">
+              <template v-if="column.dataIndex === 'score_total'">
                   <span v-if="record.score_total==null">--</span>
                   <span v-else>{{record.score_total}}</span>
               </template>
-              <template #wrong_answers_number='{record}'>
+              <template v-if="column.dataIndex === 'wrong_answers_number'">
                   <span v-if="record.wrong_answers_number==null">--</span>
                   <span v-else>{{record.wrong_answers_number}}</span>
               </template>
+            </template>
           </a-table>
           <template #renderEmpty>
             <div><Empty type="tableEmpty" /></div>
@@ -83,14 +85,12 @@ columns.value = [
   {
     title: "成绩",
     key: "score_total",
-    dataIndex: "score_total",
-    slots: { customRender: "score_total" },
+    dataIndex: "score_total"
   },
   {
     title: "答错",
     key: "wrong_answers_number",
-    dataIndex: "wrong_answers_number",
-    slots: { customRender: "wrong_answers_number" },
+    dataIndex: "wrong_answers_number"
   },
 ];
 
