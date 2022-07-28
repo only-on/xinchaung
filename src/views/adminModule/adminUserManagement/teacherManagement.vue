@@ -47,16 +47,22 @@
       }"
       class="components-table-demo-nested"
     >
-    <template #perTitle="{record}">
+      <template #bodyCell="{ column, record }">
+      <template v-if="column.key === 'name'">
+        <a>
+          {{ record.name }}
+        </a>
+      </template>
+      <template v-if="column.key === 'perTitle'">
         <div :title="record?.title" class="eslipse">{{record?.title}}</div>
       </template>
-      <template  #department="{record}">
+      <template v-if="column.key === 'department'">
         <div :title="record?.department" class="eslipse">{{record.department}}</div>
       </template>
-      <template #email="{record}">
+      <template v-if="column.key === 'email'">
         <div :title="record?.email" class="eslipse">{{record.email}}</div>
       </template>
-      <template #operation="{ record }">
+      <template v-if="column.key === 'operation'">
         <!-- icon-bianji -->
         <span
           class="caozuo"
@@ -78,6 +84,7 @@
           </span>
         </span>
       </template>
+    </template>
     </a-table>
     <template #renderEmpty>
       <div v-if="!loading"><Empty :type="EmptyType" /></div>
@@ -303,14 +310,12 @@ const columns = [
   {
     title: "职称",
     dataIndex: "title",
-    align: "center",
-    slots: { customRender: 'perTitle' },
+    align: "center"
   },
   {
     title: "学院",
     dataIndex: "department",
-    align: "center",
-    slots: { customRender: "department" },
+    align: "center"
   },
   // {
   //   title: "研究方向",
@@ -326,8 +331,7 @@ const columns = [
     title: "邮箱",
     dataIndex: "email",
     align: "center",
-    width: 200,
-    slots: { customRender: "email" },
+    width: 200
   },
   {
     title: "电话",
@@ -337,9 +341,9 @@ const columns = [
   },
   {
     title: "操作",
+    key:'operation',
     dataIndex: "operation",
     align: "center",
-    slots: { customRender: "operation" },
     fixed: "right",
     width: 200,
   },

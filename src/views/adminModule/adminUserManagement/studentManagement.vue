@@ -87,43 +87,52 @@
       }"
       class="components-table-demo-nested"
     > 
-      <template #classname="{record}">
+      <template #bodyCell="{ column, record }">
+      <template v-if="column.key === 'name'">
+        <a>
+          {{ record.name }}
+        </a>
+      </template>
+      <template v-if="column.key === 'classname'">
         <div :title="record?.classname" class="eslipse">{{record?.classname}}</div>
       </template>
-      <template #grade="{record}">
+      <template v-if="column.key === 'grade'">
         <div :title="record?.grade" class="eslipse">{{record?.grade}}</div>
       </template>
-      <template #major="{record}">
+      <template v-if="column.key === 'major'">
         <div :title="record?.major" class="eslipse">{{record?.major}}</div>
       </template>
-      <template  #department="{record}">
+      <template v-if="column.key === 'department'">
         <div :title="record?.department" class="eslipse">{{record.department}}</div>
       </template>
-      <template #email="{record}">
+      <!-- <template v-if="column.key === 'email'">
         <div :title="record?.email" class="eslipse">{{record.email}}</div>
-      </template>
-      <template #operation="{ record }">
-        <!-- iconfont icon-bianji -->
-        <span
-          class="caozuo"
-          @click="editCard(record)"
-          title="更新"
-        >编辑</span>
-        <!-- iconfont icon-shanchu -->
-        <span
-          class="caozuo"
-          @click="delateCard(record.id)"
-          title="删除"
-        >删除</span>
-        <span class="caozuo" @click="closeOrOpen(record.id,record.status)">
-          <span v-if="record.status==10">
-            关闭
-          </span>
-          <span v-else>
-            开启
-          </span>
+      </template> -->
+      <template v-if="column.key === 'action'">
+        <div class="operate">
+          <!-- iconfont icon-bianji -->
+          <span
+            class="caozuo"
+            @click="editCard(record)"
+            title="更新"
+          >编辑</span>
+          <!-- iconfont icon-shanchu -->
+          <span
+            class="caozuo"
+            @click="delateCard(record.id)"
+            title="删除"
+          >删除</span>
+          <span class="caozuo" @click="closeOrOpen(record.id,record.status)">
+            <span v-if="record.status==10">
+              关闭
+            </span>
+            <span v-else>
+              开启
+            </span>
         </span>
+        </div>
       </template>
+    </template>
     </a-table>
     <template #renderEmpty>
       <div v-if="!loading"><Empty :type="EmptyType" /></div>
@@ -322,28 +331,23 @@ const columns = [
   },
   {
     title: "班级",
-    dataIndex: "classname",
-    slots: { customRender: "classname" },
+    dataIndex: "classname"
   },
   {
     title: "年级",
-    dataIndex: "grade",
-    slots: { customRender: "grade" },
+    dataIndex: "grade"
   },
   {
     title: "专业",
-    dataIndex: "major",
-    slots: { customRender: "major" },
+    dataIndex: "major"
   },
   {
     title: "学院",
-    dataIndex: "department",
-    slots: { customRender: "department" },
+    dataIndex: "department"
   },
   {
     title: "邮箱",
-    dataIndex: "email",
-    slots: { customRender: "email" },
+    dataIndex: "email"
   },
   {
     title: "电话",
@@ -353,11 +357,8 @@ const columns = [
   },
   {
     title: "操作",
-    dataIndex: "operation",
-    align: "center",
-    slots: { customRender: "operation" },
-    fixed: "right",
-    width: 170,
+    key:'action',
+    dataIndex: "action"
   },
 ];
 const studentColumns = [
@@ -939,5 +940,8 @@ const studentColumns = [
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.operate{
+  width:140px;
 }
 </style>
