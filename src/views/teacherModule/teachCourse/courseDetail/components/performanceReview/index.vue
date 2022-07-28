@@ -48,10 +48,6 @@
           row-key="user_id"
           :pagination="false"
         >
-          <!-- <template #customReportTitle> 报告</template>
-          <template #customQuizTitle> 随测</template>
-          <template #customAutoTitle> 自动评分</template>
-          <template #customExercisesTitle> 习题 </template> -->
           <template v-slot:bodyCell="{column,record,text,index}">
             <template v-if="column.dataIndex === 'report'">
               <template v-if="record.report_score != null">

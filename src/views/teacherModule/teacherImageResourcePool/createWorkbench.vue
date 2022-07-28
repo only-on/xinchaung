@@ -53,10 +53,13 @@
             </div>
           </template>
           <div class="start-end-date-box">
-            <a-date-picker
-              v-model:value="reactiveData.ruleForm.start_time"
-              disabled
-            />
+            <a-form-item-rest>
+              <a-date-picker
+                v-model:value="reactiveData.ruleForm.start_time"
+                disabled
+              />
+            </a-form-item-rest>
+            
             <span class="and-line">~</span>
             <a-date-picker
               v-model:value="reactiveData.ruleForm.end_time"

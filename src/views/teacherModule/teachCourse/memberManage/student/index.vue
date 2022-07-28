@@ -67,25 +67,22 @@
               <span>{{record.user.username}}</span>
             </template>
             <template v-if="column.dataIndex === 'name'">
-              <span>{{record.userProfile.name}}</span>
+              <span :title="record.userProfile.name">{{record.userProfile.name}}</span>
             </template>
             <template v-if="column.dataIndex === 'gender'">
               <span>{{record.userProfile.gender}}</span>
             </template>
             <template v-if="column.dataIndex === 'grade'">
-              <span>{{record.userProfile.grade}}</span>
+              <span :title="record.userProfile.grade">{{record.userProfile.grade}}</span>
             </template>
             <template v-if="column.dataIndex === 'major'">
-              <span>{{record.userProfile.major}}</span>
+              <span :title="record.userProfile.major">{{record.userProfile.major}}</span>
             </template>
             <template v-if="column.dataIndex === 'department'">
-              <span>{{record.userProfile.department}}</span>
+              <span :title="record.userProfile.department">{{record.userProfile.department}}</span>
             </template>
             <template v-if="column.dataIndex === 'email'">
-              <span>{{record.user.email}}</span>
-            </template>
-            <template v-if="column.dataIndex === 'department'">
-              <span>{{record.userProfile.department}}</span>
+              <span :title="record.user.email">{{record.user.email}}</span>
             </template>
             <template v-if="column.dataIndex === 'phone'">
               <span>{{record.userProfile.phone}}</span>

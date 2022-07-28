@@ -25,56 +25,26 @@
             onShowSizeChange: showSizeChange,
           }:false"
         >
-          <template #check="{ record }">
+        <template v-slot:bodyCell="{column,record}">
+          <template v-if="column.dataIndex === 'check'">
             <span class='recordScreen' :class="record?.video?.length?'table-a-link':'no-link'" @click="record?.video?.length?clickFun(record.video, 'video'):''">录屏</span>
             <span :class="record?.remark!=='--'?'table-a-link':'no-link'" @click="record?.remark!=='--'?clickFun(record.remark, 'remark'):''">评语</span>
           </template>
-          <!-- 报告 -->
-          <!-- <template #report_score='{record}'>
-            <span :class="record?.report_score?'table-a-link':'no-link'" @click="record?.remark!=='--'?clickFun(record.report?.pdf_path, 'report',record.report):''" v-if="record?.report_score">
-              {{record?.report_score}}
-            </span>
-            <span class='no-link' v-else-if="!record?.report_score&&record?.report?.length">
-              未评分
-            </span>
-            <span class='no-link' v-else>
-              未提交
-            </span>
-          </template> -->
-          <template #report_score='{record}'>
+          <template v-if="column.dataIndex === 'report_score'">
             <div>
               <span :class="['未提交','--'].includes(record?.report_score)?'no-link':'table-a-link'" @click="['未提交','--'].includes(record?.report_score)?'':clickFun(record.report?.pdf_path, 'report',record.report)">
               {{record?.report_score}}
             </span>
             </div>
           </template>
-          <!-- //随测 -->
-          <!-- <template #question_score='{record}'>
-            <span class='no-link' v-if="record?.question_score==null">
-              未提交
-            </span>
-            <span class='table-a-link' v-else @click="clickFun(record.exper, 'exper')">
-              {{record?.question_score}}
-            </span>
-          </template> -->
-          <template #question_score='{record}'>
+          <template v-if="column.dataIndex === 'question_score'">
             <div>
               <span :class="['未提交','--'].includes(record?.question_score)?'no-link':'table-a-link'" @click="['未提交','--'].includes(record?.question_score)?'':clickFun(record.exper, 'exper')">
               {{record?.question_score}}
             </span>
             </div>
           </template>
-          <!-- //自动评分 -->
-          <!-- <template #auto_score='{record}'>
-            <span class='no-link' v-if="record?.auto_score==null">
-              待提交
-            </span>
-            <span v-else>
-              {{record?.auto_score}}
-            </span>
-          </template>
-          -->
-          <template #auto_score='{record}'>
+          <template v-if="column.dataIndex === 'auto_score'">
             <div>
               <span :class="['未提交','--'].includes(record?.auto_score)?'no-link':'table_black'">
               {{record?.auto_score}}
@@ -82,11 +52,13 @@
             </div>
           </template>
           <!-- //最终成绩 -->
-          <template #score='{record}'>
+          <template v-if="column.dataIndex === 'score'">
             <span :class="['未提交','--','未评阅'].includes(record?.auto_score)?'no-link':'table_black'">
               {{record?.score}}
             </span>
           </template>
+
+        </template>
         </a-table>
         <template #renderEmpty>
               <div v-if="!loading"><Empty type="tableEmpty" /></div>
@@ -169,19 +141,19 @@ const columns = [
     title: "开启时间",
     dataIndex: "start_time",
     key: "start_time",
-    width:180,
+    width:170,
   },
   {
     title: "学习时长",
     dataIndex: "used_time",
-    width:150,
+    width:110,
     key: "used_time",
   },
   {
     title: "完成时间",
     dataIndex: "finish_time",
     key: "finish_time",
-    width:180,
+    width:170,
   },
   {
     title: "评分项",
@@ -190,33 +162,29 @@ const columns = [
         title: "实验报告",
         dataIndex: "report_score",
         key: "report_score",
-        slots: { customRender: "report_score" },
         align:'center',
-        width:100,
+        width:90,
         // report为空为未提交 report-score为空 未评分
       },
       {
         title: "随堂测试",
         dataIndex: "question_score",
         key: "question_score",
-        slots: { customRender: "question_score" },
         align:'center',
-        width:100,
+        width:90,
       },
       {
         title: "自动评分",
         dataIndex: "auto_score",
         key: "auto_score",
-        slots: { customRender: "auto_score" },
         align:'center',
-        width:100,
+        width:90,
       },
     ],
   },
   {
     title: "查看",
     dataIndex: "check",
-    slots: { customRender: "check" },
     align:'center',
     width:160,
   },
@@ -224,9 +192,8 @@ const columns = [
     title: "最终成绩",
     dataIndex: "score",
     key: "score",
-    slots: { customRender: "score" },
     align:'center',
-    width:140,
+    width:100,
   },
 ];
 // table数据
