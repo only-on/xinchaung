@@ -18,5 +18,14 @@ export default {
         authCode: "QuestionBank",
       },
     },
+    {
+      path: "createQues",
+      name: "",
+      component: () => import("src/views/teacherModule/QuestionBank/createQues/index.vue"),
+      meta: {
+        title: "题库",
+        authCode: "createQues",
+      },
+    }
   ],
 };
