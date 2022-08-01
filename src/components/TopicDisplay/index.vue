@@ -33,20 +33,32 @@
           {{a.question_desc}}
         </div>
         <!-- 选择题答案选项 -->
-        <div class="option1" v-if="v.type===1">
-          <!-- <div class="option" v-for="(j,b) in a.option" :key="j">
-            <a-checkbox v-model:checked="checked" :disabled="true">{{`${optionType[b]}、`}}</a-checkbox>
-            <div> {{j.text}}</div>
-          </div> -->
-          <a-checkbox-group v-model:value="a.answer" style="width: 100%" @change="changebox">
+        <div class="option option1" v-if="v.type===1">
+          <a-checkbox-group v-model:value="a.answer" style="width: 100%" @change="changebox" :disabled="true" >
             <a-row v-for="(j,b) in a.option" :key="j">
-              <a-checkbox :disabled="true" :value="optionType[b]">{{`${optionType[b]}、`}}</a-checkbox>
+              <a-checkbox :value="optionType[b]">{{`${optionType[b]}、`}}</a-checkbox>
               <div> {{j.text}}</div>
             </a-row>
           </a-checkbox-group>
         </div>
         <!-- 判断题答案选项 -->
-
+        <div class="option option2" v-if="v.type===2">
+          <a-radio-group v-model:value="a.answer" :disabled="true" @change="changebox">
+            <a-row>
+              <a-radio :value="1">正确</a-radio>
+            </a-row>
+            <a-row>
+              <a-radio :value="2">错误</a-radio>
+            </a-row>
+          </a-radio-group>
+        </div>
+        <!-- 填空题答案选项 -->
+        <div class="option option3" v-if="v.type===3">
+          <div class="tiankong flexCenter" v-for="(j,b) in a.option" :key="a">
+            <span>{{`填空${b+1}`}}</span>
+            <a-input v-model:value="a.answer" />
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -145,7 +157,29 @@ var list:any=reactive([
   },
   {
     type:2,
-    question:[1,2]
+    question:[
+      {
+        question_desc:'在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱，设计规范性差，设计 沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向进行京东国际频道的品牌视觉全新升级， 实现加强正品心智，提升频',
+        score:15,
+        answer:[]
+      },
+      {
+        question_desc:'在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱，设计规范性差，设计 沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向进行京东国际频道的品牌视觉全新升级， 实现加强正品心智，提升频',
+        score:15,
+        answer:[]
+      },
+    ]
+  },
+  {
+    type:3,
+    question:[
+      {
+        question_desc:'Python关键字elif表示( ▁▁▁▁▁▁ )和( ▁▁▁▁▁▁ )两个单词的缩写。',
+        option:[1,2],
+        score:10,
+        answer:[],
+      }
+    ]
   }
 ])
 
@@ -181,15 +215,15 @@ const changebox=()=>{
       .stem{
         line-height: 28px;
       }
-      .option1{
-        .option{
-          padding: 16px 0;
-          display: flex;
-          align-items: center;
+      .option{
+        // padding: 16px 0;
+        // display: flex;
+        // align-items: center;
+        .ant-row{
+          padding: 14px 0;
         }
       }
-
-
+      
       &{
         margin-bottom: 16px;
       }
