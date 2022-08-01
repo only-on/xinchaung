@@ -255,9 +255,6 @@ const cancelTemplate = (val: number) => {
        }
      }
  }  
- :deep(.ant-input) {
-    border-radius: 20px;
- }
  .action{
      color:var(--primary-color);
      cursor: pointer;

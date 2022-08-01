@@ -17,6 +17,14 @@ export default {
         title: "作业",
         authCode: "studentAssignment",
       },
+    },{
+    path: "answerques",
+    name: "答题",
+    component: () => import("src/views/studentModule/studentAssignment/answerQues/index.vue"),
+    meta: {
+      title: "答题",
+      authCode: "answerQues",
     },
-  ],
+  }
+  ]
 };
