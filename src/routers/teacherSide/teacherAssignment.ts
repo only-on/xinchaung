@@ -13,6 +13,7 @@ export default {
       path: "",
       name: "",
       component: () => import("src/views/teacherModule/teacherAssignment/index.vue"),
+      // component: () => import("src/views/teacherModule/teacherAssignment/teacherAssignmentPreview.vue"),
       meta: {
         title: "作业",
         authCode: "teacherAssignment",
@@ -21,7 +22,7 @@ export default {
     { 
       path: "teacherAssignmentPreview",
       name: "teacherAssignmentPreview",
-      component: () => import("src/views/teacherModule/teacherAssignmentPreview/index.vue"),
+      component: () => import("src/views/teacherModule/teacherAssignment/teacherAssignmentPreview.vue"),
       meta: {
         title: "作业预览",
         authCode: "teacherAssignmentPreview",

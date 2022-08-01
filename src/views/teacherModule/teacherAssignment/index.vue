@@ -30,7 +30,7 @@ updata({
   tabs: [{ name: "作业", componenttype: 0 }],
   showContent: true,
   componenttype: undefined,
-  showNav: true,
+  showNav: false,
 });
 // interface Props {
 //   defaultConfig: any;

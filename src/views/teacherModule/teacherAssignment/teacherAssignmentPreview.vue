@@ -1,5 +1,7 @@
 <template>
-
+  <div>
+    <h2>作业预览</h2>
+  </div>
 </template>
 <script lang="ts" setup>
 import {
