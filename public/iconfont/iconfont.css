@@ -1,9 +1,9 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3150577 */
-  src: url('iconfont.woff2?t=1656905157104') format('woff2'),
-       url('iconfont.woff?t=1656905157104') format('woff'),
-       url('iconfont.ttf?t=1656905157104') format('truetype'),
-       url('iconfont.svg?t=1656905157104#iconfont') format('svg');
+  src: url('iconfont.woff2?t=1659335666055') format('woff2'),
+       url('iconfont.woff?t=1659335666055') format('woff'),
+       url('iconfont.ttf?t=1659335666055') format('truetype'),
+       url('iconfont.svg?t=1659335666055#iconfont') format('svg');
 }
 
 .iconfont {
@@ -12,6 +12,38 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-download-1-copy:before {
+  content: "\e60d";
+}
+
+.icon-zhengque:before {
+  content: "\e6a6";
+}
+
+.icon-cuowu:before {
+  content: "\e6a8";
+}
+
+.icon-you:before {
+  content: "\e62a";
+}
+
+.icon-wenjianjia2-mianxing:before {
+  content: "\e6fd";
+}
+
+.icon-wenjianjia1-mianxing:before {
+  content: "\e6fe";
+}
+
+.icon-shangyi:before {
+  content: "\e6a0";
+}
+
+.icon-shangyi-copy:before {
+  content: "\eb92";
 }
 
 .icon-fangda:before {
@@ -312,6 +344,10 @@
 
 .icon-shicao:before {
   content: "\e6ef";
+}
+
+.icon-icon_function_zhankai-copy:before {
+  content: "\eb93";
 }
 
 .icon-yidong:before {

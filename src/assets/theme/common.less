@@ -426,6 +426,37 @@ a {
   }
 }
 
+.ant-tree.ant-tree-directory {
+  .ant-tree-treenode-selected:hover::before,
+  .ant-tree-treenode-selected::before {
+    background: var(--primary-1);
+  }
+  .ant-tree-treenode-selected {
+    .ant-tree-node-content-wrapper.ant-tree-node-selected {
+      color: var(--primary-color);
+    }
+  }
+  .ant-tree-treenode {
+    .ant-tree-node-content-wrapper {
+      color: var(--black-65);
+      .ant-tree-iconEle {
+        color: var(--primary-color);
+      }
+    }
+    .ant-tree-switcher {
+      display: none;
+    }
+    &:hover {
+      &::before {
+        background: var(--primary-1);
+      }
+      .ant-tree-node-content-wrapper {
+        color: var(--primary-color);
+      }
+    }
+  }
+}
+
 
 h3 {
   font-size: var(--font-size-16);

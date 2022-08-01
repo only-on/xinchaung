@@ -6,6 +6,62 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "1029205",
+      "name": "下载",
+      "font_class": "download-1-copy",
+      "unicode": "e60d",
+      "unicode_decimal": 58893
+    },
+    {
+      "icon_id": "3401096",
+      "name": "正确",
+      "font_class": "zhengque",
+      "unicode": "e6a6",
+      "unicode_decimal": 59046
+    },
+    {
+      "icon_id": "3401331",
+      "name": "错误",
+      "font_class": "cuowu",
+      "unicode": "e6a8",
+      "unicode_decimal": 59048
+    },
+    {
+      "icon_id": "5485687",
+      "name": "右",
+      "font_class": "you",
+      "unicode": "e62a",
+      "unicode_decimal": 58922
+    },
+    {
+      "icon_id": "24268646",
+      "name": "文件夹2-面型",
+      "font_class": "wenjianjia2-mianxing",
+      "unicode": "e6fd",
+      "unicode_decimal": 59133
+    },
+    {
+      "icon_id": "24268649",
+      "name": "文件夹1-面型",
+      "font_class": "wenjianjia1-mianxing",
+      "unicode": "e6fe",
+      "unicode_decimal": 59134
+    },
+    {
+      "icon_id": "1584662",
+      "name": "上移",
+      "font_class": "shangyi",
+      "unicode": "e6a0",
+      "unicode_decimal": 59040
+    },
+    {
+      "icon_id": "30300863",
+      "name": "上移-copy",
+      "font_class": "shangyi-copy",
+      "unicode": "eb92",
+      "unicode_decimal": 60306
+    },
+    {
       "icon_id": "2418241",
       "name": "放大",
       "font_class": "fangda",
@@ -529,6 +585,13 @@
       "font_class": "shicao",
       "unicode": "e6ef",
       "unicode_decimal": 59119
+    },
+    {
+      "icon_id": "30824278",
+      "name": "展开-copy",
+      "font_class": "icon_function_zhankai-copy",
+      "unicode": "eb93",
+      "unicode_decimal": 60307
     },
     {
       "icon_id": "4512042",

@@ -47,7 +47,7 @@ watch(()=>props.isReset, newVal => {
 },{immediate: true, deep:true})
 interface IList {
   name: string;
-  key: string;
+  key: string|number;
 }
 interface Props {
   TypeList?: IList[];
