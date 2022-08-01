@@ -27,7 +27,7 @@ const http = (request as any).teacherImageResourcePool;
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 updata({
-  tabs: [{ name: "作业", componenttype: 0 }],
+  tabs: [{ name: "作业预览", componenttype: 0 }],
   showContent: true,
   componenttype: undefined,
   showNav: true,
