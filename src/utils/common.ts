@@ -309,6 +309,43 @@ function bytesToSize(bytes: number) {
   return num + ' ' + sizes[i];
 }
 
+// 计算总成绩
+function TotalScore(arr:any[],key2:any,key3?:any){
+  // arr 需要计算的数组
+  // key2 数组元素的属性值   {id:110,num:45}  key2=num
+  /**key3 数组元素的属性值的属性值  可选参数 
+  {
+    id:110,
+    numObj:{num:65}             key3=num
+  }
+  */
+  let sum:number=0
+  if(arr.length===0){
+    return sum
+  }
+  if(!key3){
+    arr.forEach((v:any)=>{
+      if(v.hasOwnProperty(key2) && v[key2] && (typeof Number(v[key2])=== 'number')){  
+        sum+=Number(v[key2])
+      }else{
+        // console.log(`${v[key2]} 的值类型不是Number`);
+        // sum+=0
+      }
+    })
+    return sum
+  }
+  if(key3){
+    arr.forEach((v:any)=>{
+      if(v.hasOwnProperty(key2) && v[key2] && (typeof Number(key2)=== 'number') && key2.hasOwnProperty(key3) && v[key2][key3] && (typeof Number(v[key2][key3])=== 'number')){ 
+        sum+=Number(v[key2][key3])
+      }else{
+        // console.log(`${v[key2][key3]} 的值出错`);
+        // sum+=0
+      }
+    })
+    return sum
+  }
+}
 export {
   numToAbc,
   getCorrectAnswer,
@@ -325,5 +362,6 @@ export {
   dateFormat,
   dateFormat1,
   getTimer,
-  bytesToSize
+  bytesToSize,
+  TotalScore
 };

@@ -12,8 +12,8 @@ export default {
     {
       path: "",
       name: "",
-      component: () => import("src/views/teacherModule/teacherAssignment/index.vue"),
-      // component: () => import("src/views/teacherModule/teacherAssignment/teacherAssignmentPreview.vue"),
+      // component: () => import("src/views/teacherModule/teacherAssignment/index.vue"),
+      component: () => import("src/views/teacherModule/teacherAssignment/teacherAssignmentPreview.vue"),
       meta: {
         title: "作业",
         authCode: "teacherAssignment",
