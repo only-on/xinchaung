@@ -13,9 +13,10 @@
                         style="margin-right: 50px"
                         @finish="onFinish"
                         format="m 分 s 秒"
+                        :value-style="{color:'#EF9544'}"
                     />
                 </div>
-                 <div v-for="(item,index) in dataList.list" :key="index">
+                 <div class="ifAnswered_div" v-for="(item,index) in dataList.list" :key="index">
                      <div>
                          <div class="name">
                          {{typeNames[item.type-1]}}
@@ -27,7 +28,17 @@
                         </div>
                      </div>
                  </div>
+                 <div class="identify">
+                     <div class="colorIdentify brightBtn"></div>
+                     <span class="hasAnswered">已答</span>
+                     <div class="colorIdentify"></div>
+                     <span>未答</span>
+                 </div>
             </div>
+             <div class="submit_test">
+            <a-button type='primary' class="submit_btn">提交试卷</a-button>
+            <div class="tip_info">得分在统一提交后，在成绩详情可以查看</div>
+        </div>
         </div>
     </div>
 </template>
@@ -92,12 +103,16 @@ function onFinish(){
            }
         }
     }
+    .ifAnswered_div{
+        padding:0px 10px;
+    }
     .answer_list{
         width:300px;
         height: 300px;
         .answer_list_top{
            background-color: white; 
            .countdown_div{
+               border-radius:10px 10px 0px 0px;
                background-color:#EFF2E8;
                height:60px;
                color: var(--primary-color);
@@ -136,6 +151,36 @@ function onFinish(){
     .answerd{
         background-color: var(--primary-color);
         color: white;
+    }
+    .identify{
+        display: flex;
+        padding:20px 10px;
+        margin-top:50px;
+        margin-bottom: 20px;
+        border-top: 1px dashed rgba(0,0,0,0.07);
+        .colorIdentify{
+        width: 20px;
+        height: 20px;
+        border-radius: 4px;
+        background-color:#ededed;
+        margin-right: 10px;
+        }
+        .brightBtn{
+            background-color:var(--brightBtn);
+        }
+        .hasAnswered{
+            margin-right: 20px;
+        }
+    }
+    .submit_test{
+        .submit_btn{
+            width: 100%;
+        }
+        .tip_info{
+            color:rgba(0,0,0,0.25);
+            font-size: 12px;
+            padding: 10px;
+        }
     }
 }
 </style>
