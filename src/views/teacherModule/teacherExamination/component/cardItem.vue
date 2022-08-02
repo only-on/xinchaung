@@ -1,0 +1,160 @@
+<template>
+  <div class="cradItem">
+    <div class="left">
+      <span class="type">考试</span>
+      <div class="img unpublish">
+        <span>未发布</span>
+      </div>
+    </div>
+    <div class="middle">
+      <span>关联课程：大学计算机基础（信息工程大学）第2期</span>
+      <div>
+        国防科技大学2019秋《大学计算机基础》期末考试试卷A卷
+      </div>
+      <div>
+        <span>创建时间：2022/08/10 15:20</span>
+        <span>开始时间：2022/08/10 15:20</span>
+        <span>考试时长：2022/08/10 15:20</span>
+        <span>提交人数：10/200</span>
+      </div>
+    </div>
+    <div class="right">
+      <div>
+        <a-button type="link" @click="handleClick('setting')">防作弊设置</a-button>
+        <a-dropdown>
+          <a class="ant-dropdown-link" @click.prevent>
+            <i class="iconfont icon-gengduotianchong"></i>
+          </a>
+          <template #overlay>
+            <a-menu>
+              <a-menu-item>
+                <span @click="handleClick('edit')">编辑</span>
+              </a-menu-item>
+              <a-menu-item>
+                <span @click="handleClick('delete')">删除</span>
+              </a-menu-item>
+              <a-menu-item>
+                <span @click="handleClick('copy')">复用</span>
+              </a-menu-item>
+              <a-menu-item>
+                <span @click="handleClick('export')">导出试卷</span>
+              </a-menu-item>
+            </a-menu>
+          </template>
+        </a-dropdown>
+      </div>
+      <a-button type="primary">发布</a-button>
+    </div>
+  </div>
+</template>
+<script lang="ts" setup>
+import {ref} from 'vue'
+const props = defineProps({})
+const emit = defineEmits<{
+  (e: "menuClick", val: any): void;
+}>();
+const handleClick = (operateType:string) => {
+  emit('menuClick', operateType)
+}
+</script>
+<style lang="less" scoped>
+.cradItem {
+  height: 110px;
+  background: var(--white-100);
+  border-radius: 10px;
+  box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.07);
+  display: flex;
+  margin-bottom: 15px;
+  .left {
+    width: 150px;
+    height: 100%;
+    background: linear-gradient(270deg,#fff, #deebff);
+    border-radius: 10px 0px 0px 10px;
+    position: relative;
+    .type{
+      display: inline-block;
+      width: 22px;
+      height: 52px;
+      border-radius: 0px 6px 6px 0px;
+      writing-mode: vertical-lr;
+      font-size: 12px;
+      background: #5E7BE2;
+      color: var(--white-100);
+      text-align: center;
+      letter-spacing: 3px;
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      margin-top: auto;
+      margin-bottom: auto;
+    }
+    .img{
+      width: 100px;
+      height: 100%;
+      margin-left: 30px;
+      position: relative;
+      &.unpublish{
+        background: url(src/assets/images/teacherExamination/unpublish.png) no-repeat center 20%;
+      }
+      &.unstart{
+        background: url(src/assets/images/teacherExamination/unstart.png) no-repeat center 20%;
+      }
+      &.ongoing{
+        background: url(src/assets/images/teacherExamination/ongoing.png) no-repeat center 20%;
+      }
+      &.end{
+        background: url(src/assets/images/teacherExamination/end.png) no-repeat center 20%;
+      }
+      span{
+        position: absolute;
+        left: 0;
+        right: 0;
+        margin-left: auto;
+        margin-right: auto;
+        bottom: 0;
+        color: #5e7be2;
+        font-size: 12px;
+        text-align: center;
+      }
+    }
+  }
+  .middle {
+    flex: 1;
+    padding: 17px 23px;
+    > span {
+      color: #5e7be2;
+      font-size: 12px;
+    }
+    > div:first-of-type {
+      font-size: 16px;
+      color: var(--black-85);
+      margin-bottom: 10px;
+    }
+    > div:last-of-type {
+      color: var(--black-45);
+      span {
+        margin-right: 20px;
+      }
+    }
+  }
+  .right {
+    padding: 11px 23px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+    > div {
+      .ant-btn {
+        padding: 0 !important;
+        color: var(--brightBtn);
+        margin-right: 10px;
+        cursor: pointer;
+      }
+      .iconfont{
+        color: var(--brightBtn);
+      }
+    }
+  }
+}
+</style>

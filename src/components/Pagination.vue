@@ -1,11 +1,14 @@
 <template>
   <a-pagination
-    v-if="props.totalCount > 12"
-    v-model:current="props.page"
-    :pageSize="props.limit"
-    :total="props.totalCount"
-    @change="pageChange"
-    />
+    :show-size-changer="showSizes"
+    :current="page"
+    :pageSize="size"
+    :page-size-options="['10', '20', '30', '40', '50']"
+    :total="total"
+    @showSizeChange="handleSizeChange"
+    @change="handlePageChange"
+  />
+    <!-- :hideOnSinglePage="true" -->
 </template>
 <script lang="ts" setup>
 import {
@@ -23,34 +26,32 @@ import {
   withDefaults,
 } from "vue";
 interface Props {
-  totalCount: number;
-  page:number
-  limit:number
+  showSizes?: boolean,
+  page: number,
+  size: number,
+  total: number,
 }
 const props = withDefaults(defineProps<Props>(), {
-  totalCount: 0,
+  showSizes: true,
   page:1,
-  limit:0
+  size: 10,
+  total: 2,
 });
 
 const emit = defineEmits<{
-  (e: "pageChange", val: any): void;
+  (e: "update:page", page: any): void;
+  (e: "update:size", size:any): void;
+  (e: "pageChange"): void;
 }>();
 
-const pageChange=()=>{
-
+const handlePageChange=(page:number)=>{
+  emit('update:page', page)
+  emit('pageChange')
 }
-// const pageChange=()=>{
-  
-// }
-// const pageChange=()=>{
-  
-// }
-// const pageChange=()=>{
-  
-// }
-// const pageChange=()=>{
-  
-// }
+const handleSizeChange = (page:number, size:number) => {
+  emit('update:page', page)
+  emit('update:size', size)
+  emit('pageChange')
+}
 </script>
 <style scoped lang="less"></style>

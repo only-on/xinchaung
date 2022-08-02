@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@novnc/novnc": "^1.2.0",
-    "@surely-vue/table": "^2.4.5",
     "@types/crypto-js": "^4.1.1",
     "@types/quill": "^1.3.10",
     "@xianfe/antdv-markdown": "^1.0.26",

@@ -20,7 +20,7 @@
           </a-form-item>
         </a-col>
         <a-col span="22">
-          <a-form-item-rest
+          <a-form-item
             v-if="checkDate"
             label="循环时段："
             :label-col="{ span: 2 }"
@@ -29,11 +29,11 @@
             name="endDate"
           >
             <div class="dataBox">
-              <a-date-picker format="YYYY-MM-DD" disabled :value="momentStartDate()" />
+             <a-form-item-rest><a-date-picker format="YYYY-MM-DD" disabled :value="momentStartDate()" /></a-form-item-rest> 
               <span class="division">～</span>
               <a-date-picker v-model:value="form.endDate" format="YYYY-MM-DD" :disabled-date="disabledDate" />
             </div>
-          </a-form-item-rest>
+          </a-form-item>
         </a-col>
       </a-row>
       <div class="listTitle">

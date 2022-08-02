@@ -128,8 +128,8 @@ const handleChange = (e:any) => {
       text-align: center;
       display: block;
       position: absolute;
-      top: 4px;
-      left: 4px;
+      top: 11px;
+      left: 11px;
       transform: rotate(-45deg);
       border-radius: 0px;
       background: none;
