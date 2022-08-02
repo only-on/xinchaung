@@ -32,6 +32,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
+import { SelectEvent } from "ant-design-vue/es/tree/Tree";
 export default defineComponent({
   setup() {
     const expandedKeys = ref<string[]>(['0']);

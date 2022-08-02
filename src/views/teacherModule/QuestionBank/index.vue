@@ -2,20 +2,16 @@
   <search-add
     @searchFn="searchFn"
     @handleMenuClick="handleMenuClick"
-    :TypeList="materialTypeList"
+    :TypeList="createQuestionTypeList"
     :isShowAdd="currentTab == 1"
     :isReset="resetKeyword"
   ></search-add>
   <!-- <directory-tree></directory-tree> -->
+  <filter-condition></filter-condition>
   <a-spin :spinning="loading" size="large" tip="Loading...">
     <div class="mainBox">
-      <div
-        class="item pointer"
-        v-for="(list, k) in [1,2,3]"
-        :key="list+k"
-      >{{list}}
-      </div>
-      <Empty v-if="!questionList.length && !loading" :type="EmptyType" />
+      <question-list ></question-list>
+      <Empty v-if="!list.length && !loading" :type="EmptyType" />
       <a-pagination
         v-if="pageTotal > 12"
         v-model:current="pageInfo.page"
@@ -35,6 +31,9 @@ import { Modal, message } from "ant-design-vue";
 import searchAdd from "src/components/searchAdd/searchAdd.vue";
 import extStorage from "src/utils/extStorage";
 import directoryTree from "./components/directoryTree.vue";
+import filterCondition from "./components/filterCondition.vue"
+import questionList from "./components/questionList.vue"
+import { createQuestionTypeList } from "./questionConfig"
 const router = useRouter();
 const route = useRoute();
 const http = (request as any).QuestionBank;
@@ -52,36 +51,41 @@ updata({
 const { lStorage } = extStorage;
 const uid = lStorage.get("uid")
 
+const currentTab = ref<number>(0);
+const loading = ref<boolean>(false);
+const pageInfo = reactive({
+  page: 1,
+  limit: 12,
+});
+let list = reactive<IMaterialList[]>([]);
+const pageTotal = ref<number>(0);
+
 // 搜索
-const searchKey = ref<string>("");
-const resetKeyword = ref<boolean>(false)
-const tag = ref<string>('')
+const searchInfo = reactive({
+  keyWord: '',
+  type: '',
+  level: '',
+  use: '',
+  knowledge: []
+})
+const resetKeyword = ref<boolean>(false)  // 重置keyword
 const searchFn = (key: string) => {
-  searchKey.value = key;
+  searchInfo.keyWord = key;
   pageInfo.page = 1
   initData();
 };
 const EmptyType: any = computed(() => {
   let str = ''
-  if(searchKey.value === '' && tag.value === ''){
+  if(searchInfo.keyWord === ''){
     str = 'empty'
   }else{
     str = 'searchEmpty'
   }
   return str
 })
-const materialTypeList = reactive([
-  {key:1, name:'选择题'},
-  {key:2, name:'判断题'},
-  {key:3, name:'填空题'},
-  {key:4, name:'解答题'},
-  {key:5, name:'编程题'},
-  {key:6, name:'模型题'},
-  {key:7, name:'批量导入'},
-]);
 const handleMenuClick = ({ key }: { key: number|string }) => {
   let name = ''
-  materialTypeList.forEach((v => {
+  createQuestionTypeList.forEach((v => {
     if (v.key === key) name = v.name
   }))
   router.push ({
@@ -89,19 +93,10 @@ const handleMenuClick = ({ key }: { key: number|string }) => {
     query:{value:key, name}
   })
 };
-
-const loading = ref<boolean>(false);
-const pageInfo = reactive({
-  page: 1,
-  limit: 12,
-});
-let questionList = reactive<IMaterialList[]>([]);
-const pageTotal = ref<number>(0);
 const pageChange = (page: number) => {
   pageInfo.page = page;
   initData();
 };
-const currentTab = ref<number>(0);
 watch(
   () => {
     return configuration.componenttype;
@@ -109,7 +104,7 @@ watch(
   (val) => {
     currentTab.value = Number(val);
     pageInfo.page = 1
-    searchKey.value = ''
+    searchInfo.keyWord = ''
     resetKeyword.value = !resetKeyword.value
     initData();
   }
@@ -141,7 +136,7 @@ interface Iuser {
 let materialList = reactive<IMaterialList[]>([]);
 const initData = () => {
   const param = {
-    name: searchKey.value,
+    name: searchInfo.keyWord,
     is_public: currentTab.value ? 0 : 1,  // 1公开 0私有
     ...pageInfo,
   };
@@ -178,6 +173,7 @@ onMounted(() => {
 .mainBox {
   // flex-wrap: wrap;
   // justify-content: space-between;
-  
+  width: var(--center-width);
+  margin: 0 auto;
 }
 </style>
