@@ -1,5 +1,5 @@
 <template>
-  <div class="info flexCenter">
+  <div class="outlineinfo flexCenter">
     <div class="title">{{props.title}}</div>
     <div class="explain">{{props.explain}}</div>
     <div class="explainText">{{props.explainText}}</div>
@@ -54,9 +54,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 </script>
 <style scoped lang="less">
-.teacherAssignmentPreview{
-  padding: 32px 40px;
-  .info{
+  .outlineinfo{
     flex-direction: column;
     padding-bottom: 32px;
     .title{
@@ -69,5 +67,5 @@ const props = withDefaults(defineProps<Props>(), {
       padding: 16px 30px 24px;
     }
   }
-}
+
 </style>
