@@ -34,7 +34,7 @@
         </div>
         <!-- 选择题答案选项 -->
         <div class="option option1" v-if="v.type===1">
-          <a-checkbox-group v-model:value="a.answer" style="width: 100%" @change="changebox" :disabled="true" >
+          <a-checkbox-group v-model:value="a.answer" style="width: 100%" @change="changebox" :disabled="false">
             <a-row v-for="(j,b) in a.option" :key="j">
               <a-checkbox :value="optionType[b]">{{`${optionType[b]}、`}}</a-checkbox>
               <div> {{j.text}}</div>
@@ -95,6 +95,47 @@
         <!-- SQL题 -->
         <div class="option option7" v-if="v.type===7">
 
+        </div>
+        <!-- 题目结果 -->
+        <div class="achievement">
+          <template v-if="[1,2,3,4].includes(v.type)">
+            <div class="achievement1 Adjudicate flexCenter">
+              <div class="left flexCenter" :class="k%2===0?'left1':'left2'">
+                <!-- icon-cuowu -->
+                <span class="iconfont" :class="k%2===0?'icon-cuowu':'icon-zhengque'"></span>
+                <span>答{{`${k%2===0?'错':'对'}`}}了</span>
+              </div>
+              <div class="flexCenter">
+                <div class="resultscore">
+                  得<span>10</span>分
+                </div>
+                <div v-if="v.type===4" class="flexCenter changeScore">
+                  <span class="iconfont icon-bianji1"></span>
+                  <span>修改得分</span>
+                </div>
+              </div>
+            </div>
+            <div class="achievement1 rightkey">
+              <div class="tip">{{`${v.type===2?'参考':'正确'}`}}答案：</div>
+              <div>填空1（答案1） / 填空2（答案2）频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的 品牌认知；并且视觉信息层级混乱，设计规范性差，设计沟通维护成本高</div>
+            </div>
+            <div class="achievement1 analysis">
+              <div class="tip">题目解析：</div>
+              <div>在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的 品牌认知；并且视觉信息层级混乱，设计规范性差，设计沟通维护成本高。</div>
+            </div>
+          </template>
+          <template v-if="[5,6,7].includes(v.type)">
+            <div class="achievement1 modifyscore flexCenter">
+              <div class="resultscore">
+                得<span>10</span>分
+              </div>
+              <div class="flexCenter changeScore">
+                <span class="iconfont icon-bianji1"></span>
+                <span>修改得分</span>
+              </div>
+            </div>
+          </template>
+          
         </div>
       </div>
     </div>
@@ -187,9 +228,10 @@ var list:any=reactive([
           {
             text:'configurations.xh'
           },
-        ],
+        ], 
         score:15,
-        answer:[]
+        answer:['B','D'],
+        //   选择 answer:['B','D']  判断answer:[true],  填空answer:['填空答案1','填空答案2']   简答answer:['简答题答案'] 
       }
     ]
   },
@@ -263,6 +305,16 @@ var list:any=reactive([
         answer:{}
       }
     ]
+  },
+  {
+    type:7,
+    question:[
+      {
+        score:28,
+        question_desc:'SQL题目',
+        answer:{}
+      }
+    ]
   }
 ])
 const changebox=()=>{
@@ -314,6 +366,7 @@ const changebox=()=>{
           background: rgba(0,0,0,0.07);
           cursor: pointer;
           text-align: center;
+          margin-bottom: 1rem;
         }
         &.option3{
           .tiankong{
@@ -357,6 +410,63 @@ const changebox=()=>{
               border: 1px solid rgba(0,0,0,0.15);
               border-top: none;
             }
+          }
+        }
+      }
+      .achievement{
+        .achievement1{
+          margin-bottom: 16px;
+        }
+        .resultscore{
+          color: #51B048;
+          span{
+            padding: 0 4px;
+          }
+        }
+        .changeScore{
+          color: var(--primary-color);
+          .iconfont{
+            padding: 0 4px;
+            cursor: pointer;
+          }
+        }
+        .Adjudicate{
+          .left{
+            width: 99px;
+            height: 34px;
+            border-radius: 4px;
+            margin-right: 16px;
+            justify-content: center;
+            .iconfont{
+              font-size: 34px;
+              line-height: 34px;
+            }
+          }
+          .left1{
+            background: #FFF3F3;
+            color: #E22D2D;
+            
+          }
+          .left2{
+            background: #ddf9f3;
+            color: #1CB2B3;
+          }
+          .changeScore{
+            margin-left: 16px;
+          }
+        }
+        .rightkey,.analysis{
+          display: flex;
+          .tip{
+            width: 90px;
+          }
+        }
+        .rightkey{
+          color: #1CB2B3;
+        }
+        .modifyscore{
+          .resultscore{
+            margin-right: 16px;
           }
         }
       }
