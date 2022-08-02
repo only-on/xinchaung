@@ -1,5 +1,5 @@
 <template>
-
+  <h2 @click="router.push('/teacher/teacherAssignment/teacherAssignmentPreview')">去预览--暂用勿删</h2>
 </template>
 <script lang="ts" setup>
 import {
