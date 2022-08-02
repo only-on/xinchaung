@@ -56,8 +56,45 @@
         <div class="option option3" v-if="v.type===3">
           <div class="tiankong flexCenter" v-for="(j,b) in a.option" :key="a">
             <span>{{`填空${b+1}`}}</span>
-            <a-input v-model:value="a.answer" />
+            <a-input v-model:value="a.answer[b]" :disabled="true" />
           </div>
+        </div>
+        <!-- 简答题 -->
+        <div class="option option4" v-if="v.type===4">
+            <div class="jianda">
+              <div class="daan">答案</div>
+              <a-textarea v-model:value="a.answer" :disabled="true" placeholder="" :autoSize="{ minRows: 4, maxRows: 6 }" />
+            </div>
+        </div>
+        <!-- 编程题 -->
+        <div class="option option5" v-if="v.type===5">
+          <div class="details details1">
+            <div class="detailsTit">任务描述</div>
+            <MarkedEditor v-model="a.desc" class="markdown__editor" :preview="true"/>
+          </div>
+          <div class="details details2">
+            <div class="detailsTit">编程要求</div>
+            <MarkedEditor v-model="a.requirement" class="markdown__editor" :preview="true"/>
+          </div>
+          <div class="details details3">
+            <div class="detailsTit">测试说明</div>
+            <MarkedEditor v-model="a.testExplain" class="markdown__editor" :preview="true"/>
+          </div>
+          <div class="details details4">
+            <div class="outputTit">代码+运行日志</div>
+            <div class="outputContent" v-html="'最后执行的输入： 90 执行出错信息：'">
+              
+            </div>
+          </div>
+          <div class="reply"> 答 题 </div>
+        </div>
+        <!-- 模型题 -->
+        <div class="option option6" v-if="v.type===6">
+          <div class="reply"> 答 题 </div>
+        </div>
+        <!-- SQL题 -->
+        <div class="option option7" v-if="v.type===7">
+
         </div>
       </div>
     </div>
@@ -78,6 +115,7 @@ import {
   defineProps,
   withDefaults,
 } from "vue";
+import MarkedEditor from "src/components/editor/markedEditor.vue";
 import { useRouter, useRoute } from "vue-router";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
@@ -178,11 +216,55 @@ var list:any=reactive([
         option:[1,2],
         score:10,
         answer:[],
+      },
+      {
+        question_desc:'222Python关键字elif表示( ▁▁▁▁▁▁ )和( ▁▁▁▁▁▁ )两个单词的缩写。',
+        option:[1,2,3],
+        score:16,
+        answer:[],
+      }
+    ]
+  },
+  {
+    type:4,
+    question:[
+      {
+        question_desc:'在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱，设计规范性差，设计沟通维护成本高。结合前期对用户及竞',
+        option:'',
+        score:10,
+        answer:'设计规范性差，设计沟通维护成本高。',
+      },
+      {
+        question_desc:'在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱，设计规范性差，设计沟通维护成本高。结合前期对用户及竞',
+        option:'',
+        score:19,
+        answer:'答案2',
+      }
+    ]
+  },
+  {
+    type:5,
+    question:[
+      {
+        score:22,
+        desc:'本关任务：编写一个筛选出列表中的奇数的程序。',
+        requirement:'根据提示，在代码文件中Begin-End区间补充代码1',
+        testExplain:'平台会对你编写的代码进行测试：输入数据以空格分开测试输入：536841113249预期输出：奇数列表：[5,3,11,13,9]',
+        answer:{}
+      }
+    ]
+  },
+  {
+    type:6,
+    question:[
+      {
+        score:15,
+        question_desc:'在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱，设计规范性差，设计沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向进行京东国际频道的品牌视觉全新升级，实现加强正品心智，提升频道访问量，品牌强化的业务目标。 在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；',
+        answer:{}
       }
     ]
   }
 ])
-
 const changebox=()=>{
   
 }
@@ -201,6 +283,7 @@ const changebox=()=>{
       .itemOrder{
         justify-content: space-between;
         margin-bottom: 10px;
+        height: 24px;
         .left{
           .score{
             color: var(--primary-color);
@@ -209,6 +292,9 @@ const changebox=()=>{
         .right{
           .ant-btn-text{
             color: var(--brightBtn);
+          }
+          .caozuo{
+            display: none;
           }
         }
       }
@@ -219,8 +305,59 @@ const changebox=()=>{
         // padding: 16px 0;
         // display: flex;
         // align-items: center;
-        .ant-row{
+        .ant-row,.tiankong,.jianda{
           padding: 14px 0;
+        }
+        .reply{
+          height: 38px;
+          line-height: 38px;
+          background: rgba(0,0,0,0.07);
+          cursor: pointer;
+          text-align: center;
+        }
+        &.option3{
+          .tiankong{
+            span{
+              width: 50px;
+            }
+          }
+        }
+        &.option4{
+          .jianda{
+            display: flex;
+            .daan{
+              width: 50px;
+              padding-top: var(--fontSize);
+            }
+          }
+        }
+        &.option5{
+          .details{
+            margin-bottom: 2rem;
+            .detailsTit{
+              font-size: 18px;
+              font-weight: 900;
+              color: var(--black);
+            }
+          }
+          .details4{
+            background: rgba(0,0,0,0.04);
+            .outputTit{
+              padding: 0 34px;
+              height: 44px;
+              background: rgba(0,0,0,0.10);
+              line-height: 44px;
+              border-radius: 20px 20px 0px 0px;
+              border: 1px solid rgba(0,0,0,0.15);
+              border-bottom: none;
+            }
+            .outputContent{
+              padding: 24px 34px;
+              border-radius: 0px 0px 20px 20px;
+              border: 1px solid rgba(0,0,0,0.15);
+              border-top: none;
+            }
+          }
         }
       }
       
@@ -229,6 +366,9 @@ const changebox=()=>{
       }
       &:hover{
         background-color: #FFF7E6;
+        .itemOrde .right .caozuo{
+          display: flex;
+        }
       }
     }
   }

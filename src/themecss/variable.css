@@ -237,6 +237,7 @@
   --padding-xs: 8px;
   --padding-xss: 4px;
   --border-radius-default: 4px;
+  --fontSize:14px;
 
   --white: var(--white-100);
   --black: var(--black-100);

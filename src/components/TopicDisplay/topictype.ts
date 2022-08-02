@@ -60,7 +60,7 @@ const getTopicType={
       
     },
     7: {
-      name: "",
+      name: "SQL题",
       
     },
 }
