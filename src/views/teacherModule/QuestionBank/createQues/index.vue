@@ -35,23 +35,7 @@
         </a-col>
         <a-col v-if="!['5', '6'].includes(type) && type != 7" :span="12">
           <a-form-item name="difficulty" label="难度系数">
-            <div class="select_difficult">
-              <span
-                @click="formState.difficulty = '1'"
-                :class="formState.difficulty === '1' ? 'active' : ''"
-                >简单</span
-              >
-              <span
-                @click="formState.difficulty = '2'"
-                :class="formState.difficulty === '2' ? 'active' : ''"
-                >适中</span
-              >
-              <span
-                @click="formState.difficulty = '3'"
-                :class="formState.difficulty === '3' ? 'active' : ''"
-                >困难</span
-              >
-            </div>
+            <label-selection v-model:difficulty='formState.difficulty' :options='[{name:"简单",value:1},{name:"适中",value:2},{name:"困难",value:3}]'></label-selection>
           </a-form-item>
         </a-col>
         <a-col :span="12">
@@ -65,23 +49,7 @@
         </a-col>
         <a-col v-if="['5', '6'].includes(type)" :span="12">
           <a-form-item name="difficulty" label="难度系数">
-            <div class="select_difficult">
-              <span
-                @click="formState.difficulty = '1'"
-                :class="formState.difficulty === '1' ? 'active' : ''"
-                >简单</span
-              >
-              <span
-                @click="formState.difficulty = '2'"
-                :class="formState.difficulty === '2' ? 'active' : ''"
-                >适中</span
-              >
-              <span
-                @click="formState.difficulty = '3'"
-                :class="formState.difficulty === '3' ? 'active' : ''"
-                >困难</span
-              >
-            </div>
+            <label-selection v-model:difficulty='formState.difficulty' :options='[{name:"简单",value:1},{name:"适中",value:2},{name:"困难",value:3}]'></label-selection>
           </a-form-item>
         </a-col>
         <a-col :span="['1','2','3','4','7'].includes(type)? 12 : 24">
@@ -381,6 +349,7 @@ import { DownOutlined, UpOutlined } from "@ant-design/icons-vue";
 import { Form } from "ant-design-vue";
 import request from "src/api/index";
 import markedEditor from "src/components/editor/markedEditor.vue";
+import labelSelection from 'src/components/labelSelection/index.vue'
 import { Modal, message } from "ant-design-vue";
 const route = useRoute();
 const router = useRouter();
@@ -671,21 +640,6 @@ function DownloadTemplate() {
 .bottom_btn {
   display: flex;
   justify-content: center;
-}
-.select_difficult {
-  > span {
-    display: inline-block;
-    line-height: 34px;
-    width: 100px;
-    border: 1px solid #dfdfdf;
-    color: #33394bd9;
-    text-align: center;
-    cursor: pointer;
-  }
-  .active {
-    color: var(--primary-color);
-    border-color: var(--primary-color);
-  }
 }
 :deep(.ant-col-21) {
   max-width: 100%;
