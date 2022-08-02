@@ -8,7 +8,7 @@
           <div>（<span>共 {{v.question.length}} 题</span><span>共 {{TotalScore(v.question,'score')}} 分</span> ）</div>
         </div>
         <div class="right">
-          <div class="flexCenter caozuo">
+          <div class="batchcaozuo flexCenter">
             <a-button type="primary" class="brightBtn" size="small"> 批量设置分值 </a-button>
             <a-button type="primary" class="del" size="small"> 删除 </a-button>
           </div>
@@ -23,7 +23,7 @@
             <div class="score">（<span>{{a.score}}分</span>）</div>
           </div>
           <div class="right">
-            <div class="flexCenter caozuo">
+            <div class="caozuo flexCenter">
               <a-button type="text" class="" size="small"> 设置分值 </a-button>
               <a-button type="link" class="del" size="small">删除</a-button>
             </div>
@@ -366,7 +366,7 @@ const changebox=()=>{
       }
       &:hover{
         background-color: #FFF7E6;
-        .itemOrde .right .caozuo{
+        .itemOrder .right .caozuo{
           display: flex;
         }
       }
