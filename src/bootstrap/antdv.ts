@@ -37,7 +37,8 @@ import {
   TimePicker,
   Rate,
   Collapse,
-  Cascader
+  Cascader,
+  Statistic
 } from "ant-design-vue";
 message.config({
   duration: 2,
@@ -85,7 +86,8 @@ export const initAntdv: TFInitApp = function (appManager: IAppManager) {
     Space,
     TimePicker,
     Rate,
-    Cascader
+    Cascader,
+    Statistic
   );
   // https://github.com/vuejs/rfcs/pull/117
   // https://www.jianshu.com/p/408846ea7241

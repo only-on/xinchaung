@@ -4,11 +4,10 @@
         <div>
             {{ quesItem.ques}}
         </div>
-         <a-checkbox-group v-model:value="value" style="width: 100%" @change='change'>
-            <div v-for="(ans,n) in quesItem.quesAnswer" :key="n">
-              <a-checkbox :value="selectChoice[n]">{{selectChoice[n]}}、{{ans}}</a-checkbox>
-            </div>
-        </a-checkbox-group>
+        <div>
+           答案
+           <a-textarea v-model:value="selectedAnswer" @change="change" />
+        </div>
     </div>
 </template>
 <script lang="ts" setup>
@@ -34,19 +33,18 @@ import { NoToCh } from "src/utils/common";
 interface Props { 
   quesItem:any;
   queNumber:Number;
-selectedAnswer:any;
+  selectedAnswer:any;
 }
 const props = withDefaults(defineProps<Props>(),{
   quesItem: () =>{},
   queNumber:()=>1,
-  selectedAnswer:()=>null,
+  selectedAnswer:()=>'',
 });
 var value:any=ref([])
-const selectChoice:any=['A','B','C','D','E','F']
 var emit = defineEmits<{(e:"update:selectedAnswer",selectedAnswer:any): void}>();
-function change(checkedValue:any){
-    console.log(checkedValue)
-    emit("update:selectedAnswer",checkedValue);
+function change(val:any){
+    console.log(props.selectedAnswer)
+    emit("update:selectedAnswer",props.selectedAnswer);
 }
 </script>
 <style lang="less" scoped>

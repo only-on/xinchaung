@@ -8,38 +8,54 @@
            </div>
            <div>
                <div v-for="(item,index) in dataList.list" :key="index">
-                   <!-- 单选题 -->
-                   <div v-if="item.type==1">
-                       <div class="quesType">单选题<span>共 {{}}题 共{{}}分</span></div>
+                   <div>
+                       <div class="quesType">{{typeNames[item.type-1]}}<span>共 {{}}题 共{{}}分</span></div>
                        <div class="quesList">
                            <div v-for="(it,j) in item.quesList" :key="j">
-                           <choice-question :quesItem='it' :queNumber='j' v-model:selectedAnswer='it.selectedAnswer' ></choice-question>
-                       </div>
+                            <!-- 单选题 -->
+                            <choice-question v-if="item.type==1" :quesItem='it' :queNumber='j' v-model:selectedAnswer='it.selectedAnswer' ></choice-question>
+                            <!-- 判断题 -->
+                            <judge-question v-if="item.type==2" :quesItem='it' :queNumber='j' v-model:selectedAnswer='it.selectedAnswer' ></judge-question>
+                            <!-- 填空题 -->
+                            <completion-question  v-if="item.type==3" :quesItem='it' :queNumber='j' v-model:selectedAnswer='it.selectedAnswer' ></completion-question>
+                             <!-- 解答题 -->
+                            <explain-question v-if="item.type==4" :quesItem='it' :queNumber='j' v-model:selectedAnswer='it.selectedAnswer' ></explain-question>
+                            <!-- 编程题 -->
+                            <programming v-if="item.type==5"  :quesItem='it' :queNumber='j'></programming>  
+                            <!-- 模型题 -->
+                            <model-question v-if="item.type==6" :quesItem='it' :queNumber='j'></model-question> 
+                        </div>
                        </div>
                    </div>
-                   <!-- 判断题 -->
-                    <div v-if="item.type==2">
-                        <div class="quesType">判断题<span>共 {{}}题 共{{}}分</span></div>
-                         <div v-for="(it,j) in item.quesList" :key="j">
-                           <judge-question :quesItem='it' :queNumber='j' v-model:selectedAnswer='it.selectedAnswer' ></judge-question>
-                         </div>
-                    </div>
-                    <!-- 填空题 -->
-                     <div v-if="item.type==3">
-                        <div class="quesType">填空题<span>共 {{}}题 共{{}}分</span></div>
-                         <div v-for="(it,j) in item.quesList" :key="j">
-                           <completion-question :quesItem='it' :queNumber='j' v-model:selectedAnswer='it.selectedAnswer' ></completion-question>
-                         </div>
-                    </div>
-                    <!-- 解答题 -->
-                    <div v-if="item.type==4">
-                        
-                    </div>
                </div>
            </div>
         </div>
         <div class="answer_list">
-
+            <div class="answer_list_top">
+                <div class="countdown_div">
+                    <!-- <span></span>分钟
+                    <span></span>秒 -->
+                    <a-statistic-countdown
+                        title=""
+                        :value="deadline"
+                        style="margin-right: 50px"
+                        @finish="onFinish"
+                        format="m 分 s 秒"
+                    />
+                </div>
+                 <div v-for="(item,index) in dataList.list" :key="index">
+                     <div>
+                         <div class="name">
+                         {{typeNames[item.type-1]}}
+                        </div>
+                        <div class="answerDiv">
+                            <div v-for="(it,j) in item.quesList" :key="j" :class="['ifanswer',it.selectedAnswer?'answerd':'unanswer']">
+                            {{j+1}}
+                            </div>
+                        </div>
+                     </div>
+                 </div>
+            </div>
         </div>
     </div>
 </template>
@@ -63,12 +79,21 @@ import { Modal, message } from "ant-design-vue";
 import choiceQuestion from './choiceQuestion/index.vue'
 import judgeQuestion from './judgeQuestion/index.vue'
 import completionQuestion from './completionQuestion/index.vue'
+import explainQuestion from './explainQuestion/index.vue'
+import programming from './programming/index.vue'
+import modelQuestion from './modelQuestion/index.vue'
+import dayjs, { Dayjs } from 'dayjs';
 interface Props { 
   dataList:any;
 }
 const props = withDefaults(defineProps<Props>(),{
   dataList: () =>{},
 });
+const typeNames=['单选题','判断题','填空题','解答题','编程题','模型题']
+const deadline=Date.now() + 1000 * 60 * 60 * 2 + 1000 * 30
+function onFinish(){
+      console.log('finished!');
+};
 </script> 
 <style lang="less" scoped>
 .answerQuesCom{
@@ -97,9 +122,47 @@ const props = withDefaults(defineProps<Props>(),{
     .answer_list{
         width:300px;
         height: 300px;
+        .answer_list_top{
+           background-color: white; 
+           .countdown_div{
+               background-color:#EFF2E8;
+               height:60px;
+               color: var(--primary-color);
+               display: flex;
+               justify-content: center;
+               align-items: center;
+               font-size: 24px;
+               >span{
+                font-size: 16px;
+               }
+           }
+        }
+        .name{
+            margin-top: 20px;
+            margin-bottom: 5px;
+        }
     }
     .quesType{
         padding:20px 0px;
+    }
+    .answerDiv{
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .ifanswer{
+        width: 34px;
+        height: 34px;
+        background-color: #ededed;
+        margin-right: 10px;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 4px;
+    }
+    .answerd{
+        background-color: var(--primary-color);
+        color: white;
     }
 }
 </style>

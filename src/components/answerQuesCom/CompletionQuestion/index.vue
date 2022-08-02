@@ -51,7 +51,7 @@ function change(val:any){
 <style lang="less" scoped>
 .ques{
    background-color: #F9F9F9;
-   padding:24px 24px 10px 24px;
+   padding:10px 24px;
    >div{
        margin-bottom: 10px;
    }
