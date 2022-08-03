@@ -1,5 +1,18 @@
 <template>
   <div class="TopicDisplay">
+    <div v-if="props.purpose==='IsEdit'" class="statistics flexCenter">
+      <div class="flexCenter left">
+        <div class="tit">试题列表</div>
+        <div class="score">（
+          <span>试题总数：{{statisticsInfo.selectNum}}</span>
+          <span>总分：{{statisticsInfo.selectScore}}</span>
+          ）</div>
+      </div>
+      <div class="flexCenter right">
+        <div class="tip">小题之间可以拖拽排序</div>
+        <a-button type="primary">继续选择</a-button>
+      </div>
+    </div>
     <div v-for="(v,k) in list" :key="v">
       <!-- 题型标题 v-for="(a,i) in v.question" :key="a"  -->
       <div class="QuestionType flexCenter">
@@ -181,7 +194,7 @@ import { useRouter, useRoute } from "vue-router";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
-import {NoToCh,TotalScore} from 'src/utils/common'
+import {NoToCh,TotalScore,randomCreatScore} from 'src/utils/common'
 import getTopicType from './topictype'
 const router = useRouter();
 const route = useRoute();
@@ -197,7 +210,7 @@ interface Props {
   purpose?:Tpurpose
 }
 const props = withDefaults(defineProps<Props>(), {
-  purpose:'achievement'
+  purpose:'IsEdit'
 });
 
 // const emit = defineEmits<{
@@ -208,13 +221,11 @@ const onStart=()=>{
 }
 const onEnd=(arr:any)=>{
   console.log(arr);
-  
   // return true
 }
 const CanDisabled=()=>{
   return props.purpose!=='IsStuAnswer'
 }
-
 const optionType:any=reactive(['A','B','C','D','E','F','G'])
 var list:any=reactive([
   {
@@ -384,9 +395,54 @@ const SqllObj:any=reactive({
 const changebox=()=>{
   
 }
+var statisticsInfo=computed(()=>{
+  let obj:any={
+    selectNum:0,
+    selectScore:0
+  }
+  if(list.length===0){
+    return obj
+  }
+  list.forEach((v:any)=>{
+    obj.selectNum+=v.question && v.question.length 
+    obj.selectScore+=TotalScore(v.question,'score')
+    //question
+  })
+  return obj
+})
+onMounted(()=>{
+  // const {selectNum,selectScore}=randomCreatScore(list,'','')
+})
 </script>
 <style scoped lang="less">
   .TopicDisplay{
+    .statistics{
+      justify-content: space-between;
+      height: 50px;
+      border-bottom: 1px solid rgba(0,0,0,0.15);
+      margin-bottom: 2rem;
+      .left{
+        .tit{
+          font-size: 16px;
+          color: var(--black-85);
+          font-weight: 500;
+        }
+        .score{
+          color: #1CB2B3;
+          span{
+            margin-right: 10px;
+          }
+        }
+      }
+      .right{
+        .tip{
+          color: var(--black-25);
+          font-size: 12px;
+          letter-spacing: 0.29px;
+          margin-right: 10px;
+        }
+      }
+    }
     .QuestionType{
       justify-content: space-between;
       .del{

@@ -83,7 +83,7 @@ const props = withDefaults(defineProps<Props>(), {
         font-size: 16px;
         font-weight: 900;
         color: var(--black);
-        padding-bottom: 1rem;
+        // padding-bottom: 1rem;
         &.detailsTit2{
           // padding-bottom: 1rem;
         }

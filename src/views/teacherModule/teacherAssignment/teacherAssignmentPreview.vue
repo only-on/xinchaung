@@ -58,6 +58,7 @@ const headerObj:any=reactive({
 <style scoped lang="less">
 .teacherAssignmentPreview{
   padding: 32px 40px;
+  background-color: #fff;
   .info{
     flex-direction: column;
     padding-bottom: 32px;
