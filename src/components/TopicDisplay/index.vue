@@ -16,6 +16,7 @@
       </div>
       <!-- 题型展示 -->
       <div class="item" v-for="(a,i) in v.question" :key="a">
+        <!-- 题号 -->
         <div class="itemOrder flexCenter">
           <div class="left flexCenter">
             <!-- <span>拖拽图标</span> -->
@@ -29,6 +30,7 @@
             </div>
           </div>
         </div>
+        <!-- 题干 -->
         <div class="stem">
           {{a.question_desc}}
         </div>
@@ -87,7 +89,7 @@
           <div class="reply"> 答 题 </div>
         </div>
         <!-- 题目结果 -->
-        <div class="achievement">
+        <div class="achievement" v-if="false">
           <template v-if="[1,2,3,4].includes(v.type)">
             <div class="achievement1 Adjudicate flexCenter">
               <div class="left flexCenter" :class="k%2===0?'left1':'left2'">
@@ -125,7 +127,6 @@
               </div>
             </div>
           </template>
-          
         </div>
       </div>
     </div>
@@ -161,13 +162,6 @@ const route = useRoute();
 const { editId } = route.query;
 const http = (request as any).teacherImageResourcePool;
 var configuration: any = inject("configuration");
-var updata = inject("updataNav") as Function;
-updata({
-  tabs: [{ name: "作业", componenttype: 0 }],
-  showContent: true,
-  componenttype: undefined,
-  showNav: false,
-});
 // interface Props {
 //   defaultConfig: any;
 //   imageList:string
