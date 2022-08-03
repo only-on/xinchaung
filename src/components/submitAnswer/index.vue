@@ -1,9 +1,5 @@
 <template>
-    <div class="answerQuesCom">
-        <div class="list">
-           <Outline :title="headerObj.title" :explain="headerObj.explain" :explainText="headerObj.explainText" />
-            <TopicDisplay />
-        </div>
+    <div class="sunmit_answer">
         <div class="answer_list">
             <div class="answer_list_top">
                 <div class="countdown_div">
@@ -53,15 +49,8 @@ import {
   reactive,
   watch,
   toRaw,
-  defineProps,
-  withDefaults,
 } from "vue";
-import { useRouter, useRoute } from "vue-router";
-import request from "src/api/index";
 import { Modal, message } from "ant-design-vue";
-import TopicDisplay from 'src/components/TopicDisplay/index.vue'
-import Outline from 'src/components/TopicDisplay/outline.vue'
-import dayjs, { Dayjs } from 'dayjs';
 interface Props { 
   dataList:any;
 }
@@ -70,43 +59,12 @@ const props = withDefaults(defineProps<Props>(),{
 });
 const typeNames=['单选题','判断题','填空题','解答题','编程题','模型题']
 const deadline=Date.now() + 1000 * 60 * 60 * 2 + 1000 * 30
-const headerObj:any=reactive({
-  title:'单元测验-《大学计算机基础第3版》第3、4章（一）-计算思维、数值与字符编码',
-  explain:'作业/考试说明',
-  explainText:'交互设计本质上就是设计产品的使用方式的过程，账号怎么填写；表单怎么导出；数据怎么筛选；列表怎么排序等等。针对每个功能的使用方式，都可以花很长的时间去考虑其合理性。一个项目的交互，就是这个项目所有功能使用方式的总和。',
-})
 function onFinish(){
       console.log('finished!');
-};
-</script> 
+}
+</script>
 <style lang="less" scoped>
-.answerQuesCom{
-    display: flex;
-    .list{
-        background: white;
-        flex: 1;
-        padding:40px;
-        .title{
-        font-size: 18px;
-        font-weight:bold;
-        margin-bottom: 24px;
-        width: 100%;
-        text-align: center;
-        }
-        .tip{
-            background-color: #F9F9F9;
-            padding: 24px;
-           >div:nth-child(1){
-               width: 100%;
-               text-align: center;
-               margin-bottom:16px;
-           }
-        }
-    }
-    .ifAnswered_div{
-        padding:0px 10px;
-    }
-    .answer_list{
+.answer_list{
         width:300px;
         height: 300px;
         .answer_list_top{
@@ -130,6 +88,10 @@ function onFinish(){
             margin-bottom: 5px;
         }
     }
+    .ifAnswered_div{
+        padding:0px 10px;
+    }
+   
     .quesType{
         padding:20px 0px;
     }
@@ -182,5 +144,4 @@ function onFinish(){
             padding: 10px;
         }
     }
-}
 </style>

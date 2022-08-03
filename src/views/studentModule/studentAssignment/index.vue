@@ -33,7 +33,8 @@
                         </div>
                     </div>
                     <div class="card_right_btn">
-                        <span class="answer_ques" @click="toAnswer">答题</span>
+                        <span v-if="item.status=='进行中'" class="answer_ques" @click="toAnswer">答题</span>
+                        <span v-if="item.status=='已结束'" class="lookScore" @click="lookScore">查看成绩</span>
                     </div>
                 </div>
             </div>
@@ -108,6 +109,15 @@ const cardlist:any=reactive([
     num:'0/10',
     },
     {
+    status:'已结束',
+    img:'',
+    course:'课程名称写在这里课程名称写在这',
+    title:'端SaaS的核心是放弃一部分个性化需求',
+    time:'2022/08/10 15:20 - 2022/08/14 15:20',
+    teacher:'空雅轩',
+    num:'0/10',
+    },
+    {
     status:'进行中',
     img:'',
     course:'课程名称写在这里课程名称写在这里哈啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊',
@@ -128,7 +138,10 @@ function handleMenuClick(){
 
 }
 function toAnswer(){
-    router.push({path:'./studentAssignment/answerQues',query:{name:'111'}})
+    router.push({path:'./studentAssignment/answerQues',query:{name:'111',type:'answer'}})
+}
+function lookScore(){
+      router.push({path:'./studentAssignment/answerQues',query:{name:'111',type:'lookScore'}})
 }
 </script>
 <style lang="less" scoped>
@@ -202,7 +215,7 @@ function toAnswer(){
         }
     }
     .card_right_btn{
-        width:73px;
+        width:77px;
         padding: 10px;
         display: flex;
         flex-direction: column;
@@ -218,8 +231,11 @@ function toAnswer(){
             align-items: center;
             border-radius: 12px;
         }
-        .answer_ques:hover{
+        .answer_ques:hover,.lookScore:hover{
             cursor: pointer;
+        }
+        .lookScore{
+            color:var(--brightBtn);   
         }
     }
 }
