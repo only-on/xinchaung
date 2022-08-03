@@ -138,10 +138,10 @@ function handleMenuClick(){
 
 }
 function toAnswer(){
-    router.push({path:'./studentAssignment/answerQues',query:{name:'111',type:'answer'}})
+    router.push({path:'./studentAssignment/answerQues',query:{name:'作业',type:'answer'}})
 }
 function lookScore(){
-      router.push({path:'./studentAssignment/answerQues',query:{name:'111',type:'lookScore'}})
+      router.push({path:'./studentAssignment/answerQues',query:{name:'考试',type:'lookScore'}})
 }
 </script>
 <style lang="less" scoped>

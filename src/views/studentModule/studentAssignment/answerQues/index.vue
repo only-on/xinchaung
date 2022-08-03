@@ -39,7 +39,7 @@ const route = useRoute();
 const router = useRouter();
 var updata = inject("updataNav") as Function;
 updata({
-  tabs: [{ name: "作业答题", componenttype: 0 }],
+  tabs: [{ name:route.query.type=='lookScore'?'查看成绩':(route.query.name=='作业'?"作业答题":'开始考试'), componenttype: 0 }],
   showContent: true,
   componenttype: undefined,
   showNav:false,
