@@ -210,7 +210,7 @@ interface Props {
   purpose?:Tpurpose
 }
 const props = withDefaults(defineProps<Props>(), {
-  purpose:'IsEdit'
+  purpose:'IsPreview'
 });
 
 // const emit = defineEmits<{
