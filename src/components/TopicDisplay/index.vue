@@ -136,7 +136,7 @@
                     <div class="resultscore">
                       得<span>10</span>分
                     </div>
-                    <div v-if="v.type===4" class="flexCenter changeScore">
+                    <div v-if="v.type===4 && editScore()" class="flexCenter changeScore">
                       <span class="iconfont icon-bianji1"></span>
                       <span>修改得分</span>
                     </div>
@@ -156,7 +156,7 @@
                   <div class="resultscore">
                     得<span>10</span>分
                   </div>
-                  <div class="flexCenter changeScore">
+                  <div v-if="editScore()" class="flexCenter changeScore">
                     <span class="iconfont icon-bianji1"></span>
                     <span>修改得分</span>
                   </div>
@@ -191,11 +191,13 @@ import ModelQuestion from './detail/ModelQuestion.vue'
 import Sqldetail from './detail/Sqldetail.vue'
 import MarkedEditor from "src/components/editor/markedEditor.vue";
 import { useRouter, useRoute } from "vue-router";
+import storage from "src/utils/extStorage";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
 import {NoToCh,TotalScore,randomCreatScore} from 'src/utils/common'
 import getTopicType from './topictype'
+const role = Number(storage.lStorage.get("role"));
 const router = useRouter();
 const route = useRoute();
 const { editId } = route.query;
@@ -210,7 +212,7 @@ interface Props {
   purpose?:Tpurpose
 }
 const props = withDefaults(defineProps<Props>(), {
-  purpose:'IsPreview'
+  purpose:'achievement'
 });
 
 // const emit = defineEmits<{
@@ -225,6 +227,9 @@ const onEnd=(arr:any)=>{
 }
 const CanDisabled=()=>{
   return props.purpose!=='IsStuAnswer'
+}
+const editScore=()=>{
+  return role===3
 }
 const optionType:any=reactive(['A','B','C','D','E','F','G'])
 var list:any=reactive([
