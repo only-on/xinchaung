@@ -63,33 +63,22 @@
         <div class="option option4" v-if="v.type===4">
             <div class="jianda">
               <div class="daan">答案</div>
-              <a-textarea v-model:value="a.answer" :disabled="true" placeholder="" :autoSize="{ minRows: 4, maxRows: 6 }" />
+              <a-textarea v-model:value="a.answer" :disabled="false" placeholder="" :autoSize="{ minRows: 4, maxRows: 6 }" />
             </div>
         </div>
         <!-- 编程题 -->
         <div class="option option5" v-if="v.type===5">
-          <div class="details details1">
-            <div class="detailsTit">任务描述</div>
-            <MarkedEditor v-model="a.desc" class="markdown__editor" :preview="true"/>
-          </div>
-          <div class="details details2">
-            <div class="detailsTit">编程要求</div>
-            <MarkedEditor v-model="a.requirement" class="markdown__editor" :preview="true"/>
-          </div>
-          <div class="details details3">
-            <div class="detailsTit">测试说明</div>
-            <MarkedEditor v-model="a.testExplain" class="markdown__editor" :preview="true"/>
-          </div>
+          <Programming :info="programmingObj" />
           <div class="details details4">
             <div class="outputTit">代码+运行日志</div>
             <div class="outputContent" v-html="'最后执行的输入： 90 执行出错信息：'">
-              
             </div>
           </div>
           <div class="reply"> 答 题 </div>
         </div>
         <!-- 模型题 -->
         <div class="option option6" v-if="v.type===6">
+          <ModelQuestion :info="ModelObj" />
           <div class="reply"> 答 题 </div>
         </div>
         <!-- SQL题 -->
@@ -156,6 +145,8 @@ import {
   defineProps,
   withDefaults,
 } from "vue";
+import Programming from './detail/programming.vue'
+import ModelQuestion from './detail/ModelQuestion.vue'
 import MarkedEditor from "src/components/editor/markedEditor.vue";
 import { useRouter, useRoute } from "vue-router";
 import request from "src/api/index";
@@ -188,7 +179,6 @@ updata({
 //   (e: "selectedImage", val: any): void;
 // }>();
 
-var checked:Ref<boolean>=ref(false)
 const optionType:any=reactive(['A','B','C','D','E','F','G'])
 var list:any=reactive([
   {
@@ -229,7 +219,7 @@ var list:any=reactive([
             text:'configurations.xh'
           },
         ], 
-        score:15,
+        score:14,
         answer:['B','D'],
         //   选择 answer:['B','D']  判断answer:[true],  填空answer:['填空答案1','填空答案2']   简答answer:['简答题答案'] 
       }
@@ -289,7 +279,8 @@ var list:any=reactive([
     question:[
       {
         score:22,
-        desc:'本关任务：编写一个筛选出列表中的奇数的程序。',
+        question_desc:'题目名称题目名称题目名称题目名称题目名称题目名称题目名称题目名称题目名称',
+        
         requirement:'根据提示，在代码文件中Begin-End区间补充代码1',
         testExplain:'平台会对你编写的代码进行测试：输入数据以空格分开测试输入：536841113249预期输出：奇数列表：[5,3,11,13,9]',
         answer:{}
@@ -317,6 +308,21 @@ var list:any=reactive([
     ]
   }
 ])
+const programmingObj:any=reactive({
+  desc:'在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱，设计规范性差，设计 沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向进行京东国际频道的品牌视觉全新升级， 实现加强正品心智，提升频道访问量，品牌强化的业务目标。',
+  access:{
+    input:'输入内容',
+    output:'输出内容'
+  },
+  example:{
+    input:'样例输入内容',
+    output:'样例输出内容'
+  },
+})
+const ModelObj:any=reactive({
+  desc:'在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱，设计规范性差，设计沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向进行京东国际频道的品牌视觉全新升级，实现加强正品心智，提升频道访问量，品牌强化的业务目标。在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱，设计规范性差，设计沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向进行京东国际频道的品牌视觉全新升级，实现加强正品心智，提升频道访问量，品牌强化的业务目标。',
+  evaluating:'在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱，设计规范性差，设计沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向进行京东国际频道的品牌视觉全新升级，实现加强正品心智，提升频道访问量，品牌强化的业务目标。 在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱，设计规范性差，设计沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向进行京东国际频道的品牌视觉全新升级，实现加强正品心智，提升频道访问量，品牌强化的业务目标。'
+})
 const changebox=()=>{
   
 }
@@ -385,16 +391,10 @@ const changebox=()=>{
           }
         }
         &.option5{
-          .details{
-            margin-bottom: 2rem;
-            .detailsTit{
-              font-size: 18px;
-              font-weight: 900;
-              color: var(--black);
-            }
-          }
+          
           .details4{
             background: rgba(0,0,0,0.04);
+            margin-bottom: 1rem;
             .outputTit{
               padding: 0 34px;
               height: 44px;

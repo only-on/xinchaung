@@ -325,10 +325,10 @@ function TotalScore(arr:any[],key2:any,key3?:any){
   }
   if(!key3){
     arr.forEach((v:any)=>{
-      if(v.hasOwnProperty(key2) && v[key2] && (typeof Number(v[key2])=== 'number')){  
+      if(v.hasOwnProperty(key2) && v[key2] && !isNaN(v[key2])){  
         sum+=Number(v[key2])
       }else{
-        // console.log(`${v[key2]} 的值类型不是Number`);
+        console.log(`${v[key2]} 的值不存在或类型不是Number`);
         // sum+=0
       }
     })
@@ -336,15 +336,38 @@ function TotalScore(arr:any[],key2:any,key3?:any){
   }
   if(key3){
     arr.forEach((v:any)=>{
-      if(v.hasOwnProperty(key2) && v[key2] && (typeof Number(key2)=== 'number') && key2.hasOwnProperty(key3) && v[key2][key3] && (typeof Number(v[key2][key3])=== 'number')){ 
+      if(v.hasOwnProperty(key2) && v[key2] && !isNaN(v[key2]) && key2.hasOwnProperty(key3) && v[key2][key3] && !isNaN(v[key2][key3])){ 
         sum+=Number(v[key2][key3])
       }else{
-        // console.log(`${v[key2][key3]} 的值出错`);
+        console.log(`${v[key2][key3]} 的值不存在或类型不是Number`);
         // sum+=0
       }
     })
     return sum
   }
+  return sum
+}
+// 随机创建选择题型  计算题目数量 和总分
+function randomCreatScore(arr:any[],num:string,score:string){
+  // // arr 需要计算的数组    num题目数量    score每个题分值
+  let selectNum:number=0
+  let selectScore:number=0
+  if(arr.length===0){
+    return {selectNum,selectScore}
+  }
+  arr.forEach((v:any)=>{
+    if(v.hasOwnProperty(num) && !isNaN(v[num])){
+      selectNum+=Number(v[num])
+    }else{
+      console.log(`${v[num]} 的值不存在或非法`);
+    }
+    if(v.hasOwnProperty(score) && !isNaN(v[score]) && !isNaN(v[num])){
+      selectScore+=Number(v[score]) * Number(v[num])
+    }else{
+      console.log(`${v[score]} 的值不存在或非法`);
+    }
+  })
+  return {selectNum,selectScore}
 }
 export {
   numToAbc,
@@ -363,5 +386,6 @@ export {
   dateFormat1,
   getTimer,
   bytesToSize,
-  TotalScore
+  TotalScore,
+  randomCreatScore
 };

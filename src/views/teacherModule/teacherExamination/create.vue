@@ -49,7 +49,8 @@ import baseInfo from "./component/baseInfo.vue";
 import questionTable from "./component/questionTable.vue";
 import studentTable from "./component/studentTable.vue"
 import Submit from "src/components/submit/index.vue";
-import getTopicType from "src/components/TopicDisplay/topictype.ts"
+import getTopicType from "src/components/TopicDisplay/topictype"
+import {randomCreatScore} from 'src/utils/common'
 const route = useRoute();
 const router = useRouter()
 provide("type", "考试");
@@ -171,10 +172,16 @@ const randomQuestion = reactive([
 const handleBlur = () => {
   topInfo.num = 0
   topInfo.score = 0
-  randomQuestion.forEach((item:any) => {
-    topInfo.num += Number(item.selectNum)
-    topInfo.score += Number(item.score) * Number(item.selectNum)
-  })
+  // randomQuestion.forEach((item:any) => {
+  //   topInfo.num += Number(item.selectNum)
+  //   topInfo.score += Number(item.score) * Number(item.selectNum)
+  // })
+  // console.log(topInfo);
+  const {selectNum,selectScore}=randomCreatScore(randomQuestion,'selectNum','score')
+  console.log(selectNum,selectScore);
+  topInfo.num=selectNum
+  topInfo.score=selectScore
+  
 }
 // 学生相关
 const studentPageInfo = reactive({
