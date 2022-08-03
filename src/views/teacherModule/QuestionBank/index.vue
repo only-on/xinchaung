@@ -3,14 +3,16 @@
     @searchFn="searchFn"
     @handleMenuClick="handleMenuClick"
     :TypeList="createQuestionTypeList"
-    :isShowAdd="currentTab == 1"
+    :isShowAdd="isMyQuestion"
     :isReset="resetKeyword"
   ></search-add>
   <!-- <directory-tree></directory-tree> -->
   <filter-condition></filter-condition>
   <a-spin :spinning="loading" size="large" tip="Loading...">
     <div class="mainBox">
-      <question-list ></question-list>
+      <question-list 
+        :isOperation="isMyQuestion"
+      ></question-list>
       <Empty v-if="!list.length && !loading" :type="EmptyType" />
       <a-pagination
         v-if="pageTotal > 12"
@@ -21,6 +23,23 @@
       />
     </div>
   </a-spin>
+  <div class="footer">
+    <div class="left">
+      <a-checkbox v-model:checked="checkedAll" @change="checkedAllHandle">全选</a-checkbox>
+      <span>已选（35题）</span>
+    </div>
+    <div class="center">
+      <a-button>批量移动到</a-button>
+      <a-button>批量导出</a-button>
+      <a-button>批量公开</a-button>
+      <a-button>批量删除</a-button>
+      <a-button type="primary">发布作业</a-button>
+      <a-button type="primary">发布考试</a-button>
+    </div>
+    <div class="right">
+      <span class="iconfont icon-guanbi"></span>
+    </div>
+  </div>
 </template>
 <script lang="ts" setup>
 import { ref, reactive, inject, watch, onMounted, computed } from "vue";
@@ -59,6 +78,7 @@ const pageInfo = reactive({
 });
 let list = reactive<IMaterialList[]>([]);
 const pageTotal = ref<number>(0);
+const checkedAll = ref(false)
 
 // 搜索
 const searchInfo = reactive({
@@ -74,6 +94,7 @@ const searchFn = (key: string) => {
   pageInfo.page = 1
   initData();
 };
+const isMyQuestion = computed(() => currentTab.value==1)
 const EmptyType: any = computed(() => {
   let str = ''
   if(searchInfo.keyWord === ''){
@@ -97,6 +118,10 @@ const pageChange = (page: number) => {
   pageInfo.page = page;
   initData();
 };
+// 全选
+const checkedAllHandle = (e: any) => {
+  console.log(e)
+}
 watch(
   () => {
     return configuration.componenttype;

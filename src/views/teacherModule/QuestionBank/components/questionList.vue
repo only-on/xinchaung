@@ -34,8 +34,8 @@
             <span class="num">使用次数：10</span>
           </div>
           <div class="right">
-            <span class="edit pointer btn">编辑</span>
-            <a-popover title="" trigger="hover" placement="bottom" class="ope btn">
+            <span class="edit pointer btn" v-if="props.isOperation">编辑</span>
+            <a-popover title="" trigger="hover" placement="bottom" class="ope btn" v-if="props.isOperation">
               <template #content>
                 <div class="btn ">删除</div>
                 <div class="btn ">公开</div>
@@ -57,6 +57,15 @@ import { ref } from 'vue'
 import defaultAvatar from 'src/assets/images/user/admin_p.png'
 import markedEditor from "src/components/editor/markedEditor.vue";
 import { questionTypeList, levelTypeList, useTypeList } from "./../questionConfig"
+interface Props {
+  isOperation: boolean
+}
+const props = withDefaults(defineProps<Props>(), {
+  isOperation: true
+});
+const emit = defineEmits<{
+  (e: "change", obj: any): void;
+}>();
 const content="zsfasd"
 const checked = false
 const questionList = [
