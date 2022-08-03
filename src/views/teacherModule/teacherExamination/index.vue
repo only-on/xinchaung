@@ -43,7 +43,7 @@ updata({
 });
 const typeList = reactive([
   { name: "手动创建", key: "manual" },
-  { name: "随即创建", key: "random" }
+  { name: "随机创建", key: "random" }
 ])
 const classifyList = reactive([
   {

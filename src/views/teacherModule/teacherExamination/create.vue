@@ -4,7 +4,40 @@
       <baseInfo ref="baseInfoRef"/>
     </template>
   </common-card>
-  <questionTable :data="questionData" ref="questionTableRef"/>
+  <!-- 手动创建 -->
+  <questionTable v-if="!isRandom" :data="questionData" ref="questionTableRef"/>
+  <!-- 随机创建 -->
+  <div v-if="isRandom" class="random">
+    <common-card title="题目范围">
+      <template #tip>
+        <span>可多选</span>
+      </template>
+      <template #content>
+        <a-row>
+          <a-col :span="10">
+             
+          </a-col>
+          <a-col :span="14">
+            <div class="title">题目类型及个数设置<span>（试题总数：{{topInfo.num}} 总分：{{topInfo.score}}）</span></div>
+            <ul class="randomQuestion">
+              <a-form :model="randomQuestion" ref="randomFormRef">
+                <li v-for="(item,index) in randomQuestion" :key="index">
+                  {{getTopicType[item.type].name}} <span>({{item.num}}道题可选)</span>
+                  <a-form-item :name="[index, 'selectNum']" rules="">
+                    <div>抽取 <a-input type="text" v-model:value="item.selectNum" @blur="handleBlur" :disabled="!item.num"></a-input>道题</div>
+                  </a-form-item>
+                  <a-form-item :name="[index, 'score']" rules="">
+                    <div>每题<a-input type="text" v-model:value="item.score" @blur="handleBlur" :disabled="!item.num"></a-input>分</div>
+                  </a-form-item>
+                </li>
+              </a-form>
+            </ul>
+          </a-col>
+        </a-row>
+      </template>
+    </common-card>
+  </div>
+  <!-- 选择学生 -->
   <studentTable :data="tableData" :pageInfo="studentPageInfo" @delete="delStudent"/>
   <Submit @submit="handleSave" @cancel="cancelSave"></Submit>
 </template>
@@ -16,14 +49,17 @@ import baseInfo from "./component/baseInfo.vue";
 import questionTable from "./component/questionTable.vue";
 import studentTable from "./component/studentTable.vue"
 import Submit from "src/components/submit/index.vue";
+import getTopicType from "src/components/TopicDisplay/topictype.ts"
 const route = useRoute();
+const router = useRouter()
 provide("type", "考试");
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
+const isRandom = ref<boolean>(route.query.type === "manual" ? false : true)
 updata({
   tabs: [
     {
-      name: `${route.query.type === "manual" ? "手动创建" : "随机创建"}`,
+      name: `${isRandom.value ? "随机创建" : "手动创建"}`,
       componenttype: 0,
     },
   ],
@@ -33,6 +69,7 @@ updata({
 });
 const baseInfoRef = ref()
 const questionTableRef = ref()
+// 手动创建题目相关
 const questionData = ref([
   {
     id: 1,
@@ -112,6 +149,34 @@ const questionData = ref([
   },
 ]);
 
+// 随机创建题目范围-------
+const topInfo = reactive({
+  num: 0,
+  score: 0
+})
+const randomQuestion = reactive([
+  {
+    type: 1,
+    num: 10,
+    selectNum: 0,
+    score: 0,
+  },
+  {
+    type: 2,
+    num: 11,
+    selectNum: 0,
+    score: 0,
+  }
+])
+const handleBlur = () => {
+  topInfo.num = 0
+  topInfo.score = 0
+  randomQuestion.forEach((item:any) => {
+    topInfo.num += Number(item.selectNum)
+    topInfo.score += Number(item.score) * Number(item.selectNum)
+  })
+}
+// 学生相关
 const studentPageInfo = reactive({
   page: 1,
   size: 1,
@@ -143,11 +208,51 @@ const delStudent = (ids:number[]) => {
   })
   studentPageInfo.total = tableData.length
 }
-const handleSave = () => {
+// 题目范围表单验证
+const randomFormRef = ref<any>()
+
+const handleSave = async() => {
+  await questionTableRef.value.tablefromValidate()
   console.log(baseInfoRef.value.formState)
   console.log(questionTableRef.value.listData)
 }
 const cancelSave = () => {
+  router.go(-1)
 }
 </script>
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.random{
+  .title{
+    position: relative;
+    &::before{
+      display: block;
+      content: '*';
+      position: absolute;
+      left: -7px;
+      top: -3px;
+      color: var(--red-6);
+      font-size: 20px;
+    }
+    span{
+      color: #1CB2B3;
+    }
+  }
+  .randomQuestion{
+    li{
+      display: flex;
+      align-items: center;
+      margin-top: 15px;
+      >div{
+        margin: 0 20px;
+        &:first-of-type{
+          margin-left: 40px;
+        }
+        .ant-input{
+          width: 100px;
+          margin: 0 10px;
+        }
+      }
+    }
+  }
+}
+</style>

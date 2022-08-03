@@ -23,25 +23,29 @@
             </template>
           </template>
           <template #expandedRowRender="{record, index}">
-            <a-table
-            class="innerTable"
-              :columns="innerColumns"
-              :data-source="record.data"
-              row-key="id"
-              :pagination="false"
-              :customRow="innerCustomRow"
-              :scroll="{ y: 600 }"
-              :data-index="index"
-            >
-              <template v-slot:bodyCell="{ column, record, index }">
-                <template v-if="column.dataIndex === 'score'">
-                  <a-input class="scoreInput" type="text" v-model:value="record.score" @blur="handleBlur"></a-input>
+            <a-form :model="record.data" ref="tableFormRef">
+              <a-table
+              class="innerTable"
+                :columns="innerColumns"
+                :data-source="record.data"
+                row-key="id"
+                :pagination="false"
+                :customRow="innerCustomRow"
+                :scroll="{ y: 600 }"
+                :data-index="index"
+              >
+                <template v-slot:bodyCell="{ column, record, index }">
+                    <template v-if="column.dataIndex === 'score'">
+                        <a-form-item :name="[index, 'score']" :rules="rulesInput">
+                          <a-input class="scoreInput" type="text" v-model:value="record.score" @blur="handleBlur"></a-input>
+                        </a-form-item>
+                    </template>
+                    <template v-if="column.dataIndex === 'operation'">
+                      <a-button type="link" @click="delInner(record, index)">移除</a-button>
+                    </template>
                 </template>
-                <template v-if="column.dataIndex === 'operation'">
-                  <a-button type="link" @click="delInner(record, index)">移除</a-button>
-                </template>
-              </template>
-            </a-table>
+              </a-table>
+            </a-form>
           </template>
         </a-table>
         <template #renderEmpty>
@@ -51,15 +55,19 @@
     </template>
   </common-card>
   <a-modal v-model:visible="modelVisible" title="批量设置分数" class="settingModal" :width="640">
-    <a-checkbox-group v-model:checked="checkArr" style="width: 100%" @change="changeCheck">
-      <a-row>
-        <a-col :span="12" v-for="(item,index) in batchData" :key="index">
-          <a-checkbox :value="item.type">
-            <span class="questionType">{{item.name}}</span>
-             <a-input class="scoreInput" type="text" v-model:value="item.score" :disabled="!checkArr.includes(item.type)"></a-input>分/题
-          </a-checkbox>
-        </a-col>
-      </a-row>
+    <a-checkbox-group v-model:value="checkArr" style="width: 100%" @change="changeCheck">
+      <a-form :model="batchData" ref="batchFormRef">
+          <a-row>
+            <a-col :span="12" v-for="(item,index) in batchData" :key="index" class="customCol">
+              <a-checkbox :value="item.type">
+                <span class="questionType">{{item.name}}</span>
+              </a-checkbox>
+                <a-form-item :name="[index, 'score']" :rules="checkArr.includes(item.type) ? rulesInput : {}">
+                  <a-input class="scoreInput" type="text" v-model:value="item.score" :disabled="!checkArr.includes(item.type)"></a-input>分/题
+                </a-form-item>
+            </a-col>
+          </a-row>
+      </a-form>
     </a-checkbox-group>
     <template #footer>
       <Submit @submit="saveSetting" @cancel="cancelSetting"></Submit>
@@ -71,7 +79,7 @@ import { ref, reactive, watch } from "vue";
 import CommonCard from "src/components/common/CommonCard.vue";
 import Submit from "src/components/submit/index.vue";
 import { message } from "ant-design-vue";
-import { json } from "stream/consumers";
+import getTopicType from "src/components/TopicDisplay/topictype.ts"
 
 const props = defineProps({
   data: Array,
@@ -148,6 +156,17 @@ var innerSourceIndex:any = null
 var innerTargetIndex:any = null
 var outerIndex:any = null
 const checkArr = ref<string[]>([])
+// 批量设置分数表单验证
+const batchFormRef = ref<any>()
+let validateNum = async (rule: any, value: string) => {
+  let validateor = /^([1-9]{1}[0-9]*|0)$/
+  if (!validateor.test(value)) {
+    return Promise.reject('请输入正整数');
+  } else {
+    return Promise.resolve();
+  }
+};
+const rulesInput = {validator: validateNum, trigger:'blur'}
 const batchData = reactive([
   {
     type: 'choice',
@@ -286,13 +305,6 @@ const delOuter = (record: any, index: any) => {
 const delInner = (record: any, index: any) => {
   listData.value[outerIndex].data.splice(index,1)
 };
-const setScore = () => { 
-  modelVisible.value = true
-}
-const changeCheck = (checkedValue:any) => {
-  console.log(checkedValue)
-  checkArr.value = checkedValue
-}
 // 统计总分及题目数量
 const handleStatistical = () => {
   topInfo.totalScore = 0
@@ -312,10 +324,28 @@ const handleStatistical = () => {
   })
   // emit("update:data", listData.value);
 }
+// 批量设置
+const setScore = () => { 
+  modelVisible.value = true
+  checkArr.value.length = 0
+  batchFormRef.value?.resetFields()
+}
+const changeCheck = (checkedValue:any) => {
+  console.log(checkedValue)
+  checkArr.value = checkedValue
+  batchData.forEach((item:any,index:any) => {
+    if (!checkedValue.includes(item.type)) {
+      item.score = ''
+      // batchFormRef.value.clearValidate([index, 'score'])
+    }
+  })
+}
 // 保存设置
 const saveSetting = () => {
-  modelVisible.value = false
-  handleStatistical()
+  batchFormRef.value.validate().then(()=>{
+    modelVisible.value = false
+    handleStatistical()
+  })
 }
 const cancelSetting = () => {
   modelVisible.value = false
@@ -327,9 +357,24 @@ const handleBlur = () => {
     topInfo.num += item.data.length
     item.score = 0
     item.data.forEach((questionItem:any) => {
-      item.score += Number(questionItem.score) // 类型总分
+      if (!isNaN(Number(questionItem.score))) {
+        item.score += Number(questionItem.score) // 类型总分
+      }
     })
     topInfo.totalScore += Number(item.score)
+  })
+}
+// 内层表格表单验证
+const tableFormRef = ref<any>()
+const tablefromValidate = () => {
+  return new Promise((resolve: any, reject: any) => {
+    if (!tableFormRef.value) {
+      resolve()
+      return
+    }
+    tableFormRef.value?.validate().then(() => {
+      resolve()
+    })
   })
 }
 watch(
@@ -341,7 +386,8 @@ watch(
   { deep: true, immediate: true }
 );
 defineExpose({
-  listData
+  listData,
+  tablefromValidate
 })
 </script>
 <style lang="less" scoped>
@@ -365,10 +411,14 @@ defineExpose({
   margin-top: 20px;
 }
 .settingModal{
+  .customCol{
+    display: flex;
+    align-items: center;
+  }
   .ant-input{
     width: 100px;
     display: inline-block;
-    margin: 0 5px;
+    margin-right: 5px;
   }
   .ant-checkbox-wrapper{
     margin-bottom: 20px;
