@@ -369,21 +369,9 @@ function randomCreatScore(arr:any[],num:string,score:string){
   })
   return {selectNum,selectScore}
 }
+
+
 // 函数防抖
-// function debounce(fn:any,delay:number){
-//   let curdelay = delay || 0.5
-//   var timer:any=null
-//   return function(...arg:any[]){
-//     let _this:any=(this as any)
-//     if(timer){
-//       clearTimeout(timer)
-//     }
-//     timer=setTimeout(()=>{
-//       timer=null
-//       fn.apply(_this,arg)
-//     },curdelay)
-//   }
-// }
 class Debounce{
   /*
   fn  触发函数
