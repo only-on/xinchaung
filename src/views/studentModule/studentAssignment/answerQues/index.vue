@@ -3,7 +3,7 @@
         <div class="answerQuesCom">
         <div class="list">
            <Outline :title="headerObj.title" :explain="headerObj.explain" :explainText="headerObj.explainText" />
-            <TopicDisplay />
+            <TopicDisplay :purpose='route.query.type=="answer"?"IsStuAnswer":"achievement"' />
         </div>
         <div v-if="route.query.type=='answer'" class="answer_list">
             <submit-answer :dataList='dataList'></submit-answer>
