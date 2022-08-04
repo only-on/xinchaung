@@ -2,7 +2,7 @@
     <div class="sunmit_answer">
         <div class="answer_list">
             <div class="answer_list_top">
-                <div v-if='showCountDown' class="countdown_div">
+                <div v-if='showCountDown==true' class="countdown_div">
                     <a-statistic-countdown
                         title=""
                         :value="deadline"

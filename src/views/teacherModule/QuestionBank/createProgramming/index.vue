@@ -130,13 +130,9 @@
                 <a-radio value="1">文本</a-radio>
                 <a-radio value="2">文件</a-radio>
               </a-radio-group>
-              <a-button type='primary' v-if="formState.testCase==1" @click="addTestCase">添加测试用例</a-button>
+              <a-button type='primary' v-if="formState.testCase==1">添加测试用例</a-button>
             </div>
           </a-form-item>
-        </a-col>
-        {{inputAndOut}}
-        <a-col v-if="type == 5&&formState.testCase==1" :span="24">
-          <test-case v-model:inputAndOut='inputAndOut'></test-case>
         </a-col>
         <a-col v-if="type == 5&&formState.testCase==2" :span="12">
           <a-form-item label="批量上传用例文件" name="useCaseFile">
@@ -358,7 +354,6 @@ import request from "src/api/index";
 import markedEditor from "src/components/editor/markedEditor.vue";
 import labelSelection from 'src/components/labelSelection/index.vue'
 import uploadFile from 'src/components/uploadFile.vue'
-import testCase from '../testCase/index.vue'
 import { Modal, message } from "ant-design-vue";
 const route = useRoute();
 const router = useRouter();
@@ -376,10 +371,6 @@ updata({
 });
 const preview = false;
 const formRef = ref<any>();
-const inputAndOut=ref([{inputCon:'',outCon:'',ifShow:false}])
-function addTestCase(){
-  inputAndOut.value.push({inputCon:'',outCon:'',ifShow:false})
-}
 const formState = reactive({
   // 名称
   name: "",
@@ -405,7 +396,7 @@ const formState = reactive({
   //样例输出
   sampleOutput:'',
   // 测试用例
-  testCase:'1',
+  testCase:'',
   // 用例文件
   useCaseFile:'',
   // 题干

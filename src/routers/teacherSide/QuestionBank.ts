@@ -23,7 +23,7 @@ export default {
       name: "",
       component: () => import("src/views/teacherModule/QuestionBank/createQues/index.vue"),
       meta: {
-        title: "题库",
+        title: "创建题目",
         authCode: "createQues",
       },
     }

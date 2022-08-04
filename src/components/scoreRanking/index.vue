@@ -43,12 +43,6 @@ const props = withDefaults(defineProps<Props>(),{
   options: () =>[],
   difficulty:()=>1
 });
-const emit = defineEmits<{
-  (e: "update:difficulty", difficulty: any): void;
-}>();
-function change(val:any){
-  emit("update:difficulty",val);
-};
 const columns = [
   {
     title: '题型',
