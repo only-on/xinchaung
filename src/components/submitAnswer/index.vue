@@ -2,7 +2,7 @@
     <div class="sunmit_answer">
         <div class="answer_list">
             <div class="answer_list_top">
-                <div class="countdown_div">
+                <div v-if='showCountDown' class="countdown_div">
                     <a-statistic-countdown
                         title=""
                         :value="deadline"
@@ -55,9 +55,11 @@ import {
 import { Modal, message } from "ant-design-vue";
 interface Props { 
   dataList:any;
+  showCountDown:boolean;
 }
 const props = withDefaults(defineProps<Props>(),{
   dataList: () =>{},
+  showCountDown:()=>false
 });
 const typeNames=['单选题','判断题','填空题','解答题','编程题','模型题']
 var deadline:any=ref(Number(sessionStorage.getItem("examRelastTime"))?Number(sessionStorage.getItem("examRelastTime")):(Date.now() + 1000 * 60 * 60 * 2 + 1000 * 30))
@@ -72,6 +74,7 @@ sessionStorage.setItem("examRelastTime",deadline.value.toString());
 .answer_list{
         width:300px;
         height: 300px;
+        background: white;
         .answer_list_top{
            background-color: white; 
            .countdown_div{

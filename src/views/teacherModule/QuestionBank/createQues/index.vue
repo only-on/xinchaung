@@ -135,7 +135,7 @@
         </a-col>
         <a-col v-if="type == 5" :span="12">
           <a-form-item label="批量上传用例文件" name="useCaseFile">
-            <a-upload-dragger
+            <!-- <a-upload-dragger
               v-model:fileList="fileList"
               name="file"
               :multiple="true"
@@ -147,7 +147,9 @@
                     <i class="iconfont icon-upload"></i>
                 </p>
                 <p class="ant-upload-text">点击或将文件拖拽到这里上传</p>
-            </a-upload-dragger>
+            </a-upload-dragger> -->
+            {{formState.useCaseFile}}00
+            <upload-file apiInterface='/api/simple/report/templates/import-template' path='pdf_path' v-model:useCaseFile='formState.useCaseFile'></upload-file>
           </a-form-item>
         </a-col>
         <a-col v-if="type == 5" :span="12">
@@ -350,11 +352,14 @@ import { Form } from "ant-design-vue";
 import request from "src/api/index";
 import markedEditor from "src/components/editor/markedEditor.vue";
 import labelSelection from 'src/components/labelSelection/index.vue'
+import uploadFile from 'src/components/uploadFile.vue'
 import { Modal, message } from "ant-design-vue";
 const route = useRoute();
 const router = useRouter();
 const type: any = ref(route.query.value);
 const name: any = route.query.name;
+const http = (request as any).studentAssignment;
+const caseFile=http.caseFile
 var updata = inject("updataNav") as Function;
 const fileList: any = [];
 updata({

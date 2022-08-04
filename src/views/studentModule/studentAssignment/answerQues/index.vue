@@ -6,7 +6,7 @@
             <TopicDisplay :purpose='route.query.type=="answer"?"IsStuAnswer":"achievement"' />
         </div>
         <div v-if="route.query.type=='answer'" class="answer_list">
-            <submit-answer :dataList='dataList'></submit-answer>
+            <submit-answer :showCountDown='route.query.name=="考试"?true:false' :dataList='dataList'></submit-answer>
         </div>
         <div v-else>
             <score-ranking></score-ranking>
@@ -152,6 +152,7 @@ const dataList:any=reactive({
      .answer_list{
         width:300px;
         height: 300px;
+        background: white;
         .answer_list_top{
            background-color: white; 
            .countdown_div{
