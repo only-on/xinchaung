@@ -75,6 +75,9 @@ const props = withDefaults(defineProps<Props>(), {
 
 </script>
 <style scoped lang="less">
+.markdown__editor{
+  min-height: 200px;
+}
   .programmingDetail{
     .details{
       padding: 14px 0;

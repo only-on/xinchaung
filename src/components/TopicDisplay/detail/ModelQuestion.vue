@@ -48,6 +48,9 @@ const props = withDefaults(defineProps<Props>(), {
 
 </script>
 <style scoped lang="less">
+.markdown__editor{
+  min-height: 200px;
+}
   .ModelDetail{
     .details{
       padding: 14px 0;

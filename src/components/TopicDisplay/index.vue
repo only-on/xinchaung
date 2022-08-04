@@ -507,6 +507,7 @@ onMounted(()=>{
             border-radius: 20px 20px 0px 0px;
             border: 1px solid rgba(0,0,0,0.15);
             border-bottom: none;
+            color: var(--black-85);
           }
           .outputContent{
             padding: 24px 34px;
