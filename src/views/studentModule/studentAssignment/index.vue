@@ -139,6 +139,7 @@ function handleMenuClick(){
 }
 function toAnswer(){
     router.push({path:'./studentAssignment/answerQues',query:{name:'作业',type:'answer'}})
+    sessionStorage.removeItem('examRelastTime')
 }
 function lookScore(){
       router.push({path:'./studentAssignment/answerQues',query:{name:'考试',type:'lookScore'}})

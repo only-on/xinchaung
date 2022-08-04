@@ -42,6 +42,8 @@
 import {
   ref,
   toRefs,
+  onUnmounted,
+  onBeforeUnmount,
   onMounted,
   Ref,
   inject,
@@ -58,10 +60,13 @@ const props = withDefaults(defineProps<Props>(),{
   dataList: () =>{},
 });
 const typeNames=['单选题','判断题','填空题','解答题','编程题','模型题']
-const deadline=Date.now() + 1000 * 60 * 60 * 2 + 1000 * 30
+var deadline:any=ref(Number(sessionStorage.getItem("examRelastTime"))?Number(sessionStorage.getItem("examRelastTime")):(Date.now() + 1000 * 60 * 60 * 2 + 1000 * 30))
 function onFinish(){
       console.log('finished!');
 }
+onUnmounted(()=>{
+sessionStorage.setItem("examRelastTime",deadline.value.toString());
+})
 </script>
 <style lang="less" scoped>
 .answer_list{
