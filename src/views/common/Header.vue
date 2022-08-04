@@ -317,7 +317,7 @@ export default defineComponent({
       helpInfoList.value.length -= 0
       vmApi.getHelpFinfoApi({}).then((res: any) => {
         if (!res) return
-        console.log(res);
+        // console.log(res);
         helpInfoList.value.push(...res.data.list)
         if (helpInfoList.value.length>0) {
           isRead.value=true

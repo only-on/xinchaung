@@ -6,11 +6,11 @@
     </div>
     <div class="details details2 flexCenter content">
       <div class="contentLeft">
-        <div class="detailsTit detailsTit2">输入</div>
+        <div class="detailsTit detailsTit2">输入格式</div>
         <MarkedEditor v-model="props.info.access.input" class="markdown__editor" :preview="true"/>
       </div>
       <div class="contentRight">
-        <div class="detailsTit detailsTit2">输出</div>
+        <div class="detailsTit detailsTit2">输出格式</div>
         <MarkedEditor v-model="props.info.access.output" class="markdown__editor" :preview="true"/>
       </div>
     </div>
@@ -18,11 +18,17 @@
       <div class="detailsTit detailsTit2 ">样例</div>
       <div class="flexCenter content">
         <div class="contentLeft">
-          <div class="detailsTit detailsTit2 detailsTit3">输入</div>
+          <div class="detailsTit detailsTit2 detailsTit3 flexCenter">
+            <span>输入</span>
+            <span class="copy">复制</span>
+          </div>
           <a-textarea v-model:value="props.info.example.output" :disabled="true" placeholder="" :autoSize="{ minRows: 4, maxRows: 6 }" />
         </div>
         <div class="contentRight">
-          <div class="detailsTit detailsTit2 detailsTit3">输出</div>
+          <div class="detailsTit detailsTit2 detailsTit3 flexCenter">
+            <span>输入</span>
+            <span class="copy">复制</span>
+          </div>
           <a-textarea v-model:value="props.info.example.output" :disabled="true" placeholder="" :autoSize="{ minRows: 4, maxRows: 6 }" />
         </div>
       </div>
@@ -76,7 +82,7 @@ const props = withDefaults(defineProps<Props>(), {
 </script>
 <style scoped lang="less">
 .markdown__editor{
-  min-height: 200px;
+  // height: 200px;
 }
   .programmingDetail{
     .details{
@@ -93,6 +99,11 @@ const props = withDefaults(defineProps<Props>(), {
         }
         &.detailsTit3{
           color: var(--black-65);
+          justify-content: space-between;
+          .copy{
+            cursor: pointer;
+            color: var(--primary-color);
+          }
         }
       }
     }
