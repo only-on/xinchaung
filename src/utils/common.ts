@@ -369,6 +369,43 @@ function randomCreatScore(arr:any[],num:string,score:string){
   })
   return {selectNum,selectScore}
 }
+// 函数防抖
+// function debounce(fn:any,delay:number){
+//   let curdelay = delay || 0.5
+//   var timer:any=null
+//   return function(...arg:any[]){
+//     let _this:any=(this as any)
+//     if(timer){
+//       clearTimeout(timer)
+//     }
+//     timer=setTimeout(()=>{
+//       timer=null
+//       fn.apply(_this,arg)
+//     },curdelay)
+//   }
+// }
+class Debounce{
+  /*
+  fn  触发函数
+  delay 延时时长   秒
+  immediate 是否默认执行第一次 第一次不延时
+  例子const DebounceUse:Function= new Debounce().use(myFn,1.5) 
+  */
+  public use=(fn:Function,delay:number=0.5,immediate:boolean=false):Function=>{
+    let timer:any=null
+    return (...args:any)=>{
+      if(immediate){
+        fn.apply(this,args)
+        immediate=false
+        return 
+      }
+      clearTimeout(timer)
+      timer=setTimeout(()=>{
+        fn.apply(this,args)
+      },delay*1000)
+    }
+  }
+}
 export {
   numToAbc,
   getCorrectAnswer,
@@ -387,5 +424,6 @@ export {
   getTimer,
   bytesToSize,
   TotalScore,
-  randomCreatScore
+  randomCreatScore,
+  Debounce
 };

@@ -53,7 +53,7 @@
             <div>
               <!-- 选择题答案选项 -->
               <div class="option option1" v-if="v.type===1">
-                <a-checkbox-group v-model:value="element.answer" style="width: 100%" @change="changebox" :disabled="CanDisabled()">
+                <a-checkbox-group v-model:value="element.answer" style="width: 100%" @change="changebox(v,element)" :disabled="CanDisabled()">
                   <a-row v-for="(j,b) in element.option" :key="j">
                     <a-checkbox :value="optionType[b]">{{`${optionType[b]}、`}}</a-checkbox>
                     <div> {{j.text}}</div>
@@ -62,7 +62,7 @@
               </div>
               <!-- 判断题答案选项 -->
               <div class="option option2" v-if="v.type===2">
-                <a-radio-group v-model:value="element.answer" :disabled="CanDisabled()" @change="changebox">
+                <a-radio-group v-model:value="element.answer[0]" :disabled="CanDisabled()" @change="changebox(v,element)">
                   <a-row>
                     <a-radio :value="1">正确</a-radio>
                   </a-row>
@@ -75,14 +75,14 @@
               <div class="option option3" v-if="v.type===3">
                 <div class="tiankong flexCenter" v-for="(j,b) in element.option" :key="element">
                   <span>{{`填空${b+1}`}}</span>
-                  <a-input v-model:value="element.answer[b]" :disabled="CanDisabled()" />
+                  <a-input v-model:value="element.answer[b]" @blur="changebox(v,element)" :disabled="CanDisabled()" />
                 </div>
               </div>
               <!-- 简答题 -->
               <div class="option option4" v-if="v.type===4">
                   <div class="jianda">
                     <div class="daan">答案</div>
-                    <a-textarea v-model:value="element.answer" :disabled="CanDisabled()" placeholder="" :autoSize="{ minRows: 4, maxRows: 6 }" />
+                    <a-textarea v-model:value="element.answer[0]" :disabled="CanDisabled()" placeholder="" :autoSize="{ minRows: 4, maxRows: 6 }" />
                   </div>
               </div>
               <!-- 编程题 -->
@@ -195,24 +195,21 @@ import storage from "src/utils/extStorage";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
-import {NoToCh,TotalScore,randomCreatScore} from 'src/utils/common'
+import {NoToCh,TotalScore,randomCreatScore,Debounce} from 'src/utils/common'
 import getTopicType from './topictype'
 const role = Number(storage.lStorage.get("role"));
 const router = useRouter();
 const route = useRoute();
 const { editId } = route.query;
-const http = (request as any).teacherImageResourcePool;
+const httpStu = (request as any).studentAssignment;
 
 
 type Tpurpose= 'IsPreview' | 'IsEdit' | 'IsStuAnswer' | 'achievement'  //预览// 编辑// 学生作答 //成绩查看
 interface Props {
-  // IsPreview?: boolean;   //预览
-  // IsEdit?:boolean        // 编辑
-  // IsStuAnswer?:boolean   // 学生作答
   purpose?:Tpurpose
 }
 const props = withDefaults(defineProps<Props>(), {
-  purpose:'achievement'
+  purpose:'IsStuAnswer'
 });
 
 // const emit = defineEmits<{
@@ -254,6 +251,7 @@ var list:any=reactive([
         ],
         score:10,
         answer:[],
+        id:1001
       },
       {
         question_desc:'在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱，设计规范性差，设计 沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向进行京东国际频道的品牌视觉全新升级， 实现加强正品心智，提升频',
@@ -273,6 +271,7 @@ var list:any=reactive([
         ], 
         score:14,
         answer:['B','D'],
+        id:1002
         //   选择 answer:['B','D']  判断answer:[true],  填空answer:['填空答案1','填空答案2']   简答answer:['简答题答案'] 
       },
       {
@@ -293,6 +292,7 @@ var list:any=reactive([
         ], 
         score:16,
         answer:['A'],
+        id:1003
         //   选择 answer:['B','D']  判断answer:[true],  填空answer:['填空答案1','填空答案2']   简答answer:['简答题答案'] 
       }
     ]
@@ -319,13 +319,13 @@ var list:any=reactive([
         question_desc:'Python关键字elif表示( ▁▁▁▁▁▁ )和( ▁▁▁▁▁▁ )两个单词的缩写。',
         option:[1,2],
         score:10,
-        answer:[],
+        answer:['',45],
       },
       {
         question_desc:'222Python关键字elif表示( ▁▁▁▁▁▁ )和( ▁▁▁▁▁▁ )两个单词的缩写。',
         option:[1,2,3],
         score:16,
-        answer:[],
+        answer:['','','dfg'],
       }
     ]
   },
@@ -336,13 +336,13 @@ var list:any=reactive([
         question_desc:'在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱，设计规范性差，设计沟通维护成本高。结合前期对用户及竞',
         option:'',
         score:10,
-        answer:'设计规范性差，设计沟通维护成本高。',
+        answer:['设计规范性差，设计沟通维护成本高。'],
       },
       {
         question_desc:'在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱，设计规范性差，设计沟通维护成本高。结合前期对用户及竞',
         option:'',
         score:19,
-        answer:'答案2',
+        answer:['答案2'],
       }
     ]
   },
@@ -397,9 +397,6 @@ const ModelObj:any=reactive({
 const SqllObj:any=reactive({
   desc:'在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱，设计规范性差，设计沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向进行京东国际频道的品牌视觉全新升级，实现加强正品心智，提升频道访问量，品牌强化的业务目标。在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱，设计规范性差，设计沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向进行京东国际频道的品牌视觉全新升级，实现加强正品心智，提升频道访问量，品牌强化的业务目标。'
 })
-const changebox=()=>{
-  
-}
 var statisticsInfo=computed(()=>{
   let obj:any={
     selectNum:0,
@@ -415,6 +412,27 @@ var statisticsInfo=computed(()=>{
   })
   return obj
 })
+
+// const DebounceUse:Function= reactive(new Debounce().use(submitAnswers,0.5))
+const DebounceUse:Function= new Debounce().use(submitAnswers,1.5) //延时
+// 答题
+var curQuestionId:Ref<number> = ref(0)
+const changebox=(v:any,element:any)=>{
+  // console.log(element.answer)
+  if(curQuestionId.value === element.id){
+    DebounceUse(element)
+  }else{
+    submitAnswers(element)
+  }
+  curQuestionId.value=element.id
+}
+function submitAnswers(params:any) {
+  // console.log(params.id);
+  
+  // httpStu.submitAnswers().then((res:any)=>{
+
+  // })
+}
 onMounted(()=>{
   // const {selectNum,selectScore}=randomCreatScore(list,'','')
 })
