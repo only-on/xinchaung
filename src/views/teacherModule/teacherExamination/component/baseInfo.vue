@@ -6,7 +6,7 @@
           <a-input v-model:value="formState.name" :placeholder="'请输入'+type+'名称'" />
         </a-form-item>
         <a-form-item label="起始时间" name="date">
-          <a-range-picker @change="dateChange" v-model:value="formState.date" valueFormat="YYYY-MM-DD" format="YYYY-MM-DD" :disabledDate="disabledDate">
+          <a-range-picker @change="dateChange" v-model:value="formState.date" :showTime="{format: 'HH:mm'}" valueFormat="YYYY-MM-DD HH:mm" format="YYYY-MM-DD HH:mm" :disabledDate="disabledDate">
             <template #suffixIcon>
               <calendar-outlined />
             </template>
@@ -20,18 +20,21 @@
       </div>
     </div>
     <a-form-item :label="type+'说明'">
-      <a-textarea v-model:value="formState.introduce" :auto-size="{ minRows: 6, maxRows: 8 }" :maxlength="100" :placeholder="'请输入'+type+'说明'" />
+      <a-textarea v-model:value="formState.note" :auto-size="{ minRows: 6, maxRows: 8 }" :maxlength="100" :placeholder="'请输入'+type+'说明'" />
     </a-form-item>
   </a-form>
 </template>
 <script lang="ts" setup>
-import {ref, reactive, inject, defineExpose} from 'vue'
+import {ref, reactive, watch, inject, defineExpose} from 'vue'
 import { CalendarOutlined  } from '@ant-design/icons-vue';
 import moment, { Moment } from 'moment';
+const props = defineProps({
+  data: Object
+})
 const formState = reactive({
   name: '',
   date: [],
-  introduce: ''
+  note: ''
 })
 const rules = {
   name: [
@@ -41,6 +44,8 @@ const rules = {
   date: {required: true, message: `请选择起始时间`}
 }
 const type = inject('type') || '考试'
+const editInfoData = inject('editInfo')
+console.log(editInfoData)
 const baseInfoFormRef = ref()
 const dateChange = () => {}
 const disabledDate=(current: Moment)=>{
@@ -49,11 +54,14 @@ const disabledDate=(current: Moment)=>{
 const fromValidate = () => {
   return new Promise((resolve: any, reject: any) => {
     baseInfoFormRef.value.validate().then(() => {
-      console.log(formState) 
       resolve()
     })
   })
 }
+watch(()=> editInfoData, (newVal:any) => {
+  console.log(newVal)
+  Object.assign(formState, newVal)
+},{deep:true,immediate:true})
 defineExpose({
   formState,
   fromValidate

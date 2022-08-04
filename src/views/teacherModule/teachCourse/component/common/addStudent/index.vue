@@ -165,7 +165,8 @@ columns.value = [
 ];
 const tableData: any = reactive({
   total: 0,
-  selectedRowKeys:[]
+  selectedRowKeys:[],
+  selectedRow: []
 });
 const params:any=reactive({
   type:props.type,
@@ -178,7 +179,7 @@ const params:any=reactive({
   page:1,
   limit:10,
 });
-const emit = defineEmits<{ (e: "updateSelectStuVisable", val: any,selectkeyws:any): void }>();
+const emit = defineEmits<{ (e: "updateSelectStuVisable", val: any,selectkeyws:any,selectedRows?:any): void }>();
 function getCheckboxProps(record: any) {
   return {
     disabled: record.selected
@@ -204,9 +205,9 @@ function onShowSizeChange(current: any, size: any) {
   params.limit=size;
   getallstudent()
 }
-function onSelectChange(selectedRowKeys: any) {
-  console.log(selectedRowKeys);
+function onSelectChange(selectedRowKeys: any, selectedRows:any) {
   tableData.selectedRowKeys=selectedRowKeys
+  tableData.selectedRow = selectedRows
 }
 function batchImport() {
   modalVisable.value = true;
@@ -219,8 +220,9 @@ function handleCancel() {
   modalVisable.value = false;
 }
 function handleOkSelect(){
-  emit("updateSelectStuVisable",'ok',tableData.selectedRowKeys);
+  emit("updateSelectStuVisable",'ok',tableData.selectedRowKeys, tableData.selectedRow);
   tableData.selectedRowKeys=[]
+  tableData.selectedRow = []
 }
 function handleCancelSelect(){
   emit("updateSelectStuVisable", 'cancel',[]);

@@ -1,8 +1,8 @@
 <template>
   <common-card title="学生">
     <template #right>
-      <a-button type="primary" @click="batchDel">移除</a-button>
-      <a-button type="primary">选择学生</a-button>
+      <a-button type="primary" v-if="showBtn" @click="batchDel">移除</a-button>
+      <a-button type="primary" @click="handleSelect" :disabled="!showBtn">选择学生</a-button>
     </template>
     <template #content>
       <a-config-provider>
@@ -26,61 +26,70 @@
       <Pagination
         v-model:page="pageInfo.page"
         v-model:size="pageInfo.size"
-        :total="tableTotal"
-        @page-change="pageChange"
+        :total="pageInfo.total"
+        @page-change="getListData"
       />
     </template>
   </common-card>
+  <!-- 选择学生 -->
+  <addstudent :visable='visable' :courseId='500060' @updateSelectStuVisable="updateSelectStuVisable" :type="1"></addstudent>
 </template>
 <script lang="ts" setup>
 import { ref, reactive, watch } from "vue";
 import CommonCard from "src/components/common/CommonCard.vue";
 import Pagination from "src/components/Pagination.vue";
+import addstudent from "src/views/teacherModule/teachCourse/component/common/addStudent/index.vue";
 import { message } from "ant-design-vue";
 
 const props = defineProps({
-  data: Array,
-  pageInfo: {
-    type: Object,
-    require: true,
-    default: {},
-  },
+  courseId: {
+    required: false,
+    default: ''
+  }
 });
 const emit = defineEmits<{
   (e: "delete", val: any): void;
   (e: "update:pageInfo", val: any): void;
 }>();
+const visable = ref<boolean>(false)
 var listData = reactive<any>([]); // 表格当前页展示的数据
 var allData = reactive<any>([]); // 所有数据
+const showBtn = ref<boolean>(false); // 关联课程则不显示操作按钮，没有关联则显示
+const studentIds = reactive<any>([])
+const pageInfo = reactive({
+  page: 1,
+  size: 10,
+  total: 0
+})
 const columns = [
   {
-    title: "学号",
-    dataIndex: "stu_no",
-    key: "stu_no",
+    title: "账号",
+    dataIndex: "username",
+    key: "username",
   },
   {
     title: "姓名",
-    dataIndex: "name",
+    dataIndex: ['user_profile', 'name'],
     key: "name",
   },
   {
     title: "班级",
-    dataIndex: "classname",
-    key: "classname",
+    dataIndex: "classes",
+    key: "classes",
   },
   {
     title: "年级",
-    dataIndex: "grade",
+    dataIndex: ['user_profile', 'grade'],
     key: "grade",
   },
   {
     title: "专业",
-    dataIndex: "major",
+    dataIndex: ['user_profile', 'major'],
     key: "major",
   },
   {
     title: "学院",
-    dataIndex: "department",
+    dataIndex: ['user_profile', 'department'],
     key: "department",
   },
   {
@@ -94,53 +103,54 @@ const tableTotal = ref();
 // 处理分页数据
 const getListData = () => {
   listData.length = 0;
+  if (pageInfo.total === pageInfo.size){
+    pageInfo.page = 1
+  }
   let showData = allData.filter(
     (item: any, index: any) =>
-      index < props.pageInfo.page * props.pageInfo.size &&
-      index >= props.pageInfo.size * (props.pageInfo.page - 1)
+      index < pageInfo.page * pageInfo.size &&
+      index >= pageInfo.size * (pageInfo.page - 1)
   );
   listData.push(...showData)
 };
-watch(
-  () => props.data,
-  (newVal:any) => {
-    allData.length = 0;
-    allData.push(...newVal)
-    getListData();
-  },
-  { deep: true, immediate: true }
-);
-
-watch(
-  () => props.pageInfo,
-  (newVal) => {
-    getListData();
-    tableTotal.value = newVal.total;
-  },
-  { deep: true }
-);
+const handleSelect= () => {
+  visable.value = true
+}
+const updateSelectStuVisable = (value:any, studentids:any, studentInfo?:any) => {
+  visable.value = false;
+  if (studentInfo) {
+    allData.push(...studentInfo)
+    studentIds.push(...studentids)
+  }
+}
 const handleChange = (selectedRowKeys: (string | number)[]) => {
   selectIds.value = selectedRowKeys;
 };
 const handlePage = (index: number) => {
   // 当前点击的下标
-  let currentIndex = (props.pageInfo.page - 1) * props.pageInfo.size + index;
+  let currentIndex = (pageInfo.page - 1) * pageInfo.size + index;
   // 当前页第一条数据的下标
-  let startInedx = (props.pageInfo.page - 1) * props.pageInfo.size;
+  let startInedx = (pageInfo.page - 1) * pageInfo.size;
   // 当前点击的下标 === 表格的最后一条 并且是当前页的第一条
   if (
-    currentIndex === props.pageInfo.total - 1 &&
+    currentIndex === pageInfo.total - 1 &&
     currentIndex === startInedx
   ) {
-    return props.pageInfo.page === 1 ? 1 : props.pageInfo.page - 1;
+    return pageInfo.page === 1 ? 1 : pageInfo.page - 1;
   }
 };
+// 单个移除
 const handleDel = (record: any, index: any) => {
   // 当前点击的下标
   if (handlePage(index)) {
-    props.pageInfo.page = handlePage(index);
+    pageInfo.page = handlePage(index);
   }
-  emit("delete", [record.id]);
+  allData.forEach((item:any,index:any) => {
+    if (item.id === record.id) {
+      allData.splice(index,1)
+      studentIds.splice(index,1)
+    }
+  })
 };
 // 批量删除
 const batchDel = () => {
@@ -148,11 +158,30 @@ const batchDel = () => {
     message.warning('请选择要移除的学生')
     return
   }
-  emit("delete", selectIds.value);
+  selectIds.value.forEach((item:any) => {
+    let idIndex = studentIds.indexOf(item)
+    if (idIndex !== -1) {
+      studentIds.splice(idIndex, 1)
+      allData.splice(idIndex,1)
+    }
+  })
 }
-const pageChange = () => {
-  emit("update:pageInfo", props.pageInfo);
-};
+watch(()=>props.courseId, newVal => {
+  console.log('courseId', newVal)
+  if (newVal) {
+    showBtn.value = false
+  } else {
+    showBtn.value = true
+  }
+},{immediate:true})
+watch(()=>allData,newVal => {
+  pageInfo.total = newVal.length
+  getListData()
+},{deep:true,immediate:true})
+
+defineExpose({
+  studentIds
+})
 </script>
 <style lang="less" scoped>
 .ant-table {

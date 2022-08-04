@@ -23,14 +23,14 @@ import {ref,reactive,watch} from 'vue'
 import Submit from "src/components/submit/index.vue";
 const props = defineProps({
   visible: Boolean,
-  editInfo: {
+  data: {
     type: Object,
-    require: false,
     default: {}
   }
 })
 const emit = defineEmits<{
   (e: "update:visible", val: boolean): void;
+  (e: "save"): void;
 }>();
 const modelVisible = ref<boolean>(false)
 const settingLoading = ref<boolean>(false)
@@ -38,47 +38,51 @@ watch(()=>props.visible, newVal => {
   modelVisible.value = newVal
 })
 const form = reactive({
-  questionOrder: false,
-  optionOrder: false,
-  canPaste: false,
-  autoSubmit: false,
-  disableExit: false,
-  faceVerification: false,
-  behaviorDetech: false
+  topic_chaotic: false,
+  options_chaotic: false,
+  no_copy: false,
+  no_switch: false,
+  noQuit: false,
+  face_verify: false,
+  dystropic: false
+})
+watch(() =>props.data, newVal => {
+  console.log(newVal)
+  Object.assign(form, newVal)
 })
 const settingList = reactive([
   {
-    bindAttr: form.questionOrder,
+    bindAttr: form.topic_chaotic,
     title: '题目顺序随机打乱',
     tips: '选中，则学生答题时，题目顺序按照题型随机显示'
   },
   {
-    bindAttr: form.optionOrder,
+    bindAttr: form.options_chaotic,
     title: '选项顺序随机打乱',
     tips: '选中，则学生答题时，选项顺序随机显示'
   },
   {
-    bindAttr: form.canPaste,
+    bindAttr: form.no_copy,
     title: '学生不可复制粘贴内容',
     tips: '选中，则学生答题时，不可复制粘贴内容'
   },
   {
-    bindAttr: form.autoSubmit,
+    bindAttr: form.no_switch,
     title: '页签切换≥5次自动交卷',
     tips: '选中，则每次切换，学生端会有提示，页签切换≥5次后平台会强制交卷'
   },
   {
-    bindAttr: form.disableExit,
+    bindAttr: form.noQuit,
     title: '禁止退出浏览器',
     tips: ''
   },
   {
-    bindAttr: form.faceVerification,
+    bindAttr: form.face_verify,
     title: '考试前人脸身份验证',
     tips: '选中，则学生参加考试前将会要求调用摄像头并完成拍照采集，教师/助教审核通过后学生并开启手机 录制视频则可以开始考试)如开启，教师/助教可以在该考试中的详情页中对学生人脸身份进行审核。'
   },
   {
-    bindAttr: form.behaviorDetech,
+    bindAttr: form.dystropic,
     title: '考生行为异常探测',
     tips: '选中，则摄像头监控学生答题行为情况，若出现明显异常的作弊行为则成绩作废'
   }
@@ -87,6 +91,7 @@ const saveSetting = () => {
   modelVisible.value = false
   settingLoading.value = true
   emit('update:visible', false)
+  emit('save')
 }
 const cancelSetting = () => {
   modelVisible.value = false

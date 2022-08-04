@@ -76,6 +76,7 @@ export interface IApiCollection {
   teacherImageResourcePool:ITeacherImageResourcePool;
   QuestionBank:IQuestionBank;
   teacherAssignment:ITeacherAssignment;
+  teacherExamination: ITeacherExamination;
 
 
   TeachingResourceManagement:ITeachingResourceManagement;

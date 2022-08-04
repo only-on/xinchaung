@@ -80,6 +80,8 @@ import CommonCard from "src/components/common/CommonCard.vue";
 import Submit from "src/components/submit/index.vue";
 import { message } from "ant-design-vue";
 import getTopicType from "src/components/TopicDisplay/topictype.ts"
+import {TotalScore} from "src/utils/common.ts"
+import {validateNum} from "../utils"
 
 const props = defineProps({
   data: Array,
@@ -158,15 +160,7 @@ var outerIndex:any = null
 const checkArr = ref<string[]>([])
 // 批量设置分数表单验证
 const batchFormRef = ref<any>()
-let validateNum = async (rule: any, value: string) => {
-  let validateor = /^([1-9]{1}[0-9]*|0)$/
-  if (!validateor.test(value)) {
-    return Promise.reject('请输入正整数');
-  } else {
-    return Promise.resolve();
-  }
-};
-const rulesInput = {validator: validateNum, trigger:'blur'}
+const rulesInput = validateNum
 const batchData = reactive([
   {
     type: 'choice',
@@ -355,14 +349,9 @@ const handleBlur = () => {
   topInfo.num = 0
   listData.value.forEach((item:any) => {
     topInfo.num += item.data.length
-    item.score = 0
-    item.data.forEach((questionItem:any) => {
-      if (!isNaN(Number(questionItem.score))) {
-        item.score += Number(questionItem.score) // 类型总分
-      }
-    })
-    topInfo.totalScore += Number(item.score)
+    item.score = TotalScore(item.data, 'score')
   })
+  topInfo.totalScore = TotalScore(listData.value, 'score')
 }
 // 内层表格表单验证
 const tableFormRef = ref<any>()
@@ -405,6 +394,9 @@ defineExpose({
   }
   .ant-table-thead > tr > th{
     background: #fbfbfb;
+  }
+  .ant-form-item{
+    margin-bottom: 0;
   }
 }
 .ant-pagination{

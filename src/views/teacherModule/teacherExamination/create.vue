@@ -15,7 +15,25 @@
       <template #content>
         <a-row>
           <a-col :span="10">
-             
+             <div class="item">
+              <div class="title">知识点</div>
+             </div>
+             <div class="item">
+              <div class="title">难度系数</div>
+              <div class="multiSelect">
+                <span v-for="(item,index) in difficultyList" :key="index" :class="{'active': activeIndex['difficulty'].includes(item.value)}" @click="changeMultiSelect(item, 'difficulty')">
+                  {{item.label}}
+                </span>
+              </div>
+             </div>
+             <div class="item">
+              <div class="title">作业选择范围</div>
+              <div class="multiSelect">
+                <span v-for="(item,index) in rangeList" :key="index" :class="{'active': activeIndex['range'].includes(item.value)}" @click="changeMultiSelect(item, 'range')">
+                  {{item.label}}
+                </span>
+              </div>
+             </div>
           </a-col>
           <a-col :span="14">
             <div class="title">题目类型及个数设置<span>（试题总数：{{topInfo.num}} 总分：{{topInfo.score}}）</span></div>
@@ -23,10 +41,10 @@
               <a-form :model="randomQuestion" ref="randomFormRef">
                 <li v-for="(item,index) in randomQuestion" :key="index">
                   {{getTopicType[item.type].name}} <span>({{item.num}}道题可选)</span>
-                  <a-form-item :name="[index, 'selectNum']" rules="">
+                  <a-form-item :name="[index, 'selectNum']" :rules="validateNum">
                     <div>抽取 <a-input type="text" v-model:value="item.selectNum" @blur="handleBlur" :disabled="!item.num"></a-input>道题</div>
                   </a-form-item>
-                  <a-form-item :name="[index, 'score']" rules="">
+                  <a-form-item :name="[index, 'score']" :rules="validateNum">
                     <div>每题<a-input type="text" v-model:value="item.score" @blur="handleBlur" :disabled="!item.num"></a-input>分</div>
                   </a-form-item>
                 </li>
@@ -51,6 +69,7 @@ import studentTable from "./component/studentTable.vue"
 import Submit from "src/components/submit/index.vue";
 import getTopicType from "src/components/TopicDisplay/topictype"
 import {randomCreatScore} from 'src/utils/common'
+import {validateNum} from "./utils"
 const route = useRoute();
 const router = useRouter()
 provide("type", "考试");
@@ -170,13 +189,6 @@ const randomQuestion = reactive([
   }
 ])
 const handleBlur = () => {
-  topInfo.num = 0
-  topInfo.score = 0
-  // randomQuestion.forEach((item:any) => {
-  //   topInfo.num += Number(item.selectNum)
-  //   topInfo.score += Number(item.score) * Number(item.selectNum)
-  // })
-  // console.log(topInfo);
   const {selectNum,selectScore}=randomCreatScore(randomQuestion,'selectNum','score')
   console.log(selectNum,selectScore);
   topInfo.num=selectNum
@@ -217,11 +229,57 @@ const delStudent = (ids:number[]) => {
 }
 // 题目范围表单验证
 const randomFormRef = ref<any>()
-
+const difficultyList= reactive([
+  {
+    value: 0,
+    label: '简单'
+  },
+  {
+    value: 1,
+    label: '适中'
+  },
+  {
+    value: 2,
+    label: '困难'
+  }
+])
+const rangeList = reactive([
+  {
+    value: 0,
+    label: '公共题库'
+  },
+  {
+    value: 1,
+    label: '我的题库'
+  },
+])
+const activeIndex = reactive({
+  difficulty: [0],
+  range: [0]
+})
+const changeMultiSelect = (item:any,type:any) => {
+  let subscript = activeIndex[type].indexOf(item.value)
+  if (subscript === -1) {
+    activeIndex[type].push(item.value)
+  } else {
+    activeIndex[type].splice(subscript, 1)
+  }
+}
+const randomFormValidate = () => {
+  return new Promise((resolve:any)=>{
+    randomFormRef.value.validate().then(()=>{
+      resolve()
+    })
+  })
+}
 const handleSave = async() => {
-  await questionTableRef.value.tablefromValidate()
+  if (isRandom.value) {
+    await randomFormValidate()
+  } else {
+    await questionTableRef.value.tablefromValidate()
+    console.log(questionTableRef.value.listData)
+  }
   console.log(baseInfoRef.value.formState)
-  console.log(questionTableRef.value.listData)
 }
 const cancelSave = () => {
   router.go(-1)
@@ -229,6 +287,24 @@ const cancelSave = () => {
 </script>
 <style lang="less" scoped>
 .random{
+  .item{
+    margin: 10px 0 30px;
+  }
+  .multiSelect{
+    margin-top: 15px;
+    span{
+      padding: 8px 27px;
+      border-radius: 18px;
+      border: 1px solid #DFDFDF;
+      margin-right: 10px;
+      cursor: pointer;
+      &.active{
+        color: var(--primary-color);
+        background: var(--primary-1);
+        border: 1px solid var(--primary-color);
+      }
+    }
+  }
   .title{
     position: relative;
     &::before{
@@ -247,8 +323,12 @@ const cancelSave = () => {
   .randomQuestion{
     li{
       display: flex;
-      align-items: center;
+      line-height: 32px;
       margin-top: 15px;
+        color: var(--black-65);
+      >span{
+        color: var(--black-25);
+      }
       >div{
         margin: 0 20px;
         &:first-of-type{

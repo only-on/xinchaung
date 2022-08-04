@@ -5,6 +5,7 @@
     :pageSize="size"
     :page-size-options="['10', '20', '30', '40', '50']"
     :total="total"
+    :hideOnSinglePage="true"
     @showSizeChange="handleSizeChange"
     @change="handlePageChange"
   />

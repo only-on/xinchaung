@@ -9,7 +9,7 @@
     <div class="middle">
       <span>关联课程：大学计算机基础（信息工程大学）第2期</span>
       <div>
-        国防科技大学2019秋《大学计算机基础》期末考试试卷A卷
+        {{item.name}}
       </div>
       <div>
         <span>创建时间：2022/08/10 15:20</span>
@@ -20,7 +20,7 @@
     </div>
     <div class="right">
       <div>
-        <a-button type="link" @click="handleClick('setting')">防作弊设置</a-button>
+        <a-button type="link" @click="handleClick('setting', item)">防作弊设置</a-button>
         <a-dropdown>
           <a class="ant-dropdown-link" @click.prevent>
             <i class="iconfont icon-gengduotianchong"></i>
@@ -28,16 +28,16 @@
           <template #overlay>
             <a-menu>
               <a-menu-item>
-                <span @click="handleClick('edit')">编辑</span>
+                <span @click="handleClick('edit', item)">编辑</span>
               </a-menu-item>
               <a-menu-item>
-                <span @click="handleClick('delete')">删除</span>
+                <span @click="handleClick('delete', item)">删除</span>
               </a-menu-item>
               <a-menu-item>
-                <span @click="handleClick('copy')">复用</span>
+                <span @click="handleClick('copy', item)">复用</span>
               </a-menu-item>
               <a-menu-item>
-                <span @click="handleClick('export')">导出试卷</span>
+                <span @click="handleClick('export', item)">导出试卷</span>
               </a-menu-item>
             </a-menu>
           </template>
@@ -48,13 +48,17 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {ref} from 'vue'
-const props = defineProps({})
+import {ref,reactive, watch} from 'vue'
+const props = defineProps({
+  data: Object
+})
+const item = reactive<any>(props.data)
 const emit = defineEmits<{
-  (e: "menuClick", val: any): void;
+  (e: "menuClick", val: any, item:any): void;
 }>();
-const handleClick = (operateType:string) => {
-  emit('menuClick', operateType)
+
+const handleClick = (operateType:string, item:any) => {
+  emit('menuClick', operateType, item)
 }
 </script>
 <style lang="less" scoped>
@@ -65,6 +69,7 @@ const handleClick = (operateType:string) => {
   box-shadow: 0px 1px 1px 0px rgba(0, 0, 0, 0.07);
   display: flex;
   margin-bottom: 15px;
+  cursor: pointer;
   .left {
     width: 150px;
     height: 100%;
