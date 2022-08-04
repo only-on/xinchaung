@@ -62,6 +62,7 @@
 <script lang="ts" setup>
 import { ref, reactive, watch, provide, inject } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { message } from "ant-design-vue";
 import CommonCard from "src/components/common/CommonCard.vue";
 import baseInfo from "./component/baseInfo.vue";
 import questionTable from "./component/questionTable.vue";
