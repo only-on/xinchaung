@@ -43,7 +43,7 @@
           </template>
         </a-dropdown>
       </div>
-      <a-button type="primary">发布</a-button>
+      <a-button type="primary" @click="handleEvent('review', item)">发布</a-button>
     </div>
   </div>
 </template>
@@ -55,10 +55,14 @@ const props = defineProps({
 const item = reactive<any>(props.data)
 const emit = defineEmits<{
   (e: "menuClick", val: any, item:any): void;
+  (e: "operate", val: any, item:any): void;
 }>();
 
 const handleClick = (operateType:string, item:any) => {
   emit('menuClick', operateType, item)
+}
+const handleEvent = (operateType:string, item:any) => {
+  emit('operate', operateType, item)
 }
 </script>
 <style lang="less" scoped>

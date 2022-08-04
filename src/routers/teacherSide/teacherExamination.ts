@@ -28,5 +28,14 @@ export default {
         authCode: "createExamination",
       },
     },
+    {
+      path: "reviewExamination",
+      name: "reviewExamination",
+      component: () => import("src/views/teacherModule/teacherExamination/review.vue"),
+      meta: {
+        title: '考试评阅',
+        authCode: "reviewExamination",
+      },
+    },
   ],
 };

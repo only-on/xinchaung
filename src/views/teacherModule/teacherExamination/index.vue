@@ -12,7 +12,7 @@
   <a-spin :spinning="listData.loading" size="large" tip="Loading...">
     <div class="mainBox">
       <!-- <cardItem @menuClick="menuClick"/> -->
-      <cardItem v-for="(item,index) in listData.data" :data="item" :key="index" @menuClick="menuClick"/>
+      <cardItem v-for="(item,index) in listData.data" :data="item" :key="index" @menuClick="menuClick" @operate="handleOperate"/>
     </div>
     <Pagination v-model:page="searchInfo.page" v-model:size="searchInfo.limit" :total="listData.total" @page-change="getList"/>
     <Empty v-if="!listData.data.length" :type="EmptyType"/>
@@ -189,6 +189,19 @@ const menuClick = (type:string, val:any) => {
       break;
     case 'export':
       break;
+  }
+}
+// 按钮点击
+const handleOperate = (type:any,item:any) => {
+  switch (type) {
+    case 'review':
+      router.push({
+        path: '/teacher/teacherExamination/reviewExamination',
+        query: {
+          id: item.id,
+          name: item.name
+        }
+      })
   }
 }
 onMounted(()=>{
