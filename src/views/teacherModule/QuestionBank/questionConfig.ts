@@ -27,6 +27,9 @@ const questionTypeList = {
   6: {
     name:'模型题', keyword: '模型', bgColor: '#4B6CF5'
   },
+  7: {
+    name:'SQL题', keyword: 'SQL', bgColor: '#2dc3c4'
+  },
 };
 const levelTypeList = {
   1: {

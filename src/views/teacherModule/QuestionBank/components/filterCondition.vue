@@ -2,15 +2,15 @@
 <div>
   <div class="filter-condition">
     <div class="drop-down">
-      <a-select v-model:value="value3" style="width: 200px" class="type" @change="changeType">
+      <a-select v-model:value="props.searchInfo.type" style="width: 200px" class="type" @change="changeType">
         <a-select-option value="">所有类型</a-select-option>
         <a-select-option :value="key" v-for="(item, key) in questionTypeList" :key="item">{{item.name}}</a-select-option>
       </a-select>
-      <a-select v-model:value="value3" style="width: 200px" class="level" @change="changelevel">
+      <a-select v-model:value="props.searchInfo.level" style="width: 200px" class="level" @change="changeType">
         <a-select-option value="">所有难度</a-select-option>
         <a-select-option :value="key" v-for="(item, key) in levelTypeList" :key="item">{{item.name}}</a-select-option>
       </a-select>
-      <a-select v-model:value="value3" style="width: 200px" class="use" @change="changeUse">
+      <a-select v-model:value="props.searchInfo.use" style="width: 200px" class="use" @change="changeType">
         <a-select-option value="">所有用途</a-select-option>
         <a-select-option :value="key" v-for="(item, key) in useTypeList" :key="item">{{item.name}}</a-select-option>
       </a-select>
@@ -18,9 +18,10 @@
     <div class="select-knowledge">
       <div class="selected">
         <span class="tit">所选知识点 >&nbsp;</span>
-        <span class="selected-knowledge">
-          <span>课程名称课程名称 > 知识点1 / 知识点2 / 知识点3</span>
-          <span class="iconfont icon-guanbi pointer"></span>
+        <span class="selected-knowledge" v-if="selectKnowledgeVisible">
+          <span>{{currentCourse.name}} > </span>
+          <span v-for="(list, index) in currentKnowledge" :key="list.id">{{list.name+(index !== currentKnowledge.length - 1 ? " /&nbsp;" : "")}}</span>
+          <span class="iconfont icon-guanbi pointer" @click="deleteKnowledge"></span>
         </span>
       </div>
       <div class="directive">
@@ -36,7 +37,7 @@
       </div>
     </div>
   </div>
-  <div class="knowledge-box" v-show="currentDirective">
+  <div class="knowledge-box" v-show="selectKnowledgeVisible">
     <div class="content">
       <div class="main" :style="{height: currentDirective?'260px':0}">
         <div class="left">
@@ -46,7 +47,7 @@
               class="course-list pointer"
               v-for="list in courseList" 
               :key="list.id"
-              :class="[currentCourse==list.id?'current-course':'']"
+              :class="[currentCourse.id==list.id?'current-course':'']"
               @click="selectCourse(list)"
             >
               {{list.name}}
@@ -59,7 +60,7 @@
               class="knowledge-list pointer"
               v-for="list in knowledgeList"
               :key="list.id"
-              :class="[currentKnowledge.includes(list.id)?'current-knowledge':'']"
+              :class="[currentKnowledgeId.includes(list.id)?'current-knowledge':'']"
               @click="selectKnowledge(list)"
             >
               {{list.name}}
@@ -80,7 +81,16 @@ import { ref } from 'vue'
 import { questionTypeList, levelTypeList, useTypeList } from "./../questionConfig"
 import Submit from "src/components/submit/index.vue";
 import { Modal, message } from "ant-design-vue";
-const value3 = ref('')
+interface Props {
+  searchInfo: any
+}
+const props = withDefaults(defineProps<Props>(), {
+  searchInfo: {}
+});
+const emit = defineEmits<{
+  (e: "searchFn", obj?: any): void;
+}>();
+const selectKnowledgeVisible = ref(false)
 const directive = [
   {id: 0, name: '全部'},
   {id: 100, name: '程序设计语言'},
@@ -127,29 +137,58 @@ const knowledgeList = [
   {id: 16, name: '知识点1'},
 ]
 const currentDirective = ref(0)
-const currentCourse = ref(1)
-const currentKnowledge = ref<number[]>([])
+const currentCourse = ref({
+  id: 1,
+  name: '多场景数据可视化数'
+})
+const currentKnowledge = ref<any[]>([])
+const currentKnowledgeId = ref<number[]>([])
 const selectDirective = (id: number) => {
+  console.log(id)
   currentDirective.value = id
+  id ? selectKnowledgeVisible.value = true : selectKnowledgeVisible.value = false
 }
 const selectCourse = (list: any) => {
-  currentCourse.value = list.id
+  currentCourse.value = list
 }
 const selectKnowledge = (list: any) => {
-  if (currentKnowledge.value.length >= 3) {
-    message.warn("最多选择3个知识点")
-    return
+  let index = currentKnowledgeId.value.indexOf(list.id)
+  if (index !== -1) {
+    currentKnowledge.value.splice(index, 1)
+    currentKnowledgeId.value.splice(index, 1)
+  } else {
+    if (currentKnowledge.value.length >= 3) {
+      message.warn("最多选择3个知识点")
+    } else {
+      currentKnowledge.value.push(list)
+      currentKnowledgeId.value.push(list.id)
+    }
   }
-  const index = currentKnowledge.value.indexOf(list.id)
-  index == -1 ? currentKnowledge.value.push(list.id) : currentKnowledge.value.splice(index, 1)
 }
-const onSubmit = () => {}
+const deleteKnowledge = () =>  {
+  currentKnowledge.value = []
+  currentKnowledgeId.value = []
+  currentCourse.value = {
+    id: 1,
+    name: ''
+  }
+  selectKnowledgeVisible.value = false
+}
+const onSubmit = () => {
+  selectKnowledgeVisible.value = false
+  console.log(currentKnowledge.value)
+  console.log(currentKnowledgeId.value)
+  console.log(currentCourse.value)
+  props.searchInfo.knowledge = currentKnowledgeId.value
+  emit('searchFn')
+}
 const cancel = () => {
   currentDirective.value = 0
+  selectKnowledgeVisible.value = false
 }
-const changeType = () => {}
-const changelevel = () => {}
-const changeUse = () => {}
+const changeType = () => {
+  emit('searchFn')
+}
 </script>
 
 <style lang="less" scoped>
@@ -179,7 +218,7 @@ const changeUse = () => {}
         border-radius: 12px;
         color: var(--brightBtn);
         height: 22px;
-        line-height: 22px;
+        line-height: 20px;
         display: inline-block;
         padding: 0 10px;
         .iconfont {

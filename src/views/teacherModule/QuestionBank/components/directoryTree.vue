@@ -20,15 +20,13 @@
       <span v-else><span class="iconfont icon-wenjianjia2-mianxing"></span></span>
     </template>
     <template #title="{ dataRef }">
-      <span class="tree-title title">
-        <span class="name">
-          <span class="itemName">{{ dataRef.name }}</span>
-        </span>
+      <span class="tree-title">
+        <span class="name">{{ dataRef.name }}</span>
         <span class="btns" v-if="dataRef.key!=0">
-          <span class="iconfont icon-shangyi"></span>
-          <span class="iconfont icon-shangyi-copy"></span>
-          <span class="iconfont icon-bianji"></span>
-          <span class="iconfont icon-shanchu"></span>
+          <span class="iconfont icon-shangyi" @click="upDirectory(dataRef)"></span>
+          <span class="iconfont icon-shangyi-copy" @click="downDirectory(dataRef)"></span>
+          <span class="iconfont icon-bianji" @click="editDirectory(dataRef)"></span>
+          <span class="iconfont icon-shanchu" @click="deletDirectory(dataRef)"></span>
         </span>
       </span>
     </template>
@@ -56,7 +54,8 @@
   </a-modal>
 </template>
 <script lang="ts" setup>
-import { defineComponent, ref, onMounted, reactive } from 'vue';
+import { defineComponent, createVNode, ref, onMounted, reactive } from 'vue';
+import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { SelectEvent } from "ant-design-vue/es/tree/Tree";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
@@ -196,14 +195,6 @@ const onLoadData = (treeNode: any) => {
       treeData.value = [...treeData.value];
       resolve();
     })
-    // setTimeout(() => {
-    //   treeNode.dataRef.children = [
-    //     { title: 'Child Node', key: `${treeNode.eventKey}-0` },
-    //     { title: 'Child Node', key: `${treeNode.eventKey}-1` },
-    //   ];
-    //   list.value = [...list.value];
-    //   resolve();
-    // }, 1000);
   });
 
 }
@@ -233,16 +224,34 @@ const rules = {
 }
 const formState = reactive({
   name: '',
-  directoryId: 0
+  directoryId: [0]
 })
 function submit() {
   loading.value = true
   console.log(formState)
+  const param = {
+    is_public: 0,
+    name: formState.name,
+    parent_id: formState.directoryId[formState.directoryId.length-1]
+  }
+  http.createDirectory({param}).then((res: IBusinessResp) => {
+    loading.value = false
+    visible.value = false
+    console.log(treeData.value)
+    treeData.value[0].children[0].children = [{
+      id: 31324234,
+      name: "目录111",
+      is_public: 1,
+      has_children: 0,
+      isLeaf: false,
+      children: []
+    }]
+    console.log(treeData.value)
+  })
 }
 function cancel() {
 
 }
-
 const options = ref([
   {
     id: 0,
@@ -286,14 +295,40 @@ const loadData = (selectedOptions: any) => {
     })
   }
 };
+function upDirectory(val: any) {}
+function downDirectory(val: any) {}
+function editDirectory(val: any) {}
+function deletDirectory(val: any) {
+  Modal.confirm({
+    title: "确定要删除这个文件夹吗？",
+    icon: createVNode(ExclamationCircleOutlined),
+    content: "删除后不可恢复",
+    okText: "确认",
+    cancelText: "取消",
+    onOk() {
+
+    }
+  })
+}
 </script>
 
 <style lang="less" scoped>
 .tree-title {
-  .name {}
+  display: inline-block;
+  width: 100%;
+  .name { 
+    display: inline-block;
+    width: 100%;
+  }
   .btns {
     display: none;
-    float: right;
+    // display: inline-block;
+    width: 114px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: linear-gradient(268deg,#fff7e6 2%, rgba(255,247,230,0.91) 87%, rgba(255,247,230,0.00) 98%);
+    text-align: right;
     .iconfont {
       font-size: var(--font-size-14);
       color: var(--primary-color);
@@ -302,7 +337,6 @@ const loadData = (selectedOptions: any) => {
   }
   &:hover {
     .btns {
-      background: linear-gradient(268deg,#fff7e6 2%, rgba(255,247,230,0.91) 87%, rgba(255,247,230,0.00) 98%);
       display: inline-block;
     }
   }

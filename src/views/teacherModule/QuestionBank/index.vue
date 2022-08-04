@@ -7,7 +7,7 @@
     :isReset="resetKeyword"
   ></search-add>
   <!-- <directory-tree></directory-tree> -->
-  <filter-condition></filter-condition>
+  <filter-condition :searchInfo="searchInfo" @searchFn="searchFn"></filter-condition>
   <div class="question-content">
     <div class="left" v-if="isMyQuestion">
       <directory-tree></directory-tree>
@@ -17,6 +17,8 @@
         <div class="mainBox">
           <question-list 
             :isOperation="isMyQuestion"
+            menuClick="menuClick"
+            :questionList="questionListData"
           ></question-list>
           <Empty v-if="!list.length && !loading" :type="EmptyType" />
           <a-pagination
@@ -34,7 +36,7 @@
     <div class="bottom">
       <div class="left">
         <a-checkbox v-model:checked="checkedAll" @change="checkedAllHandle">全选</a-checkbox>
-        <span class="selected-num">已选（35题）</span>
+        <span class="selected-num">已选（{{checkedNum}}题）</span>
       </div>
       <div class="center">
         <span v-if="isMyQuestion">
@@ -90,6 +92,106 @@ const pageInfo = reactive({
 let list = reactive<IMaterialList[]>([]);
 const pageTotal = ref<number>(0);
 const checkedAll = ref(false)
+const questionListData = reactive([
+  {
+    id: 1,
+    type: 1,
+    level: 1,
+    use: 1,
+    desc: '在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱， 设计规范性差，设计沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向 进行京东国际频道的品牌视觉全新升级，实现加强正品心智，提升频道访问量，品牌强化的业务目标。',
+    analysis: 'fasdkfj;lqre',
+    user_profile: {
+      name: "小黄帽姑娘",
+      portrait: ""
+    },
+    created_at: '',
+  },
+  {
+    id: 2,
+    type: 2,
+    level: 2,
+    use: 2,
+    desc: '在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱， 设计规范性差，设计沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向 进行京东国际频道的品牌视觉全新升级，实现加强正品心智，提升频道访问量，品牌强化的业务目标。',
+    analysis: 'fasdkfj;lqre',
+    user_profile: {
+      name: "小黄帽姑娘",
+      portrait: ""
+    },
+    created_at: '',
+  },
+  {
+    id: 3,
+    type: 3,
+    level: 3,
+    use: 1,
+    desc: '在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱， 设计规范性差，设计沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向 进行京东国际频道的品牌视觉全新升级，实现加强正品心智，提升频道访问量，品牌强化的业务目标。',
+    analysis: 'fasdkfj;lqre',
+    user_profile: {
+      name: "小黄帽姑娘",
+      portrait: ""
+    },
+    created_at: '',
+  },
+  {
+    id: 4,
+    type: 4,
+    level: 1,
+    use: 2,
+    desc: '在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱， 设计规范性差，设计沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向 进行京东国际频道的品牌视觉全新升级，实现加强正品心智，提升频道访问量，品牌强化的业务目标。',
+    analysis: 'fasdkfj;lqre',
+    user_profile: {
+      name: "小黄帽姑娘",
+      portrait: ""
+    },
+    created_at: '',
+  },
+  {
+    id: 5,
+    type: 5,
+    level: 2,
+    use: 1,
+    desc: '在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱， 设计规范性差，设计沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向 进行京东国际频道的品牌视觉全新升级，实现加强正品心智，提升频道访问量，品牌强化的业务目标。',
+    analysis: 'fasdkfj;lqre',
+    user_profile: {
+      name: "小黄帽姑娘",
+      portrait: ""
+    },
+    created_at: '',
+  },
+  {
+    id: 61,
+    type: 6,
+    level: 3,
+    use: 2,
+    desc: '在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱， 设计规范性差，设计沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向 进行京东国际频道的品牌视觉全新升级，实现加强正品心智，提升频道访问量，品牌强化的业务目标。',
+    analysis: 'fasdkfj;lqre',
+    user_profile: {
+      name: "小黄帽姑娘",
+      portrait: ""
+    },
+    created_at: '',
+  },
+  {
+    id: 7,
+    type: 7,
+    level: 1,
+    use: 1,
+    desc: '在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱， 设计规范性差，设计沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向 进行京东国际频道的品牌视觉全新升级，实现加强正品心智，提升频道访问量，品牌强化的业务目标。',
+    analysis: 'fasdkfj;lqre',
+    user_profile: {
+      name: "小黄帽姑娘",
+      portrait: ""
+    },
+    created_at: '',
+  },
+])
+const checkedNum = computed(() => {
+  let i = 0
+  questionListData.forEach((v: any) => {
+    v.checked ? i++ : ''
+  })
+  return i
+})
 
 // 搜索
 const searchInfo = reactive({
@@ -100,8 +202,9 @@ const searchInfo = reactive({
   knowledge: []
 })
 const resetKeyword = ref<boolean>(false)  // 重置keyword
-const searchFn = (key: string) => {
-  searchInfo.keyWord = key;
+const searchFn = (key?: string) => {
+  console.log(searchInfo)
+  key ? searchInfo.keyWord = key:''
   pageInfo.page = 1
   initData();
 };
@@ -132,6 +235,9 @@ const pageChange = (page: number) => {
 // 全选
 const checkedAllHandle = (e: any) => {
   console.log(e)
+  questionListData.forEach((v: any) => {
+    e.target.checked ? v.checked = true :v.checked = false
+  })
 }
 watch(
   () => {
@@ -194,6 +300,24 @@ const initData = () => {
   //   loading.value=false
   // })
 };
+function menuClick(type:string) {
+  console.log(type)
+  switch (type) {
+    case 'edit':
+      
+      break;
+    case 'delete':
+      
+      break;
+    case 'public':
+      
+      break;
+    case 'export':
+      break;
+    case 'move':
+      break;
+  }
+}
 onMounted(() => {
   if (!Number(route.query.currentTab)) {
     currentTab.value = 0
