@@ -28,7 +28,7 @@
         </div>
       </div>
       <!-- 题型展示 -->
-      <Draggable :list="v.question" :draggable="props.purpose==='IsEdit'?'.item':'.noitem'" :sort="props.purpose==='IsEdit'?true:false" @start="onStart" @end="onEnd(v.question)" ghost-class="ghost" :force-fallback="true" chosen-class="chosenClass" animation="300"  itemKey="id">
+      <Draggable :list="v.question" :draggable="props.purpose==='IsEdit'?'.item':'.noitem'" :sort="props.purpose==='IsEdit'?true:false"    @start="onStart" @end="onEnd(v.question)" ghost-class="ghost" :force-fallback="true" chosen-class="chosenClass" animation="300"  itemKey="id">
         <template #item="{ element,index}">
           <div class="item">
             <!-- 题号 -->
@@ -450,6 +450,7 @@ onMounted(()=>{
     }
     .QuestionType{
       justify-content: space-between;
+      padding-bottom: 14px;
       .del{
         margin-left: 10px;
       }
@@ -457,6 +458,7 @@ onMounted(()=>{
     .item{
       color: var(--black-65);
       padding: 16px 30px;
+      background-color: var(--lightgray-2);
       .itemOrder{
         justify-content: space-between;
         margin-bottom: 10px;

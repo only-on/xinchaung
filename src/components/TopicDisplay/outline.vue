@@ -1,9 +1,11 @@
 <template>
   <div class="outlineinfo flexCenter">
     <div class="title">{{props.title}}</div>
-    <div class="explain">{{props.explain}}</div>
-    <div class="explainText">{{props.explainText}}</div>
-    <!-- <div>无说明文字</div> -->
+    <div class="explainTextBox">
+      <div class="explain">{{props.explain}}</div>
+      <div class="explainText">{{props.explainText}}</div>
+    </div>
+    <!-- <div>无说明文字</div>  --lightgray-2-->
   </div>
 </template>
 <script lang="ts" setup>
@@ -50,10 +52,18 @@ const props = withDefaults(defineProps<Props>(), {
       margin: 0 auto;
       font-size: 18px;
       color: var(--black-85);
-      margin-bottom: 56px;
+      margin-bottom: 32px;
+    }
+    .explainTextBox{
+      background-color: var(--lightgray-2);
+      padding: 16px 30px 24px;
+      .explain{
+        text-align: center;
+        padding-bottom: 16px;
+      }
     }
     .explainText{
-      padding: 16px 30px 24px;
+      // padding: 16px 30px 24px;
     }
   }
 

@@ -84,6 +84,7 @@ const props = withDefaults(defineProps<Props>(), {
         font-weight: 900;
         color: var(--black);
         // padding-bottom: 1rem;
+        padding-bottom: 10px;
         &.detailsTit2{
           // padding-bottom: 1rem;
         }
@@ -91,11 +92,11 @@ const props = withDefaults(defineProps<Props>(), {
           color: var(--black-65);
         }
       }
-      .content{
-        justify-content:space-between;
-        .contentLeft,.contentRight{
-          width: 497px;
-        }
+    }
+    .content{
+      justify-content:space-between;
+      .contentLeft,.contentRight{
+        width: 497px;
       }
     }
   }

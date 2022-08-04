@@ -54,6 +54,7 @@ const props = withDefaults(defineProps<Props>(), {
         font-weight: 900;
         color: var(--black);
         // padding-bottom: 1rem;
+        padding-bottom: 10px;
       }
     }
   }
