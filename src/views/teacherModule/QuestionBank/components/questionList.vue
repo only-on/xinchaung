@@ -2,7 +2,7 @@
   <div class="question-lists">
     <div class="list" v-for="v in props.questionList" :key="v.id">
       <div class="question-type">
-        <span class="type" :style="{background: questionTypeList[v.type].bgColor}">{{questionTypeList[v.type].keyword}}</span>
+        <span class="type" :style="{background: getTopicType[v.type].bgColor}">{{getTopicType[v.type].subname}}</span>
       </div>
       <div class="question-content">
         <div class="question-main">
@@ -142,7 +142,7 @@ import Programming from 'src/components/TopicDisplay/detail/programming.vue'
 import ModelQuestion from 'src/components/TopicDisplay/detail/ModelQuestion.vue'
 import Sqldetail from 'src/components/TopicDisplay/detail/Sqldetail.vue'
 import markedEditor from "src/components/editor/markedEditor.vue";
-import { questionTypeList } from "./../questionConfig"
+import getTopicType from 'src/components/TopicDisplay/topictype'
 import { levelTypeList, useTypeList } from 'src/components/TopicDisplay/configType'
 interface Props {
   isOperation: boolean,

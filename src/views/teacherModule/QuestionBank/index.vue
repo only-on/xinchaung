@@ -327,7 +327,7 @@ const initData = () => {
   setTimeout(() => {
     questionListData.push(...data)
     loading.value = false
-  }, 3000)
+  }, 1000)
 };
 function menuClick(type:string, val: any) {
   console.log(type)
@@ -350,11 +350,16 @@ function menuClick(type:string, val: any) {
 }
 function editQuestion(key: number) {
   let name = ''
+  let path=''
   createQuestionTypeList.forEach((v => {
     if (v.key === key) name = v.name
+    if (v.key === key){
+      name = v.name
+      path=v.path
+    }
   }))
   router.push ({
-    path:"./QuestionBank/createQues",
+    path:path,
     query:{value:key, name}
   })
 }
