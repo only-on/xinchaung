@@ -8,7 +8,7 @@
       </a-select>
       <a-select v-model:value="props.searchInfo.level" style="width: 200px" class="level" @change="changeType">
         <a-select-option value="">所有难度</a-select-option>
-        <a-select-option :value="key" v-for="(item, key) in levelTypeList" :key="item">{{item.name}}</a-select-option>
+        <a-select-option :value="key" v-for="(item, key) in facilityvalue" :key="item">{{item.text}}</a-select-option>
       </a-select>
       <a-select v-model:value="props.searchInfo.use" style="width: 200px" class="use" @change="changeType">
         <a-select-option value="">所有用途</a-select-option>
@@ -79,6 +79,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { questionTypeList, levelTypeList, useTypeList } from "./../questionConfig"
+import facilityvalue from 'src/components/TopicDisplay/facilityvalue'
 import Submit from "src/components/submit/index.vue";
 import { Modal, message } from "ant-design-vue";
 interface Props {

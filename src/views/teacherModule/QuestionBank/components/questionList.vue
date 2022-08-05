@@ -8,44 +8,71 @@
         <div class="question-main">
           <div class="left">
             <div class="desc">在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素</div>
-             <!-- 选择题 -->
-              <!-- <div class="option" v-if="v.type===1">
-                <a-checkbox-group v-model:value="element.answer" style="width: 100%" @change="changebox" :disabled="CanDisabled()">
-                  <a-row v-for="(j,b) in element.option" :key="j">
-                    <a-checkbox :value="optionType[b]">{{`${optionType[b]}、`}}</a-checkbox>
-                    <div> {{j.text}}</div>
-                  </a-row>
-                </a-checkbox-group>
-              </div> -->
-              <!-- 判断题答 -->
-              <!-- <div class="option" v-if="v.type===2">
-                <a-radio-group v-model:value="element.answer" :disabled="CanDisabled()" @change="changebox">
-                  <a-row>
-                    <a-radio :value="1">正确</a-radio>
-                  </a-row>
-                  <a-row>
-                    <a-radio :value="2">错误</a-radio>
-                  </a-row>
-                </a-radio-group>
-              </div> -->
-            <!-- <div class="topic-analysis">
-              <div class="tit">题目解析：</div>
-              <div class="analysis-content">
-                <marked-editor v-model="content" :preview="true" />
+            <template v-if="v.visible">
+            <!-- 选择题 -->
+            <div class="option" v-if="v.type===1">
+              <a-checkbox-group v-model:value="v.answer" style="width: 100%" :disabled="true">
+                <a-row v-for="(option, o) in v.options" :key="o">
+                  <a-checkbox :value="optionType[o]">{{`${optionType[o]}、`}}</a-checkbox>
+                  <div> {{option}}</div>
+                </a-row>
+              </a-checkbox-group>
+            </div>
+            <!-- 判断题 -->
+            <div class="option" v-if="v.type===2">
+              <a-radio-group v-model:value="v.answers" :disabled="true">
+                <a-row>
+                  <a-radio :value="0">正确</a-radio>
+                </a-row>
+                <a-row>
+                  <a-radio :value="1">错误</a-radio>
+                </a-row>
+              </a-radio-group>
+            </div>
+            <!-- 填空题 -->
+            <div class="option" v-if="v.type===3">
+              <div class="tiankong flexCenter" v-for="(ans, a) in v.answers" :key="a">
+                <span class="tiankong-tit">{{`填空${a+1}`}}</span>
+                <a-input v-model:value="v.answer" :disabled="true" />
               </div>
-            </div> -->
+            </div>
+            <!-- 简答题 -->
+            <div class="option" v-if="v.type===4">
+              <div class="jianda">
+                <div class="jianda-tit">答案</div>
+                <a-textarea v-model:value="v.answer" :disabled="true" placeholder="" :autoSize="{ minRows: 4, maxRows: 6 }" />
+              </div>
+            </div>
+            <template v-if="[1,2,3,4].includes(v.type)">
+              <div class="answer">
+                <div class="answer-tit">答案：</div>
+                <div class="answer-content" v-if="v.type===1">{{optionType[v.options.indexOf(v.answers[0])]}}</div>
+                <div class="answer-content" v-if="v.type===2">{{['正确','错误'][v.answers[0]]}}</div>
+                <div class="answer-content" v-if="v.type===3">
+                  <span v-for="(ans, a) in v.answers" :key="a">填空{{a+1}}({{ans}}){{a===v.answers.length-1?'':' / '}}</span>
+                </div>
+                <div class="answer-content" v-if="v.type===4">{{v.answers[0]}}</div>
+              </div>
+              <div class="topic-analysis">
+                <div class="tit">题目解析：</div>
+                <div class="analysis-content">
+                  <marked-editor v-model="content" :preview="true" />
+                </div>
+              </div>
+            </template>
             <!-- 编程题 -->
-            <div class="option" v-if="v.type === 5">
-              <!-- <Programming></Programming> -->
+            <div class="program" v-if="v.type === 5">
+              <Programming></Programming>
             </div>
             <!-- 模型题 -->
-            <div class="option" v-if="v.type === 6">
+            <div class="model" v-if="v.type === 6">
               <ModelQuestion></ModelQuestion>
             </div>
             <!-- SQL题 -->
-            <div class="option" v-if="v.type === 7">
+            <div class="sql" v-if="v.type === 7">
               <Sqldetail></Sqldetail>
             </div>
+            </template>
           </div>
           <div class="right">
             <a-checkbox v-model:checked="v.checked" @change="checkedHandle"></a-checkbox>
@@ -86,7 +113,11 @@
                 </a-menu>
               </template>
             </a-dropdown>
-            <span class="iconfont icon-icon_function_zhankai pointer btn"></span>
+            <span 
+              class="iconfont pointer btn" 
+              @click="v.visible=!v.visible"
+              :class="[v.visible?'icon-icon_function_zhankai-copy':'icon-icon_function_zhankai']"
+            ></span>
           </div>
         </div>
       </div>
@@ -113,6 +144,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<{
   (e: "menuClick", val: string): void;
 }>();
+const optionType:any=reactive(['A','B','C','D','E','F','G'])
 const content="zsfasd"
 const checked = false
 const questionList = reactive([
@@ -249,8 +281,20 @@ function handleClick(operateType:string) {
         display: flex;
         .left {
           flex: 1;
+          .answer {
+            color: var(--brightBtn);
+            display: flex;
+            font-weight: bold;
+            padding: 16px 0;
+            .answer-tit {
+              width: 45px;
+            }
+            .answer-content {
+              flex: 1;
+            }
+          }
           .topic-analysis {
-            padding: 16px 20px 0;
+            // padding: 16px 20px 0;
             margin-bottom: 16px;
             background-color: var(--lightgray-2);
             .tit {
@@ -266,6 +310,29 @@ function handleClick(operateType:string) {
                     padding: 0;
                   }
                 }
+              }
+            }
+          }
+          .option {
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--black-25);
+            padding-top: 6px;
+            .ant-row,.tiankong,.jianda{
+              padding: 6px 0;
+            }
+            .jianda {
+              display: flex;
+              .jianda-tit {
+                width: 30px;
+                margin-right: 18px;
+              }
+            }
+            .tiankong {
+              .tiankong-tit {
+                width: 50px;
+              }
+              .ant-input {
+                width: 250px;
               }
             }
           }
@@ -301,6 +368,9 @@ function handleClick(operateType:string) {
         .right {
           .btn {
             margin-right: 20px;
+            &.iconfont:hover  {
+              color: var(--primary-color);
+            }
           }
           .edit, .ope {
             color: var(--brightBtn)
