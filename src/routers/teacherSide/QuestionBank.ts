@@ -21,37 +21,58 @@ export default {
     {
       path: "createQues",
       name: "",
-      component: () => import("src/views/teacherModule/QuestionBank/createQues/index.vue"),
+      component: () =>
+        import("src/views/teacherModule/QuestionBank/createQues/index.vue"),
       meta: {
         title: "创建题目",
         authCode: "createQues",
       },
     },
     {
-        path: "batchImport",
-        name: "",
-        component: () => import("src/views/teacherModule/QuestionBank/batchImport/index.vue"),
-        meta: {
-          title: "创建题目",
-          authCode: "batchImport",
-        }
+      path: "batchImport",
+      name: "",
+      component: () =>
+        import("src/views/teacherModule/QuestionBank/batchImport/index.vue"),
+      meta: {
+        title: "创建题目",
+        authCode: "batchImport",
+      },
     },
     {
       path: "createProgramming",
       name: "",
-      component: () => import("src/views/teacherModule/QuestionBank/createProgramming/index.vue"),
+      component: () =>
+        import(
+          "src/views/teacherModule/QuestionBank/createProgramming/index.vue"
+        ),
       meta: {
         title: "创建题目",
         authCode: "createProgramming",
-      }
-  },{
-    path: "createModelQuestion",
-    name: "",
-    component: () => import("src/views/teacherModule/QuestionBank/createModelQuestion/index.vue"),
-    meta: {
-      title: "创建题目",
-      authCode: "createModelQuestion",
-    }
-}
+      },
+    },
+    {
+      path: "createModelQuestion",
+      name: "",
+      component: () =>
+        import(
+          "src/views/teacherModule/QuestionBank/createModelQuestion/index.vue"
+        ),
+      meta: {
+        title: "创建题目",
+        authCode: "createModelQuestion",
+      },
+    },
+    {
+      path: "trialModel",
+      name: "trialModel",
+      component: () =>
+        import(
+          "src/views/teacherModule/QuestionBank/trialSubject/trialModel.vue"
+        ),
+      meta: {
+        title: "试用模型题",
+        authCode: "trialModel",
+      },
+    },
   ],
 };

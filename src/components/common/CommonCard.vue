@@ -1,5 +1,5 @@
 <template>
-  <div :class="['cc_container', {'border': border}]">
+  <div :class="['cc_container', {'border': border}]" :style="{height: height +'px'}">
     <div class="cc_top">
       <div class="cc_left">
         <span>{{title}}</span>
@@ -16,13 +16,14 @@
 </template>
 <script lang="ts" setup>
 import { ref, watch ,inject} from "vue";
-const props = defineProps({ 
-  title: String,
-  border: {
-    type: Boolean,
-    default: true
-  }
-});
+const props = withDefaults(defineProps<{
+  title: string
+  border?: boolean
+  height?: any
+}>(), {
+  title: '',
+  border: true
+})
 </script>
 <style lang="less" scoped>
 .cc{
