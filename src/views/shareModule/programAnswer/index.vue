@@ -2,7 +2,6 @@
   <div class="programAnswer">
     <div class="top">
       <div class="left">
-        <i class="iconfont icon-zuojiantou"></i>
         题目名称
       </div>
       <div class="right">
@@ -10,12 +9,14 @@
          时间限制: <span>128mb</span>
          <a-select v-model:value="lanuageVal" placeholder="请选择" class="customSelect">
           <a-select-option
-            v-for="(item, index) in simList"
+            v-for="(item, index) in lanuageList"
             :key="index"
             :value="item.value">
             {{item.label}}
           </a-select-option>
         </a-select>
+        <a-divider type="vertical" style="background:#2C3A54;height:20px"/>
+        <i class="iconfont icon-guanji"></i>
       </div>
     </div>
     <div class="content">
@@ -24,12 +25,35 @@
       </div>
       <div class="right">
         <div class="codeArea">
-          <div id="customCode" :style="{'height': codeHeight}"></div>
+          <div id="customCode" :style="{'height': codeHeight + 'px'}">
+            <codeMirror :height="codeHeight" v-model:code="code" :lang="lanuageVal"/>
+          </div>
           <div class="resize">
             <i class="iconfont icon-yidong" @mousedown="dragEagle"></i>
           </div>
         </div>
-        <div class="reaultArea"></div>
+        <div class="resultArea">
+          <a-tabs v-model:activeKey="activeKey">
+            <a-tab-pane key="sample" tab="测试样例">
+              <a-textarea
+                resize="none"
+                autoSize
+                placeholder="请输入内容"
+                v-model:value="testData.sample">
+              </a-textarea>
+            </a-tab-pane>
+            <a-tab-pane key="result" tab="测试结果" force-render>Content of Tab Pane 2</a-tab-pane>
+          </a-tabs>
+          <div class="resultInfo">
+            <span>消耗内存：1.24mb</span>
+            <span>代码执⾏时⻓：3452ms</span>
+          </div>
+        </div>
+        <div class="operateBtn">
+          <a-button>取消</a-button>
+          <a-button type="primary" class="brightBtn">测试</a-button>
+          <a-button type="primary">提交</a-button>
+        </div>
       </div>
     </div>
   </div>
@@ -37,9 +61,27 @@
 <script lang="ts" setup>
 import { ref, reactive, watch, provide, inject ,computed} from "vue";
 import question from './component/question.vue'
+import codeMirror from './component/codeMirror.vue'
 import {simList} from 'src/views/teacherModule/teacherExamination/utils'
 const lanuageVal = ref('')
-const codeHeight = ref()
+const codeHeight = ref(400)
+const code = ref('')
+const langModel = ref()
+const activeKey = ref('sample')
+const testData = reactive({
+  sample: '测试样例内容',
+  result: ''
+})
+const lanuageList = [
+  {
+    value: 'javascript',
+    label: 'javascript'
+  },
+  {
+    value: 'html',
+    label: 'html'
+  }
+]
 // 拖动
   const dragEagle = (ev:any) => {
     var targetDiv:any = document.getElementById('customCode')
@@ -60,11 +102,11 @@ const codeHeight = ref()
         resultHeight = targetDivHeight + distY
       }
       if (resultHeight < 100) {
-        codeHeight.value = 100 + 'px'
+        codeHeight.value = 100
       } else if (resultHeight > 650) {
-        codeHeight.value = 650 + 'px'
+        codeHeight.value = 650
       } else {
-        codeHeight.value = resultHeight + 'px'
+        codeHeight.value = resultHeight
       }
     }
     document.onmouseup = function () {
@@ -86,15 +128,24 @@ const codeHeight = ref()
     justify-content: space-between;
     align-items: center;
     padding: 0 75px;
-    .left{
+    >.left{
       cursor: pointer;
     }
-    .right{
+    >.right{
+      display: flex;
+      align-items: center;
       >span{
         color: var(--primary-color);
         margin-right: 20px;
       }
+      .iconfont{
+        font-size: 20px;
+        color: #FF4A3D;
+        cursor: pointer;
+        margin-left: 20px;
+      }
       .ant-select {
+        margin-right: 20px;
         // border: 1px solid var(--brightBtn);
         color: var(--brightBtn);
         margin-top: -3px;
@@ -138,26 +189,59 @@ const codeHeight = ref()
       flex-direction: column;
       .codeArea{
         position: relative;
+        margin-bottom: 10px;
         #customCode{
           height: 400px;
-          background: pink;
+          background: var(--white-100);
+          border-radius: 10px;
+          box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.07);
         }
         .resize{
           width: 100%;
           position: absolute;
-          bottom: -17px;
+          bottom: -18px;
           z-index: 99;
           text-align: center;
           color: #000;
           i{
-            font-size: 25px;
+            font-size: 16px;
             cursor: row-resize;
           }
         }
       }
-      .reaultArea{
+      .resultArea{
+        margin-bottom: 10px;
         flex: 1;
-        background: lightgreen;
+        background: var(--white-100);
+        border-radius: 10px;
+        box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.07);
+        position: relative;
+        .resultInfo{
+          position: absolute;
+          right: 20px;
+          top: 13px;
+          >span{
+            margin-left: 20px;
+            color: var(--black-65);
+          }
+        }
+        :deep(.ant-tabs){
+          .ant-tabs-nav-list, .ant-tabs-content{
+            padding: 0 20px;
+          }
+          .ant-input{
+            border: 0;
+          }
+          .ant-input:focus, .ant-input-focused{
+            box-shadow: none;
+          }
+        }
+      }
+      .operateBtn{
+        text-align: center;
+        &>.ant-btn{
+          margin-right: 15px;
+        }
       }
     }
   }
