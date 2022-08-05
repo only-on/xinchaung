@@ -161,7 +161,6 @@ import request from "src/api/index";
 import markedEditor from "src/components/editor/markedEditor.vue";
 import labelSelection from 'src/components/labelSelection/index.vue'
 import uploadFile from 'src/components/uploadFile.vue'
-import testCase from '../testCase/index.vue'
 import { Modal, message } from "ant-design-vue";
 const route = useRoute();
 const router = useRouter();
@@ -179,10 +178,6 @@ updata({
 });
 const preview = false;
 const formRef = ref<any>();
-const inputAndOut=ref([{inputCon:'',outCon:'',ifShow:false}])
-function addTestCase(){
-  inputAndOut.value.push({inputCon:'',outCon:'',ifShow:false})
-}
 const formState = reactive({
   // 名称
   name: "",
@@ -449,48 +444,6 @@ function handleDrop(e: any) {
 :deep(.ant-col-21) {
   max-width: 100%;
 }
-.select_answer {
-  width: 34px;
-  height: 34px;
-  border: 1px solid #dfdfdf;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-right: 20px;
-}
-.selected_answer {
-  width: 34px;
-  height: 34px;
-  border: 1px solid var(--primary-color);
-  background-color: var(--primary-color);
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-right: 20px;
-}
-.select_answer:hover,.selected_answer:hover{
-  cursor: pointer;
-}
-.answer_item {
-  .icon {
-    font-size: 20px;
-  }
-  .icon-yichu1 {
-    margin-left: 10px;
-    margin-right: 10px;
-    color: #ff9544;
-  }
-  .icon--tainjia {
-    color: #1cb2b3;
-  }
-}
-.blankLabel {
-  width: 50px;
-  height: 34px;
-  display: flex;
-  align-items: center;
-}
 .upload_limit {
   background-color: #f9f9f9;
   padding: 20px;
@@ -505,13 +458,6 @@ function handleDrop(e: any) {
 
 .create_ques{
   padding: 20px 40px;
-}
-.download{
-  color: var(--primary-color);
-  text-decoration-line: underline;
-}
-.download:hover{
-  cursor: pointer;
 }
 .icon-upload{
   color: var(--primary-color);

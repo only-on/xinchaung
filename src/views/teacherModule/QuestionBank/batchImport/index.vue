@@ -87,9 +87,6 @@ import { DownOutlined, UpOutlined } from "@ant-design/icons-vue";
 import { Form } from "ant-design-vue";
 import request from "src/api/index";
 import markedEditor from "src/components/editor/markedEditor.vue";
-import labelSelection from 'src/components/labelSelection/index.vue'
-import uploadFile from 'src/components/uploadFile.vue'
-import testCase from '../testCase/index.vue'
 import { Modal, message } from "ant-design-vue";
 const route = useRoute();
 const router = useRouter();
@@ -107,10 +104,6 @@ updata({
 });
 const preview = false;
 const formRef = ref<any>();
-const inputAndOut=ref([{inputCon:'',outCon:'',ifShow:false}])
-function addTestCase(){
-  inputAndOut.value.push({inputCon:'',outCon:'',ifShow:false})
-}
 const formState = reactive({
   catalogue: [],
   // 知识点
@@ -196,9 +189,6 @@ function handleChange1(info: any) {
 }
 function handleDrop(e: any) {
   console.log(e);
-}
-function selectAnswer(){
-
 }
 function DownloadTemplate() {
       const isDev = process.env.NODE_ENV == "development" ? true : false;

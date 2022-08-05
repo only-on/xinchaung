@@ -66,34 +66,7 @@
         </a-col>
         <!-- 选择题 填空题-->
         <a-col v-if="['1','3'].includes(type)" :span="24">
-          <a-form-item
-            :label="index == 0 ? '答案选项' : ''"
-            v-for="(item, index) in formState.multipleQuesSelection"
-            :key="index"
-            :name="['multipleQuesSelection', index, 'value']"
-            :rules="{
-              required: true,
-              message:type == 1?selectLabels[index]+'选项不能为空':'填空' + (index + 1)+'不能为空',
-            }"
-          >
-            <div style="display: flex; margin-bottom:10px">
-              <span v-if="type == 1" :class="item.ifAnswer?'selected_answer':'select_answer'" @click="item.ifAnswer=!item.ifAnswer">{{ selectLabels[index] }}</span>
-              <span v-else class="blankLabel">{{ "填空" + (index + 1) }}</span>
-              <a-input v-model:value="item.value" />
-              <div class="answer_item">
-                <span
-                  v-if="index > 1"
-                  class="icon iconfont icon-yichu1"
-                  @click="deleteItem(index)"
-                ></span>
-                <span
-                  v-if="index == formState.multipleQuesSelection.length - 1"
-                  class="icon iconfont icon--tainjia"
-                  @click="addItem(index)"
-                ></span>
-              </div>
-            </div>
-          </a-form-item>
+          <answer-option-com :type='type' v-model:multipleQuesSelection="formState.multipleQuesSelection" @addItem='addItem(index)' @deleteItem='deleteItem(index)'></answer-option-com>
         </a-col>
         <!-- 判断题 -->
         <a-col v-if="type == 2" :span="24">
@@ -167,7 +140,7 @@ import request from "src/api/index";
 import markedEditor from "src/components/editor/markedEditor.vue";
 import labelSelection from 'src/components/labelSelection/index.vue'
 import uploadFile from 'src/components/uploadFile.vue'
-import testCase from '../testCase/index.vue'
+import answerOptionCom from '../components/answerOptionsCom/index.vue'
 import { Modal, message } from "ant-design-vue";
 const route = useRoute();
 const router = useRouter();
@@ -185,10 +158,6 @@ updata({
 });
 const preview = false;
 const formRef = ref<any>();
-const inputAndOut=ref([{inputCon:'',outCon:'',ifShow:false}])
-function addTestCase(){
-  inputAndOut.value.push({inputCon:'',outCon:'',ifShow:false})
-}
 const formState = reactive({
   // 名称
   name: "",
@@ -405,6 +374,9 @@ const onSubmit = () => {
       console.log("error", err);
     });
 };
+function createChoiceQues(){
+
+}
 const reset = () => {
   // formRef.value.resetFields();
   router.go(-1);
@@ -438,48 +410,6 @@ function selectAnswer(){
 }
 :deep(.ant-col-21) {
   max-width: 100%;
-}
-.select_answer {
-  width: 34px;
-  height: 34px;
-  border: 1px solid #dfdfdf;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-right: 20px;
-}
-.selected_answer {
-  width: 34px;
-  height: 34px;
-  border: 1px solid var(--primary-color);
-  background-color: var(--primary-color);
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-right: 20px;
-}
-.select_answer:hover,.selected_answer:hover{
-  cursor: pointer;
-}
-.answer_item {
-  .icon {
-    font-size: 20px;
-  }
-  .icon-yichu1 {
-    margin-left: 10px;
-    margin-right: 10px;
-    color: #ff9544;
-  }
-  .icon--tainjia {
-    color: #1cb2b3;
-  }
-}
-.blankLabel {
-  width: 50px;
-  height: 34px;
-  display: flex;
-  align-items: center;
 }
 .tiptit{
   font-size: 12px;
