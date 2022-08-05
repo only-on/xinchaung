@@ -43,6 +43,7 @@
                 <a-textarea v-model:value="v.answer" :disabled="true" placeholder="" :autoSize="{ minRows: 4, maxRows: 6 }" />
               </div>
             </div>
+            <!-- 四种基本题型的答案 -->
             <template v-if="[1,2,3,4].includes(v.type)">
               <div class="answer">
                 <div class="answer-tit">答案：</div>
@@ -60,6 +61,11 @@
                 </div>
               </div>
             </template>
+            <!-- 简答题关键字 -->
+            <div class="keyword" v-if="v.type===4">
+              <div class="keyword-tit">关键字</div>
+              <div class="keyword-content">{{v.keyword}}</div>
+            </div>
             <!-- 编程题 -->
             <div class="program" v-if="v.type === 5">
               <Programming></Programming>
@@ -72,6 +78,8 @@
             <div class="sql" v-if="v.type === 7">
               <Sqldetail></Sqldetail>
             </div>
+            <!-- 后面三种题型的试用 -->
+            <div class="shiyong pointer" v-if="[5,6,7].includes(v.type)">试用</div>
             </template>
           </div>
           <div class="right">
@@ -80,7 +88,7 @@
         </div>
         <div class="info">
           <div class="left">
-            <span class="user-info">
+            <span class="user-info" v-if="!isOperation">
               <img :src="defaultAvatar" alt="" srcset="">
               <span class="user-name">小黄帽姑娘</span>
             </span>
@@ -93,26 +101,28 @@
             <span class="num">使用次数：10</span>
           </div>
           <div class="right">
-            <span class="edit pointer btn" v-if="props.isOperation">编辑</span>
-            <a-dropdown>
-              <span class="iconfont icon-gengduotianchong btn pointer ope"></span>
-              <template #overlay>
-                <a-menu>
-                  <a-menu-item>
-                    <span @click="handleClick('delete')">删除</span>
-                  </a-menu-item>
-                  <a-menu-item>
-                    <span @click="handleClick('public')">公开</span>
-                  </a-menu-item>
-                  <a-menu-item>
-                    <span @click="handleClick('export')">导出</span>
-                  </a-menu-item>
-                  <a-menu-item>
-                    <span @click="handleClick('move')">移动到</span>
-                  </a-menu-item>
-                </a-menu>
-              </template>
-            </a-dropdown>
+            <template v-if="props.isOperation">
+              <span class="edit pointer btn" @click="handleClick('edit', v)">编辑</span>
+              <a-dropdown>
+                <span class="iconfont icon-gengduotianchong btn pointer ope"></span>
+                <template #overlay>
+                  <a-menu>
+                    <a-menu-item>
+                      <span @click="handleClick('delete', v)">删除</span>
+                    </a-menu-item>
+                    <a-menu-item>
+                      <span @click="handleClick('public', v)">公开</span>
+                    </a-menu-item>
+                    <a-menu-item>
+                      <span @click="handleClick('export', v)">导出</span>
+                    </a-menu-item>
+                    <a-menu-item>
+                      <span @click="handleClick('move', v)">移动到</span>
+                    </a-menu-item>
+                  </a-menu>
+                </template>
+              </a-dropdown>
+            </template>
             <span 
               class="iconfont pointer btn" 
               @click="v.visible=!v.visible"
@@ -132,7 +142,8 @@ import Programming from 'src/components/TopicDisplay/detail/programming.vue'
 import ModelQuestion from 'src/components/TopicDisplay/detail/ModelQuestion.vue'
 import Sqldetail from 'src/components/TopicDisplay/detail/Sqldetail.vue'
 import markedEditor from "src/components/editor/markedEditor.vue";
-import { questionTypeList, levelTypeList, useTypeList } from "./../questionConfig"
+import { questionTypeList } from "./../questionConfig"
+import { levelTypeList, useTypeList } from 'src/components/TopicDisplay/configType'
 interface Props {
   isOperation: boolean,
   questionList: any
@@ -142,7 +153,7 @@ const props = withDefaults(defineProps<Props>(), {
   questionList: {}
 });
 const emit = defineEmits<{
-  (e: "menuClick", val: string): void;
+  (e: "menuClick", type: string, val: any): void;
 }>();
 const optionType:any=reactive(['A','B','C','D','E','F','G'])
 const content="zsfasd"
@@ -243,8 +254,8 @@ const questionList = reactive([
 function checkedHandle() {
   console.log(props.questionList)
 }
-function handleClick(operateType:string) {
-  emit('menuClick', operateType)
+function handleClick(operateType:string, val: any) {
+  emit('menuClick', operateType, val)
 }
 </script>
 
@@ -295,8 +306,9 @@ function handleClick(operateType:string) {
           }
           .topic-analysis {
             // padding: 16px 20px 0;
-            margin-bottom: 16px;
+            // margin-bottom: 16px;
             background-color: var(--lightgray-2);
+            border-bottom: 1px solid var(--black-15);
             .tit {
               margin-bottom: 8px;
             }
@@ -313,9 +325,22 @@ function handleClick(operateType:string) {
               }
             }
           }
+          .keyword {
+            display: flex;
+            color: #3094EF;
+            padding-bottom: 16px;
+            margin-top: 16px;
+            border-bottom: 1px solid var(--black-15);
+            .keyword-tit {
+              width: 58px;
+            }
+            .keyword-content {
+              flex: 1;
+            }
+          }
           .option {
             padding-bottom: 12px;
-            border-bottom: 1px solid var(--black-25);
+            border-bottom: 1px solid var(--black-15);
             padding-top: 6px;
             .ant-row,.tiankong,.jianda{
               padding: 6px 0;
@@ -336,6 +361,15 @@ function handleClick(operateType:string) {
               }
             }
           }
+          .shiyong {
+            width: 100%;
+            height: 38px;
+            line-height: 38px;
+            text-align: center;
+            background: var(--black-0-7);
+            border-radius: 19px;
+            margin: 10px 0;
+          }
         }
         .right {
           margin: 0 20px;
@@ -347,6 +381,7 @@ function handleClick(operateType:string) {
         color: var(--black-45);
         display: flex;
         justify-content: space-between;
+        margin-top: 16px;
         .user-info, .level, .use, .create-time {
           margin-right: 32px;
         }

@@ -10,17 +10,17 @@
   <filter-condition :searchInfo="searchInfo" @searchFn="searchFn"></filter-condition>
   <div class="question-content">
     <div class="left" v-if="isMyQuestion">
-      <directory-tree></directory-tree>
+      <directory-tree :isOperateTree="true"></directory-tree>
     </div>
     <div class="right">
       <a-spin :spinning="loading" size="large" tip="Loading...">
         <div class="mainBox">
           <question-list 
             :isOperation="isMyQuestion"
-            menuClick="menuClick"
+            @menuClick="menuClick"
             :questionList="questionListData"
           ></question-list>
-          <Empty v-if="!list.length && !loading" :type="EmptyType" />
+          <Empty v-if="!questionListData.length && !loading" :type="EmptyType" />
           <a-pagination
             v-if="pageTotal > 12"
             v-model:current="pageInfo.page"
@@ -32,7 +32,7 @@
   </a-spin>
     </div>
   </div>
-  <div class="footer">
+  <div class="footer" v-if="bottomVisible">
     <div class="bottom">
       <div class="left">
         <a-checkbox v-model:checked="checkedAll" @change="checkedAllHandle">全选</a-checkbox>
@@ -40,22 +40,33 @@
       </div>
       <div class="center">
         <span v-if="isMyQuestion">
-          <a-button class="btn">批量移动到</a-button>
-          <a-button class="btn">批量导出</a-button>
-          <a-button class="btn">批量公开</a-button>
-          <a-button class="btn">批量删除</a-button>
+          <a-button class="btn" @click="moveQuestion">批量移动到</a-button>
+          <a-button class="btn" @click="exportQuestion">批量导出</a-button>
+          <a-button class="btn" @click="publicQuestion">批量公开</a-button>
+          <a-button class="btn" @click="deleteQuestion">批量删除</a-button>
         </span>
         <a-button class="btn" type="primary">发布作业</a-button>
         <a-button class="btn" type="primary">发布考试</a-button>
       </div>
       <div class="right">
-        <span class="iconfont icon-guanbi pointer"></span>
+        <span class="iconfont icon-guanbi pointer" @click="bottomVisible=false"></span>
       </div>
     </div>
   </div>
+  <a-modal
+    :visible="moveVisible"
+    title="移动到"
+    @cancel="removeCancel()"
+  >
+    <directory-tree :isOperateTree="false"></directory-tree>
+    <template #footer>
+      <Submit @submit="removeSubmit()" @cancel="removeCancel()" :loading="removeLoading" :okText="'移动到此'"></Submit>
+    </template>
+  </a-modal>
 </template>
 <script lang="ts" setup>
-import { ref, reactive, inject, watch, onMounted, computed } from "vue";
+import { ref, reactive, createVNode, inject, watch, onMounted, computed } from "vue";
+import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { useRouter, useRoute } from "vue-router";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
@@ -66,6 +77,7 @@ import directoryTree from "./components/directoryTree.vue";
 import filterCondition from "./components/filterCondition.vue"
 import questionList from "./components/questionList.vue"
 import { createQuestionTypeList } from "./questionConfig"
+import Submit from "src/components/submit/index.vue";
 const router = useRouter();
 const route = useRoute();
 const http = (request as any).QuestionBank;
@@ -92,7 +104,7 @@ const pageInfo = reactive({
 let list = reactive<IMaterialList[]>([]);
 const pageTotal = ref<number>(0);
 const checkedAll = ref(false)
-const questionListData = reactive([
+const data = [
   {
     id: 1,
     type: 1,
@@ -144,6 +156,7 @@ const questionListData = reactive([
     desc: '在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱， 设计规范性差，设计沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向 进行京东国际频道的品牌视觉全新升级，实现加强正品心智，提升频道访问量，品牌强化的业务目标。',
     analysis: 'fasdkfj;lqre',
     answers: ['导致不同对齐的原因：有时候你希望能降低人们速度，使他们有时间进行深思熟虑。也可能受到屏幕显示的限制，要求表单纵向或者横向空间最小化。也可能由 于本地化需要，表单要适应不同长度的多种语言。所以标签顶对齐、左对齐或者右对齐的正确答案取决于这些及其他更多因素。'],
+    keyword: '导致不同对齐的原因：有时候你希望能降低人们速度，使他们有时间进行深思熟虑。也可能受到屏幕显示的限制，要求表单纵向或者横向空间最小化。也可能由 于本地化需要，表单要适应不同长度的多种语言。所以标签顶对齐、左对齐或者右对齐的正确答案取决于这些及其他更多因素。',
     user_profile: {
       name: "小黄帽姑娘",
       portrait: ""
@@ -189,13 +202,20 @@ const questionListData = reactive([
     },
     created_at: '',
   },
-])
+]
 const checkedNum = computed(() => {
   let i = 0
   questionListData.forEach((v: any) => {
     v.checked ? i++ : ''
   })
   return i
+})
+const bottomVisible = computed(() => {
+  let checked = false
+  questionListData.forEach((v: any) => {
+    v.checked ? checked = true : ''
+  })
+  return checked
 })
 
 // 搜索
@@ -225,15 +245,11 @@ const EmptyType: any = computed(() => {
 })
 const handleMenuClick = ({ key }: { key: number|string }) => {
   let name = ''
-  let path=''
   createQuestionTypeList.forEach((v => {
-    if (v.key === key){
-      name = v.name
-      path=v.path
-    }
+    if (v.key === key) name = v.name
   }))
   router.push ({
-    path:path,
+    path:"./QuestionBank/createQues",
     query:{value:key, name}
   })
 };
@@ -284,14 +300,14 @@ interface Iuser {
   username: string
   avatar: string
 }
-let materialList = reactive<IMaterialList[]>([]);
+let questionListData = reactive<any[]>([]);
 const initData = () => {
   const param = {
     name: searchInfo.keyWord,
     is_public: currentTab.value ? 0 : 1,  // 1公开 0私有
     ...pageInfo,
   };
-  materialList.length = 0
+  questionListData.length = 0
   pageTotal.value=0
   loading.value=true
   // http.dataSets({ param }).then((res: any) => {
@@ -304,16 +320,20 @@ const initData = () => {
   //   })
   //   materialList.push(...list);
   //   pageTotal.value = page.totalCount;
-    loading.value=false
+    // loading.value=false
   // }).catch((err:any)=>{
   //   loading.value=false
   // })
+  setTimeout(() => {
+    questionListData.push(...data)
+    loading.value = false
+  }, 3000)
 };
-function menuClick(type:string) {
+function menuClick(type:string, val: any) {
   console.log(type)
   switch (type) {
     case 'edit':
-      
+      editQuestion(val.type)
       break;
     case 'delete':
       
@@ -324,8 +344,48 @@ function menuClick(type:string) {
     case 'export':
       break;
     case 'move':
+      moveVisible.value = true
       break;
   }
+}
+function editQuestion(key: number) {
+  let name = ''
+  createQuestionTypeList.forEach((v => {
+    if (v.key === key) name = v.name
+  }))
+  router.push ({
+    path:"./QuestionBank/createQues",
+    query:{value:key, name}
+  })
+}
+function deleteQuestion() {
+  console.log('delete')
+  Modal.confirm({
+    title: "确定要删除选中题目吗？",
+    icon: createVNode(ExclamationCircleOutlined),
+    content: "删除后不可恢复",
+    okText: "确认",
+    cancelText: "取消",
+    onOk() {
+
+    }
+  })
+}
+function publicQuestion() {
+  console.log('public')
+}
+function exportQuestion() {
+  console.log('export')
+}
+function moveQuestion() {
+  console.log('move')
+  moveVisible.value = true
+}
+const moveVisible = ref(false)
+const removeLoading = ref(false)
+function removeSubmit() {}
+function removeCancel() {
+  moveVisible.value = false
 }
 onMounted(() => {
   if (!Number(route.query.currentTab)) {

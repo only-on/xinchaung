@@ -1,6 +1,8 @@
 <template>
-  <div class="title">文件夹目录</div>
-  <div class="create-btn pointer" @click="visible=true">新建文件夹</div>
+  <template v-if="props.isOperateTree">
+    <div class="title">文件夹目录</div>
+    <div class="create-btn pointer" @click="visible=true">新建文件夹</div>
+  </template>
   <a-directory-tree
     v-model:expandedKeys="expandedKeys"
     v-model:selectedKeys="selectedKeys"
@@ -22,7 +24,7 @@
     <template #title="{ dataRef }">
       <span class="tree-title">
         <span class="name">{{ dataRef.name }}</span>
-        <span class="btns" v-if="dataRef.key!=0">
+        <span class="btns" v-if="dataRef.key!=0&&props.isOperateTree">
           <span class="iconfont icon-shangyi" @click="upDirectory(dataRef)"></span>
           <span class="iconfont icon-shangyi-copy" @click="downDirectory(dataRef)"></span>
           <span class="iconfont icon-bianji" @click="editDirectory(dataRef)"></span>
@@ -62,6 +64,12 @@ import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
 import Submit from "src/components/submit/index.vue";
 const http = (request as any).QuestionBank;
+interface Props {
+  isOperateTree: boolean
+}
+const props = withDefaults(defineProps<Props>(), {
+  isOperateTree: true,
+});
 const expandedKeys = ref<number[]>([0]);
 const selectedKeys = ref<number[]>([0]);
 const fieldNames = {

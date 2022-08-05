@@ -83,7 +83,11 @@ const props = withDefaults(defineProps<Props>(), {
 <style scoped lang="less">
 .markdown__editor{
   // height: 200px;
+  :deep(.mark__body .mark__preview) {
+    min-width: 400px;
+  }
 }
+
   .programmingDetail{
     .details{
       padding: 14px 0;
@@ -110,7 +114,7 @@ const props = withDefaults(defineProps<Props>(), {
     .content{
       justify-content:space-between;
       .contentLeft,.contentRight{
-        width: 497px;
+        width: 48%;
       }
     }
   }
