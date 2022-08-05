@@ -26,6 +26,32 @@ export default {
         title: "创建题目",
         authCode: "createQues",
       },
+    },
+    {
+        path: "batchImport",
+        name: "",
+        component: () => import("src/views/teacherModule/QuestionBank/batchImport/index.vue"),
+        meta: {
+          title: "创建题目",
+          authCode: "batchImport",
+        }
+    },
+    {
+      path: "createProgramming",
+      name: "",
+      component: () => import("src/views/teacherModule/QuestionBank/createProgramming/index.vue"),
+      meta: {
+        title: "创建题目",
+        authCode: "createProgramming",
+      }
+  },{
+    path: "createModelQuestion",
+    name: "",
+    component: () => import("src/views/teacherModule/QuestionBank/createModelQuestion/index.vue"),
+    meta: {
+      title: "创建题目",
+      authCode: "createModelQuestion",
     }
+}
   ],
 };

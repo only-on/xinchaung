@@ -18,19 +18,6 @@
             ></a-input>
           </a-form-item>
         </a-col>
-        <a-col v-if="type != 7" :span="12">
-          <a-form-item name="purpose" label="题目用途">
-            <a-select
-              ref="select"
-              v-model:value="formState.purpose"
-              @focus="focus"
-              @change="handleChange"
-            >
-              <a-select-option value="jack">考试题</a-select-option>
-              <a-select-option value="lucy">作业题</a-select-option>
-            </a-select>
-          </a-form-item>
-        </a-col>
         <a-col v-if="!['5', '6'].includes(type) && type != 7" :span="12">
           <a-form-item name="difficulty" label="难度系数">
             <label-selection v-model:difficulty='formState.difficulty' :options='[{name:"简单",value:1},{name:"适中",value:2},{name:"困难",value:3}]'></label-selection>
@@ -50,23 +37,6 @@
             <label-selection v-model:difficulty='formState.difficulty' :options='[{name:"简单",value:1},{name:"适中",value:2},{name:"困难",value:3}]'></label-selection>
           </a-form-item>
         </a-col>
-        <a-col :span="['1','2','3','4','7'].includes(type)? 12 : 24">
-          <a-form-item name="knowledgePoints">
-            <template v-slot:label>
-              <div>
-                知识点<span class="tiptit">最多可选择3个</span>
-              </div>
-            </template>
-            <a-cascader
-              v-model:value="formState.knowledgePoints"
-              :style="['1','2','3','4','7'].includes(type) ? 'width:100%' : 'width:50%'"
-              :multiple="true"
-              max-tag-count="responsive"
-              :options="options1"
-              placeholder="请选择"
-            ></a-cascader>
-          </a-form-item>
-        </a-col>
         <!-- 编程题 模型题 -->
         <a-col v-if="type == 5" :span="12">
           <a-form-item label="内存限制" name="memoryLimit">
@@ -82,16 +52,6 @@
               v-model:value="formState.timeLimit"
               placeholder="请输入时间限制"
             ></a-input>
-          </a-form-item>
-        </a-col>
-        <!-- 题干 公有 -->
-        <a-col v-if="type != 7" :span="24">
-          <a-form-item name="stem" label="题干">
-            <marked-editor
-              v-model="formState.stem"
-              :preview="preview"
-              style="width: 100%"
-            />
           </a-form-item>
         </a-col>
         <!-- 编程题-->
@@ -130,25 +90,16 @@
                 <a-radio value="1">文本</a-radio>
                 <a-radio value="2">文件</a-radio>
               </a-radio-group>
-              <a-button type='primary' v-if="formState.testCase==1">添加测试用例</a-button>
+              <a-button type='primary' @click="addTestCase" v-if="formState.testCase==1">添加测试用例</a-button>
             </div>
           </a-form-item>
         </a-col>
+         {{inputAndOut}}
+        <a-col v-if="type == 5&&formState.testCase==1" :span="24">
+          <test-case v-model:inputAndOut='inputAndOut'></test-case>
+        </a-col>
         <a-col v-if="type == 5&&formState.testCase==2" :span="12">
           <a-form-item label="批量上传用例文件" name="useCaseFile">
-            <!-- <a-upload-dragger
-              v-model:fileList="fileList"
-              name="file"
-              :multiple="true"
-              action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-              @change="handleChange1"
-              @drop="handleDrop"
-            >
-                <p class="ant-upload-drag-icon">
-                    <i class="iconfont icon-upload"></i>
-                </p>
-                <p class="ant-upload-text">点击或将文件拖拽到这里上传</p>
-            </a-upload-dragger> -->
             {{formState.useCaseFile}}00
             <upload-file apiInterface='/api/simple/report/templates/import-template' path='pdf_path' v-model:useCaseFile='formState.useCaseFile'></upload-file>
           </a-form-item>
@@ -162,136 +113,6 @@
             3、单个上传文件不能超过100MB，超过时可以分批次上传。
           </div>
         </a-col>
-        <!-- 模型题 -->
-        <a-col v-if="type == 6" :span="24">
-          <a-form-item name="evaluationDescription" label="评测说明">
-            <marked-editor
-              v-model="formState.evaluationDescription"
-              :preview="preview"
-              style="width: 100%"
-            />
-          </a-form-item>
-        </a-col>
-        <a-col v-if="type == 6" :span="24">
-          <a-form-item name="evaluationData" label="评测数据">
-            <span class="modalLabel">模型评估算法</span>
-            <a-select
-              ref="select"
-              v-model:value="formState.evaluationData"
-              style="width: 120px"
-              @focus="focus"
-              @change="handleChange"
-            >
-              <a-select-option value="jack">Jack</a-select-option>
-              <a-select-option value="lucy">Lucy</a-select-option>
-            </a-select>
-          </a-form-item>
-        </a-col>
-        <a-col v-if="type == 6" :span="12">
-          <a-form-item name="trainingSetPath" label="上传训练集">
-            <a-upload-dragger
-              v-model:fileList="fileList"
-              name="file"
-              :multiple="true"
-              action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-              @change="handleChange1"
-              @drop="handleDrop"
-            >
-              <p class="ant-upload-drag-icon">
-                    <i class="iconfont icon-upload"></i>
-                </p>
-                <p class="ant-upload-text">点击或将文件拖拽到这里上传</p>
-            </a-upload-dragger>
-          </a-form-item>
-        </a-col>
-        <a-col v-if="type == 6" :span="12">
-          <a-form-item name="validationSetPath">
-            <template v-slot:label>
-              上传验证集
-              <span class="tiptit">此文件不对学生展示</span>
-            </template>
-            <a-upload-dragger
-              v-model:fileList="fileList"
-              name="file"
-              :multiple="true"
-              action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-              @change="handleChange1"
-              @drop="handleDrop"
-            >
-              <p class="ant-upload-drag-icon">
-                    <i class="iconfont icon-upload"></i>
-                </p>
-                <p class="ant-upload-text">点击或将文件拖拽到这里上传</p>
-            </a-upload-dragger>
-          </a-form-item>
-        </a-col>
-        <!-- 选择题 填空题-->
-        <a-col v-if="['1','3'].includes(type)" :span="24">
-          <a-form-item
-            :label="index == 0 ? '答案选项' : ''"
-            v-for="(item, index) in formState.multipleQuesSelection"
-            :key="index"
-            :name="['multipleQuesSelection', index, 'value']"
-            :rules="{
-              required: true,
-              message:type == 1?selectLabels[index]+'选项不能为空':'填空' + (index + 1)+'不能为空',
-            }"
-          >
-            <div style="display: flex; margin-bottom:10px">
-              <span v-if="type == 1" :class="item.ifAnswer?'selected_answer':'select_answer'" @click="item.ifAnswer=!item.ifAnswer">{{ selectLabels[index] }}</span>
-              <span v-else class="blankLabel">{{ "填空" + (index + 1) }}</span>
-              <a-input v-model:value="item.value" />
-              <div class="answer_item">
-                <span
-                  v-if="index > 1"
-                  class="icon iconfont icon-yichu1"
-                  @click="deleteItem(index)"
-                ></span>
-                <span
-                  v-if="index == formState.multipleQuesSelection.length - 1"
-                  class="icon iconfont icon--tainjia"
-                  @click="addItem(index)"
-                ></span>
-              </div>
-            </div>
-          </a-form-item>
-        </a-col>
-        <!-- 判断题 -->
-        <a-col v-if="type == 2" :span="24">
-          <a-form-item label="答案选项" name="analysis">
-            <div class="select_difficult">
-              <span
-                @click="formState.judgeAnswer = '1'"
-                :class="formState.judgeAnswer === '1' ? 'active' : ''"
-                >正确</span
-              >
-              <span
-                @click="formState.judgeAnswer = '2'"
-                :class="formState.judgeAnswer === '2' ? 'active' : ''"
-                >错误</span
-              >
-            </div>
-          </a-form-item>
-        </a-col>
-        <!-- 解答题 -->
-        <a-col v-if="type == 4" :span="24">
-          <a-form-item label="参考答案" name="referenceAnswer">
-            <marked-editor
-              v-model="formState.referenceAnswer"
-              :preview="preview"
-              style="width: 100%"
-            />
-          </a-form-item>
-        </a-col>
-        <a-col v-if="type == 4" :span="24">
-          <a-form-item label="关键词" name="keyword">
-            <marked-editor
-              v-model="formState.keyword"
-              :preview="preview"
-              style="width: 100%"
-            />
-          </a-form-item>
-        </a-col>
         <a-col v-if="!['5', '6'].includes(type) && type != 7" :span="24">
           <a-form-item label="题目解析" name="topicAnalysis">
             <marked-editor
@@ -299,32 +120,6 @@
               :preview="preview"
               style="width: 100%"
             />
-          </a-form-item>
-        </a-col>
-        <a-col v-if="type == 7" :span="24">
-          <a-form-item
-            name="topicTemplatePath"
-          >
-            <template v-slot:label>
-              <div>
-                下载导入
-                <span @click="DownloadTemplate" class="download">题目模板</span>
-                每次最多导入100条。
-              </div>
-            </template>
-            <a-upload-dragger
-              v-model:fileList="fileList"
-              name="file"
-              :multiple="true"
-              action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-              @change="handleChange1"
-              @drop="handleDrop"
-            >
-                <p class="ant-upload-drag-icon">
-                    <i class="iconfont icon-upload"></i>
-                </p>
-                <p class="ant-upload-text">点击或将文件拖拽到这里上传</p>
-            </a-upload-dragger>
           </a-form-item>
         </a-col>
       </a-row>
@@ -353,7 +148,9 @@ import { Form } from "ant-design-vue";
 import request from "src/api/index";
 import markedEditor from "src/components/editor/markedEditor.vue";
 import labelSelection from 'src/components/labelSelection/index.vue'
+import testCase from '../testCase/index.vue'
 import uploadFile from 'src/components/uploadFile.vue'
+
 import { Modal, message } from "ant-design-vue";
 const route = useRoute();
 const router = useRouter();
@@ -371,6 +168,10 @@ updata({
 });
 const preview = false;
 const formRef = ref<any>();
+const inputAndOut=ref([{inputCon:'',outCon:'',ifShow:false}])
+function addTestCase(){
+  inputAndOut.value.push({inputCon:'',outCon:'',ifShow:false})
+}
 const formState = reactive({
   // 名称
   name: "",
@@ -396,7 +197,7 @@ const formState = reactive({
   //样例输出
   sampleOutput:'',
   // 测试用例
-  testCase:'',
+  testCase:'1',
   // 用例文件
   useCaseFile:'',
   // 题干
@@ -575,6 +376,7 @@ const rules = {
     }
   ]
 };
+
 const focus = () => {
   console.log("focus");
 };
