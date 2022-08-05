@@ -224,7 +224,7 @@ interface Props {
   purpose?:Tpurpose
 }
 const props = withDefaults(defineProps<Props>(), {
-  purpose:'IsStuAnswer'
+  purpose:'achievement'
 });
 
 // const emit = defineEmits<{
@@ -564,7 +564,7 @@ onMounted(()=>{
       justify-content: space-between;
       // padding-bottom: 14px;
       // background-color: var(--lightgray-2);
-      background-color:var(--black-25);
+      background-color:var(--black-0-6);
       padding: 19px 40px;
       .del{
         margin-left: 10px;

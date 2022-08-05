@@ -1,5 +1,7 @@
 <template>
-  <h2 @click="router.push('/teacher/teacherAssignment/teacherAssignmentPreview')">去预览--暂用勿删</h2>
+  <h2 @click="router.push('/teacher/teacherAssignment/teacherAssignmentPreview')">作业去预览--暂用</h2>
+  <h2 @click="router.push('/teacher/teacherAssignment/teacherAssignmentAchievement')">作业查看成绩--暂用</h2>
+  <h2 @click="router.push('/teacher/teacherAssignment/teacherAssignmentEdit')">作业编辑--暂用</h2>
 </template>
 <script lang="ts" setup>
 import {

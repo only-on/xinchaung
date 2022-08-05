@@ -37,5 +37,32 @@ export default {
         authCode: "reviewExamination",
       },
     },
+    { 
+      path: "teacherExaminationPreview",
+      name: "teacherExaminationPreview",
+      component: () => import("src/views/teacherModule/teacherExamination/teacherExaminationPreview.vue"),
+      meta: {
+        title: "考试预览",
+        authCode: "teacherExaminationPreview",
+      },
+    },
+    { 
+      path: "teacherExaminationAchievement",
+      name: "teacherExaminationAchievement",
+      component: () => import("src/views/teacherModule/teacherExamination/teacherExaminationAchievement.vue"),
+      meta: {
+        title: "成绩详情",
+        authCode: "teacherExaminationAchievement",
+      },                                                                                                                             
+    },
+    { 
+      path: "teacherExaminationEdit",
+      name: "teacherExaminationEdit",
+      component: () => import("src/views/teacherModule/teacherExamination/teacherExaminationEdit.vue"),
+      meta: {
+        title: "编辑考试",
+        authCode: "teacherExaminationEdit",
+      },
+    },
   ],
 };

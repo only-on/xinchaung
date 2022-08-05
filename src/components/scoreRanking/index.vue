@@ -36,8 +36,8 @@ interface optionType{
     value:any,
 }
 interface Props { 
-  options:optionType[];
-  difficulty:any;
+  options?:optionType[];
+  difficulty?:any;
 }
 const props = withDefaults(defineProps<Props>(),{
   options: () =>[],

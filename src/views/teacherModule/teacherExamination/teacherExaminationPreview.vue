@@ -1,5 +1,5 @@
 <template>
-  <div class="teacherAssignmentPreview">
+  <div class="teacherExaminationPreview">
     <Outline :title="headerObj.title" :explain="headerObj.explain" :explainText="headerObj.explainText" />
     <TopicDisplay :purpose="'IsPreview'" />
   </div>
@@ -32,7 +32,7 @@ const http = (request as any).teacherAssignment;
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 updata({
-  tabs: [{ name: "作业预览", componenttype: 0 }],
+  tabs: [{ name: "试卷预览", componenttype: 0 }],
   showContent: true,
   componenttype: undefined,
   showNav: true,
@@ -56,8 +56,7 @@ const headerObj:any=reactive({
 })
 </script>
 <style scoped lang="less">
-.teacherAssignmentPreview{
+.teacherExaminationPreview{
   padding: 32px 40px;
-  // background-color: #fff;
 }
 </style>

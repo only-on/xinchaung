@@ -1,7 +1,16 @@
 <template>
-  <div class="teacherAssignmentPreview">
-    <Outline :title="headerObj.title" :explain="headerObj.explain" :explainText="headerObj.explainText" />
-    <TopicDisplay :purpose="'IsPreview'" />
+  <div class="teacherAssignmentaChievement">
+    <div class="achievementLeft">
+        <Outline :title="headerObj.title" :explain="headerObj.explain" :explainText="headerObj.explainText" />
+        <TopicDisplay :purpose="'achievement'" />
+    </div>
+    <div class="achievementRight">
+        <ScoreRanking />
+        <div class="caozuo flexCenter">
+          <a-button  type="primary"> 上一人 </a-button>
+          <a-button  type="primary"> 下一人 </a-button>
+        </div>
+    </div>
   </div>
 </template>
 <script lang="ts" setup>
@@ -25,6 +34,7 @@ import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
 import TopicDisplay from 'src/components/TopicDisplay/index.vue'
 import Outline from 'src/components/TopicDisplay/outline.vue'
+import ScoreRanking from 'src/components/scoreRanking/index.vue'
 const router = useRouter();
 const route = useRoute();
 const { editId } = route.query;
@@ -32,7 +42,7 @@ const http = (request as any).teacherAssignment;
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 updata({
-  tabs: [{ name: "作业预览", componenttype: 0 }],
+  tabs: [{ name: "成绩详情", componenttype: 0 }],
   showContent: true,
   componenttype: undefined,
   showNav: true,
@@ -56,8 +66,18 @@ const headerObj:any=reactive({
 })
 </script>
 <style scoped lang="less">
-.teacherAssignmentPreview{
-  padding: 32px 40px;
-  // background-color: #fff;
-}
+    .teacherAssignmentaChievement{
+        display: flex;
+        justify-content: space-between;
+        .achievementLeft{
+            width: 944px;
+        }
+        .achievementRight{
+            width: 240px;
+          .caozuo{
+            margin-top: 20px;
+            justify-content: space-between;
+          }
+        }
+    }
 </style>
