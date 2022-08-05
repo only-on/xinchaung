@@ -15,7 +15,7 @@ for (const key in files) {
     let moduleFiles = files[key].default
     MyServer.parseRouter(file_name as TAvailableModules, moduleFiles)
 }
-console.log(MyServer);
+// console.log(MyServer);
 
 export default MyServer;
 
