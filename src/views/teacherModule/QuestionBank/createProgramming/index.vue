@@ -18,6 +18,17 @@
             ></a-input>
           </a-form-item>
         </a-col>
+        <a-col v-if="type != 7" :span="12">
+          <a-form-item name="purpose" label="题目用途">
+            <a-select
+              ref="select"
+              v-model:value="formState.purpose"
+            >
+              <a-select-option value="exam">考试题</a-select-option>
+              <a-select-option value="homework">作业题</a-select-option>
+            </a-select>
+          </a-form-item>
+        </a-col>
         <a-col v-if="!['5', '6'].includes(type) && type != 7" :span="12">
           <a-form-item name="difficulty" label="难度系数">
             <label-selection v-model:difficulty='formState.difficulty' :options='[{name:"简单",value:1},{name:"适中",value:2},{name:"困难",value:3}]'></label-selection>
@@ -34,9 +45,26 @@
         </a-col>
         <a-col v-if="['5', '6'].includes(type)" :span="12">
           <a-form-item name="difficulty" label="难度系数">
-            <label-selection v-model:difficulty='formState.difficulty' :options='[{name:"简单",value:1},{name:"适中",value:2},{name:"困难",value:3}]'></label-selection>
+            <label-selection v-model:difficulty='formState.difficulty' :options='[{name:"简单",value:"easy"},{name:"适中",value:"normal"},{name:"困难",value:"hard"}]'></label-selection>
           </a-form-item>
         </a-col>
+         <a-col :span="['1','2','3','4','7'].includes(type)? 12 : 24">
+          <a-form-item name="knowledgePoints">
+            <template v-slot:label>
+              <div>
+                知识点<span class="tiptit">最多可选择3个</span>
+              </div>
+            </template>
+            <a-cascader
+              v-model:value="formState.knowledgePoints"
+              :style="['1','2','3','4','7'].includes(type) ? 'width:100%' : 'width:50%'"
+              :multiple="true"
+              max-tag-count="responsive"
+              :options="options1"
+              placeholder="请选择"
+            ></a-cascader>
+          </a-form-item>
+        </a-col> 
         <!-- 编程题 模型题 -->
         <a-col v-if="type == 5" :span="12">
           <a-form-item label="内存限制" name="memoryLimit">
@@ -55,6 +83,15 @@
           </a-form-item>
         </a-col>
         <!-- 编程题-->
+        <a-col v-if="type != 7" :span="24">
+          <a-form-item name="stem" label="题目描述">
+            <marked-editor
+              v-model="formState.stem"
+              :preview="preview"
+              style="width: 100%"
+            />
+          </a-form-item>
+        </a-col>
         <a-col v-if="type == 5" :span="24">
           <a-form-item label="输入格式" name="inputFormat">
             <marked-editor
@@ -87,25 +124,25 @@
           <a-form-item label="测试用例" name="testCase">
             <div class="spance_bet">
               <a-radio-group v-model:value="formState.testCase" name="radioGroup">
-                <a-radio value="1">文本</a-radio>
-                <a-radio value="2">文件</a-radio>
+                <a-radio value="text">文本</a-radio>
+                <a-radio value="file">文件</a-radio>
               </a-radio-group>
-              <a-button type='primary' @click="addTestCase" v-if="formState.testCase==1">添加测试用例</a-button>
+              <a-button type='primary' @click="addTestCase" v-if="formState.testCase=='text'">添加测试用例</a-button>
             </div>
           </a-form-item>
         </a-col>
          {{inputAndOut}}
-        <a-col v-if="type == 5&&formState.testCase==1" :span="24">
+        <a-col v-if="type == 5&&formState.testCase=='text'" :span="24">
           <test-case v-model:inputAndOut='inputAndOut'></test-case>
         </a-col>
-        <a-col v-if="type == 5&&formState.testCase==2" :span="12">
+        <a-col v-if="type == 5&&formState.testCase=='file'" :span="12">
           <a-form-item label="批量上传用例文件" name="useCaseFile">
             {{formState.useCaseFile}}00
             <upload-file apiInterface='/api/simple/report/templates/import-template' path='pdf_path' v-model:useCaseFile='formState.useCaseFile'>
             </upload-file>
           </a-form-item>
         </a-col>
-        <a-col v-if="type == 5&&formState.testCase==2" :span="12">
+        <a-col v-if="type == 5&&formState.testCase=='file'" :span="12">
           <div class="upload_limit">
             上传限制：
             <br />
@@ -127,7 +164,7 @@
     </a-form>
     <div class="bottom_btn">
       <a-button style="margin-right: 10px" @click="reset">取消</a-button>
-      <a-button type="primary" @click.prevent="onSubmit">保存</a-button>
+      <a-button type="primary" @click="onSubmit">保存</a-button>
     </div>
   </div>
 </template>
@@ -157,7 +194,7 @@ const route = useRoute();
 const router = useRouter();
 const type: any = ref(route.query.value);
 const name: any = route.query.name;
-const http = (request as any).studentAssignment;
+const http = (request as any).QuestionBank;
 const caseFile=http.caseFile
 var updata = inject("updataNav") as Function;
 const fileList: any = [];
@@ -181,7 +218,7 @@ const formState = reactive({
   // 选择的目录
   catalogue: [],
   // 难度系数
-  difficulty: "1",
+  difficulty: "easy",
   // 知识点
   knowledgePoints: [],
 
@@ -198,7 +235,7 @@ const formState = reactive({
   //样例输出
   sampleOutput:'',
   // 测试用例
-  testCase:'1',
+  testCase:'text',
   // 用例文件
   useCaseFile:'',
   // 题干
@@ -377,60 +414,51 @@ const rules = {
     }
   ]
 };
-
-const focus = () => {
-  console.log("focus");
-};
-const handleChange = (value: string) => {
-  console.log(`selected ${value}`);
-};
-function addItem(index: any) {
-  if (index == 5) {
-    message.warning("最多六个选项！");
-    return;
+function createProgramQues(){
+  const testCaseData:any=[]
+  inputAndOut.value.forEach((item:any,index:any)=>{
+    testCaseData.push({in:item.inputCon,out:item.outCon})
+  })
+  const params={
+    question:formState.name,
+    used_by:formState.purpose,
+    category_id:1,
+    difficulty:formState.difficulty,
+    // knowledge_ids:formState.knowledgePoints,
+    knowledge_ids:[],
+    memory_limit:Number(formState.memoryLimit),
+    time_limit:Number(formState.timeLimit),
+    question_desc:formState.stem,
+    input:formState.inputFormat,
+    output:formState.outputFormat,
+    sample_input:formState.sampleInput,
+    sample_output:formState.sampleOutput,
+    test_case: { // 测试用例
+        type: formState.testCase,
+        data:testCaseData,
+    }   
   }
-  formState.multipleQuesSelection.push({value: "" ,ifAnswer:false});
+  http.programQues({param:params}).then((res:any)=>{
+    if(res.code==1){
+        message.success('创建成功')
+      }
+  })
 }
-function deleteItem(index: any) {
-  if (formState.multipleQuesSelection.length == 2) {
-    message.warning("最少两个选项！");
-    return;
-  }
-  formState.multipleQuesSelection.splice(index, 1);
-}
-const onSubmit = () => {
+function onSubmit(){
   console.log(formState.multipleQuesSelection,'哈哈哈哈西西休息')
   formRef.value
     .validate()
-    .then((res: any) => {
-      console.log(res, toRaw(formState));
-      
+    .then((res:any) => {
+      createProgramQues()
     })
     .catch((err: any) => {
       console.log("error", err);
     });
 };
-const reset = () => {
+function reset(){
   // formRef.value.resetFields();
   router.go(-1);
 };
-function handleChange1(info: any) {
-  const status = info.file.status;
-  if (status !== "uploading") {
-    console.log(info.file, info.fileList);
-  }
-  if (status === "done") {
-    message.success(`${info.file.name} file uploaded successfully.`);
-  } else if (status === "error") {
-    message.error(`${info.file.name} file upload failed.`);
-  }
-}
-function handleDrop(e: any) {
-  console.log(e);
-}
-function selectAnswer(){
-
-}
 </script>
 <style lang="less" scoped>
 .create_ques {

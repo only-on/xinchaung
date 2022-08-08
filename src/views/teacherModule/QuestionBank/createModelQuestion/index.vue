@@ -42,7 +42,7 @@
         </a-col>
         <a-col v-if="['5', '6'].includes(type)" :span="12">
           <a-form-item name="difficulty" label="难度系数">
-            <label-selection v-model:difficulty='formState.difficulty' :options='[{name:"简单",value:1},{name:"适中",value:2},{name:"困难",value:3}]'></label-selection>
+            <label-selection v-model:difficulty='formState.difficulty' :options='[{name:"简单",value:"easy"},{name:"适中",value:"normal"},{name:"困难",value:"hard"}]'></label-selection>
           </a-form-item>
         </a-col>
         <a-col :span="['1','2','3','4','7'].includes(type)? 12 : 24">
@@ -91,8 +91,11 @@
               @focus="focus"
               @change="handleChange"
             >
-              <a-select-option value="jack">Jack</a-select-option>
-              <a-select-option value="lucy">Lucy</a-select-option>
+              <a-select-option value="F1">Jack</a-select-option>
+              <a-select-option value="ACC">ACC</a-select-option>
+              <a-select-option value="R^2">R^2</a-select-option>
+              <a-select-option value="AUC">AUC</a-select-option>
+              <a-select-option value="MSE">MSE</a-select-option>
             </a-select>
           </a-form-item>
         </a-col>
@@ -166,7 +169,7 @@ const route = useRoute();
 const router = useRouter();
 const type: any = ref(route.query.value);
 const name: any = route.query.name;
-const http = (request as any).studentAssignment;
+const http = (request as any).QuestionBank;
 const caseFile=http.caseFile
 var updata = inject("updataNav") as Function;
 const fileList: any = [];
@@ -186,7 +189,7 @@ const formState = reactive({
   // 选择的目录
   catalogue: [],
   // 难度系数
-  difficulty: "1",
+  difficulty: "easy",
   // 知识点
   knowledgePoints: [],
 
@@ -382,56 +385,51 @@ const rules = {
     }
   ]
 };
-const focus = () => {
-  console.log("focus");
-};
-const handleChange = (value: string) => {
-  console.log(`selected ${value}`);
-};
-function addItem(index: any) {
-  if (index == 5) {
-    message.warning("最多六个选项！");
-    return;
+function createModelQues(){
+  const params={
+    question:formState.name,
+    used_by:formState.purpose,
+    category_id:1,
+    difficulty:formState.difficulty,
+    // knowledge_ids:formState.knowledgePoints,
+    knowledge:[],
+    question_desc:formState.stem,
+    ai_test_desc:formState.evaluationDescription,
+    pattern:formState.evaluationData,
+    // practice: [{
+    // file_name: "aaa124.txt",
+    // file_url: "/tmp/aaa1144.txt",
+    // size: 100,
+    // suffix: "txt"
+    //   }],
+    // verify: [{
+    // file_name: "aaa63444.txt",
+    // file_url: "/tmp/aaa163222.txt",
+    // size: 100,
+    // suffix: "txt"
+    // }]
   }
-  formState.multipleQuesSelection.push({value: "" ,ifAnswer:false});
+  http.modelQues({param:params}).then((res:any)=>{
+    if(res.code==1){
+      message.success('创建成功')
+    }
+  })
 }
-function deleteItem(index: any) {
-  if (formState.multipleQuesSelection.length == 2) {
-    message.warning("最少两个选项！");
-    return;
-  }
-  formState.multipleQuesSelection.splice(index, 1);
-}
-const onSubmit = () => {
+function onSubmit(){
   console.log(formState.multipleQuesSelection,'哈哈哈哈西西休息')
   formRef.value
     .validate()
     .then((res: any) => {
-      console.log(res, toRaw(formState));
-      
+      createModelQues()  
     })
     .catch((err: any) => {
       console.log("error", err);
     });
 };
-const reset = () => {
+function reset(){
   // formRef.value.resetFields();
   router.go(-1);
 };
-function handleChange1(info: any) {
-  const status = info.file.status;
-  if (status !== "uploading") {
-    console.log(info.file, info.fileList);
-  }
-  if (status === "done") {
-    message.success(`${info.file.name} file uploaded successfully.`);
-  } else if (status === "error") {
-    message.error(`${info.file.name} file upload failed.`);
-  }
-}
-function handleDrop(e: any) {
-  console.log(e);
-}
 </script>
 <style lang="less" scoped>
 .create_ques {

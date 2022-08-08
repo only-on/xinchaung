@@ -19,7 +19,7 @@ export default {
   complateQues:{url:` /api/v1/xinchuang/question/blank_questions`,method: "POST", dataType: "json"},
   solutionQues:{url:`/api/v1/xinchuang/question/short_answer_question`,method: "POST", dataType: "json"},
   programQues:{url:`/api/v1/xinchuang/question/program-questions`,method: "POST", dataType: "json"},
-  modelQues:{url:`/api/v1/xinchuang/question/model-questions/`,method: "POST", dataType: "json"},
+  modelQues:{url:`/api/v1/xinchuang/question/model-questions`,method: "POST", dataType: "json"},
 }
 
 export interface IQuestionBank {
