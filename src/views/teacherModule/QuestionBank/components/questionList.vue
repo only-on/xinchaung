@@ -8,6 +8,7 @@
         <div class="question-main">
           <div class="left">
             <div class="desc">在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素</div>
+            <!-- <marked-editor v-model="content" :preview="true" /> -->
             <template v-if="v.visible">
             <!-- 选择题 -->
             <div class="option" v-if="v.type===1">
@@ -43,7 +44,7 @@
                 <a-textarea v-model:value="v.answer" :disabled="true" placeholder="" :autoSize="{ minRows: 4, maxRows: 6 }" />
               </div>
             </div>
-            <!-- 四种基本题型的答案 -->
+            <!-- 四种基本题型的答案和解析 -->
             <template v-if="[1,2,3,4].includes(v.type)">
               <div class="answer">
                 <div class="answer-tit">答案：</div>

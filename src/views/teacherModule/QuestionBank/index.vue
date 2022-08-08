@@ -45,8 +45,8 @@
           <a-button class="btn" @click="publicQuestion">批量公开</a-button>
           <a-button class="btn" @click="deleteQuestion">批量删除</a-button>
         </span>
-        <a-button class="btn" type="primary">发布作业</a-button>
-        <a-button class="btn" type="primary">发布考试</a-button>
+        <a-button class="btn" type="primary" @click="releaseVisible=true;releaseType='作业'">发布作业</a-button>
+        <a-button class="btn" type="primary" @click="releaseVisible=true;releaseType='考试'">发布考试</a-button>
       </div>
       <div class="right">
         <span class="iconfont icon-guanbi pointer" @click="bottomVisible=false"></span>
@@ -61,6 +61,19 @@
     <directory-tree :isOperateTree="false"></directory-tree>
     <template #footer>
       <Submit @submit="removeSubmit()" @cancel="removeCancel()" :loading="removeLoading" :okText="'移动到此'"></Submit>
+    </template>
+  </a-modal>
+  <a-modal
+    :visible="releaseVisible"
+    :title="releaseType+'发布设置'"
+    @cancel="releaseCancel()"
+    :width="900"
+  >
+    <baseInfo :formState="formState" :type="releaseType"></baseInfo>
+    <!-- 选择学生 -->
+    <studentTable v-if="formState.relation.length===1" :data="tableData" :pageInfo="studentPageInfo" @delete="delStudent"/>
+    <template #footer>
+      <Submit @submit="releaseSubmit()" @cancel="releaseCancel()" :loading="releaseLoading" :okText="'发布'+releaseType"></Submit>
     </template>
   </a-modal>
 </template>
@@ -78,6 +91,8 @@ import filterCondition from "./components/filterCondition.vue"
 import questionList from "./components/questionList.vue"
 import { createQuestionTypeList } from "./questionConfig"
 import Submit from "src/components/submit/index.vue";
+import baseInfo from "src/components/ReleasePaper/baseInfo.vue"
+import studentTable from "src/views/teacherModule/teacherExamination/component/studentTable.vue"
 const props =withDefaults(defineProps<{
   inDrawer?: boolean
 }>(), {
@@ -317,6 +332,9 @@ const initData = () => {
   questionListData.length = 0
   pageTotal.value=0
   loading.value=true
+  http.getMyQuestionsList().then((res: IBusinessResp) => {
+    console.log(res)
+  })
   // http.dataSets({ param }).then((res: any) => {
   //   if (!res) return
   //   const { list, page } = res.data;
@@ -398,6 +416,36 @@ const removeLoading = ref(false)
 function removeSubmit() {}
 function removeCancel() {
   moveVisible.value = false
+}
+
+// 发布考试或作业
+const releaseType = ref('考试')
+const formState = reactive({
+  name: '',
+  desc: '',
+  date: [],
+  relation: ['是', 'kajshdf', 'qaz']
+})
+const releaseVisible = ref(false)
+const releaseLoading = ref(false)
+function releaseSubmit() {
+  console.log(formState)
+}
+function releaseCancel() {
+  releaseVisible.value = false
+}
+// 学生相关
+const studentPageInfo = reactive({
+  page: 1,
+  size: 1,
+  total: 2
+})
+const tableData = reactive([])
+const delStudent = (ids:number[]) => {
+  tableData.forEach((item:any, index:number) => {
+    ids.includes(item.id) && tableData.splice(index,1)
+  })
+  studentPageInfo.total = tableData.length
 }
 onMounted(() => {
   if (!Number(route.query.currentTab)) {

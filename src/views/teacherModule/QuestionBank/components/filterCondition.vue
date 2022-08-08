@@ -4,7 +4,7 @@
     <div class="drop-down">
       <a-select v-model:value="props.searchInfo.type" style="width: 200px" class="type" @change="changeType">
         <a-select-option value="">所有类型</a-select-option>
-        <a-select-option :value="key" v-for="(item, key) in questionTypeList" :key="item">{{item.name}}</a-select-option>
+        <a-select-option :value="key" v-for="(item, key) in getTopicType" :key="item">{{item.name}}</a-select-option>
       </a-select>
       <a-select v-model:value="props.searchInfo.level" style="width: 200px" class="level" @change="changeType">
         <a-select-option value="">所有难度</a-select-option>
@@ -19,20 +19,27 @@
       <div class="selected">
         <span class="tit">所选知识点 >&nbsp;</span>
         <span class="selected-knowledge" v-if="selectKnowledgeVisible">
-          <span>{{currentCourse.name}} > </span>
-          <span v-for="(list, index) in currentKnowledge" :key="list.id">{{list.name+(index !== currentKnowledge.length - 1 ? " /&nbsp;" : "")}}</span>
+          <span>{{currentCourse.knowledge_map_name}} > </span>
+          <span v-for="(list, index) in currentKnowledge" :key="list.id">{{list.knowledge_map_name+(index !== currentKnowledge.length - 1 ? " /&nbsp;" : "")}}</span>
           <span class="iconfont icon-guanbi pointer" @click="deleteKnowledge"></span>
         </span>
       </div>
       <div class="directive">
         <span 
+          class="btn pointer"
+          :class="[currentDirective==0?'current-directive':'']"
+          @click="selectDirective(0)"
+        >
+          全部
+        </span>
+        <span 
           class="btn pointer" 
-          v-for="list in directive" 
+          v-for="list in directiveList" 
           :key="list.id"
           :class="[currentDirective==list.id?'current-directive':'']"
           @click="selectDirective(list.id)"
         >
-          {{list.name}}
+          {{list.knowledge_map_name}}
         </span>
       </div>
     </div>
@@ -50,7 +57,7 @@
               :class="[currentCourse.id==list.id?'current-course':'']"
               @click="selectCourse(list)"
             >
-              {{list.name}}
+              {{list.knowledge_map_name}}
             </div>
           </div>
         </div>
@@ -63,7 +70,7 @@
               :class="[currentKnowledgeId.includes(list.id)?'current-knowledge':'']"
               @click="selectKnowledge(list)"
             >
-              {{list.name}}
+              {{list.knowledge_map_name}}
             </span>
           </div>
         </div>
@@ -77,11 +84,14 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
-import { questionTypeList } from "./../questionConfig"
+import { onMounted, ref, reactive } from 'vue'
+import getTopicType from 'src/components/TopicDisplay/topictype'
 import { levelTypeList, useTypeList } from 'src/components/TopicDisplay/configType'
 import Submit from "src/components/submit/index.vue";
 import { Modal, message } from "ant-design-vue";
+import request from "src/api/index";
+import { IBusinessResp } from "src/typings/fetch.d";
+const http = (request as any).QuestionBank;
 interface Props {
   searchInfo: any
 }
@@ -92,67 +102,27 @@ const emit = defineEmits<{
   (e: "searchFn", obj?: any): void;
 }>();
 const selectKnowledgeVisible = ref(false)
-const directive = [
-  {id: 0, name: '全部'},
-  {id: 100, name: '程序设计语言'},
-  {id: 1, name: '计算机基础'},
-  {id: 2, name: '计算机系统能力'},
-  {id: 3, name: '算法设计'},
-  {id: 4, name: '云计算与大数据'},
-  {id: 5, name: '数据库'},
-  {id: 6, name: '人工智能'},
-  {id: 7, name: '电子信息'},
-  {id: 8, name: 'Web开发'},
-  {id: 9, name: '软件工程'},
-  {id: 10, name: '网络与安全'},
-  {id: 11, name: '区块链'},
-  {id: 12, name: '数学与统计'},
-  {id: 13, name: '物联网'},
-  {id: 14, name: '企业课程'},
-  {id: 15, name: '虚拟仿真'},
-  {id: 16, name: '经济管理'},
-]
-const courseList = [
-  {id: 1, name: '多场景数据可视化数'},
-  {id: 2, name: '虚拟化与云计算'},
-  {id: 3, name: '数据可视化与Bl'},
-  {id: 4, name: 'ETL工具离线日志采集与清'},
-  {id: 5, name: 'Hadoop-离线数据分析'},
-]
-const knowledgeList = [
-  {id: 1, name: '知识点1'},
-  {id: 2, name: '知识点1'},
-  {id: 3, name: '知识点1'},
-  {id: 4, name: '知识点1'},
-  {id: 5, name: '知识点1'},
-  {id: 6, name: '知识点1'},
-  {id: 7, name: '知识点1'},
-  {id: 8, name: '知识点1'},
-  {id: 9, name: '知识点1'},
-  {id: 10, name: '知识点1'},
-  {id: 11, name: '知识点1'},
-  {id: 12, name: '知识点1'},
-  {id: 13, name: '知识点1'},
-  {id: 14, name: '知识点1'},
-  {id: 15, name: '知识点1'},
-  {id: 16, name: '知识点1'},
-]
+const directiveList = reactive<IKnowledge[]>([])
+const courseList = reactive<IKnowledge[]>([])
+const knowledgeList = reactive<IKnowledge[]>([])
 const currentDirective = ref(0)
 const currentCourse = ref({
   id: 1,
-  name: '多场景数据可视化数'
+  knowledge_map_name: '多场景数据可视化数'
 })
-const currentKnowledge = ref<any[]>([])
+const currentKnowledge = ref<IKnowledge[]>([])
 const currentKnowledgeId = ref<number[]>([])
 const selectDirective = (id: number) => {
   console.log(id)
   currentDirective.value = id
   id ? selectKnowledgeVisible.value = true : selectKnowledgeVisible.value = false
+  getKnowledgeSub(id, 'course')
 }
-const selectCourse = (list: any) => {
+const selectCourse = (list: IKnowledge) => {
   currentCourse.value = list
+  getKnowledgeSub(list.id, 'knowledge')
 }
-const selectKnowledge = (list: any) => {
+const selectKnowledge = (list: IKnowledge) => {
   let index = currentKnowledgeId.value.indexOf(list.id)
   if (index !== -1) {
     currentKnowledge.value.splice(index, 1)
@@ -171,7 +141,7 @@ const deleteKnowledge = () =>  {
   currentKnowledgeId.value = []
   currentCourse.value = {
     id: 1,
-    name: ''
+    knowledge_map_name: ''
   }
   selectKnowledgeVisible.value = false
 }
@@ -189,6 +159,36 @@ const cancel = () => {
 }
 const changeType = () => {
   emit('searchFn')
+}
+const getKnowledgeFirst = () => {
+  directiveList.length = 0
+  http.getKnowledgeFirst().then((res: IBusinessResp) => {
+    directiveList.push(...res.data)
+  })
+}
+const getKnowledgeSub = (id: number, type: string) => {
+  if (type==='course'){
+    courseList.length = 0
+    knowledgeList.length = 0
+  } else {
+    knowledgeList.length = 0
+  }
+  http.getKnowledgeSub({urlParams: {id}}).then((res: IBusinessResp) => {
+    if (type==='course'){
+      courseList.push(...res.data)
+      courseList.length ? selectCourse(courseList[0]) : ''
+    } else {
+      knowledgeList.push(...res.data)
+    }
+  })
+}
+onMounted(() => {
+  getKnowledgeFirst()
+})
+
+interface IKnowledge {
+  id: number
+  knowledge_map_name: string
 }
 </script>
 
