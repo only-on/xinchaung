@@ -101,7 +101,8 @@
         <a-col v-if="type == 5&&formState.testCase==2" :span="12">
           <a-form-item label="批量上传用例文件" name="useCaseFile">
             {{formState.useCaseFile}}00
-            <upload-file apiInterface='/api/simple/report/templates/import-template' path='pdf_path' v-model:useCaseFile='formState.useCaseFile'></upload-file>
+            <upload-file apiInterface='/api/simple/report/templates/import-template' path='pdf_path' v-model:useCaseFile='formState.useCaseFile'>
+            </upload-file>
           </a-form-item>
         </a-col>
         <a-col v-if="type == 5&&formState.testCase==2" :span="12">

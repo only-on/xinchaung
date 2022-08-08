@@ -13,6 +13,11 @@ export default {
   // 习题
   getMyQuestionsList: { url: `/api/v1/xinchuang/question/myQuestions`, method: "GET" },
   getPublicQuestionsList: { url: `/api/v1/xinchuang/question/publicQuestions`, method: "GET" },
+  // 创建习题
+  choiceQues: { url: `/api/v1/xinchuang/question/choice_question`, method: "POST", dataType: "json" },
+  judgeQues:{url: `/api/v1/xinchuang/question/judge_questions`, method: "POST", dataType: "json"},
+  complateQues:{url:` /api/v1/xinchuang/question/blank_questions`,method: "POST", dataType: "json"},
+  solutionQues:{url:`/api/v1/xinchuang/question/short_answer_question`,method: "POST", dataType: "json"}
 }
 
 export interface IQuestionBank {
@@ -23,4 +28,10 @@ export interface IQuestionBank {
   getKnowledgeSub: TFHttpSend
   getMyQuestionsList: TFHttpSend
   getPublicQuestionsList: TFHttpSend
+
+  // 创建习题
+  choiceQues:TFHttpSend
+  judgeQues:TFHttpSend
+  complateQues:TFHttpSend
+  solutionQues:TFHttpSend
 }

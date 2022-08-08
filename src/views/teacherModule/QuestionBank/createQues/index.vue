@@ -15,17 +15,15 @@
             <a-select
               ref="select"
               v-model:value="formState.purpose"
-              @focus="focus"
-              @change="handleChange"
             >
-              <a-select-option value="jack">考试题</a-select-option>
-              <a-select-option value="lucy">作业题</a-select-option>
+              <a-select-option value="exam">考试题</a-select-option>
+              <a-select-option value="homework">作业题</a-select-option>
             </a-select>
           </a-form-item>
         </a-col>
         <a-col v-if="!['5', '6'].includes(type) && type != 7" :span="12">
           <a-form-item name="difficulty" label="难度系数">
-            <label-selection v-model:difficulty='formState.difficulty' :options='[{name:"简单",value:1},{name:"适中",value:2},{name:"困难",value:3}]'></label-selection>
+            <label-selection v-model:difficulty='formState.difficulty' :options='[{name:"简单",value:"easy"},{name:"适中",value:"normal"},{name:"困难",value:"hard"}]'></label-selection>
           </a-form-item>
         </a-col>
         <a-col :span="12">
@@ -73,13 +71,13 @@
           <a-form-item label="答案选项" name="analysis">
             <div class="select_difficult">
               <span
-                @click="formState.judgeAnswer = '1'"
-                :class="formState.judgeAnswer === '1' ? 'active' : ''"
+                @click="formState.judgeAnswer = 'right'"
+                :class="formState.judgeAnswer === 'right' ? 'active' : ''"
                 >正确</span
               >
               <span
-                @click="formState.judgeAnswer = '2'"
-                :class="formState.judgeAnswer === '2' ? 'active' : ''"
+                @click="formState.judgeAnswer = 'wrong'"
+                :class="formState.judgeAnswer === 'wrong' ? 'active' : ''"
                 >错误</span
               >
             </div>
@@ -146,7 +144,7 @@ const route = useRoute();
 const router = useRouter();
 const type: any = ref(route.query.value);
 const name: any = route.query.name;
-const http = (request as any).studentAssignment;
+const http = (request as any).QuestionBank;
 const caseFile=http.caseFile
 var updata = inject("updataNav") as Function;
 const fileList: any = [];
@@ -166,7 +164,7 @@ const formState = reactive({
   // 选择的目录
   catalogue: [],
   // 难度系数
-  difficulty: "1",
+  difficulty: "easy",
   // 知识点
   knowledgePoints: [],
 
@@ -210,7 +208,7 @@ const formState = reactive({
     {value:'',ifAnswer:false}
   ],
   // 答案
-  judgeAnswer: "1",
+  judgeAnswer: "right",
 });
 var options: any[] = [
   {
@@ -342,12 +340,7 @@ const rules = {
     },
   ]
 };
-const focus = () => {
-  console.log("focus");
-};
-const handleChange = (value: string) => {
-  console.log(`selected ${value}`);
-};
+// 添加选项
 function addItem(index: any) {
   if (index == 5) {
     message.warning("最多六个选项！");
@@ -355,6 +348,7 @@ function addItem(index: any) {
   }
   formState.multipleQuesSelection.push({value: "" ,ifAnswer:false});
 }
+// 删除选项
 function deleteItem(index: any) {
   if (formState.multipleQuesSelection.length == 2) {
     message.warning("最少两个选项！");
@@ -362,22 +356,113 @@ function deleteItem(index: any) {
   }
   formState.multipleQuesSelection.splice(index, 1);
 }
-const onSubmit = () => {
-  console.log(formState.multipleQuesSelection,'哈哈哈哈西西休息')
-  formRef.value
-    .validate()
-    .then((res: any) => {
-      console.log(res, toRaw(formState));
-      
+// 创建选择题
+function createChoiceQues(){
+  const choiceOptions:any=[];
+  const choiceCorrectOptions:any=[]
+  formState.multipleQuesSelection.forEach((item:any,index:any)=>{
+    choiceOptions.push({content:item.value,originOption:selectLabels.value[index]})
+    if(item.ifAnswer==true){
+      choiceCorrectOptions.push(selectLabels.value[index])
+    }
+  })
+    const params={
+      question:formState.stem,
+      difficulty:formState.difficulty,
+      categoryId:1,
+      knowledgeIds:[1,2],
+      questionAnalysis:formState.topicAnalysis,
+      choiceOptions:choiceOptions,
+      choiceCorrectOptions:choiceCorrectOptions,
+      usedBy:formState.purpose
+
+    }
+    http.choiceQues({param:params}).then((res:any)=>{
+      if(res.code==1){
+        message.success('创建成功')
+      }
+    })
+}
+// 创建判断题
+function createJudgeQues(){
+  const params={
+      usedBy:formState.purpose,
+      difficulty:formState.difficulty,
+      categoryId:1,
+      // knowledgeIds:[],
+      knowledgeMapIds:[],
+      question:formState.stem, 
+      judgeCorrect:formState.judgeAnswer,
+      questionAnalysis:formState.topicAnalysis
+    }
+    http.judgeQues({param:params}).then((res:any)=>{
+      if(res.code==1){
+        message.success('创建成功')
+      }
+    })
+}
+// 创建填空题
+function createCompleQues(){
+  const blankCorrect:any=[]
+   formState.multipleQuesSelection.forEach((item:any,index:any)=>{
+    blankCorrect.push(item.value)
+  })
+  const params={
+      usedBy:formState.purpose,
+      difficulty:formState.difficulty,
+      categoryId:1,
+      // knowledgeIds:[],
+      knowledgeMapIds:[],
+      question:formState.stem, 
+      blankCorrect:blankCorrect,
+      questionAnalysis:formState.topicAnalysis
+    }
+  http.complateQues({param:params}).then((res:any)=>{
+     if(res.code==1){
+        message.success('创建成功')
+      }
+  })
+}
+// 创建解答题
+function createSolutionQues(){
+  const params={
+      usedBy:formState.purpose,
+      difficulty:formState.difficulty,
+      categoryId:1,
+      knowledgeMapIds:[],
+      question:formState.stem, 
+      shortAnswerReference:formState.referenceAnswer,//参考答案
+      shortAnswerKeys:formState.keyword,
+      questionAnalysis:formState.topicAnalysis
+    }
+    http.solutionQues({param:params}).then((res:any)=>{
+       if(res.code==1){
+        message.success('创建成功')
+      }
+    })
+}
+function onSubmit(){
+  formRef.value.validate().then((res: any) => {
+      switch(type.value){
+        case "1":
+        createChoiceQues();
+        break;
+        case '2':
+        createJudgeQues();
+        break;
+         case '3':
+        createCompleQues();
+        break;
+         case '4':
+        createSolutionQues();
+        break;
+      }
     })
     .catch((err: any) => {
       console.log("error", err);
     });
 };
-function createChoiceQues(){
-
-}
-const reset = () => {
+function reset(){
   // formRef.value.resetFields();
   router.go(-1);
 };
