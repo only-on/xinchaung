@@ -1,7 +1,7 @@
 <template>
   <common-card title="基础信息">
     <template #content>
-      <baseInfo ref="baseInfoRef"/>
+      <baseInfo ref="baseInfoRef" :type="type" :formState="baseForm"/>
     </template>
   </common-card>
   <!-- 手动创建 -->
@@ -56,7 +56,7 @@
     </common-card>
   </div>
   <!-- 选择学生 -->
-  <studentTable :data="tableData" :pageInfo="studentPageInfo" @delete="delStudent"/>
+  <studentTable :data="tableData" :courseId="baseForm.relation[0]" ref="studentTableRef"/>
   <Submit @submit="handleSave" @cancel="cancelSave"></Submit>
 </template>
 <script lang="ts" setup>
@@ -73,7 +73,7 @@ import {randomCreatScore} from 'src/utils/common'
 import {validateNum} from "./utils"
 const route = useRoute();
 const router = useRouter()
-provide("type", "考试");
+const type = ref('考试')
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 const isRandom = ref<boolean>(route.query.type === "manual" ? false : true)
@@ -90,6 +90,13 @@ updata({
 });
 const baseInfoRef = ref()
 const questionTableRef = ref()
+const studentTableRef = ref()
+const baseForm = reactive({
+  name: '',
+  date: [],
+  note: '',
+  relation: [0]
+})
 // 手动创建题目相关
 const questionData = ref([
   {
@@ -103,21 +110,21 @@ const questionData = ref([
         id: 11,
         stu_no: 715293,
         question: "第一题的题目",
-        difficulty: "中等",
+        difficulty: 1,
         score: "5",
       },
       {
         id: 21,
         stu_no: 722742,
         question: "第二题的题目",
-        difficulty: "中等",
+        difficulty: 2,
         score: "6",
       },
       {
         id: 31,
         stu_no: 722742,
         question: "第三题的题目",
-        difficulty: "中等",
+        difficulty: 3,
         score: "6",
       },
     ],
@@ -133,14 +140,14 @@ const questionData = ref([
         id: 13,
         stu_no: 715293,
         question: "第一题的题目",
-        difficulty: "中等",
+        difficulty: 1,
         score: "5",
       },
       {
         id: 23,
         stu_no: 722742,
         question: "第二题的题目",
-        difficulty: "中等",
+        difficulty: 2,
         score: "6",
       },
     ],
@@ -156,14 +163,14 @@ const questionData = ref([
         id: 14,
         stu_no: 715293,
         question: "第一题的题目",
-        difficulty: "中等",
+        difficulty: 1,
         score: "5",
       },
       {
         id: 24,
         stu_no: 722742,
         question: "第二题的题目",
-        difficulty: "中等",
+        difficulty: 1,
         score: "6",
       },
     ],
@@ -197,11 +204,6 @@ const handleBlur = () => {
   
 }
 // 学生相关
-const studentPageInfo = reactive({
-  page: 1,
-  size: 1,
-  total: 2
-})
 const tableData = reactive([
   {
     id: 1,
@@ -226,7 +228,6 @@ const delStudent = (ids:number[]) => {
   tableData.forEach((item:any, index:number) => {
     ids.includes(item.id) && tableData.splice(index,1)
   })
-  studentPageInfo.total = tableData.length
 }
 // 题目范围表单验证
 const randomFormRef = ref<any>()
@@ -274,13 +275,13 @@ const randomFormValidate = () => {
   })
 }
 const handleSave = async() => {
+  console.log(studentTableRef.value.studentIds)
   if (isRandom.value) {
     await randomFormValidate()
   } else {
     await questionTableRef.value.tablefromValidate()
     console.log(questionTableRef.value.listData)
   }
-  console.log(baseInfoRef.value.formState)
 }
 const cancelSave = () => {
   router.go(-1)

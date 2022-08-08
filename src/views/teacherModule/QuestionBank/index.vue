@@ -1,5 +1,6 @@
 <template>
   <search-add
+    v-if="!inDrawer"
     @searchFn="searchFn"
     @handleMenuClick="handleMenuClick"
     :TypeList="createQuestionTypeList"
@@ -7,10 +8,10 @@
     :isReset="resetKeyword"
   ></search-add>
   <!-- <directory-tree></directory-tree> -->
-  <filter-condition :searchInfo="searchInfo" @searchFn="searchFn"></filter-condition>
+  <filter-condition :searchInfo="searchInfo" @searchFn="searchFn" :inDrawer="inDrawer" @add="handleDrawer"></filter-condition>
   <div class="question-content">
     <div class="left" v-if="isMyQuestion">
-      <directory-tree :isOperateTree="true"></directory-tree>
+      <directory-tree :isOperateTree="inDrawer? false: true"></directory-tree>
     </div>
     <div class="right">
       <a-spin :spinning="loading" size="large" tip="Loading...">
@@ -32,7 +33,7 @@
   </a-spin>
     </div>
   </div>
-  <div class="footer" v-if="bottomVisible">
+  <div class="footer" v-if="bottomVisible && !inDrawer">
     <div class="bottom">
       <div class="left">
         <a-checkbox v-model:checked="checkedAll" @change="checkedAllHandle">全选</a-checkbox>
@@ -94,10 +95,15 @@ import Submit from "src/components/submit/index.vue";
 import baseInfo from "src/components/ReleasePaper/baseInfo.vue"
 import studentTable from "src/views/teacherModule/teacherExamination/component/studentTable.vue"
 const props =withDefaults(defineProps<{
-  inDrawer?: boolean
+  inDrawer?: boolean,
+  activeTab?:number
 }>(), {
-  inDrawer: false
+  inDrawer: false,
+  activeTab: 0
 })
+const emit = defineEmits<{
+  (e: "addData", val: any): void;
+}>();
 const router = useRouter();
 const route = useRoute();
 const http = (request as any).QuestionBank;
@@ -255,6 +261,20 @@ const searchFn = (key?: string) => {
   pageInfo.page = 1
   initData();
 };
+const handleDrawer = () => {
+  let selectData:any = []
+  questionListData.forEach((item:any)=>{
+    if (item.checked) {
+      selectData.push(item)
+    }
+  })
+  if (!selectData.length) {
+    message.warning('请选择要添加的数据')
+    return
+  }
+  console.log(selectData)
+  emit('addData', selectData)
+}
 const isMyQuestion = computed(() => currentTab.value==1)
 const EmptyType: any = computed(() => {
   let str = ''
@@ -302,6 +322,10 @@ watch(
     initData();
   }
 );
+watch(()=>props.activeTab, newVal => {
+  currentTab.value = newVal
+  initData()
+})
 
 interface ILabel {
   uid: string;

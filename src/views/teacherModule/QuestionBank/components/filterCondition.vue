@@ -14,6 +14,16 @@
         <a-select-option value="">所有用途</a-select-option>
         <a-select-option :value="key" v-for="(item, key) in useTypeList" :key="item">{{item.name}}</a-select-option>
       </a-select>
+      <div class="drawerContent" v-if="inDrawer">
+        <a-input-search 
+          style="width: 254px"
+          v-model:value="props.searchInfo.keyWord" 
+          placeholder="请输入搜索关键词"
+          @search="changeType"
+          @keyup.enter="changeType" >
+        </a-input-search>
+        <a-button type="primary" @click="drawerAdd">添加</a-button>
+      </div>
     </div>
     <div class="select-knowledge">
       <div class="selected">
@@ -93,13 +103,16 @@ import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 const http = (request as any).QuestionBank;
 interface Props {
-  searchInfo: any
+  searchInfo: any,
+  inDrawer: boolean
 }
 const props = withDefaults(defineProps<Props>(), {
-  searchInfo: {}
+  searchInfo: {},
+  inDrawer: false
 });
 const emit = defineEmits<{
   (e: "searchFn", obj?: any): void;
+  (e: "add", obj?: any): void;
 }>();
 const selectKnowledgeVisible = ref(false)
 const directiveList = reactive<IKnowledge[]>([])
@@ -160,6 +173,9 @@ const cancel = () => {
 const changeType = () => {
   emit('searchFn')
 }
+const drawerAdd = () => {
+  emit('add')
+}
 const getKnowledgeFirst = () => {
   directiveList.length = 0
   http.getKnowledgeFirst().then((res: IBusinessResp) => {
@@ -198,8 +214,15 @@ interface IKnowledge {
   margin: 0 auto;
   margin-top: 16px;
   .drop-down {
+    display: flex;
     .ant-select {
       margin-right: 24px;
+    }
+    .drawerContent{
+      flex: 1;
+      .ant-btn{
+        float: right;
+      }
     }
   }
   .select-knowledge {

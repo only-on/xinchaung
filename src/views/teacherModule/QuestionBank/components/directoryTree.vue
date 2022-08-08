@@ -65,7 +65,7 @@ import { Modal, message } from "ant-design-vue";
 import Submit from "src/components/submit/index.vue";
 const http = (request as any).QuestionBank;
 interface Props {
-  isOperateTree: boolean
+  isOperateTree: boolean,
 }
 const props = withDefaults(defineProps<Props>(), {
   isOperateTree: true,

@@ -15,12 +15,17 @@
       <cardItem v-for="(item,index) in listData.data" :data="item" :key="index" @menuClick="menuClick" @operate="handleOperate"/>
     </div>
     <Pagination v-model:page="searchInfo.page" v-model:size="searchInfo.limit" :total="listData.total" @page-change="getList"/>
-    <Empty v-if="!listData.data.length" :type="EmptyType"/>
+    <Empty v-if="!listData.data.length && !listData.loading" :type="EmptyType"/>
   </a-spin>
   <!-- 防作弊设置 -->
   <antiCheatingSetting v-model:visible="settingModal" :data="antiCheat" @save="saveSetting"/>
   <!-- 编辑基本信息 -->
-  <editBaseInfo v-model:visible="editModal" type="考试" :editInfo="editInfo" @save="saveEdit"/>
+  <a-modal v-model:visible="editModal" :title="'编辑'+type+'基本信息'" :width="900">
+    <baseInfo ref="baseInfoRef" :formState="editInfo" :type="type"/>
+    <template #footer>
+      <Submit @submit="handleEdit" @cancel="editCancel"></Submit>
+    </template>
+  </a-modal>
 </template>
 <script lang="ts" setup>
 import {ref, reactive, inject, provide, createVNode, computed, onMounted} from 'vue'
@@ -31,10 +36,12 @@ import classify from "src/components/classify/index.vue";
 import searchAdd from "src/components/searchAdd/searchAdd.vue";
 import cardItem from "./component/cardItem.vue"
 import antiCheatingSetting from "./component/antiCheatingSetting.vue";
-import editBaseInfo from "./component/editBaseInfo.vue";
+import baseInfo from "./component/baseInfo.vue";
 import Pagination from 'src/components/Pagination.vue'
+import Submit from "src/components/submit/index.vue";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
+import {initialData} from './utils'
 interface IlistData {
   loading: Boolean;
   total: number,
@@ -80,7 +87,9 @@ const modelType = 2
 const currentOperateId = ref() 
 const editInfo = reactive({
   name: '',
-  note: ''
+  date: [],
+  note: '',
+  relation: ['是']
 })
 provide('editInfo', editInfo)
 const searchInfo = reactive({
@@ -144,24 +153,16 @@ const deleteItem = () => {
   });
 }
 // 编辑
-const saveEdit = (val:any) => {
-  console.log(val)
+const handleEdit = () => {}
+const editCancel = () => {
+  editModal.value= false
 }
 // 复用
 const handleCopy = () => {}
 // 防作弊相关
-const antiCheat = reactive({
-  topic_chaotic: false,
-  options_chaotic: false,
-  no_copy: false,
-  no_switch: false,
-  noQuit: false,
-  face_verify: false,
-  dystropic: false
-})
-const saveSetting = () => {
-  console.log(antiCheat)
-  http.setCheat({urlParams: {ID: currentOperateId.value}, param:antiCheat}).then((res:IBusinessResp) => {
+const antiCheat = reactive({})
+const saveSetting = (data:any) => {
+  http.setCheat({urlParams: {ID: currentOperateId.value}, param:data}).then((res:IBusinessResp) => {
     message.success('设置成功')
     getList()
   })
@@ -171,9 +172,10 @@ const menuClick = (type:string, val:any) => {
   switch (type) {
     case 'setting':
       settingModal.value = true
-      if (val.cheat) {
-        console.log(val.cheat)
-        Object.assign(antiCheat, val.cheat_info)
+      if (val.cheat_info) {
+        Object.assign(antiCheat, JSON.parse(JSON.stringify(val.cheat_info)))
+      } else {
+        Object.assign(antiCheat, JSON.parse(JSON.stringify(initialData)))
       }
       break;
     case 'edit':

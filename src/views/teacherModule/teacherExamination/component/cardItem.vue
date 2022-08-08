@@ -64,6 +64,9 @@ const handleClick = (operateType:string, item:any) => {
 const handleEvent = (operateType:string, item:any) => {
   emit('operate', operateType, item)
 }
+watch(()=>props.data, newVal => {
+  Object.assign(item,newVal)
+},{deep:true,immediate:true})
 </script>
 <style lang="less" scoped>
 .cradItem {

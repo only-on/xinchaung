@@ -146,7 +146,6 @@ function getCheckboxProps(record: any) {
     disabled: alreadySelect.value.includes(record.id)
   };
 }
-function handleChange() {}
 function onSearch(value: any) {
   console.log(value);
   params.page=1

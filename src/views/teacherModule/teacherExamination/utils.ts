@@ -32,3 +32,12 @@ export const simList = [
     label: "100%",
   },
 ];
+export const initialData = {
+  topic_chaotic: false,
+  options_chaotic: false,
+  no_copy: false,
+  no_switch: false,
+  no_quit: false,
+  face_verify: false,
+  dystropic: false
+}

@@ -35,14 +35,19 @@
                 :data-index="index"
               >
                 <template v-slot:bodyCell="{ column, record, index }">
-                    <template v-if="column.dataIndex === 'score'">
-                        <a-form-item :name="[index, 'score']" :rules="rulesInput">
-                          <a-input class="scoreInput" type="text" v-model:value="record.score" @blur="handleBlur"></a-input>
-                        </a-form-item>
-                    </template>
-                    <template v-if="column.dataIndex === 'operation'">
-                      <a-button type="link" @click="delInner(record, index)">移除</a-button>
-                    </template>
+                  <template v-if="column.dataIndex === 'difficulty'">
+                    <span class="level" :style="{background: levelTypeList[record.difficulty].bgColor,color: levelTypeList[record.difficulty].color}">
+                      {{levelTypeList[record.difficulty].name}}
+                    </span>
+                  </template>
+                  <template v-if="column.dataIndex === 'score'">
+                      <a-form-item :name="[index, 'score']" :rules="rulesInput">
+                        <a-input class="scoreInput" type="text" v-model:value="record.score" @blur="handleBlur"></a-input>
+                      </a-form-item>
+                  </template>
+                  <template v-if="column.dataIndex === 'operation'">
+                    <a-button type="link" @click="delInner(record, index)">移除</a-button>
+                  </template>
                 </template>
               </a-table>
             </a-form>
@@ -75,17 +80,35 @@
     </template>
   </a-modal>
   <!-- 选择题目 -->
-  <addQuestion v-model:visible="addVisible"/>
+  <a-drawer
+      class="addQuestion"
+      :destroyOnClose="true"
+      :closable="false"
+      placement="right"
+      :visible="addVisible"
+      width="1300"
+      @close="closeDrawer"
+    >
+      <div class="select flexCenter">
+        <div class="flexCenter type">
+          <span @click="selectType(0)" :class="{active: selectNum === 0}"> 公开题库 </span>
+          <span @click="selectType(1)" :class="{active: selectNum === 1}"> 我的题库 </span>
+        </div>
+        <span class="iconfont icon-guanbi" @click="closeDrawer"></span>
+      </div>
+      <questionBank :inDrawer="true" :activeTab="selectNum" @addData="handleAddData"/>
+  </a-drawer>
 </template>
 <script lang="ts" setup>
 import { ref, reactive, watch } from "vue";
 import CommonCard from "src/components/common/CommonCard.vue";
 import Submit from "src/components/submit/index.vue";
-import addQuestion from './addQuestion.vue'
+import questionBank from 'src/views/teacherModule/QuestionBank/index.vue'
 import { message } from "ant-design-vue";
 import getTopicType from "src/components/TopicDisplay/topictype.ts"
 import {TotalScore} from "src/utils/common.ts"
 import {validateNum} from "../utils"
+import { levelTypeList, useTypeList } from 'src/components/TopicDisplay/configType'
 
 const props = defineProps({
   data: Array,
@@ -102,6 +125,17 @@ const emit = defineEmits<{
 }>();
 var listData = ref<any>([]); // 表格当前页展示的数据
 var allData = reactive<any>([]); // 所有数据
+const handleAddData = (data:any) => {
+  console.log(data)
+  addVisible.value = false
+}
+const selectNum = ref<number>(1)
+const selectType=(v:number)=>{
+  selectNum.value=v
+}
+const closeDrawer = () => {
+  addVisible.value = false
+}
 const columns = [
   {
     title: "题目类型",
@@ -352,6 +386,7 @@ const cancelSetting = () => {
 const addVisible = ref<boolean>(false)
 const handleSelect = () => {
   addVisible.value = true
+  selectNum.value = 0
 }
 const handleBlur = () => {
   topInfo.totalScore = 0
@@ -407,6 +442,13 @@ defineExpose({
   .ant-form-item{
     margin-bottom: 0;
   }
+  .level {
+          display: inline-block;
+          padding: 0 18px;
+          background-color: rgba(81,176,72,0.15);
+          border-radius: 12px;
+          color: #51b048;
+        }
 }
 .ant-pagination{
   margin-top: 20px;
@@ -426,6 +468,29 @@ defineExpose({
   }
   .questionType{
     margin: 0 10px
+  }
+}
+.addQuestion{
+  .select{
+    justify-content:space-between;
+    margin-bottom:24px;
+    border-bottom: 1px solid #E8E8E8;
+    .type{
+      span{
+        border-bottom: 4px solid transparent;
+        margin-right: 50px;
+        padding-bottom: 8px;
+        cursor: pointer;
+        color:var(--black-45);
+      }
+      .active{
+        border-color: var(--primary-color);
+        color: var(--primary-color);
+      }
+    }
+    .iconfont{
+      cursor:pointer;
+    }
   }
 }
 </style>

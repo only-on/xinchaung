@@ -14,8 +14,8 @@
         </a-form-item>
       </div>
       <div class="right">
-        <a-form-item label="考试名称">
-          <a-input v-model:value="formState.name" placeholder="请输入考试名称" />
+        <a-form-item label="关联课程">
+          <cascader v-model:relation="formState.relation"></cascader>
         </a-form-item>
       </div>
     </div>
@@ -28,13 +28,16 @@
 import {ref, reactive, watch, inject, defineExpose} from 'vue'
 import { CalendarOutlined  } from '@ant-design/icons-vue';
 import moment, { Moment } from 'moment';
-const props = defineProps({
-  data: Object
-})
-const formState = reactive({
-  name: '',
-  date: [],
-  note: ''
+import cascader from "src/components/ReleasePaper/cascader.vue"
+import { AnyARecord } from 'dns';
+const props =withDefaults(defineProps<{
+  formState:any
+  editInfo?: any,
+  type: string,
+}>(), {
+  formState: {},
+  editInfo: {},
+  type: '考试',
 })
 const rules = {
   name: [
@@ -43,9 +46,6 @@ const rules = {
   ],
   date: {required: true, message: `请选择起始时间`}
 }
-const type = inject('type') || '考试'
-const editInfoData = inject('editInfo')
-console.log(editInfoData)
 const baseInfoFormRef = ref()
 const dateChange = () => {}
 const disabledDate=(current: Moment)=>{
@@ -58,14 +58,13 @@ const fromValidate = () => {
     })
   })
 }
-watch(()=> editInfoData, (newVal:any) => {
-  console.log(newVal)
-  if (newVal) {
-    Object.assign(formState, newVal)
-  }
-},{deep:true,immediate:true})
+// watch(()=> props.editInfo, (newVal:any) => {
+//   console.log(newVal)
+//   if (newVal) {
+//     Object.assign(formState, newVal)
+//   }
+// },{deep:true,immediate:true})
 defineExpose({
-  formState,
   fromValidate
 })
 </script>

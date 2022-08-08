@@ -5,10 +5,12 @@
         <div class="top">
           <div class="left">
             提交情况： <span class="submitNum">10</span> /100
-            <a-input-search v-model:value="searchInfo.keyword" 
-            placeholder="请输入搜索关键字"
-            @search="getTableData"
-            @keyup.enter="getTableData" ></a-input-search>
+            <a-input-search 
+              v-model:value="searchInfo.keyword" 
+              placeholder="请输入搜索关键词"
+              @search="getTableData"
+              @keyup.enter="getTableData" >
+            </a-input-search>
           </div>
           <div class="right">
             <a-button type="primary" class="brightBtn" @click="handleRecheck">代码查重</a-button>

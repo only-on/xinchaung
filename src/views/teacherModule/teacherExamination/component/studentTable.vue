@@ -42,11 +42,13 @@ import CommonCard from "src/components/common/CommonCard.vue";
 import Pagination from "src/components/Pagination.vue";
 import addstudent from "./addStudent.vue";
 import { message } from "ant-design-vue";
+import request from 'src/api/index'
+const http = (request as any).teacherExamination;
 
 const props = defineProps({
   courseId: {
     required: false,
-    default: ''
+    default: () => {}
   }
 });
 const emit = defineEmits<{
@@ -63,7 +65,7 @@ const pageInfo = reactive<any>({
   size: 10,
   total: 0
 })
-const columns = [
+const initialColumns = [
   {
     title: "账号",
     dataIndex: "username",
@@ -98,8 +100,9 @@ const columns = [
     title: "操作",
     dataIndex: "operation",
     key: "operation",
-  },
+  }
 ];
+const columns = ref(initialColumns)
 var selectIds = ref<any>([]); // 批量选中的id
 // 处理分页数据
 const getListData = () => {
@@ -168,9 +171,19 @@ const batchDel = () => {
     }
   })
 }
-watch(()=>props.courseId, newVal => {
+// 关联课程
+watch(()=>props.courseId, (newVal:any) => {
+  columns.value = JSON.parse(JSON.stringify(initialColumns))
+  allData.length = 0
+  studentIds.length = 0
   if (newVal) {
     showBtn.value = false
+    columns.value.pop()
+    http.examsUserList({param:{courseId:newVal}}).then((res:any) => {
+      allData.push(...res.data.list)
+      let allIds = res.data.list.map((item:any) => item.id)
+      studentIds.push(...allIds)
+    })
   } else {
     showBtn.value = true
   }
