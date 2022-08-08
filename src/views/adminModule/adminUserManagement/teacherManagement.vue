@@ -258,7 +258,6 @@ import {
   MehOutlined,
   UserOutlined,
 } from "@ant-design/icons-vue";
-import  ColumnProps  from "ant-design-vue/es/table/interface";
 interface IforumSearch {
   username: string;
   department: string;

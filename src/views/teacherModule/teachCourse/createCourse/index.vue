@@ -128,12 +128,10 @@ import { Modal, message } from "ant-design-vue";
 import LabelList from 'src/components/LabelList.vue'
 import { CalendarOutlined  } from '@ant-design/icons-vue';
 import SetupChapter from '../courseDetail/components/Chapter/SetupChapter.vue'
-import { ColumnProps } from "ant-design-vue/es/table/interface";
 import customerInfor from "./stup3/index.vue";
 import Submit from "src/components/submit/index.vue";
 import moment, { Moment } from 'moment';
 import uploadCover from "src/components/uploadCover/index.vue"
-type Key = ColumnProps["key"];
 const router = useRouter();
 const route = useRoute();
 

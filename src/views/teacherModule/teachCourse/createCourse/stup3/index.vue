@@ -80,7 +80,6 @@ import request from "src/api/index";
 import Empty from "src/components/Empty.vue";
 import addStudent from '../../component/common/addStudent/index.vue';
 import { message, Modal } from "ant-design-vue";
-import { ColumnProps } from "ant-design-vue/es/table/interface";
 const http = (request as any).teachCourse;
 interface Props {
   courseId:number
@@ -176,7 +175,6 @@ const updateSelectStuVisable=(value: any,studentids:any)=>{
       isVisible.value=false
     }
 }
-type Key = ColumnProps["key"];
 interface IStudentData{
   selectedRowKeys: any[];
   list:any[],
@@ -205,7 +203,7 @@ const initPassword=(id: any) =>{
     initData()
   });
 }
-const onSelectChange=(selectedRowKeys: Key[], selectedRows: Key[])=> {
+const onSelectChange=(selectedRowKeys: any[], selectedRows: any[])=> {
   studentData.selectedRowKeys = selectedRowKeys; // 不去分别分页的弹窗已选ids
   // state.selectedRows = selectedRows; // 弹窗当前页已选 list
 }

@@ -72,14 +72,10 @@
                 </template>
               </span>
             </div>
-            <div
-              class="createDate flexCenter"
-              v-if="currentTab === 0 && v.start_time && v.end_time"
-            >
-              <span
-                >{{ v.start_time.split(" ")[0] }} -
-                {{ v.end_time.split(" ")[0] }}</span
-              >
+            <div class="createDate flexCenter" v-if="currentTab === 0 && v.start_time && v.end_time">
+              <span>{{ v.start_time.split(" ")[0] }} -
+                {{ v.end_time.split(" ")[0] }}</span>
+              <a-button @click.stop="ViewResults(v)" v-if="v.state!==2" type="link" class="del" size="small">总成绩</a-button>  
             </div>
           </div>
           <!-- 遮罩 -->
@@ -486,7 +482,18 @@ const courseDetail = (val: any) => {
       currentTab: currentTab.value,
       courseId: val.id,
       is_authorizedText: val.is_authorizedText,
-      // vvvvvvvvv
+    },
+  });
+};
+// 查看总成绩
+const ViewResults = (val: any) => {
+  router.push({
+    path: "/teacher/teacherCourse/Detail",
+    query: {
+      currentTab: currentTab.value,
+      courseId: val.id,
+      is_authorizedText: val.is_authorizedText,
+      pageType:'ViewResults'
     },
   });
 };
@@ -741,6 +748,9 @@ onMounted(() => {
         line-height: 44px;
         color: var(--black-45);
         justify-content: space-between;
+        .ant-btn{
+          color: var(--brightBtn);
+        }
       }
     }
 

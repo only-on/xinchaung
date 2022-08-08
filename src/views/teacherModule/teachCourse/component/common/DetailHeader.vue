@@ -159,6 +159,8 @@ const selectTab=(v:any)=>{
   emit("selectTab", v);
 }
 if(props.tabs && props.tabs.length){
+  console.log(props.tabs);
+  
   var {name,value}=props.tabs[0]
   activeTab.name=name,
   activeTab.value=value

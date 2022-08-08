@@ -1,5 +1,5 @@
 <template>
-  <DetailHeader :info="state.courseDetail" :tabs="Number(currentTab)===0?detailTabs:detailTabs2" :activeTabOrder="activeTabOrder ? Number(activeTabOrder) : 0" @selectTab="selectTab" @setupCourse="setupCourse" @editCourse="editCourse" />
+  <DetailHeader :info="state.courseDetail" :tabs="tabType()" :activeTabOrder="activeTabOrder ? Number(activeTabOrder) : 0" @selectTab="selectTab" @setupCourse="setupCourse" @editCourse="editCourse" />
   <div class="tab-course-content">
     <!-- 每个tab对应的组件 -->
     <!--课程章节-->
@@ -14,6 +14,8 @@
     <studentAnalysis v-if="state.activeTab.value=='studentAnalysis'" />
     <!-- 成员管理 -->
     <memberManagement v-if="state.activeTab.value=='memberManagement'" @updateGroup='updateGroup'  :is_teamed='state.courseDetail.is_teamed' :is_high="state.courseDetail.is_high" />
+    <!-- 查看成绩 -->
+    <ViewResults v-if="state.activeTab.value=='ViewResults'" />
   </div>
 
   <!-- 编辑课程基本信息 弹窗 -->
@@ -194,7 +196,7 @@ import popQuiz from "./popQuiz.vue" // 随堂测试
 import performanceReview from "./performanceReview.vue" // 成绩评阅
 import studentAnalysis from "./studentAnalysis.vue" // 学情分析
 import memberManagement from "./memberManagement.vue" // 成员管理
-// import courseAchievement from "./courseAchievement.vue" // 课程成绩
+import ViewResults from "./ViewResults.vue" // 查看成绩
 import moment, { Moment } from 'moment';
 interface IState{
   activeTab:any
@@ -212,7 +214,7 @@ const router = useRouter();
 const http=(request as any).teachCourse
 const role = Number(storage.lStorage.get("role"));
 const routeQuery = useRoute().query;
-const { currentTab,courseId, activeTabOrder } = route.query;
+const { currentTab,courseId, activeTabOrder,pageType } = route.query;
 const detailTabs:any=[
   {name:'课程章节',value:'courseChapter'},
   {name:'实验环境管理',value:'courseExperiment'},
@@ -221,10 +223,13 @@ const detailTabs:any=[
   {name:'学情分析',value:'studentAnalysis'},
   {name:'成员管理',value:'memberManagement'},]
 const detailTabs2:any=[]
-const  studentDetailTabs=[
-  {name:'课程内容',value:'courseChapter'},
-  {name:'课程成绩',value:'courseAchievement'},
-]
+const tabType=()=>{
+  if(Number(currentTab)===0 && pageType!=='ViewResults'){
+    return detailTabs
+  }else{
+    detailTabs2
+  }
+}
 var state:IState=reactive({
   activeTab:{value:''},
   courseDetail:{}
@@ -457,9 +462,9 @@ onMounted(() => {
   if(Number(currentTab)===1){
     selectTab({name:'课程章节',value:'courseChapter'})
   }
-  // if(Number(currentTab)===0 && role === 3){
-  //   getCourseSetup()
-  // }
+  if(Number(currentTab)===0 && pageType === 'ViewResults'){
+    selectTab({name:'查看成绩',value:'ViewResults'})
+  }
 });
 
 </script>

@@ -35,7 +35,7 @@
               <!-- 题号 -->
               <div class="itemOrder flexCenter">
                 <div class="left flexCenter">
-                  <!-- <span>拖拽图标</span> --> 
+                  <img class="img" v-if="props.purpose==='IsEdit'" src="../../assets/images/TopicDisplay/tuo.png" alt="">
                   <div>第{{NoToCh(index+1)}}题</div>
                   <div class="score">（<span>{{element.score}}分</span>）</div>
                 </div>
@@ -145,9 +145,9 @@
                   </div>
                   <div class="achievement1 rightkey">
                     <div class="tip">{{`${v.type===2?'参考':'正确'}`}}答案：</div>
-                    <div>填空1（答案1） / 填空2（答案2）频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的 品牌认知；并且视觉信息层级混乱，设计规范性差，设计沟通维护成本高</div>
+                    <div class="text">填空1（答案1） / 填空2（答案2）频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的 品牌认知；并且视觉信息层级混乱，设计规范性差，设计沟通维护成本高</div>
                   </div>
-                  <div class="achievement1 analysis">
+                  <div class="achievement2 analysis">
                     <div class="tip">题目解析：</div>
                     <div>在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的 品牌认知；并且视觉信息层级混乱，设计规范性差，设计沟通维护成本高。</div>
                   </div>
@@ -587,6 +587,9 @@ onMounted(()=>{
           .score{
             color: var(--primary-color);
           }
+          .img{
+            margin-right: 20px;
+          }
         }
         .right{
           .ant-btn-text{
@@ -700,14 +703,22 @@ onMounted(()=>{
             margin-left: 16px;
           }
         }
-        .rightkey,.analysis{
+        .rightkey{
           display: flex;
+          color: #1CB2B3;
           .tip{
-            width: 90px;
+            width: 116px;
+          }
+          .text{
+            flex: 1;
           }
         }
-        .rightkey{
-          color: #1CB2B3;
+        .analysis{
+          .tip{
+            color: var(--black-65);
+            padding:8px 0;
+            font-weight: 700;
+          }
         }
         .modifyscore{
           .resultscore{

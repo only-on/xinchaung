@@ -5,7 +5,7 @@
       <div :class="['labelBox','textScrollbar',isOpen[itemIndex] ? 'open' : '']">
         <div
           v-for="(i,index) in v.data"
-          :key="`${v.keyName}${i.name}`"
+          :key="`${v.keyName}${i.name}${index}`"
           class="label-btn"
           :class="{'current': i.name && i.value === v.value, 'isEnd': index === (v.data.length && v.data.length-1) }"
           @click="change(v, i)"

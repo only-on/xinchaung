@@ -129,7 +129,6 @@ import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { inject,ref, toRefs, onMounted ,Ref,reactive,createVNode, computed} from "vue";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
-import { ColumnProps } from "ant-design-vue/es/table/interface";
 import { useRouter } from "vue-router";
 import StatisticsPie from '../components/StatisticsPie.vue'
 import { Modal, message } from "ant-design-vue";
@@ -261,8 +260,7 @@ const courseStatechange=(val: any)=> {
   searchInfo.page=1
   initData()
 }
-type Key = ColumnProps["key"];
-const onSelectChange=(selectedRowKeys: Key[], selectedRows: Key[])=> {
+const onSelectChange=(selectedRowKeys: any[], selectedRows: any[])=> {
   searchInfo.selectedRowKeys = selectedRowKeys; // 不去分别分页的弹窗已选ids
   console.log(searchInfo.selectedRowKeys);
   

@@ -90,7 +90,6 @@ import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { inject,ref, toRefs, onMounted ,Ref,reactive,createVNode, computed} from "vue";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
-import { ColumnProps } from "ant-design-vue/es/table/interface";
 import StatisticsPie from './../components/StatisticsPie.vue'
 import { useRouter } from "vue-router";
 import extStorage from "src/utils/extStorage";
@@ -228,8 +227,7 @@ const onShowSizeChange=(page: any, pageSize: any)=>{
   searchInfo.selectedRowKeys=[]
   initData()
 }
-type Key = ColumnProps["key"];
-const onSelectChange=(selectedRowKeys: Key[], selectedRows: Key[])=> {
+const onSelectChange=(selectedRowKeys: any[], selectedRows: any[])=> {
   console.log(selectedRowKeys);
   
   searchInfo.selectedRowKeys = selectedRowKeys; // 不去分别分页的弹窗已选ids

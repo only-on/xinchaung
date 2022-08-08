@@ -121,7 +121,6 @@ import { inject,ref, toRefs, onMounted ,Ref,reactive,createVNode, computed} from
 import { Modal, message } from "ant-design-vue";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
-import { ColumnProps } from "ant-design-vue/es/table/interface";
 import StatisticsPie from '../components/StatisticsPie.vue'
 const http = (request as any).TeachingResourceManagement;
 var updata = inject("updataNav") as Function;
@@ -232,8 +231,7 @@ const onShowSizeChange=(page: any, pageSize: any)=> {
   searchInfo.selectedRowKeys=[]
   initData()
 }
-type Key = ColumnProps["key"];
-const onSelectChange=(selectedRowKeys: Key[], selectedRows: Key[])=> {
+const onSelectChange=(selectedRowKeys: any[], selectedRows: any[])=> {
   searchInfo.selectedRowKeys = selectedRowKeys; // 不去分别分页的弹窗已选ids
   // state.selectedRows = selectedRows; // 弹窗当前页已选 list
   console.log(searchInfo.selectedRowKeys);
