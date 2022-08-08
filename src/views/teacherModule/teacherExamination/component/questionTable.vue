@@ -6,7 +6,7 @@
     </template>
     <template #right>
       <a-button type="primary" @click="setScore" class="brightBtn">批量设置分值</a-button>
-      <a-button type="primary">选择题目</a-button>
+      <a-button type="primary" @click="handleSelect">选择题目</a-button>
     </template>
     <template #content>
       <a-config-provider>
@@ -54,6 +54,7 @@
       </a-config-provider>
     </template>
   </common-card>
+  <!-- 批量设置 -->
   <a-modal v-model:visible="modelVisible" title="批量设置分数" class="settingModal" :width="640">
     <a-checkbox-group v-model:value="checkArr" style="width: 100%" @change="changeCheck">
       <a-form :model="batchData" ref="batchFormRef">
@@ -73,11 +74,14 @@
       <Submit @submit="saveSetting" @cancel="cancelSetting"></Submit>
     </template>
   </a-modal>
+  <!-- 选择题目 -->
+  <addQuestion v-model:visible="addVisible"/>
 </template>
 <script lang="ts" setup>
 import { ref, reactive, watch } from "vue";
 import CommonCard from "src/components/common/CommonCard.vue";
 import Submit from "src/components/submit/index.vue";
+import addQuestion from './addQuestion.vue'
 import { message } from "ant-design-vue";
 import getTopicType from "src/components/TopicDisplay/topictype.ts"
 import {TotalScore} from "src/utils/common.ts"
@@ -318,7 +322,7 @@ const handleStatistical = () => {
   })
   // emit("update:data", listData.value);
 }
-// 批量设置
+// 批量设置分值
 const setScore = () => { 
   modelVisible.value = true
   checkArr.value.length = 0
@@ -343,6 +347,11 @@ const saveSetting = () => {
 }
 const cancelSetting = () => {
   modelVisible.value = false
+}
+// 选择题目
+const addVisible = ref<boolean>(false)
+const handleSelect = () => {
+  addVisible.value = true
 }
 const handleBlur = () => {
   topInfo.totalScore = 0

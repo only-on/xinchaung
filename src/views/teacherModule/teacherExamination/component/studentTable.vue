@@ -1,44 +1,46 @@
 <template>
-  <common-card title="学生">
-    <template #right>
-      <a-button type="primary" v-if="showBtn" @click="batchDel">移除</a-button>
-      <a-button type="primary" @click="handleSelect" :disabled="!showBtn">选择学生</a-button>
-    </template>
-    <template #content>
-      <a-config-provider>
-        <a-table
-          :columns="columns"
-          :data-source="listData"
-          row-key="id"
-          :row-selection="{ onChange: handleChange }"
-          :pagination="false"
-        >
-          <template v-slot:bodyCell="{ column, record, index }">
-            <template v-if="column.dataIndex === 'operation'">
-              <a-button type="link" @click="handleDel(record, index)">移除</a-button>
+  <div>
+    <common-card title="学生">
+      <template #right>
+        <a-button type="primary" v-if="showBtn" @click="batchDel">移除</a-button>
+        <a-button type="primary" @click="handleSelect" :disabled="!showBtn">选择学生</a-button>
+      </template>
+      <template #content>
+        <a-config-provider>
+          <a-table
+            :columns="columns"
+            :data-source="listData"
+            row-key="id"
+            :row-selection="{ onChange: handleChange }"
+            :pagination="false"
+          >
+            <template v-slot:bodyCell="{ column, record, index }">
+              <template v-if="column.dataIndex === 'operation'">
+                <a-button type="link" @click="handleDel(record, index)">移除</a-button>
+              </template>
             </template>
+          </a-table>
+          <template #renderEmpty>
+            <Empty type="tableEmpty" />
           </template>
-        </a-table>
-        <template #renderEmpty>
-          <Empty type="tableEmpty" />
-        </template>
-      </a-config-provider>
-      <Pagination
-        v-model:page="pageInfo.page"
-        v-model:size="pageInfo.size"
-        :total="pageInfo.total"
-        @page-change="getListData"
-      />
-    </template>
-  </common-card>
-  <!-- 选择学生 -->
-  <addstudent :visable='visable' :courseId='500060' @updateSelectStuVisable="updateSelectStuVisable" :type="1"></addstudent>
+        </a-config-provider>
+        <Pagination
+          v-model:page="pageInfo.page"
+          v-model:size="pageInfo.size"
+          :total="pageInfo.total"
+          @page-change="getListData"
+        />
+      </template>
+    </common-card>
+    <!-- 选择学生 -->
+    <addstudent :visable='visable' :courseId='500060' :studentIds="studentIds" @updateSelectStuVisable="updateSelectStuVisable" :type="1"></addstudent>
+  </div>
 </template>
 <script lang="ts" setup>
 import { ref, reactive, watch } from "vue";
 import CommonCard from "src/components/common/CommonCard.vue";
 import Pagination from "src/components/Pagination.vue";
-import addstudent from "src/views/teacherModule/teachCourse/component/common/addStudent/index.vue";
+import addstudent from "./addStudent.vue";
 import { message } from "ant-design-vue";
 
 const props = defineProps({
@@ -56,7 +58,7 @@ var listData = reactive<any>([]); // 表格当前页展示的数据
 var allData = reactive<any>([]); // 所有数据
 const showBtn = ref<boolean>(false); // 关联课程则不显示操作按钮，没有关联则显示
 const studentIds = reactive<any>([])
-const pageInfo = reactive({
+const pageInfo = reactive<any>({
   page: 1,
   size: 10,
   total: 0
@@ -69,27 +71,27 @@ const columns = [
   },
   {
     title: "姓名",
-    dataIndex: ['user_profile', 'name'],
+    dataIndex: "name",
     key: "name",
   },
   {
     title: "班级",
-    dataIndex: "classes",
-    key: "classes",
+    dataIndex: "classname",
+    key: "classname",
   },
   {
     title: "年级",
-    dataIndex: ['user_profile', 'grade'],
+    dataIndex: 'grade',
     key: "grade",
   },
   {
     title: "专业",
-    dataIndex: ['user_profile', 'major'],
+    dataIndex: "major",
     key: "major",
   },
   {
     title: "学院",
-    dataIndex: ['user_profile', 'department'],
+    dataIndex: "department",
     key: "department",
   },
   {
@@ -99,7 +101,6 @@ const columns = [
   },
 ];
 var selectIds = ref<any>([]); // 批量选中的id
-const tableTotal = ref();
 // 处理分页数据
 const getListData = () => {
   listData.length = 0;
@@ -115,6 +116,7 @@ const getListData = () => {
 };
 const handleSelect= () => {
   visable.value = true
+  console.log('studentIds', studentIds)
 }
 const updateSelectStuVisable = (value:any, studentids:any, studentInfo?:any) => {
   visable.value = false;
@@ -167,7 +169,6 @@ const batchDel = () => {
   })
 }
 watch(()=>props.courseId, newVal => {
-  console.log('courseId', newVal)
   if (newVal) {
     showBtn.value = false
   } else {

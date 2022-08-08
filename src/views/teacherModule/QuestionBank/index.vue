@@ -78,20 +78,27 @@ import filterCondition from "./components/filterCondition.vue"
 import questionList from "./components/questionList.vue"
 import { createQuestionTypeList } from "./questionConfig"
 import Submit from "src/components/submit/index.vue";
+const props =withDefaults(defineProps<{
+  inDrawer?: boolean
+}>(), {
+  inDrawer: false
+})
 const router = useRouter();
 const route = useRoute();
 const http = (request as any).QuestionBank;
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
-updata({
-  tabs: [
-    { name: "公共题库", componenttype: 0 },
-    { name: "我的题库", componenttype: 1 },
-  ],
-  showContent: false,
-  componenttype: undefined,
-  showNav: false,
-});
+if (!props.inDrawer) {
+  updata({
+    tabs: [
+      { name: "公共题库", componenttype: 0 },
+      { name: "我的题库", componenttype: 1 },
+    ],
+    showContent: false,
+    componenttype: undefined,
+    showNav: false,
+  });
+}
 const { lStorage } = extStorage;
 const uid = lStorage.get("uid")
 

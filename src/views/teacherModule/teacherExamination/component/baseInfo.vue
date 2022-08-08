@@ -60,7 +60,9 @@ const fromValidate = () => {
 }
 watch(()=> editInfoData, (newVal:any) => {
   console.log(newVal)
-  Object.assign(formState, newVal)
+  if (newVal) {
+    Object.assign(formState, newVal)
+  }
 },{deep:true,immediate:true})
 defineExpose({
   formState,
