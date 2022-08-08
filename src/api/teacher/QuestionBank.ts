@@ -17,7 +17,9 @@ export default {
   choiceQues: { url: `/api/v1/xinchuang/question/choice_question`, method: "POST", dataType: "json" },
   judgeQues:{url: `/api/v1/xinchuang/question/judge_questions`, method: "POST", dataType: "json"},
   complateQues:{url:` /api/v1/xinchuang/question/blank_questions`,method: "POST", dataType: "json"},
-  solutionQues:{url:`/api/v1/xinchuang/question/short_answer_question`,method: "POST", dataType: "json"}
+  solutionQues:{url:`/api/v1/xinchuang/question/short_answer_question`,method: "POST", dataType: "json"},
+  programQues:{url:`/api/v1/xinchuang/question/program-questions`,method: "POST", dataType: "json"},
+  modelQues:{url:`/api/v1/xinchuang/question/model-questions/`,method: "POST", dataType: "json"},
 }
 
 export interface IQuestionBank {
@@ -34,4 +36,6 @@ export interface IQuestionBank {
   judgeQues:TFHttpSend
   complateQues:TFHttpSend
   solutionQues:TFHttpSend
+  programQues:TFHttpSend
+  modelQues:TFHttpSend
 }
