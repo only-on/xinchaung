@@ -357,12 +357,12 @@ function randomCreatScore(arr:any[],num:string,score:string){
   }
   arr.forEach((v:any)=>{
     if(v.hasOwnProperty(num) && !isNaN(v[num])){
-      selectNum+=Number(v[num])
+      selectNum+=Number(v[num]) > 0 ? Number(v[num]) : 0
     }else{
       console.log(`${v[num]} 的值不存在或非法`);
     }
     if(v.hasOwnProperty(score) && !isNaN(v[score]) && !isNaN(v[num])){
-      selectScore+=Number(v[score]) * Number(v[num])
+      selectScore+= (Number(v[score]) > 0 && Number(v[num])> 0) ? Number(v[score]) * Number(v[num]) : 0
     }else{
       console.log(`${v[score]} 的值不存在或非法`);
     }

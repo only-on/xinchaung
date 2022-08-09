@@ -11,7 +11,6 @@
   />
   <a-spin :spinning="listData.loading" size="large" tip="Loading...">
     <div class="mainBox">
-      <!-- <cardItem @menuClick="menuClick"/> -->
       <cardItem v-for="(item,index) in listData.data" :data="item" :key="index" @menuClick="menuClick" @operate="handleOperate"/>
     </div>
     <Pagination v-model:page="searchInfo.page" v-model:size="searchInfo.limit" :total="listData.total" @page-change="getList"/>
@@ -20,12 +19,7 @@
   <!-- 防作弊设置 -->
   <antiCheatingSetting v-model:visible="settingModal" :data="antiCheat" @save="saveSetting"/>
   <!-- 编辑基本信息 -->
-  <a-modal v-model:visible="editModal" :title="'编辑'+type+'基本信息'" :width="900">
-    <baseInfo ref="baseInfoRef" :formState="editInfo" :type="type"/>
-    <template #footer>
-      <Submit @submit="handleEdit" @cancel="editCancel"></Submit>
-    </template>
-  </a-modal>
+  <editBaseInfo v-model:visible="editModal" :id="currentOperateId" :type="type" @updateInfo="getList"/>
 </template>
 <script lang="ts" setup>
 import {ref, reactive, inject, provide, createVNode, computed, onMounted} from 'vue'
@@ -36,9 +30,8 @@ import classify from "src/components/classify/index.vue";
 import searchAdd from "src/components/searchAdd/searchAdd.vue";
 import cardItem from "./component/cardItem.vue"
 import antiCheatingSetting from "./component/antiCheatingSetting.vue";
-import baseInfo from "./component/baseInfo.vue";
+import editBaseInfo from "./component/editBaseInfo.vue";
 import Pagination from 'src/components/Pagination.vue'
-import Submit from "src/components/submit/index.vue";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import {initialData} from './utils'
@@ -65,7 +58,7 @@ const classifyList = reactive([
   {
     title: "",
     value: 0,
-    keyName: "state",
+    keyName: "status",
     data: [
       { name: "全部", value: 0 },
       { name: "未开始", value: 2 },
@@ -85,23 +78,16 @@ const type = ref('考试')
 provide('type', type)
 const modelType = 2
 const currentOperateId = ref() 
-const editInfo = reactive({
-  name: '',
-  date: [],
-  note: '',
-  relation: ['是']
-})
-provide('editInfo', editInfo)
 const searchInfo = reactive({
   type: modelType,
   name: '',
-  state: 0,
+  status: 0,
   page: 1,
   limit: 10,
 })
 const EmptyType:any=computed(()=>{
   let str=''
-  if(searchInfo.name === '' && searchInfo.state === 0){
+  if(searchInfo.name === '' && searchInfo.status === 0){
     str= 'empty'
   }else{
     str= 'searchEmpty'
@@ -128,6 +114,9 @@ const classifyChange = (obj: any) => {
 };
 const getList = () => {
   listData.loading = true
+  if (searchInfo.status === 0){
+    searchInfo.status = ''
+  }
   http.examsList({param: searchInfo}).then((res:IBusinessResp) => {
     listData.loading = false
     listData.data = res.data.list
@@ -145,7 +134,7 @@ const deleteItem = () => {
     okText: "确认",
     cancelText: "取消",
     onOk() {
-      http.delExam({urlParams:{ID: currentOperateId}}).then((res:IBusinessResp) => {
+      http.delExam({urlParams:{ID: currentOperateId.value}}).then((res:IBusinessResp) => {
         message.success('删除成功')
         getList()
       })
@@ -180,8 +169,6 @@ const menuClick = (type:string, val:any) => {
       break;
     case 'edit':
       editModal.value = true
-      Object.assign(editInfo, {name: val.name,note:val.note,date:[val.started_at,val.closed_at]})
-      console.log(editInfo)
       break;
     case 'delete':
       deleteItem();
@@ -195,6 +182,7 @@ const menuClick = (type:string, val:any) => {
 }
 // 按钮点击
 const handleOperate = (type:any,item:any) => {
+  currentOperateId.value = item.id
   switch (type) {
     case 'review':
       router.push({
@@ -204,6 +192,19 @@ const handleOperate = (type:any,item:any) => {
           name: item.name
         }
       })
+      break;
+    case 'publish':
+      http.publishExam({urlParams:{ID:currentOperateId.value}}).then((res:IBusinessResp) => {
+        message.success('发布成功')
+        getList()
+      })
+      break;
+    case 'unpublish':
+      http.unpublishExam({urlParams:{ID:currentOperateId.value}}).then((res:IBusinessResp) => {
+        message.success('撤销发布成功')
+        getList()
+      })
+      break;
   }
 }
 onMounted(()=>{

@@ -1,6 +1,9 @@
 <template>
   <div>
     <common-card title="学生">
+      <template #tip>
+        (共{{pageInfo.total}}人)
+      </template>
       <template #right>
         <a-button type="primary" v-if="showBtn" @click="batchDel">移除</a-button>
         <a-button type="primary" @click="handleSelect" :disabled="!showBtn">选择学生</a-button>
@@ -44,13 +47,12 @@ import addstudent from "./addStudent.vue";
 import { message } from "ant-design-vue";
 import request from 'src/api/index'
 const http = (request as any).teacherExamination;
-
-const props = defineProps({
-  courseId: {
-    required: false,
-    default: () => {}
-  }
-});
+interface Props {
+  courseId:any;
+}
+const props = withDefaults(defineProps<Props>(), {
+  courseId: ''
+})
 const emit = defineEmits<{
   (e: "delete", val: any): void;
   (e: "update:pageInfo", val: any): void;

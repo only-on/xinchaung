@@ -2,8 +2,8 @@
   <div class="cradItem">
     <div class="left">
       <span class="type">考试</span>
-      <div class="img unpublish">
-        <span>未发布</span>
+      <div :class="['img',item.status == 1 ? 'end' :  item.is_publish == 0 ? 'unpublish' : item.status == 2 ? 'unstart' : 'ongoing'] ">
+        <span>{{item.status == 1 ? '已结束' : item.is_publish == 0 ? '未发布' : item.status == 2 ? '未开始' : '进行中'}}</span>
       </div>
     </div>
     <div class="middle">
@@ -13,9 +13,10 @@
       </div>
       <div>
         <span>创建时间：2022/08/10 15:20</span>
-        <span>开始时间：2022/08/10 15:20</span>
+        <span>开始时间：{{item.started_at}}</span>
         <span>考试时长：2022/08/10 15:20</span>
-        <span>提交人数：10/200</span>
+        <!-- 已发布 并且状态是 进行中或已结束 -->
+        <span v-if="item.is_publish && [1,3].includes(item.status)">提交人数：{{item.closed_students_count}}/{{item.students_count}}</span>
       </div>
     </div>
     <div class="right">
@@ -28,22 +29,28 @@
           <template #overlay>
             <a-menu>
               <a-menu-item>
-                <span @click="handleClick('edit', item)">编辑</span>
+                <a-button type="link" @click="handleClick('edit', item)" :disabled="item.is_publish ? true : false">编辑</a-button>
               </a-menu-item>
               <a-menu-item>
-                <span @click="handleClick('delete', item)">删除</span>
+                <a-button type="link" @click="handleClick('delete', item)">删除</a-button>
               </a-menu-item>
               <a-menu-item>
-                <span @click="handleClick('copy', item)">复用</span>
+                <a-button type="link" @click="handleClick('copy', item)">复用</a-button>
               </a-menu-item>
               <a-menu-item>
-                <span @click="handleClick('export', item)">导出试卷</span>
+                <a-button type="link" @click="handleClick('export', item)">导出试卷</a-button>
               </a-menu-item>
             </a-menu>
           </template>
         </a-dropdown>
       </div>
-      <a-button type="primary" @click="handleEvent('review', item)">发布</a-button>
+      <!-- 已结束:1, 未开始:2, 进行中:3 -->
+      <!-- 未发布且未结束 -->
+      <a-button type="primary" v-if="!item.is_publish && item.status !== 1" @click="handleEvent('publish', item)">发布</a-button>
+      <!-- 已发布但未开始 -->
+      <a-button type="primary" v-if="item.is_publish && item.status == 2" @click="handleEvent('unpublish', item)">撤销发布</a-button>
+      <!-- 进行中,已结束 -->
+      <a-button type="primary" v-if="item.is_publish && [1,3].includes(item.status)" @click="handleEvent('review', item)">评阅</a-button>
     </div>
   </div>
 </template>
@@ -168,5 +175,8 @@ watch(()=>props.data, newVal => {
       }
     }
   }
+}
+.ant-btn-link{
+  color: var(--black-65);
 }
 </style>

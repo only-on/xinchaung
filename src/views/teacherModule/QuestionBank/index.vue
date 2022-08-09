@@ -281,15 +281,11 @@ const EmptyType: any = computed(() => {
 })
 const handleMenuClick = ({ key }: { key: number|string }) => {
   let name = ''
-  let path=''
   createQuestionTypeList.forEach((v => {
-    if (v.key === key){
-      name = v.name
-      path =v.path
-    } 
+    if (v.key === key) name = v.name
   }))
   router.push ({
-    path:path,
+    path:"./QuestionBank/createQues",
     query:{value:key, name}
   })
 };

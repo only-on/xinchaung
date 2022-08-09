@@ -37,7 +37,7 @@ const modelVisible = ref<boolean>(false)
 watch(()=>props.visible, newVal => {
   modelVisible.value = newVal
 })
-const form = reactive(initialData)
+const form = reactive(JSON.parse(JSON.stringify(initialData)))
 const settingList = reactive([
   {
     key: 'topic_chaotic',

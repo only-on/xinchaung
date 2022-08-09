@@ -1,3 +1,4 @@
+// 正整数验证
 export const validateNum = {
   validator: async (rule: any, value: string) => {
     let validateor = /^([1-9]{1}[0-9]*|0)$/;
@@ -9,7 +10,7 @@ export const validateNum = {
   },
   trigger: "blur",
 };
-// 相似度
+// 编程题相似度
 export const simList = [
   {
     value: 60,
@@ -32,6 +33,7 @@ export const simList = [
     label: "100%",
   },
 ];
+// 防作弊设置
 export const initialData = {
   topic_chaotic: false,
   options_chaotic: false,

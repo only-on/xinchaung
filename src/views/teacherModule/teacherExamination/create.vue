@@ -40,9 +40,13 @@
             <ul class="randomQuestion">
               <a-form :model="randomQuestion" ref="randomFormRef">
                 <li v-for="(item,index) in randomQuestion" :key="index">
-                  {{getTopicType[item.type].name}} <span>({{item.num}}道题可选)</span>
-                  <a-form-item :name="[index, 'selectNum']" :rules="validateNum">
-                    <div>抽取 <a-input type="text" v-model:value="item.selectNum" @blur="handleBlur" :disabled="!item.num"></a-input>道题</div>
+                  <span class="label">
+                    选择题
+                    <!-- {{getTopicType[item.type].name}}  -->
+                    <span>({{item.num}}道题可选)</span>
+                  </span>
+                  <a-form-item :name="[index, 'selectNum']" :rules="validateInput">
+                    <div>抽取 <a-input type="text" v-model:value="item.selectNum" @blur="handleBlur(item.num)" :disabled="!item.num"></a-input>道题</div>
                   </a-form-item>
                   <a-form-item :name="[index, 'score']" :rules="validateNum">
                     <div>每题<a-input type="text" v-model:value="item.score" @blur="handleBlur" :disabled="!item.num"></a-input>分</div>
@@ -56,11 +60,11 @@
     </common-card>
   </div>
   <!-- 选择学生 -->
-  <studentTable :data="tableData" :courseId="baseForm.relation[0]" ref="studentTableRef"/>
-  <Submit @submit="handleSave" @cancel="cancelSave"></Submit>
+  <studentTable :courseId="baseForm.relation[0]" ref="studentTableRef"/>
+  <Submit @submit="handleSave" @cancel="cancelSave" :loading="saveLoading"></Submit>
 </template>
 <script lang="ts" setup>
-import { ref, reactive, watch, provide, inject } from "vue";
+import { ref, reactive, watch, provide, inject, onMounted} from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { message } from "ant-design-vue";
 import CommonCard from "src/components/common/CommonCard.vue";
@@ -69,10 +73,14 @@ import questionTable from "./component/questionTable.vue";
 import studentTable from "./component/studentTable.vue"
 import Submit from "src/components/submit/index.vue";
 import getTopicType from "src/components/TopicDisplay/topictype"
+import request from "src/api/index";
+import { IBusinessResp } from "src/typings/fetch.d";
 import {randomCreatScore} from 'src/utils/common'
 import {validateNum} from "./utils"
+import { object } from "vue-types";
 const route = useRoute();
 const router = useRouter()
+const http = (request as any).teacherExamination;
 const type = ref('考试')
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
@@ -97,7 +105,6 @@ const baseForm = reactive({
   note: '',
   relation: [0]
 })
-// 手动创建题目相关
 const questionData = ref([
   {
     id: 1,
@@ -177,87 +184,65 @@ const questionData = ref([
   },
 ]);
 
-// 随机创建题目范围-------
+// 手动创建题目相关
+const searchInfo = reactive({
+  is_public: '1',
+  difficulty: '',
+  knowledges: ''
+})
 const topInfo = reactive({
   num: 0,
   score: 0
 })
-const randomQuestion = reactive([
-  {
-    type: 1,
-    num: 10,
-    selectNum: 0,
-    score: 0,
-  },
-  {
-    type: 2,
-    num: 11,
-    selectNum: 0,
-    score: 0,
-  }
-])
-const handleBlur = () => {
+const randomQuestion = reactive<any>([])
+const currentMaxnum = ref(0)
+const handleBlur = (maxNum: number) => {
+  currentMaxnum.value = maxNum
   const {selectNum,selectScore}=randomCreatScore(randomQuestion,'selectNum','score')
-  console.log(selectNum,selectScore);
   topInfo.num=selectNum
   topInfo.score=selectScore
-  
 }
-// 学生相关
-const tableData = reactive([
+const validateInput = reactive(
   {
-    id: 1,
-    stu_no: 1111,
-    name: '张三',
-    classname: '三年二班',
-    grade: '一年级',
-    major: '计算机',
-    department: '计算机专业'
-  },
-  {
-    id: 2,
-    stu_no: 22222,
-    name: '里斯',
-    classname: '三年二班',
-    grade: '一年级',
-    major: '计算机',
-    department: '计算机专业'
-  }
-])
-const delStudent = (ids:number[]) => {
-  tableData.forEach((item:any, index:number) => {
-    ids.includes(item.id) && tableData.splice(index,1)
-  })
-}
-// 题目范围表单验证
+    validator: async (rule: any, value: string) => {
+      let validateor = /^([1-9]{1}[0-9]*|0)$/;
+      if (!validateor.test(value)) {
+        return Promise.reject("请输入正整数");
+      } else if (Number(value) > currentMaxnum.value) {
+        return Promise.reject(`最多可选${currentMaxnum.value}道题`);
+      }else {
+        return Promise.resolve();
+      }
+  },trigger: "blur",}
+)
 const randomFormRef = ref<any>()
 const difficultyList= reactive([
   {
-    value: 0,
+    value: 'easy',
     label: '简单'
   },
   {
-    value: 1,
+    value: 'normal',
     label: '适中'
   },
   {
-    value: 2,
+    value: 'hard',
     label: '困难'
   }
 ])
 const rangeList = reactive([
   {
-    value: 0,
+    value: 1,
     label: '公共题库'
   },
   {
-    value: 1,
+    value: 0,
     label: '我的题库'
   },
 ])
 const activeIndex = reactive({
-  difficulty: [0],
-  range: [0]
+  difficulty: ['easy'],
+  range: [1]
 })
 const changeMultiSelect = (item:any,type:any) => {
   let subscript = activeIndex[type].indexOf(item.value)
@@ -266,6 +251,23 @@ const changeMultiSelect = (item:any,type:any) => {
   } else {
     activeIndex[type].splice(subscript, 1)
   }
+  getQuestionMaxLimit()
+}
+// 获取可选择题目的题目数量
+const getQuestionMaxLimit = () => {
+  searchInfo.is_public = activeIndex.range.join()
+  searchInfo.difficulty = activeIndex.difficulty.join()
+  randomQuestion.length = 0
+  http.questionsMaxLimit({param:searchInfo}).then((res:IBusinessResp) => {
+    for (let i in res.data) {
+      randomQuestion.push({
+        type: i,
+        num: res.data[i],
+        selectNum: 0,
+        score: 0,
+      })
+    }
+  })
 }
 const randomFormValidate = () => {
   return new Promise((resolve:any)=>{
@@ -274,18 +276,60 @@ const randomFormValidate = () => {
     })
   })
 }
+const saveLoading = ref<boolean>(false)
 const handleSave = async() => {
-  console.log(studentTableRef.value.studentIds)
+  console.log(baseForm)
+  // 基础信息
+  await baseInfoRef.value.fromValidate()
+  let params:any = {
+    course_id: baseForm.relation.length > 1 ? baseForm.relation[baseForm.relation.length - 1] : '',
+    name: baseForm.name,
+    started_at: baseForm.date[0] + ':00',
+    closed_at: baseForm.date[1] + ':00',
+    note: baseForm.note
+  }
+  // 题目信息
   if (isRandom.value) {
     await randomFormValidate()
+    let question_random = {
+      ...searchInfo,
+      questions: {}
+    }
+    randomQuestion.forEach((item:any) => {
+      question_random.questions[item.type] = {
+        number: item.selectNum,
+        score: item.score
+      }
+    })
+    Object.assign(params,{question_random: question_random} )
   } else {
     await questionTableRef.value.tablefromValidate()
     console.log(questionTableRef.value.listData)
   }
+  if (!studentTableRef.value.studentIds.length) {
+    message.warning('请选择学生')
+    return
+  }
+  // 学生信息
+  Object.assign(params,{student_ids: studentTableRef.value.studentIds})
+  console.log(params)
+  saveLoading.value = true
+  http.addExam({param: params}).then((res:IBusinessResp) => {
+    saveLoading.value = false
+    message.success('添加成功')
+    router.go(-1)
+  }).catch(()=>{
+    saveLoading.value = false
+  })
 }
 const cancelSave = () => {
   router.go(-1)
 }
+onMounted(()=>{
+  if (isRandom.value) {
+    getQuestionMaxLimit()
+  }
+})
 </script>
 <style lang="less" scoped>
 .random{
@@ -328,8 +372,12 @@ const cancelSave = () => {
       line-height: 32px;
       margin-top: 15px;
         color: var(--black-65);
-      >span{
-        color: var(--black-25);
+      .label{
+        display: inline-block;
+        width: 150px;
+        >span{
+          color: var(--black-25);
+        }
       }
       >div{
         margin: 0 20px;

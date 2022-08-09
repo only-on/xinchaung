@@ -32,11 +32,9 @@ import cascader from "src/components/ReleasePaper/cascader.vue"
 import { AnyARecord } from 'dns';
 const props =withDefaults(defineProps<{
   formState:any
-  editInfo?: any,
   type: string,
 }>(), {
   formState: {},
-  editInfo: {},
   type: '考试',
 })
 const rules = {
@@ -58,12 +56,6 @@ const fromValidate = () => {
     })
   })
 }
-// watch(()=> props.editInfo, (newVal:any) => {
-//   console.log(newVal)
-//   if (newVal) {
-//     Object.assign(formState, newVal)
-//   }
-// },{deep:true,immediate:true})
 defineExpose({
   fromValidate
 })
