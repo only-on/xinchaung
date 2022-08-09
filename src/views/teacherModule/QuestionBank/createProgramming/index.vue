@@ -206,9 +206,9 @@ updata({
 });
 const preview = false;
 const formRef = ref<any>();
-const inputAndOut=ref([{inputCon:'',outCon:'',ifShow:false}])
+const inputAndOut=ref([{inputCon:'',outCon:'',ifShow:true}])
 function addTestCase(){
-  inputAndOut.value.push({inputCon:'',outCon:'',ifShow:false})
+  inputAndOut.value.push({inputCon:'',outCon:'',ifShow:true})
 }
 const formState = reactive({
   // 名称

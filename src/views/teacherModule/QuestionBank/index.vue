@@ -424,16 +424,18 @@ function menuClick(type:string, val: any) {
 function editQuestion(key: number) {
   let name = ''
   let path=''
+  let questionId:any=''
   createQuestionTypeList.forEach((v => {
     if (v.key === key) name = v.name
     if (v.key === key){
       name = v.name
       path=v.path
+      questionId=v.key
     }
   }))
   router.push ({
     path:path,
-    query:{value:key, name}
+    query:{ questionId:questionId,value:key, name}
   })
 }
 function deleteQuestion() {

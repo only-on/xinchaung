@@ -144,6 +144,7 @@ const route = useRoute();
 const router = useRouter();
 const type: any = ref(route.query.value);
 const name: any = route.query.name;
+const editId:any=route.query?.questionId;
 const http = (request as any).QuestionBank;
 const caseFile=http.caseFile
 var updata = inject("updataNav") as Function;
@@ -445,16 +446,16 @@ function onSubmit(){
   formRef.value.validate().then((res: any) => {
       switch(type.value){
         case "1":
-        createChoiceQues();
+        editId?editChoice():createChoiceQues();
         break;
         case '2':
-        createJudgeQues();
+        editId?editJudge():createJudgeQues();
         break;
          case '3':
-        createCompleQues();
+        editId?editComple():createCompleQues();
         break;
          case '4':
-        createSolutionQues();
+        editId?editSolution():createSolutionQues();
         break;
       }
     })
@@ -483,6 +484,163 @@ function handleDrop(e: any) {
 function selectAnswer(){
 
 }
+//获取选择数据
+function getChoiceData(){
+    http.choiceDetail({urlParams:{questionId:editId}}).then((res:any)=>{
+      if(res.code==1){
+        
+      }
+    })
+}
+//判断
+function getJudgeData(){
+   http.judgeDetail({urlParams:{questionId:editId}}).then((res:any)=>{
+      if(res.code==1){
+      const data=res.data
+      formState.purpose=data.used_by
+      formState.difficulty=data.difficulty
+      formState.catalogue=data.category_id
+      formState.knowledgePoints=data.knowledge_map_ids
+      formState.stem=data.question
+      formState.judgeAnswer=data.judge_correct
+      formState.topicAnalysis=data.question_analysis
+      }
+    })
+}
+//填空
+function getCompleData(){
+   http.complateDetail({urlParams:{questionId:editId}}).then((res:any)=>{
+      if(res.code==1){
+      const data=res.data
+      formState.purpose=data.used_by
+      formState.difficulty=data.difficulty
+      formState.catalogue=data.category_id
+      formState.knowledgePoints=data.knowledge_map_ids
+      formState.stem=data.question
+      formState.multipleQuesSelection.forEach((item:any,index:any)=>{
+          item.value=data.blankCorrect[index]
+        })
+      formState.topicAnalysis=data.question_analysis
+      }
+    })
+}
+//解答
+function getSolutionData(){
+   http.solutionDetail({urlParams:{questionId:editId}}).then((res:any)=>{
+      if(res.code==1){
+          const data=res.data
+        formState.purpose=data.used_by
+        formState.difficulty=data.difficulty
+        formState.catalogue=data.category_id
+        formState.knowledgePoints=data.knowledge_map_ids
+        formState.stem=data.question
+        formState.multipleQuesSelection.forEach((item:any,index:any)=>{
+            item.value=data.blankCorrect[index]
+          })
+        formState.topicAnalysis=data.question_analysis
+        }
+    })
+}
+// 编辑选择
+function editChoice(){
+  const choiceOptions:any=[];
+  const choiceCorrectOptions:any=[]
+  formState.multipleQuesSelection.forEach((item:any,index:any)=>{
+    choiceOptions.push({content:item.value,originOption:selectLabels.value[index]})
+    if(item.ifAnswer==true){
+      choiceCorrectOptions.push(selectLabels.value[index])
+    }
+  })
+  const params={
+    question:formState.stem,
+    difficulty:formState.difficulty,
+    categoryId:1,
+    knowledgeIds:[1,2],
+    questionAnalysis:formState.topicAnalysis,
+    choiceOptions:choiceOptions,
+    choiceCorrectOptions:choiceCorrectOptions,
+    usedBy:formState.purpose
+
+  }
+  http.editChoice({param:params}).then((res:any)=>{
+    if(res.code==1){
+      message.success('编辑成功！')
+    }
+  })
+}
+function editJudge(){
+   const params={
+      usedBy:formState.purpose,
+      difficulty:formState.difficulty,
+      categoryId:1,
+      // knowledgeIds:[],
+      knowledgeMapIds:[],
+      question:formState.stem, 
+      judgeCorrect:formState.judgeAnswer,
+      questionAnalysis:formState.topicAnalysis
+    }
+    http.editJudge({param:params}).then((res:any)=>{
+      if(res.code==1){
+        message.success('编辑成功！')
+      }
+    })
+}
+function editComple(){
+   const blankCorrect:any=[]
+   formState.multipleQuesSelection.forEach((item:any,index:any)=>{
+    blankCorrect.push(item.value)
+  })
+  const params={
+      usedBy:formState.purpose,
+      difficulty:formState.difficulty,
+      categoryId:1,
+      // knowledgeIds:[],
+      knowledgeMapIds:[],
+      question:formState.stem, 
+      blankCorrect:blankCorrect,
+      questionAnalysis:formState.topicAnalysis
+    }
+  http.editComplate({param:params}).then((res:any)=>{
+     if(res.code==1){
+        message.success('编辑成功！')
+      }
+  })
+}
+function editSolution(){
+   const params={
+      usedBy:formState.purpose,
+      difficulty:formState.difficulty,
+      categoryId:1,
+      knowledgeMapIds:[],
+      question:formState.stem, 
+      shortAnswerReference:formState.referenceAnswer,//参考答案
+      shortAnswerKeys:formState.keyword,
+      questionAnalysis:formState.topicAnalysis
+    }
+    http.editSolution({param:params}).then((res:any)=>{
+       if(res.code==1){
+        message.success('编辑成功！')
+      }
+    })
+}
+onMounted(()=>{
+  if(editId){
+     switch(type.value){
+        case "1":
+        getChoiceData();
+        break;
+        case '2':
+        getJudgeData();
+        break;
+         case '3':
+        getCompleData();
+        break;
+         case '4':
+        getSolutionData();
+        break;
+      }
+  }
+})
 </script>
 <style lang="less" scoped>
 .create_ques {
