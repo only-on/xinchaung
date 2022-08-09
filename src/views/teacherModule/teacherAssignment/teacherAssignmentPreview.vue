@@ -3,6 +3,11 @@
     <Outline :title="headerObj.title" :explain="headerObj.explain" :explainText="headerObj.explainText" />
     <TopicDisplay :purpose="'IsPreview'" />
   </div>
+  <div class="teacherAssignmentPreviewFooter">
+    <div class="flexCenter">
+      <Submit :okText="'编辑作业'" :cancelText="'返回'" @submit="edit" @cancel="cancel"></Submit>
+    </div>
+  </div>
 </template>
 <script lang="ts" setup>
 import {
@@ -25,6 +30,7 @@ import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
 import TopicDisplay from 'src/components/TopicDisplay/index.vue'
 import Outline from 'src/components/TopicDisplay/outline.vue'
+import Submit from "src/components/submit/index.vue";
 const router = useRouter();
 const route = useRoute();
 const { editId } = route.query;
@@ -54,10 +60,27 @@ const headerObj:any=reactive({
   explain:'作业/考试说明',
   explainText:'交互设计本质上就是设计产品的使用方式的过程，账号怎么填写；表单怎么导出；数据怎么筛选；列表怎么排序等等。针对每个功能的使用方式，都可以花很长的时间去考虑其合理性。一个项目的交互，就是这个项目所有功能使用方式的总和。',
 })
+const cancel=()=>{
+  router.go(-1)
+}
+const edit=()=>{
+  router.push('/teacher/teacherAssignment/teacherAssignmentEdit')
+}
 </script>
 <style scoped lang="less">
 .teacherAssignmentPreview{
   padding: 32px 40px;
   // background-color: #fff;
+}
+.teacherAssignmentPreviewFooter{
+  position: fixed;
+  bottom: 0;
+  height: 70px;
+  background: #fafafb;
+  width: 100%;
+  .flexCenter{
+    height: 100%;
+    justify-content: center;
+  }
 }
 </style>

@@ -1,7 +1,12 @@
 <template>
   <div class="teacherAssignmentEdit">
-    <Outline :title="headerObj.title" :explain="headerObj.explain" :explainText="headerObj.explainText" />
+    <BasicInfo :name="headerObj.name" :time="headerObj.time" :explainText="headerObj.explainText" />
     <TopicDisplay :purpose="'IsEdit'" />
+  </div>
+  <div class="teacherAssignmentEditFooter">
+    <div class="flexCenter">
+      <Submit :okText="'保存作业'" @submit="save" @cancel="cancel"></Submit>
+    </div>
   </div>
 </template>
 <script lang="ts" setup>
@@ -24,7 +29,8 @@ import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
 import TopicDisplay from 'src/components/TopicDisplay/index.vue'
-import Outline from 'src/components/TopicDisplay/outline.vue'
+import BasicInfo from 'src/components/TopicDisplay/BasicInfo.vue'
+import Submit from "src/components/submit/index.vue";
 const router = useRouter();
 const route = useRoute();
 const { editId } = route.query;
@@ -50,14 +56,33 @@ updata({
 //   (e: "selectedImage", val: any): void;
 // }>();
 const headerObj:any=reactive({
-  title:'单元测验-《大学计算机基础第3版》第3、4章（一）-计算思维、数值与字符编码',
-  explain:'作业/考试说明',
-  explainText:'交互设计本质上就是设计产品的使用方式的过程，账号怎么填写；表单怎么导出；数据怎么筛选；列表怎么排序等等。针对每个功能的使用方式，都可以花很长的时间去考虑其合理性。一个项目的交互，就是这个项目所有功能使用方式的总和。',
+  name:'电子科技大学2022秋季《大学计算机基础》期末考试试卷A卷',
+  time:'2022 / 06 / 07 13:00:00 - 2022 / 07 / 07 13:00:00',
+  explainText:'一个好的选项从来都不缺乏细节，虽然看起来并不复杂，实际要考虑的因素非常多，因为这不仅关系着用户体验，还涉及一些界面交互逻辑的问题，需要结合不同的使 用场景、合理的将各选项灵活运用到界面当中，这其中的细节不容忽视。。',
 })
+const cancel=()=>{
+  // router.go(-1)
+  router.replace('/teacher/teacherAssignment')
+}
+const save=()=>{
+  cancel()
+  // router.push('/teacher/teacherAssignment')
+}
 </script>
 <style scoped lang="less">
 .teacherAssignmentEdit{
 
   
+}
+.teacherAssignmentEditFooter{
+  position: fixed;
+  bottom: 0;
+  height: 70px;
+  background: #fafafb;
+  width: 100%;
+  .flexCenter{
+    height: 100%;
+    justify-content: center;
+  }
 }
 </style>

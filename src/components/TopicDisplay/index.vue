@@ -534,7 +534,8 @@ onMounted(()=>{
       justify-content: space-between;
       height: 50px;
       border-bottom: 1px solid rgba(0,0,0,0.15);
-      margin-bottom: 2rem;
+      // margin-bottom: 2rem;
+      margin: 24px 0;
       .left{
         .tit{
           font-size: 16px;

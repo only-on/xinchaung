@@ -117,10 +117,10 @@ export default defineComponent({
       // padding-top: 20px;
       margin-top: 20px;
       // background-color: #fff;
-      margin-bottom: 50px;
+      margin-bottom: 70px;
     }
     .customized {
-      margin-bottom: 50px;
+      margin-bottom: 70px;
     }
   }
   .line {
