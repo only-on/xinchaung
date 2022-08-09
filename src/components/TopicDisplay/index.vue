@@ -35,7 +35,7 @@
               <!-- 题号 -->
               <div class="itemOrder flexCenter">
                 <div class="left flexCenter">
-                  <img class="img" v-if="props.purpose==='IsEdit'" src="../../assets/images/TopicDisplay/tuo.png" alt="">
+                  <img class="img" v-if="props.purpose==='IsEdit'" src="../../assets/images/TopicDisplay/tuo.png" alt=""/>
                   <div>第{{NoToCh(index+1)}}题</div>
                   <div class="score">（<span>{{element.score}}分</span>）</div>
                 </div>
@@ -130,7 +130,10 @@
                   <div class="achievement1 Adjudicate flexCenter">
                     <div class="left flexCenter" :class="k%2===0?'left1':'left2'">
                       <!-- icon-cuowu -->
-                      <span class="iconfont" :class="k%2===0?'icon-cuowu':'icon-zhengque'"></span>
+                      <!-- <span class="iconfont" :class="k%2===0?'icon-cuowu':'icon-zhengque'"></span> -->
+                      <!-- <img :src="`../../assets/images/TopicDisplay/${k%2===0?'cuo':'dui'}.png`" alt=""/> -->
+                      <img v-if="k%2===0" src="../../assets/images/TopicDisplay/cuo.png" alt=""/>
+                      <img v-else src="../../assets/images/TopicDisplay/dui.png" alt=""/>
                       <span>答{{`${k%2===0?'错':'对'}`}}了</span>
                     </div>
                     <div class="flexCenter">
@@ -684,10 +687,9 @@ onMounted(()=>{
             height: 34px;
             border-radius: 4px;
             margin-right: 16px;
-            justify-content: center;
-            .iconfont{
-              font-size: 34px;
-              line-height: 34px;
+            justify-content: space-evenly;
+            img{
+              width:18px;
             }
           }
           .left1{

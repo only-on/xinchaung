@@ -3,15 +3,15 @@
     <div class="info flexCenter">  
       <div class="left flexCenter">
         <div class="item flexCenter">
-          <img src="" alt="">
+          <img src="../../../../assets/images/teacherCourse/5.png" alt=""/>
           <span>最高分：{{10}}</span>
         </div>
         <div class="item flexCenter">
-          <img src="" alt="">
+          <img src="../../../../assets/images/teacherCourse/6.png" alt=""/>
           <span>最低分：{{20}}</span>
         </div>
         <div class="item flexCenter">
-          <img src="" alt="">
+          <img src="../../../../assets/images/teacherCourse/7.png" alt=""/>
           <span>平均分：{{30}}</span>
         </div>
       </div>
@@ -20,10 +20,10 @@
           <div class="text1">总成绩 = 实验成绩80% + 作业成绩10% + 考试成绩10%</div>
           <div class="text2 flexCenter">
             <span>实验成绩、作业成绩和考试成绩为平均成绩</span>
-            <a-button @click.stop="" type="link" class="del" size="small">修改成绩占比</a-button>
+            <a-button @click.stop="SetupScore()" type="link" class="del" size="small">修改成绩占比</a-button>
           </div>
         </div>
-        <div class="item2"></div>
+        <img class="item2" src="../../../../assets/images/teacherCourse/4.png" alt="" />
       </div>
     </div>
     <div class="content">
@@ -76,6 +76,22 @@
       </div>
     </div>
   </div>
+  <a-modal v-model:visible="Visible"  title="修改成绩占比" class="setupVisible" :width="700">
+    <a-form  :rules="rules" :model="formState" ref="formRef">
+      <a-form-item label="实验成绩" name="score">
+        <a-input v-model:value="formState.score" suffix="%"/>
+      </a-form-item>+
+      <a-form-item label="作业成绩" name="score">
+        <a-input v-model:value="formState.score" suffix="%"/>
+      </a-form-item>+
+      <a-form-item label="考试成绩" name="score">
+        <a-input v-model:value="formState.score" suffix="%"/>
+      </a-form-item>
+    </a-form>
+    <template #footer>
+      <Submit @submit="Save" @cancel="cancel"></Submit>
+    </template>
+  </a-modal>
 </template>
 <script lang="ts" setup>
 import {
@@ -92,6 +108,7 @@ import {
   defineProps,
   withDefaults,
 } from "vue";
+import Submit from "src/components/submit/index.vue";
 import { useRouter, useRoute } from "vue-router";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
@@ -100,7 +117,34 @@ import { downloadUrl } from "src/utils/download";
 const router = useRouter();
 const route = useRoute();
 const { editId } = route.query;
-const http = (request as any).teacherImageResourcePool;
+const http = (request as any).teachCourse;
+const SetupScore=()=>{
+  Visible.value=true
+}
+const formRef = ref();
+var Visible: Ref<boolean> = ref(false);
+const formState=reactive<any>({
+  score:''
+})
+const rules = {
+  score: [
+    { required: true, message: `请输入分数`, trigger: "blur" },
+  ],
+}
+const cancel=()=>{
+  Visible.value=false
+}
+const Save=()=>{
+  formRef.value.validate().then(()=>{ 
+    return
+    // selectIds
+      http.SetupScore({param:{chapter_name:formState.name},urlParams:{courseId:''}}).then((res: any)=>{
+        message.success('操作成功')
+        formState.name=''
+        Visible.value=false
+    })
+  })
+}
 // interface Props {
 //   defaultConfig: any;
 //   imageList:string
@@ -190,6 +234,7 @@ const initData = () => {
       loading.value = false
   })
 };
+
 onMounted(() => {
   initData()
 });
@@ -247,11 +292,13 @@ const columns= [
       color: var(--black-65);
       justify-content: space-between;
       padding-left: 24px;
+      padding-right: 8px;
       .left{
         width: 50%;
         .item{
           img{
             width: 30px;
+            margin-right: 16px;
           }
           margin-right: 60px;
         }
@@ -294,6 +341,15 @@ const columns= [
           margin-right: 12px;
         }
       }
+    }
+  }
+  .setupVisible{
+    .ant-form-horizontal{
+      display: flex;
+      justify-content: space-between;
+    }
+    .ant-form-item{
+      width: 190px;
     }
   }
 </style>
