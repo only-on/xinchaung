@@ -23,12 +23,12 @@
     </template>
     <template #title="{ dataRef }">
       <span class="tree-title">
-        <span class="name">{{ dataRef.name }}</span>
+        <span class="name single_ellipsis" :title="dataRef.name">{{ dataRef.name }}</span>
         <span class="btns" v-if="dataRef.id!=0&&props.isOperateTree">
-          <span class="iconfont icon-shangyi" @click="upDirectory(dataRef)"></span>
-          <span class="iconfont icon-shangyi-copy" @click="downDirectory(dataRef)"></span>
-          <span class="iconfont icon-bianji" @click="editDirectory(dataRef)"></span>
-          <span class="iconfont icon-shanchu" @click="deletDirectory(dataRef)"></span>
+          <span class="iconfont icon-shangyi" @click.stop="upDirectory(dataRef)"></span>
+          <span class="iconfont icon-shangyi-copy" @click.stop="downDirectory(dataRef)"></span>
+          <span class="iconfont icon-bianji" @click.stop="editDirectory(dataRef)"></span>
+          <span class="iconfont icon-shanchu" @click.stop="deletDirectory(dataRef)"></span>
         </span>
       </span>
     </template>
@@ -37,14 +37,7 @@
   <a-modal v-model:visible="visible"  :title="`新建文件夹`" class="create-directory" :width="400">
     <a-form :layout="'vertical'" :rules="rules" :model="formState" ref="formRef">
       <a-form-item name="catalogue" label="选择创建路径">
-        <a-cascader
-          v-model:value="formState.directoryId"
-          :options="options"
-          :load-data="loadData"
-          placeholder="Please select"
-          change-on-select
-          :field-names="{ label: 'name', value: 'id' }"
-        />
+        <directory-cascader :formState="formState" :levelNum="2"></directory-cascader>
       </a-form-item>
       <a-form-item label="文件夹名称" name="name">
         <a-input v-model:value="formState.name" placeholder="请输入文件夹名称" />
@@ -62,6 +55,7 @@ import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
 import Submit from "src/components/submit/index.vue";
+import directoryCascader from 'src/components/ReleasePaper/directoryCascader.vue';
 const http = (request as any).QuestionBank;
 interface Props {
   isOperateTree: boolean
@@ -235,7 +229,7 @@ const rules = {
 }
 const formState = reactive({
   name: '',
-  directoryId: [0]
+  directoryId: ['目录', '文件夹1', '文件夹2']
 })
 function submit() {
   loading.value = true
@@ -258,54 +252,12 @@ function submit() {
       children: []
     }]
     console.log(treeData.value)
+    getDirectoryFirst()
   })
 }
 function cancel() {
-
+  visible.value = false
 }
-const options = ref([
-  {
-    id: 0,
-    name: "目录",
-    is_public: 1,
-    has_children: 0,
-    isLeaf: false,
-    children: []
-  }
-])
-const loadData = (selectedOptions: any) => {
-  var targetOption = selectedOptions[selectedOptions.length - 1];
-  targetOption.loading = true;
-
-  if (targetOption.id==0) {
-    http.getDirectoryFirst().then((res: IBusinessResp) => {
-      targetOption.loading = false;
-      console.log(res)
-      if (res.data?.length) {
-        res.data.forEach((v: any) => {
-          v.isLeaf = !v.has_children
-        })
-        targetOption.children = res.data
-        console.log(targetOption)
-        // options.value = [...targetOption];
-      }
-    })
-  } else {
-    http.getDirectoryChidren({urlParams: {directory_id: targetOption.id}}).then((res: IBusinessResp) => {
-      targetOption.loading = false;
-      if (res.data?.length) {
-        targetOption.children = res.data
-        options.value = [...targetOption];
-      }
-    }).catch(() => {
-      targetOption.loading = false;
-      targetOption.children = [
-        {id: Math.ceil(Math.random()*100), name: '文件夹', isLeaf: false}
-      ]
-      // options.value = [...targetOption];
-    })
-  }
-};
 function upDirectory(val: any) {}
 function downDirectory(val: any) {}
 function editDirectory(val: any) {}
@@ -329,7 +281,7 @@ function deletDirectory(val: any) {
   width: 100%;
   .name { 
     display: inline-block;
-    width: 100%;
+    width: 150px
   }
   .btns {
     display: none;

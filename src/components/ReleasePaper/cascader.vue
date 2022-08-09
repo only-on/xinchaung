@@ -58,7 +58,7 @@ const loadData = (selectedOptions: any) => {
       }
       targetOption.children = res.data
       console.log(targetOption)
-      options.value = [...targetOption];
+      // options.value = [...targetOption];
     })
   }
   if (targetOption.level === 1) {
@@ -73,7 +73,7 @@ const loadData = (selectedOptions: any) => {
       }
       targetOption.children = res.data
       console.log(targetOption)
-      options.value = [...targetOption];
+      // options.value = [...targetOption];
     })
   }
 };
