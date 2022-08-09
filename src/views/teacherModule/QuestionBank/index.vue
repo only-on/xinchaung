@@ -11,7 +11,7 @@
   <filter-condition :searchInfo="searchInfo" @searchFn="searchFn" :inDrawer="inDrawer" @add="handleDrawer"></filter-condition>
   <div class="question-content">
     <div class="left" v-if="isMyQuestion">
-      <directory-tree :isOperateTree="inDrawer? false: true"></directory-tree>
+      <directory-tree :isOperateTree="inDrawer? false: true" @selectedTree="selectedTree"></directory-tree>
     </div>
     <div class="right">
       <a-spin :spinning="loading" size="large" tip="Loading...">
@@ -23,21 +23,21 @@
           ></question-list>
           <Empty v-if="!questionListData.length && !loading" :type="EmptyType" />
           <a-pagination
-            v-if="pageTotal > 12"
+            v-if="pageTotal > pageInfo.pageLimit&&!loading"
             v-model:current="pageInfo.page"
-            :pageSize="pageInfo.limit"
+            :pageSize="pageInfo.pageLimit"
             :total="pageTotal"
             @change="pageChange"
           />
         </div>
-  </a-spin>
+      </a-spin>
     </div>
   </div>
   <div class="footer" v-if="bottomVisible && !inDrawer">
     <div class="bottom">
       <div class="left">
         <a-checkbox v-model:checked="checkedAll" @change="checkedAllHandle">全选</a-checkbox>
-        <span class="selected-num">已选（{{checkedNum}}题）</span>
+        <span class="selected-num">已选（{{checkedQuestionId.length}}题）</span>
       </div>
       <div class="center">
         <span v-if="isMyQuestion">
@@ -57,11 +57,11 @@
   <a-modal
     :visible="moveVisible"
     title="移动到"
-    @cancel="removeCancel()"
+    @cancel="moveCancel()"
   >
-    <directory-tree :isOperateTree="false"></directory-tree>
+    <directory-tree :isOperateTree="false" @selectedTree="moveSelectedTree"></directory-tree>
     <template #footer>
-      <Submit @submit="removeSubmit()" @cancel="removeCancel()" :loading="removeLoading" :okText="'移动到此'"></Submit>
+      <Submit @submit="moveSubmit()" @cancel="moveCancel()" :loading="moveLoading" :okText="'移动到此'"></Submit>
     </template>
   </a-modal>
   <a-modal
@@ -90,12 +90,12 @@ import extStorage from "src/utils/extStorage";
 import directoryTree from "./components/directoryTree.vue";
 import filterCondition from "./components/filterCondition.vue"
 import questionList from "./components/questionList.vue"
-import { createQuestionTypeList } from "./questionConfig"
+import { createQuestionTypeList, IQuestionList } from "./questionConfig"
 import Submit from "src/components/submit/index.vue";
 import baseInfo from "src/components/ReleasePaper/baseInfo.vue"
 import studentTable from "src/views/teacherModule/teacherExamination/component/studentTable.vue"
 const props =withDefaults(defineProps<{
-  inDrawer?: boolean,
+  inDrawer?: boolean
   activeTab?:number
 }>(), {
   inDrawer: false,
@@ -127,11 +127,12 @@ const currentTab = ref<number>(0);
 const loading = ref<boolean>(false);
 const pageInfo = reactive({
   page: 1,
-  limit: 12,
+  pageLimit: 10,
 });
 let list = reactive<IMaterialList[]>([]);
 const pageTotal = ref<number>(0);
 const checkedAll = ref(false)
+let questionListData = reactive<any[]>([]);
 const data = [
   {
     id: 1,
@@ -231,28 +232,17 @@ const data = [
     created_at: '',
   },
 ]
-const checkedNum = computed(() => {
-  let i = 0
-  questionListData.forEach((v: any) => {
-    v.checked ? i++ : ''
-  })
-  return i
-})
-const bottomVisible = computed(() => {
-  let checked = false
-  questionListData.forEach((v: any) => {
-    v.checked ? checked = true : ''
-  })
-  return checked
-})
+const checkedQuestionId = reactive<number[]>([])
+const bottomVisible = ref(false)
 
 // 搜索
 const searchInfo = reactive({
   keyWord: '',
-  type: '',
-  level: '',
-  use: '',
-  knowledge: []
+  kind: '',
+  difficulty: '',
+  usedBy: '',
+  categoryId: 1,
+  knowledgeIds: [],
 })
 const resetKeyword = ref<boolean>(false)  // 重置keyword
 const searchFn = (key?: string) => {
@@ -274,6 +264,10 @@ const handleDrawer = () => {
   }
   console.log(selectData)
   emit('addData', selectData)
+}
+const selectedTree = (id: number) => {
+  searchInfo.categoryId = id
+  searchFn();
 }
 const isMyQuestion = computed(() => currentTab.value==1)
 const EmptyType: any = computed(() => {
@@ -319,8 +313,40 @@ watch(
     pageInfo.page = 1
     searchInfo.keyWord = ''
     resetKeyword.value = !resetKeyword.value
+    console.log(searchInfo)
+    searchInfo.keyWord = ''
+    searchInfo.kind = ''
+    searchInfo.difficulty = ''
+    searchInfo.usedBy = ''
+    searchInfo.categoryId = 1 
+    searchInfo.knowledgeIds = []
     initData();
   }
+);
+watch(
+  () => {
+    return questionListData;
+  },
+  (val) => {
+    console.log(val)
+    let i = 0
+    val.forEach((v: any, k: number) => {
+      if (!v.checked) {
+        const index = checkedQuestionId.indexOf(v.id)
+        if (index !== -1) {
+          checkedQuestionId.splice(index, 1)
+        }
+      } else {
+        i++
+        if (!checkedQuestionId.includes(v.id)) {
+          checkedQuestionId.push(v.id)
+          bottomVisible.value = true
+        }
+      }
+    })
+    checkedAll.value = i===pageInfo.pageLimit
+  },
+  {deep:true,immediate:true}
 );
 watch(()=>props.activeTab, newVal => {
   currentTab.value = newVal
@@ -350,32 +376,26 @@ interface Iuser {
   username: string
   avatar: string
 }
-let questionListData = reactive<any[]>([]);
+const componentList = ['getPublicQuestionsList', 'getMyQuestionsList',]
 const initData = () => {
-  const param = {
-    name: searchInfo.keyWord,
-    is_public: currentTab.value ? 0 : 1,  // 1公开 0私有
-    ...pageInfo,
-  };
+  const param = {...pageInfo};
   questionListData.length = 0
   pageTotal.value=0
   loading.value=true
-  http.getMyQuestionsList().then((res: IBusinessResp) => {
-    console.log(res)
-  })
-  // http.dataSets({ param }).then((res: any) => {
+  questionListData.length = 0
+  // http[componentList[currentTab.value]]({param: param}).then((res: IBusinessResp) => {
+  //   loading.value = false
   //   if (!res) return
-  //   const { list, page } = res.data;
-  //   list.forEach((v: any) => {
-  //     if(v.type==1){
-  //       v.cover = `${v.cover}?data-time=${new Date().getTime()}`
-  //     }
+  //   const {list, page} = res.data
+  //   questionListData.push(...list)
+  //   pageTotal.value = page.totalCount
+  //   questionListData.forEach((v: any) => {
+  //     v.type = 1
+  //     v.level = 1
+  //     v.use = 1
   //   })
-  //   materialList.push(...list);
-  //   pageTotal.value = page.totalCount;
-    // loading.value=false
-  // }).catch((err:any)=>{
-  //   loading.value=false
+  // }).catch(() => {
+  //   loading.value = false
   // })
   setTimeout(() => {
     questionListData.push(...data)
@@ -440,9 +460,14 @@ function moveQuestion() {
   moveVisible.value = true
 }
 const moveVisible = ref(false)
-const removeLoading = ref(false)
-function removeSubmit() {}
-function removeCancel() {
+const moveLoading = ref(false)
+const moveCategoryId = ref(0)
+function moveSelectedTree(id: number) {
+  console.log(id)
+  moveCategoryId.value = id
+}
+function moveSubmit() {}
+function moveCancel() {
   moveVisible.value = false
 }
 
@@ -458,6 +483,7 @@ const releaseVisible = ref(false)
 const releaseLoading = ref(false)
 function releaseSubmit() {
   console.log(formState)
+  console.log(checkedQuestionId)
 }
 function releaseCancel() {
   releaseVisible.value = false

@@ -24,7 +24,7 @@
     <template #title="{ dataRef }">
       <span class="tree-title">
         <span class="name">{{ dataRef.name }}</span>
-        <span class="btns" v-if="dataRef.key!=0&&props.isOperateTree">
+        <span class="btns" v-if="dataRef.id!=0&&props.isOperateTree">
           <span class="iconfont icon-shangyi" @click="upDirectory(dataRef)"></span>
           <span class="iconfont icon-shangyi-copy" @click="downDirectory(dataRef)"></span>
           <span class="iconfont icon-bianji" @click="editDirectory(dataRef)"></span>
@@ -58,18 +58,20 @@
 <script lang="ts" setup>
 import { defineComponent, createVNode, ref, onMounted, reactive } from 'vue';
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
-import { SelectEvent } from "ant-design-vue/es/tree/Tree";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
 import Submit from "src/components/submit/index.vue";
 const http = (request as any).QuestionBank;
 interface Props {
-  isOperateTree: boolean,
+  isOperateTree: boolean
 }
 const props = withDefaults(defineProps<Props>(), {
   isOperateTree: true,
 });
+const emit = defineEmits<{
+  (e: "selectedTree", id: number): void;
+}>();
 const expandedKeys = ref<number[]>([0]);
 const selectedKeys = ref<number[]>([0]);
 const fieldNames = {
@@ -180,9 +182,10 @@ const treeData = ref([
     children: []
   }
 ])
-const onSelect = (selectedKeys: string[], info: SelectEvent) => {
+const onSelect = (selectedKeys: number[], info: any) => {
   console.log("selected", selectedKeys, info);
   // selectNode.value = info.selectedNodes.length ? info.selectedNodes[0] : {}
+  emit("selectedTree", selectedKeys[0])
 };
 const onLoadData = (treeNode: any) => {
   return new Promise((resolve: any) => {
@@ -284,7 +287,7 @@ const loadData = (selectedOptions: any) => {
         })
         targetOption.children = res.data
         console.log(targetOption)
-        options.value = [...targetOption];
+        // options.value = [...targetOption];
       }
     })
   } else {
@@ -299,7 +302,7 @@ const loadData = (selectedOptions: any) => {
       targetOption.children = [
         {id: Math.ceil(Math.random()*100), name: '文件夹', isLeaf: false}
       ]
-      options.value = [...targetOption];
+      // options.value = [...targetOption];
     })
   }
 };

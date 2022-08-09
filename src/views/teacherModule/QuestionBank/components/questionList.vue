@@ -252,8 +252,9 @@ const questionList = reactive([
     created_at: '',
   },
 ])
-function checkedHandle() {
+function checkedHandle(e: any) {
   console.log(props.questionList)
+  console.log(e)
 }
 function handleClick(operateType:string, val: any) {
   emit('menuClick', operateType, val)

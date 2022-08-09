@@ -2,15 +2,15 @@
 <div>
   <div class="filter-condition">
     <div class="drop-down">
-      <a-select v-model:value="props.searchInfo.type" style="width: 200px" class="type" @change="changeType">
+      <a-select v-model:value="props.searchInfo.kind" style="width: 200px" class="type" @change="changeType">
         <a-select-option value="">所有类型</a-select-option>
         <a-select-option :value="key" v-for="(item, key) in getTopicType" :key="item">{{item.name}}</a-select-option>
       </a-select>
-      <a-select v-model:value="props.searchInfo.level" style="width: 200px" class="level" @change="changeType">
+      <a-select v-model:value="props.searchInfo.difficulty" style="width: 200px" class="level" @change="changeType">
         <a-select-option value="">所有难度</a-select-option>
         <a-select-option :value="key" v-for="(item, key) in levelTypeList" :key="item">{{item.name}}</a-select-option>
       </a-select>
-      <a-select v-model:value="props.searchInfo.use" style="width: 200px" class="use" @change="changeType">
+      <a-select v-model:value="props.searchInfo.usedBy" style="width: 200px" class="use" @change="changeType">
         <a-select-option value="">所有用途</a-select-option>
         <a-select-option :value="key" v-for="(item, key) in useTypeList" :key="item">{{item.name}}</a-select-option>
       </a-select>
@@ -28,9 +28,10 @@
     <div class="select-knowledge">
       <div class="selected">
         <span class="tit">所选知识点 >&nbsp;</span>
-        <span class="selected-knowledge" v-if="selectKnowledgeVisible">
-          <span>{{currentCourse.knowledge_map_name}} > </span>
-          <span v-for="(list, index) in currentKnowledge" :key="list.id">{{list.knowledge_map_name+(index !== currentKnowledge.length - 1 ? " /&nbsp;" : "")}}</span>
+        <span class="selected-knowledge" v-if="visible">
+          <!-- <span>{{currentCourse.knowledge_map_name}} > </span>
+          <span v-for="(list, index) in currentKnowledge" :key="list.id">{{list.knowledge_map_name+(index !== currentKnowledge.length - 1 ? " /&nbsp;" : "")}}</span> -->
+          <span>{{selectedCourseKnowledge}}</span>
           <span class="iconfont icon-guanbi pointer" @click="deleteKnowledge"></span>
         </span>
       </div>
@@ -94,7 +95,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, reactive } from 'vue'
+import { onMounted, ref, reactive, watch } from 'vue'
 import getTopicType from 'src/components/TopicDisplay/topictype'
 import { levelTypeList, useTypeList } from 'src/components/TopicDisplay/configType'
 import Submit from "src/components/submit/index.vue";
@@ -114,7 +115,9 @@ const emit = defineEmits<{
   (e: "searchFn", obj?: any): void;
   (e: "add", obj?: any): void;
 }>();
+const visible = ref(false)
 const selectKnowledgeVisible = ref(false)
+const selectedCourseKnowledge = ref('')
 const directiveList = reactive<IKnowledge[]>([])
 const courseList = reactive<IKnowledge[]>([])
 const knowledgeList = reactive<IKnowledge[]>([])
@@ -129,10 +132,14 @@ const selectDirective = (id: number) => {
   console.log(id)
   currentDirective.value = id
   id ? selectKnowledgeVisible.value = true : selectKnowledgeVisible.value = false
+  visible.value = false
   getKnowledgeSub(id, 'course')
 }
 const selectCourse = (list: IKnowledge) => {
   currentCourse.value = list
+  knowledgeList.length = 0
+  currentKnowledge.value = []
+  currentKnowledgeId.value = []
   getKnowledgeSub(list.id, 'knowledge')
 }
 const selectKnowledge = (list: IKnowledge) => {
@@ -156,14 +163,22 @@ const deleteKnowledge = () =>  {
     id: 1,
     knowledge_map_name: ''
   }
+  currentDirective.value = 0
   selectKnowledgeVisible.value = false
+  visible.value = false
 }
 const onSubmit = () => {
+  selectedCourseKnowledge.value = currentCourse.value.knowledge_map_name + ' > '
+  currentKnowledge.value.forEach((v: {knowledge_map_name: string}, k: number) => {
+    selectedCourseKnowledge.value = selectedCourseKnowledge.value + v.knowledge_map_name + (k!==currentKnowledge.value.length-1?' \\ ':'')
+  })
+  console.log(selectedCourseKnowledge.value)
   selectKnowledgeVisible.value = false
-  console.log(currentKnowledge.value)
-  console.log(currentKnowledgeId.value)
-  console.log(currentCourse.value)
-  props.searchInfo.knowledge = currentKnowledgeId.value
+  visible.value = currentDirective.value!==0
+  // console.log(currentKnowledge.value)
+  // console.log(currentKnowledgeId.value)
+  // console.log(currentCourse.value)
+  props.searchInfo.knowledgeIds = currentKnowledgeId.value
   emit('searchFn')
 }
 const cancel = () => {
@@ -198,6 +213,13 @@ const getKnowledgeSub = (id: number, type: string) => {
     }
   })
 }
+watch(()=>props.searchInfo.knowledgeIds, (newVal: any) => {
+  if (!newVal.length) {
+    visible.value = false
+    selectKnowledgeVisible.value = false
+    currentDirective.value = 0
+  }
+},{immediate: true, deep:true})
 onMounted(() => {
   getKnowledgeFirst()
 })
