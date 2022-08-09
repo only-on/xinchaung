@@ -1,5 +1,5 @@
 <template>
-  <div class="cradItem">
+  <div class="cradItem" @click.stop="goPreview">
     <div class="left">
       <span class="type">考试</span>
       <div :class="['img',item.status == 1 ? 'end' :  item.is_publish == 0 ? 'unpublish' : item.status == 2 ? 'unstart' : 'ongoing'] ">
@@ -56,6 +56,8 @@
 </template>
 <script lang="ts" setup>
 import {ref,reactive, watch} from 'vue'
+import { useRouter, useRoute } from "vue-router";
+const router = useRouter();
 const props = defineProps({
   data: Object
 })
@@ -70,6 +72,12 @@ const handleClick = (operateType:string, item:any) => {
 }
 const handleEvent = (operateType:string, item:any) => {
   emit('operate', operateType, item)
+}
+const goPreview=()=>{
+  router.push({
+    path:'/teacher/teacherExamination/teacherExaminationPreview',
+    query:{id:item.id}
+  })
 }
 watch(()=>props.data, newVal => {
   Object.assign(item,newVal)

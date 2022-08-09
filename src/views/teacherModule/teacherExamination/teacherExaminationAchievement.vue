@@ -10,6 +10,21 @@
           <a-button  type="primary"> 上一人 </a-button>
           <a-button  type="primary"> 下一人 </a-button>
         </div>
+        <div class="ViolationRecord">
+          <div class="title">违规记录</div>
+          <div class="itemBox textScrollbar">
+            <div class="item" v-for="(v,k) in 12">
+              <div class="time">2022/07/19 14:00:32</div>
+              <a-tooltip placement="top">
+                <template #title>
+                  <span>异常行为概述文字显示在这里异常行为概述文字显示在这里</span>
+                </template>
+                <div class="text single_ellipsis">异常行为概述文字显示在这里异常行为概述文字显示在这里</div>
+              </a-tooltip>
+              <!-- <div class="text single_ellipsis">异常行为概述文字显示在这里异常行为概述文字显示在这里</div> -->
+            </div>
+          </div>
+        </div>
     </div>
   </div>
 </template>
@@ -79,5 +94,30 @@ const headerObj:any=reactive({
             justify-content: space-between;
           }
         }
+    }
+    .ViolationRecord{
+      margin-top: 40px;
+      width: 240px;
+      background-color: var(--white);
+      .title{
+        text-align: center;
+        padding: 15px 0;
+        border-bottom: 1px solid rgba(0,0,0,0.15);
+      }
+      .itemBox{
+        padding:16px;
+        height: 650px;
+        overflow-y: auto;
+        .item{
+          margin-bottom: 20px;
+          .time{
+            font-size: 12px;
+            color:var(--black-45);
+          }
+          .text{
+            // font-size: 14px;
+          }
+        }
+      }
     }
 </style>

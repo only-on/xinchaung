@@ -57,14 +57,18 @@ updata({
 // }>();
 const headerObj:any=reactive({
   title:'单元测验-《大学计算机基础第3版》第3、4章（一）-计算思维、数值与字符编码',
-  explain:'作业/考试说明',
+  explain:'作业说明',
   explainText:'交互设计本质上就是设计产品的使用方式的过程，账号怎么填写；表单怎么导出；数据怎么筛选；列表怎么排序等等。针对每个功能的使用方式，都可以花很长的时间去考虑其合理性。一个项目的交互，就是这个项目所有功能使用方式的总和。',
 })
 const cancel=()=>{
-  router.go(-1)
+  // router.go(-1)
+  router.replace('/teacher/teacherAssignment')
 }
 const edit=()=>{
-  router.push('/teacher/teacherAssignment/teacherAssignmentEdit')
+  router.push({
+    path:'/teacher/teacherAssignment/teacherAssignmentEdit',
+    query:{editId:editId}
+  })
 }
 </script>
 <style scoped lang="less">

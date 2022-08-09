@@ -62,7 +62,11 @@ const headerObj:any=reactive({
 })
 const cancel=()=>{
   // router.go(-1)
-  router.replace('/teacher/teacherAssignment')
+  // router.replace('/teacher/teacherAssignment')
+  router.replace({
+    path:'/teacher/teacherExamination/teacherAssignmentPreview',
+    query:{editId:editId}
+  })
 }
 const save=()=>{
   cancel()

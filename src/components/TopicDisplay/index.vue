@@ -431,7 +431,6 @@ var statisticsInfo=computed(()=>{
   return obj
 })
 
-// const DebounceUse:Function= reactive(new Debounce().use(submitAnswers,0.5))
 const DebounceUse:Function= new Debounce().use(submitAnswers,1.5) //延时
 // 答题
 var curQuestionId:Ref<number> = ref(0)

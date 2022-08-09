@@ -47,11 +47,11 @@ const props = withDefaults(defineProps<Props>(), {
   explainText:'',
 });
 
-// const emit = defineEmits<{
-//   (e: "selectedImage", val: any): void;
-// }>();
+const emit = defineEmits<{
+  (e: "edit"): void;
+}>();
 const edit=()=>{
-
+  emit('edit')
 }
 </script>
 <style scoped lang="less">
