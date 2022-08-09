@@ -78,14 +78,14 @@
   </div>
   <a-modal v-model:visible="Visible"  title="修改成绩占比" class="setupVisible" :width="700">
     <a-form  :rules="rules" :model="formState" ref="formRef">
-      <a-form-item label="实验成绩" name="score">
-        <a-input v-model:value="formState.score" suffix="%"/>
+      <a-form-item label="实验成绩" name="ExperimentalResults">
+        <a-input v-model:value="formState.ExperimentalResults" suffix="%"/>
       </a-form-item>+
-      <a-form-item label="作业成绩" name="score">
-        <a-input v-model:value="formState.score" suffix="%"/>
+      <a-form-item label="作业成绩" name="taskResults">
+        <a-input v-model:value="formState.taskResults" suffix="%"/>
       </a-form-item>+
-      <a-form-item label="考试成绩" name="score">
-        <a-input v-model:value="formState.score" suffix="%"/>
+      <a-form-item label="考试成绩" name="examResults">
+        <a-input v-model:value="formState.examResults" suffix="%"/>
       </a-form-item>
     </a-form>
     <template #footer>
@@ -108,6 +108,7 @@ import {
   defineProps,
   withDefaults,
 } from "vue";
+import {validateNum} from "src/views/teacherModule/teacherExamination/utils"
 import Submit from "src/components/submit/index.vue";
 import { useRouter, useRoute } from "vue-router";
 import request from "src/api/index";
@@ -120,28 +121,48 @@ const { editId } = route.query;
 const http = (request as any).teachCourse;
 const SetupScore=()=>{
   Visible.value=true
+  
 }
 const formRef = ref();
 var Visible: Ref<boolean> = ref(false);
 const formState=reactive<any>({
-  score:''
+  ExperimentalResults:'',
+  taskResults:'',
+  examResults:''
 })
 const rules = {
-  score: [
-    { required: true, message: `请输入分数`, trigger: "blur" },
+  ExperimentalResults: [
+    { required: true, message: `请输入实验成绩比例`, trigger: "blur" },
+    {validator: validateNum.validator}
+  ],
+  taskResults: [
+    { required: true, message: `请输入作业成绩比例`, trigger: "blur" },
+    {validator: validateNum.validator}
+  ],
+  examResults: [
+    { required: true, message: `请输入考试成绩比例`, trigger: "blur" },
+    {validator: validateNum.validator}
   ],
 }
 const cancel=()=>{
+  formRef.value.resetFields()
   Visible.value=false
 }
 const Save=()=>{
+  let num=Number(formState.ExperimentalResults)+Number(formState.taskResults)+Number(formState.examResults)
+  if(num!==100){
+    message.warning('权重总和需为100%')
+    return
+  }
   formRef.value.validate().then(()=>{ 
     return
     // selectIds
-      http.SetupScore({param:{chapter_name:formState.name},urlParams:{courseId:''}}).then((res: any)=>{
-        message.success('操作成功')
-        formState.name=''
-        Visible.value=false
+    http.SetupScore({param:{chapter_name:formState.name},urlParams:{courseId:''}}).then((res: any)=>{
+      message.success('操作成功')
+      formState.name=''
+      cancel()
+    }).catch((err:any)=>{
+      cancel()
     })
   })
 }
