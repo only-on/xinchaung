@@ -52,8 +52,7 @@ const columns = [
   {
     title: '得分',
     dataIndex: 'age',
-    key: 'age',
-    width: 80,
+    key: 'age'
   },
   {
     title: '答对',
@@ -118,7 +117,7 @@ const data = [
 </script> 
 <style lang="less" scoped>
 .score_ranking{
-    width:300px;
+    width:270px;
     background: white;
     color: var(--black-65);
 }
