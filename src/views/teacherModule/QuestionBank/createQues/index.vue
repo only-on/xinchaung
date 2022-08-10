@@ -28,11 +28,13 @@
         </a-col>
         <a-col :span="12">
           <a-form-item name="catalogue" label="选择目录">
-            <a-cascader
+            <!-- <a-cascader
               v-model:value="formState.catalogue"
               :options="options"
               placeholder="请选择"
-            />
+            /> -->
+            {{formState.catalogue}}
+            <select-directory v-model:catalogue='formState.catalogue'></select-directory>
           </a-form-item>
         </a-col>
         <a-col :span="['1','2','3','4','7'].includes(type)? 12 : 24">
@@ -51,6 +53,7 @@
               placeholder="请选择"
             ></a-cascader>
           </a-form-item>
+          <knowledge></knowledge>
         </a-col> 
         <!-- 题干 公有 -->
         <a-col v-if="type != 7" :span="24">
@@ -140,6 +143,8 @@ import labelSelection from 'src/components/labelSelection/index.vue'
 import uploadFile from 'src/components/uploadFile.vue'
 import answerOptionCom from '../components/answerOptionsCom/index.vue'
 import { Modal, message } from "ant-design-vue";
+import knowledge from 'src/components/knowLedge/index.vue'
+import selectDirectory from 'src/components/selectDirectory/index.vue'
 const route = useRoute();
 const router = useRouter();
 const type: any = ref(route.query.value);
@@ -148,6 +153,8 @@ const editId:any=route.query?.questionId;
 const http = (request as any).QuestionBank;
 const caseFile=http.caseFile
 var updata = inject("updataNav") as Function;
+import type { Rule } from 'ant-design-vue/es/form';
+const catalogue1:any=ref([])
 const fileList: any = [];
 updata({
   tabs: [{ name: "创建" + name, componenttype: 0 }],
@@ -283,6 +290,12 @@ const selectOptions: any = ref([
   { label: 0, value: "" },
   { label: 1, value: "" },
 ]);
+let validateCatalogue = async (_rule: Rule, value: string) => {
+  console.log(value,'value hhhhhhhh fffffff')
+      if (value.length ==0) {
+        return Promise.reject('请选择目录来了');
+      }
+    };
 const rules = {
   name: [
     {
@@ -302,6 +315,8 @@ const rules = {
     {
       required: true,
       message: "请选择目录",
+      // validator: validateCatalogue, 
+      // trigger: 'change'
     },
   ],
   memoryLimit:[
