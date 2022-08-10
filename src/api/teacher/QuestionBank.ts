@@ -3,8 +3,12 @@ import { TFHttpSend } from "src/typings/getRequest";
 export default {
   // 文件夹目录
   getDirectoryFirst: { url: `/api/v1/xinchuang/question/directories`, method: "GET" },
-  getDirectoryChidren: { url: `api/v1/xinchuang/question/directories/{directory_id}/children`, method: "GET" },
+  getDirectoryChidren: { url: `/api/v1/xinchuang/question/directories/{directory_id}/children`, method: "GET" },
   createDirectory: { url: `/api/v1/xinchuang/question/directories`, method: "POST", dataType: "json" },
+  updateDirectory: { url: `/api/v1/xinchuang/question/directories/{directory_id}`, method: "PUT", dataType: "json" },
+  deleteDirectory: { url: `/api/v1/xinchuang/question/directories/{directory_id}`, method: "DELETE" },
+  moveBeforeDirectory: { url: `/api/v1/xinchuang/question/directories/{original_directory_id}/move/{destination_directory_id}/before`, method: "PUT", dataType: "json" },
+  moveAfterDirectory: { url: `/api/v1/xinchuang/question/directories/{original_directory_id}/move/{destination_directory_id}/after`, method: "PUT", dataType: "json" },
 
   // 知识图谱
   getKnowledgeFirst: { url: `/api/service/knowledge_map/first_level`, method: "GET" },
@@ -42,6 +46,10 @@ export interface IQuestionBank {
   getDirectoryFirst: TFHttpSend
   getDirectoryChidren: TFHttpSend
   createDirectory: TFHttpSend
+  updateDirectory: TFHttpSend
+  deleteDirectory: TFHttpSend
+  moveBeforeDirectory: TFHttpSend
+  moveAfterDirectory: TFHttpSend
   getKnowledgeFirst: TFHttpSend
   getKnowledgeSub: TFHttpSend
   getMyQuestionsList: TFHttpSend

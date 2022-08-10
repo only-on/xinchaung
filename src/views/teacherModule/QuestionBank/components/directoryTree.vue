@@ -4,6 +4,7 @@
     <div class="create-btn pointer" @click="visible=true">新建文件夹</div>
   </template>
   <a-directory-tree
+    v-if="treeData[0].children.length"
     v-model:expandedKeys="expandedKeys"
     v-model:selectedKeys="selectedKeys"
     :showIcon="true"
@@ -182,36 +183,68 @@ const onSelect = (selectedKeys: number[], info: any) => {
   emit("selectedTree", selectedKeys[0])
 };
 const onLoadData = (treeNode: any) => {
-  return new Promise((resolve: any) => {
+  return new Promise(async(resolve: any) => {
     if (!treeNode.dataRef.has_children||!treeNode.dataRef.id) {
       resolve();
       return;
     }
-    http.getDirectoryChidren({urlParams: {directory_id: treeNode.dataRef.id}}).then((res: IBusinessResp) => {
-      if (res.data?.length) {
-        treeNode.dataRef.children = res.data
-      }
-      treeData.value = [...treeData.value];
-      resolve();
-    }).catch(() => {
-      treeNode.dataRef.children = [
-        {id: Math.ceil(Math.random()*100), name: '文件夹', has_children: 1}
-      ]
-      treeData.value = [...treeData.value];
-      resolve();
-    })
+    const data = await getDirectorySub(treeNode.dataRef)
+    treeNode.dataRef.children = data
+    treeData.value = [...treeData.value];
+    resolve();
+    // http.getDirectoryChidren({urlParams: {directory_id: treeNode.dataRef.id}}).then((res: IBusinessResp) => {
+    //   res.data.forEach((v: any) => {
+    //     v.pid = treeNode.dataRef.id
+    //   })
+    //   if (res.data?.length) {
+    //     treeNode.dataRef.children = res.data
+    //   }
+    //   treeData.value = [...treeData.value];
+    //   resolve();
+    // }).catch(() => {
+    //   treeNode.dataRef.children = [
+    //     {id: Math.ceil(Math.random()*100), name: '文件夹', has_children: 1}
+    //   ]
+    //   treeData.value = [...treeData.value];
+    //   resolve();
+    // })
   });
 
 }
 
 // 获取第一层目录
 function getDirectoryFirst() {
+  treeData.value[0].children = []
+  expandedKeys.value = [0]
   http.getDirectoryFirst().then((res: IBusinessResp) => {
     console.log(res)
+    res.data.forEach((v: any, k: number) => {
+      v.pid = 0
+      v.index = k
+    })
+    loading.value = false
     if (res.data?.length) {
       treeData.value[0].has_children = 1
       treeData.value[0].children = res.data
     }
+  })
+}
+// 获取第二层目录
+function getDirectorySub(val: any) {
+  return new Promise((resolve: any) => {
+    http.getDirectoryChidren({urlParams: {directory_id: val.id}}).then((res: IBusinessResp) => {
+      res.data.forEach((v: any, k: number) => {
+        if (val.pid) {
+          v.pPindex = val.index
+          v.pindex = val.pindex
+        } else {
+          v.pindex = val.index
+        }
+        v.pid = val.id
+        v.index = k
+      })
+      resolve(res.data)
+    })
   })
 }
 onMounted(() => {
@@ -235,31 +268,60 @@ function submit() {
   loading.value = true
   console.log(formState)
   const param = {
-    is_public: 0,
     name: formState.name,
-    parent_id: formState.directoryId[formState.directoryId.length-1]
+    // parent_id: formState.directoryId[formState.directoryId.length-1]
   }
-  http.createDirectory({param}).then((res: IBusinessResp) => {
+  if (formState.directoryId[formState.directoryId.length-1]) {
+    Object.assign(param, {parent_id: formState.directoryId[formState.directoryId.length-1]})
+  }
+  http.createDirectory({param}).then(async(res: IBusinessResp) => {
     loading.value = false
     visible.value = false
-    console.log(treeData.value)
-    treeData.value[0].children[0].children = [{
-      id: 31324234,
-      name: "目录111",
-      is_public: 1,
-      has_children: 0,
-      isLeaf: false,
-      children: []
-    }]
-    console.log(treeData.value)
-    getDirectoryFirst()
+    const pid = formState.directoryId[formState.directoryId.length-1]
+    // if (pid) {
+    //   let data = await getDirectorySub(pid)
+    //   val.children = data
+    //   treeData.value = [...[val]];
+    // } else {
+      getDirectoryFirst()
+    // }
   })
 }
 function cancel() {
   visible.value = false
 }
-function upDirectory(val: any) {}
-function downDirectory(val: any) {}
+function upDirectory(val: any) {
+  const params = {
+    original_directory_id: val.id,
+    destination_directory_id: treeData.value[0].children[val.index-1].id
+  }
+  http.moveBeforeDirectory({urlParams: params}).then(async(res: IBusinessResp) => {
+    if (!val.pid) {
+      getDirectoryFirst()
+    } else {
+      let data = await getDirectorySub(treeData.value[0].children[val.pindex])
+      // treeData.value[0]
+      treeData.value[0].children[val.pindex].children = data
+          //   val.children = data
+    }
+  })
+}
+function downDirectory(val: any) {
+  console.log(val)
+  const params = {
+    original_directory_id: val.id,
+    destination_directory_id: treeData.value[0].children[val.index+1].id
+  }
+  http.moveAfterDirectory({urlParams: params}).then(async(res: IBusinessResp) => {
+    if (!val.pid) {
+      getDirectoryFirst()
+    } else {
+      let data = await getDirectorySub(treeData.value[0].children[val.pindex])
+      treeData.value[0].children[val.pindex].children = data
+          //   val.children = data
+    }
+  })
+}
 function editDirectory(val: any) {}
 function deletDirectory(val: any) {
   Modal.confirm({
@@ -269,9 +331,23 @@ function deletDirectory(val: any) {
     okText: "确认",
     cancelText: "取消",
     onOk() {
-
+      http.deleteDirectory({urlParams: {directory_id: val.id}}).then(async(res: IBusinessResp) => {
+        // if (val.pid) {
+        //   let data = await getDirectorySub(val.pid)
+        //   val.children = data
+        //   treeData.value = [...[val]];
+        // } else {
+          getDirectoryFirst()
+        // }
+      })
     }
   })
+}
+
+// 获取层级信息
+function getLevelInfo(current: any, upper: any) {
+  console.log(current)
+  console.log(upper)
 }
 </script>
 

@@ -59,16 +59,20 @@ const loadData = (selectedOptions: any) => {
     http.getDirectoryChidren({urlParams: {directory_id: targetOption.id}}).then((res: IBusinessResp) => {
       targetOption.loading = false;
       if (res.data?.length) {
+        res.data.forEach((v: any) => {
+          v.isLeaf = targetOption.level==props.levelNum-1
+          v.level = targetOption.level==props.levelNum-1?props.levelNum:targetOption.level+1
+        })
         targetOption.children = res.data
         options.value = [...targetOption];
       }
     }).catch(() => {
       targetOption.loading = false;
-      targetOption.children = [
-        {id: Math.ceil(Math.random()*100), name: '文件夹', isLeaf: targetOption.level==props.levelNum-1, level: targetOption.level==props.levelNum-1?props.levelNum:targetOption.level+1}
-      ]
-      // options.value = [...targetOption];
-      console.log(options.value)
+      // targetOption.children = [
+      //   {id: Math.ceil(Math.random()*100), name: '文件夹', isLeaf: targetOption.level==props.levelNum-1, level: targetOption.level==props.levelNum-1?props.levelNum:targetOption.level+1}
+      // ]
+      // // options.value = [...targetOption];
+      // console.log(options.value)
     })
   }
 };
