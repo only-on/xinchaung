@@ -1,19 +1,15 @@
 <template>
   <div class="trialModel">
-    <div class="tips">
-      内存限制:<span>128mb</span>
-      时间限制限制:<span>2000ms</span>
-    </div>
     <common-card title="题目描述">
       <template #content>
-        <antdv-markdown v-model="formData.description"  :preview-only="true" />
+        <antdv-markdown v-model="formData.question_desc"  :preview-only="true" />
       </template>
     </common-card>
     <a-row :gutter="24">
       <a-col :span="12">
         <common-card title="评测说明" :height="200">
           <template #content>
-            <antdv-markdown v-model="formData.reviewDes"  :preview-only="true" />
+            <antdv-markdown v-model="formData.ai_test_desc"  :preview-only="true" />
           </template>
         </common-card>
       </a-col>
@@ -24,8 +20,8 @@
           </template>
           <template #content>
             <ul class="dataList setScrollbar">
-              <li v-for="(item,index) in dataList" :key="index">
-                {{item.name}}
+              <li v-for="(item,index) in formData.practice" :key="index">
+                {{item.file_name}}
                 <i class="iconfont icon-download-1-copy" @click="downLoad(item)"></i>
               </li>
             </ul>
@@ -48,7 +44,7 @@
             </a-col>
             <a-col :span="12">
               <div class="formLabel">过程文件<span>非必传项，分享建模思路</span></div>
-              <uploadFile urlType="result" :file="fileList" @success="resultSuccess" @delete="resultDel"/>
+              <uploadFile urlType="process" :file="fileList" @success="processSuccess" @delete="processDel"/>
             </a-col>
           </a-row>
           <a-form-item label="作品提交说明" name="remark">
@@ -61,19 +57,35 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ref, reactive, watch, provide, inject } from "vue";
+import { ref, reactive, watch, provide, inject, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { message } from "ant-design-vue";
 import CommonCard from "src/components/common/CommonCard.vue";
 import uploadFile from '../components/uploadFile.vue'
 import Submit from "src/components/submit/index.vue";
 import {downloadUrl} from 'src/utils/download.ts'
+import request from "src/api/index";
+import { IBusinessResp } from "src/typings/fetch.d";
+const http = (request as any).QuestionBank;
+const route = useRoute()
+const questionId = ref<any>(route.query.id)
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
+const formData = reactive({
+  question: '题目名称',
+  question_desc: '题目描述111111',
+  ai_test_desc: '评测说明',
+  practice: [
+    {
+      file_name: 'train list.txt',
+      file_url: ''
+    }
+  ]
+})
 updata({
   tabs: [
     {
-      name: `模型题目名称`,
+      name: `${formData.question}`,
       componenttype: 0,
     },
   ],
@@ -81,56 +93,63 @@ updata({
   componenttype: undefined,
   showNav: true,
 });
-const formData = reactive({
-  description: '题目描述111111',
-  reviewDes: '评测说明'
-})
 const rules = {
   remark: [
     {required: true,message: '请输入作品提交说明', trigger: 'blur'},
     { max: 255, message: '作品提交说明不能超过255个字', trigger: 'blur' }
   ]
 }
-const submitData = {
-  result_file: '',
+const submitData = reactive<any>({
+  object_question_id: '',
+  object_type: '',
+  result: [],
+  process: [],
   remark: ''
+})
+// 获取模型题详情
+const getDetail = () => {
+  http.modelDeatil({urlParams: {questionId: questionId.value}}).then((res:IBusinessResp) => {
+    let result = res.data
+    Object.assign(formData, {
+      question: result.question,
+      question_desc: result.question_desc,
+      ai_test_desc: result.ai_test_desc,
+      practice: result.practice
+    })
+  })
 }
-const dataList = reactive([
-  {
-    name: 'train list.txt',
-    url: ''
-  }
-])
 const downLoad = (item:any) => {
-  // downloadUrl()
+  downloadUrl(item.file_name, item.file_url)
 }
 const fileList = reactive([])
 const resultSuccess = (data:any) => {
-  submitData.result_file = data.file_url
+  submitData.result = [data]
 }
 const resultDel = (id: number) => {
-  submitData.result_file = ''
+  submitData.result = []
+}
+const processSuccess = (data:any) => {
+  submitData.process = [data]
+}
+const processDel = (id: number) => {
+  submitData.process = []
 }
 const saveLoading = ref<boolean>(false)
 const formRef = ref()
 const handleSave = () => {
-  formRef.value.validate(()=>{})
+  formRef.value.validate(()=>{
+    // saveLoading.value = true
+    // http.runModelQuestions({urlParams:{questionId: questionId.value}}).then((res:IBusinessResp) => {
+    //   saveLoading.value = false
+    // }).catch(()=>{
+    //   saveLoading.value = false
+    // })
+  })
 }
 const cancelSave = () => {}
 </script>
 <style lang="less" scoped>
 .trialModel{
-  .tips{
-    position: absolute;
-    top: 106px;
-    z-index: 1;
-    margin-left: var(--center-width);
-    color: rgba(255,255,255,0.75);
-    >span{
-      color: var(--primary-color);
-      margin-right: 40px;
-    }
-  }
   .dataList{
     overflow: auto;
     li{

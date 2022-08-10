@@ -39,7 +39,15 @@ export default {
   editComplate:{url:`/api/v1/xinchuang/question/blank_questions/{questionId}`,method: "PUT"},
   editSolution:{url:`/api/v1/xinchuang/question/short_answer_question/{questionId}`,method: "PUT"},
   editProgram:{url:`/api/v1/xinchuang/question/program-questions/{ID}`,method: "PUT"},
-  editModel:{url:`/api/v1/xinchuang/question/model-questions/{questionId}`,method: "PUT"}
+  editModel:{url:`/api/v1/xinchuang/question/model-questions/{questionId}`,method: "PUT"},
+
+  // 试用编程题
+  ojConfig:{url:`/api/v1/oj/config`,method: "GET"},
+  submitProgramQuestion:{url:`/api/v1/xinchuang/question/program-questions/{ID}/submit`,method: "POST", dataType: "json"},
+  solutionSatus:{url:` /api/v1/xinchuang/question/program-questions/{ID}/solution/{solution_id}/status`,method: "GET"},
+  // 试用模型题
+  runModelQuestions:{url:`/api/v1/xinchuang/question/model-questions/run/{questionId}`,method: "POST", dataType: "json"},
+
 }
 
 export interface IQuestionBank {
@@ -78,4 +86,11 @@ export interface IQuestionBank {
   editSolution:TFHttpSend
   editProgram:TFHttpSend
   editModel:TFHttpSend
+
+  // 试用编程题
+  ojConfig: TFHttpSend
+  submitProgramQuestion:TFHttpSend
+  solutionSatus: TFHttpSend
+  // 试用模型题
+  runModelQuestions: TFHttpSend
 }

@@ -35,8 +35,8 @@
         />
       </template>
     </common-card>
-    <!-- 选择学生 -->
-    <addstudent :visable='visable' :courseId='500060' :studentIds="studentIds" @updateSelectStuVisable="updateSelectStuVisable" :type="1"></addstudent>
+    <!-- 选择学生500060 -->
+    <addstudent :visable='visable' :courseId='50001' :studentIds="studentIds" @updateSelectStuVisable="updateSelectStuVisable" :type="1"></addstudent>
   </div>
 </template>
 <script lang="ts" setup>

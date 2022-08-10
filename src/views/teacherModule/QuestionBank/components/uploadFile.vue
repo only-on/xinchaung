@@ -195,6 +195,10 @@ export default defineComponent({
 </script>
 <style lang="less" scoped>
 .competitionUpload{
+  .ant-spin-spinning{
+    width: auto;
+    min-height: auto;
+  }
   :deep(.ant-upload){
     &-drag{
       border-color: #BEBEBE;

@@ -63,14 +63,7 @@
           </a-col>
           <a-col :span="12">
             <span class="label">语言</span>
-            <a-select v-model:value="recheckSearch.sim" placeholder="请选择">
-              <a-select-option
-                v-for="(item, index) in simListData"
-                :key="index"
-                :value="item.value">
-                {{item.label}}
-              </a-select-option>
-            </a-select>
+            <lanuageSelect :inDrawer="true" @change="changeLanugae"/>
           </a-col>
           <a-col :span="12">
             <span class="label">相似度</span>
@@ -121,6 +114,7 @@ import { useRoute, useRouter } from 'vue-router';
 import CommonCard from "src/components/common/CommonCard.vue";
 import Pagination from "src/components/Pagination.vue";
 import Submit from "src/components/submit/index.vue";
+import lanuageSelect from "src/views/shareModule/programAnswer/component/lanuageSelect.vue";
 import {simList} from './utils'
 const route = useRoute()
 const examName = route.query.name
@@ -267,6 +261,9 @@ const closeDrawer = () => {
 }
 const handleSearch = () => {
   searchLoading.value = true
+}
+const changeLanugae = (val:any) => {
+  console.log(val)
 }
 
 </script>

@@ -80,7 +80,7 @@
               <Sqldetail></Sqldetail>
             </div>
             <!-- 后面三种题型的试用 -->
-            <div class="shiyong pointer" v-if="[5,6,7].includes(v.type)" @click="trialHandle">试用</div>
+            <div class="shiyong pointer" v-if="[5,6,7].includes(v.type)" @click="trialHandle(v)">试用</div>
             </template>
           </div>
           <div class="right">
@@ -262,10 +262,18 @@ function checkedHandle(e: any) {
 function handleClick(operateType:string, val: any) {
   emit('menuClick', operateType, val)
 }
-function trialHandle() {
-  router.push ({
-    path:'/teacher/QuestionBank/trialModel',
+function trialHandle(val:any) {
+  let path = {
+    5: '/programAnswer',
+    6: './QuestionBank/trialModel'
+  }
+  const {href} = router.resolve({
+    path: path[val.type],
+    query: {
+      id: val.id
+    }
   })
+  window.open(href,'_blank')
 }
 </script>
 

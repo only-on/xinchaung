@@ -1,32 +1,26 @@
 <template>
+<a-spin :spinning="testData.loading" size="large" tip="Loading..." wrapperClassName="programAnswerSpin">
   <div class="programAnswer">
     <div class="top">
       <div class="left">
-        题目名称
+        {{problemData.title}}
       </div>
       <div class="right">
-         内存限制: <span>128mb</span>
-         时间限制: <span>128mb</span>
-         <a-select v-model:value="lanuageVal" placeholder="请选择" class="customSelect">
-          <a-select-option
-            v-for="(item, index) in lanuageList"
-            :key="index"
-            :value="item.value">
-            {{item.label}}
-          </a-select-option>
-        </a-select>
+         内存限制: <span>{{problemData.memeoy_limit}}kb</span>
+         时间限制: <span>{{problemData.time_limit}}ms</span>
+         <lanuageSelect @change="changeLanugae"/>
         <a-divider type="vertical" style="background:#2C3A54;height:20px"/>
-        <i class="iconfont icon-guanji"></i>
+        <i class="iconfont icon-guanji" @click="closeTab"></i>
       </div>
     </div>
     <div class="content">
       <div class="left setScrollbar">
-        <question/>
+        <question :data="problemData"/>
       </div>
       <div class="right">
         <div class="codeArea">
           <div id="customCode" :style="{'height': codeHeight + 'px'}">
-            <codeMirror :height="codeHeight" v-model:code="code" :lang="lanuageVal"/>
+            <codeMirror :height="codeHeight" v-model:code="code" :lang="lanuageVal.label"/>
           </div>
           <div class="resize">
             <i class="iconfont icon-yidong" @mousedown="dragEagle"></i>
@@ -42,35 +36,76 @@
                 v-model:value="testData.sample">
               </a-textarea>
             </a-tab-pane>
-            <a-tab-pane key="result" tab="测试结果" force-render>Content of Tab Pane 2</a-tab-pane>
+            <a-tab-pane key="result" tab="测试结果" force-render>
+              <a-textarea
+                resize="none"
+                autoSize
+                :readonly="true"
+                v-model:value="testData.resultText">
+              </a-textarea>
+            </a-tab-pane>
           </a-tabs>
           <div class="resultInfo">
-            <span>消耗内存：1.24mb</span>
-            <span>代码执⾏时⻓：3452ms</span>
+            <span>消耗内存：{{testData.memeory}}kb</span>
+            <span>代码执⾏时⻓：{{testData.time}}ms</span>
           </div>
         </div>
         <div class="operateBtn">
           <a-button>取消</a-button>
-          <a-button type="primary" class="brightBtn">测试</a-button>
-          <a-button type="primary">提交</a-button>
+          <a-button type="primary" class="brightBtn" @click="handleSubmit(true)">测试</a-button>
+          <a-button type="primary" @click="handleSubmit(false)">提交</a-button>
         </div>
       </div>
     </div>
   </div>
+</a-spin>
 </template>
 <script lang="ts" setup>
 import { ref, reactive, watch, provide, inject ,computed} from "vue";
 import question from './component/question.vue'
 import codeMirror from './component/codeMirror.vue'
+import lanuageSelect from "./component/lanuageSelect.vue";
 import {simList} from 'src/views/teacherModule/teacherExamination/utils'
-const lanuageVal = ref('')
+import { Modal,message } from "ant-design-vue";
+import { useRoute } from "vue-router";
+import request from "src/api/index";
+import { IBusinessResp } from "src/typings/fetch.d";
+interface IproblemData {
+  title: string,
+  input: string,
+  output: string,
+  sample_input: string,
+  sample_output: string,
+  time_limit: string,
+  memeoy_limit: number | string
+}
+const route = useRoute()
+const http = (request as any).QuestionBank;
+const questionId = ref<any>(route.query.id)
+const problemData = reactive<IproblemData>({
+  title: '题目名称1111',
+  input: '输入格式1111',
+  output: '输出格式1111',
+  sample_input: '样例输入1111',
+  sample_output: '样例输出11111',
+  time_limit: '0',
+  memeoy_limit: 0
+})
+const lanuageVal = reactive({
+  value: '',
+  label: ''
+})
 const codeHeight = ref(400)
 const code = ref('')
-const langModel = ref()
+const solutionId = ref('')
 const activeKey = ref('sample')
-const testData = reactive({
+const testData = reactive<any>({
   sample: '测试样例内容',
-  result: ''
+  resultText: '',
+  time: 0,
+  memeory: 0,
+  timer: null,
+  loading: false
 })
 const lanuageList = [
   {
@@ -113,13 +148,91 @@ const lanuageList = [
       document.onmousemove = null
     }
   }
+  const changeLanugae = (val:any) => {
+    Object.assign(lanuageVal,val)
+  }
+// 题目详情
+const getQuestionDetail = () => {
+  http.programDetail({urlParams: {ID: questionId.value}}).then((res:IBusinessResp) => {
+    Object.assign(problemData, res.data.problem)
+    testData.sample = problemData.sample_input
+  })
+}
+// 查询测试结果
+const getResult = () => {
+  http.solutionSatus({urlParams:{ID: questionId.value, solution_id:solutionId.value}}).then((res:IBusinessResp) => {
+    let result = res.data
+    if (result.result === 4 || result.result === 13) {
+      testData.loading = false
+      clearInterval(testData.timer)
+      testData.timer = null
+      if (Object.keys(result.compile_info).length > 0) {
+        testData.resultText = result.compile_info.error
+        return
+      }
+      if (Object.keys(result.runtime_info).length > 0) {
+        testData.resultText = result.runtime_info.error
+      }
+    }
+  }).catch(()=>{
+    testData.loading = false
+    clearInterval(testData.timer)
+    testData.timer = null
+  })
+}
+// 提交
+const handleSubmit =(test_run:boolean) => {
+  if (!code.value.trim().length){
+    message.warning('代码不能为空')
+    return
+  }
+  if (test_run && !testData.sample.trim().length) {
+    message.warning('请输入测试样例')
+    return
+  }
+  let params = {
+    lanuage: lanuageVal.value,
+    test_run: test_run,
+    source: code.value,
+    input_text: testData.sample
+  }
+  console.log(params)
+  // testData.loading = true
+  http.submitProgramQuestion({urlParams:{ID:questionId.value},param: params}).then((res:IBusinessResp) => {
+    if (test_run) {
+     solutionId.value = res.data.solution_id
+     testData.loading = true
+     getResult()
+     testData.timer = setInterval(getResult, 3000);
+    }
+  })
+}
+// 关闭标签页
+const closeTab = () => {
+  Modal.confirm({
+    title: "确定要关闭当前页面吗？",
+    okText: "确认",
+    cancelText: "取消",
+    onOk() {
+      window.close()
+    },
+  });
+}
+
 </script>
 <style lang="less" scoped>
+.programAnswerSpin{
+  height: 100%;
+  :deep(.ant-spin-container){
+    height: 100%;
+  }
+}
 .programAnswer{
   height: 100%;
   overflow: auto;
   display: flex;
   flex-direction: column;
+  position: relative;
   .top{
     background: #192843;
     height: 45px;
@@ -143,29 +256,6 @@ const lanuageList = [
         color: #FF4A3D;
         cursor: pointer;
         margin-left: 20px;
-      }
-      .ant-select {
-        margin-right: 20px;
-        // border: 1px solid var(--brightBtn);
-        color: var(--brightBtn);
-        margin-top: -3px;
-        :deep(.ant-select-selector) {
-          border: 1px solid var(--brightBtn);
-          color: var(--brightBtn);
-          background: rgba(0, 0, 0, 0);
-          width: 200px;
-          height: 24px;
-          line-height: 24px;
-          .ant-select-selection-item {
-            line-height: 22px;
-          }
-        }
-        &.ant-select-open :deep(.ant-select-selection-item) {
-          color: var(--brightBtn);
-        }
-        :deep(.ant-select-arrow) {
-          color: var(--brightBtn);
-        }
       }
     }
   }

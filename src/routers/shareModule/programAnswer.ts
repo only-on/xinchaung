@@ -12,7 +12,7 @@ export default {
       path: "",
       component: () => import("src/views/shareModule/programAnswer/index.vue"),
       meta: {
-        title: "vm",
+        title: "试用编程题",
         authCode: "",
       },
     }

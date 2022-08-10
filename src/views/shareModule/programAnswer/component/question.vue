@@ -3,15 +3,15 @@
     <ul>
       <li>
         <h3>题目描述</h3>
-        <antdv-markdown v-model="formData.description"  :preview-only="true" />
+        <antdv-markdown v-model="data.title"  :preview-only="true" />
       </li>
       <li>
         <h3>输入</h3>
-        <antdv-markdown v-model="formData.description"  :preview-only="true" />
+        <antdv-markdown v-model="data.input"  :preview-only="true" />
       </li>
       <li>
         <h3>输出</h3>
-        <antdv-markdown v-model="formData.description"  :preview-only="true" />
+        <antdv-markdown v-model="data.output"  :preview-only="true" />
       </li>
       <li class="sample">
         <h3>样例</h3>
@@ -26,7 +26,7 @@
             autoSize
             :readonly="true"
             placeholder="请输入内容"
-            v-model:value="formData.sample_input">
+            v-model:value="data.sample_input">
           </a-textarea>
         </div>
         <div>
@@ -40,13 +40,9 @@
               autoSize
               :readonly="true"
               placeholder="请输入内容"
-              v-model:value="formData.sample_output">
+              v-model:value="data.sample_output">
             </a-textarea>
         </div>
-      </li>
-      <li>
-        <h3>数据范围与提示</h3>
-        <antdv-markdown v-model="formData.description"  :preview-only="true" />
       </li>
     </ul>
   </div>
@@ -54,10 +50,17 @@
 <script lang="ts" setup>
 import { ref, reactive, watch, provide, inject ,computed} from "vue";
 import { message } from "ant-design-vue";
-const formData = reactive({
-  description: '测试测试',
-  sample_input: '样例11111',
-  sample_output: '222222'
+interface Props {
+  data: any
+}
+const props = withDefaults(defineProps<Props>(), {
+  data: {
+    title: '',
+    input: '',
+    output: '',
+    sample_input: '',
+    sample_output: '',
+  }
 })
 const handleCopy = (refsName:string) => {
   let htmlNodeList:any = document.getElementsByClassName(refsName)

@@ -78,7 +78,7 @@ const type = ref('考试')
 provide('type', type)
 const modelType = 2
 const currentOperateId = ref() 
-const searchInfo = reactive({
+const searchInfo = reactive<any>({
   type: modelType,
   name: '',
   status: 0,
@@ -87,7 +87,7 @@ const searchInfo = reactive({
 })
 const EmptyType:any=computed(()=>{
   let str=''
-  if(searchInfo.name === '' && searchInfo.status === 0){
+  if(searchInfo.name === '' && searchInfo.status === ''){
     str= 'empty'
   }else{
     str= 'searchEmpty'

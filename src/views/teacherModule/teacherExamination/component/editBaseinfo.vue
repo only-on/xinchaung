@@ -1,6 +1,7 @@
 <template>
   <a-modal :visible="visible" :title="'编辑'+type+'基本信息'" :width="900" @cancel="handleCancel">
     <baseInfo ref="baseInfoRef" :formState="editInfo" :type="type"/>
+    {{editInfo.relation}}----
     <template #footer>
       <Submit @submit="handleEdit" @cancel="handleCancel"></Submit>
     </template>
@@ -33,12 +34,13 @@ const baseInfoRef = ref()
 const getExamDetail = (id:any) => {
   http.examDetail({urlParams:{ID: id}}).then((res:IBusinessResp) => {
     let result = res?.data
+    console.log(result.started_at.length)
     Object.assign(editInfo,{
       name: result.name,
       date: [result.started_at, result.closed_at],
       note: result.note,
       course_id: result.course_id,
-      relation: [result.course_id ? result.course_id : 0]
+      relation: result.course_id ? [1, result.course_direction.id, result.course_id] : [0]
     })
   })
 }
@@ -57,9 +59,9 @@ const handleEdit = async() => {
   await baseInfoRef.value.fromValidate()
   let params = {
     name: editInfo.name,
-    course_id: editInfo.course_id,
-    started_at: editInfo.date[0] + ':00',
-    closed_at: editInfo.date[1] + ':00',
+    course_id: editInfo.relation.length > 1 ?  editInfo.relation[ editInfo.relation.length-1] : 0,
+    started_at: editInfo.date[0].length < 19 ? editInfo.date[0] + ':00' : editInfo.date[0],
+    closed_at: editInfo.date[1].length < 19 ? editInfo.date[1] + ':00' : editInfo.date[1],
     note: editInfo.note
   }
   http.editExam({urlParams:{ID: props.id},param:params}).then((res:IBusinessResp) => {
