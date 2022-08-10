@@ -80,7 +80,7 @@
               <Sqldetail></Sqldetail>
             </div>
             <!-- 后面三种题型的试用 -->
-            <div class="shiyong pointer" v-if="[5,6,7].includes(v.type)">试用</div>
+            <div class="shiyong pointer" v-if="[5,6,7].includes(v.type)" @click="trialHandle">试用</div>
             </template>
           </div>
           <div class="right">
@@ -138,6 +138,7 @@
 
 <script lang="ts" setup>
 import { ref, reactive } from 'vue'
+import { useRouter, useRoute } from "vue-router";
 import defaultAvatar from 'src/assets/images/user/admin_p.png'
 import Programming from 'src/components/TopicDisplay/detail/programming.vue'
 import ModelQuestion from 'src/components/TopicDisplay/detail/ModelQuestion.vue'
@@ -156,6 +157,8 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<{
   (e: "menuClick", type: string, val: any): void;
 }>();
+const router = useRouter();
+const route = useRoute();
 const optionType:any=reactive(['A','B','C','D','E','F','G'])
 const content="zsfasd"
 const checked = false
@@ -258,6 +261,11 @@ function checkedHandle(e: any) {
 }
 function handleClick(operateType:string, val: any) {
   emit('menuClick', operateType, val)
+}
+function trialHandle() {
+  router.push ({
+    path:'/teacher/QuestionBank/trialModel',
+  })
 }
 </script>
 
