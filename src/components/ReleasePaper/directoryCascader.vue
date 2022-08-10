@@ -27,6 +27,9 @@ const props = withDefaults(defineProps<{
   formState: () => {return {directoryId: [0]}},    // 响应式对象
   levelNum: 3   // 文件夹最大层级数
 });
+const emit = defineEmits<{
+  (e: "selectedHandle"): void;
+}>();
 const options = ref([
   {
     id: 0,
@@ -79,5 +82,6 @@ const loadData = (selectedOptions: any) => {
 const changeHandle = (value: any, selectedOptions: any) => {
   console.log(value)
   console.log(selectedOptions)
+  emit('selectedHandle')
 }
 </script>

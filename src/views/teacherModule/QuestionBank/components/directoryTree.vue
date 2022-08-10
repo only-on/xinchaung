@@ -35,10 +35,10 @@
     </template>
   </a-directory-tree>
   <!-- 创建目录弹框 -->
-  <a-modal v-model:visible="visible"  :title="`新建文件夹`" class="create-directory" :width="400">
+  <a-modal v-model:visible="visible"  :title="(formState.id?'编辑':'新建')+`文件夹`" class="create-directory" :width="400" @cancel="cancel()">
     <a-form :layout="'vertical'" :rules="rules" :model="formState" ref="formRef">
-      <a-form-item name="catalogue" label="选择创建路径">
-        <directory-cascader :formState="formState" :levelNum="2"></directory-cascader>
+      <a-form-item name="catalogue" label="选择创建路径" v-if="!formState.id">
+        <directory-cascader :formState="formState" :levelNum="2" @selectedHandle="selectedHandle"></directory-cascader>
       </a-form-item>
       <a-form-item label="文件夹名称" name="name">
         <a-input v-model:value="formState.name" placeholder="请输入文件夹名称" />
@@ -73,108 +73,17 @@ const fieldNames = {
   title: 'name',
   key: 'id'
 };
-const list = ref([
-  {
-    title: '目录',
-    key: '0',
-    children: [
-      {
-        title: '一级1',
-        key: '1',
-        children: [
-          {
-            title: '1二级1',
-            key: '1-1',
-            children: [
-              {
-                title: '1三级1',
-                key: '1-1-1',
-              }
-            ]
-          },
-          {
-            title: '1二级2',
-            key: '1-2',
-            children: [
-              {
-                title: '12三级1',
-                key: '1-2-1',
-              }
-            ]
-          },
-          {
-            title: '1二级3',
-            key: '1-3',
-            children: [
-              {
-                title: '13三级1',
-                key: '1-3-1',
-              }
-            ]
-          },
-        ]
-      },
-      {
-        title: '一级2',
-        key: '2',
-        children: [
-          {
-            title: '2二级1',
-            key: '2-1',
-            children: [
-              {
-                title: '2三级1',
-                key: '2-1-1',
-              }
-            ]
-          },
-          {
-            title: '2二级2',
-            key: '2-2',
-            children: [
-              {
-                title: '2三级1',
-                key: '2-2-1',
-              }
-            ]
-          },
-        ]
-      },
-      {
-        title: '一级3',
-        key: '3',
-        children: [
-          {
-            title: '3二级1',
-            key: '3-1',
-            children: [
-              {
-                title: '3三级1',
-                key: '3-1-1',
-              }
-            ]
-          },
-          {
-            title: '3二级2',
-            key: '3-2',
-            children: [
-              {
-                title: '3三级2',
-                key: '3-2-1',
-              }
-            ]
-          },]
-      },
-    ]
-  }
-])
-const treeData = ref([
+const treeData = ref<ITreeList[]>([
   {
     id: 0,
     name: "目录",
-    is_public: 1,
     has_children: 0,
-    children: []
+    children: [],
+    pid: 0,  // 父级目录id
+    index: 0,  // 当前目录索引
+    pindex: 0, // 父级目录索引
+    pPindex: 0, // 父级的父级目录索引
+    directoryName: [],  // 当前目录路径
   }
 ])
 const onSelect = (selectedKeys: number[], info: any) => {
@@ -192,22 +101,6 @@ const onLoadData = (treeNode: any) => {
     treeNode.dataRef.children = data
     treeData.value = [...treeData.value];
     resolve();
-    // http.getDirectoryChidren({urlParams: {directory_id: treeNode.dataRef.id}}).then((res: IBusinessResp) => {
-    //   res.data.forEach((v: any) => {
-    //     v.pid = treeNode.dataRef.id
-    //   })
-    //   if (res.data?.length) {
-    //     treeNode.dataRef.children = res.data
-    //   }
-    //   treeData.value = [...treeData.value];
-    //   resolve();
-    // }).catch(() => {
-    //   treeNode.dataRef.children = [
-    //     {id: Math.ceil(Math.random()*100), name: '文件夹', has_children: 1}
-    //   ]
-    //   treeData.value = [...treeData.value];
-    //   resolve();
-    // })
   });
 
 }
@@ -221,6 +114,7 @@ function getDirectoryFirst() {
     res.data.forEach((v: any, k: number) => {
       v.pid = 0
       v.index = k
+      v.directoryName = [treeData.value[0].name]
     })
     loading.value = false
     if (res.data?.length) {
@@ -233,16 +127,19 @@ function getDirectoryFirst() {
 function getDirectorySub(val: any) {
   return new Promise((resolve: any) => {
     http.getDirectoryChidren({urlParams: {directory_id: val.id}}).then((res: IBusinessResp) => {
+      val.directoryName.push(val.name)
       res.data.forEach((v: any, k: number) => {
-        if (val.pid) {
-          v.pPindex = val.index
-          v.pindex = val.pindex
+        if (val.pindex) {
+          v.pPindex = val.pindex
+          v.pindex = val.index
         } else {
           v.pindex = val.index
         }
         v.pid = val.id
         v.index = k
+        v.directoryName = [...val.directoryName]
       })
+      console.log(res.data)
       resolve(res.data)
     })
   })
@@ -254,75 +151,99 @@ onMounted(() => {
 // 创建文件夹目录
 const visible = ref(false)
 const loading = ref(false)
+const formRef = ref()
 const rules = {
   name: [
     { required: true, message: `请输入名称`, trigger: "blur" },
     { max: 20, message: `名称最多20个字符`, trigger: "blur" },
   ],
 }
-const formState = reactive({
+const formState = reactive<IFormState>({
+  id: 0,
   name: '',
-  directoryId: ['目录', '文件夹1', '文件夹2']
+  directoryId: ['目录'],
+  parentId: 0
 })
+function selectedHandle() {
+  formState.parentId = formState.directoryId[formState.directoryId.length-1]
+}
 function submit() {
-  loading.value = true
-  console.log(formState)
-  const param = {
-    name: formState.name,
-    // parent_id: formState.directoryId[formState.directoryId.length-1]
-  }
-  if (formState.directoryId[formState.directoryId.length-1]) {
-    Object.assign(param, {parent_id: formState.directoryId[formState.directoryId.length-1]})
-  }
-  http.createDirectory({param}).then(async(res: IBusinessResp) => {
+  formRef.value.validate().then(() => {
+    loading.value = true
+    console.log(formState)
+    const param = {
+      name: formState.name,
+      // parent_id: formState.directoryId[formState.directoryId.length-1]
+    }
+    if (formState.parentId) {
+      Object.assign(param, {parent_id: formState.parentId})
+    }
+    if (formState.id) {
+      editDirectorySubmit()
+      return
+    }
+    http.createDirectory({param}).then(async(res: IBusinessResp) => {
+      loading.value = false
+      visible.value = false
+      const pid = formState.directoryId[formState.directoryId.length-1]
+      // if (pid) {
+      //   let data = await getDirectorySub(pid)
+      //   val.children = data
+      //   treeData.value = [...[val]];
+      // } else {
+        getDirectoryFirst()
+      // }
+    })
+  })
+}
+function editDirectorySubmit() {
+  http.updateDirectory({
+    param: {name: formState.name}, 
+    urlParams: {directory_id: formState.id}})
+  .then((res: IBusinessResp) => {
     loading.value = false
     visible.value = false
-    const pid = formState.directoryId[formState.directoryId.length-1]
-    // if (pid) {
-    //   let data = await getDirectorySub(pid)
-    //   val.children = data
-    //   treeData.value = [...[val]];
-    // } else {
-      getDirectoryFirst()
-    // }
+    successHandle(formState)
   })
 }
 function cancel() {
   visible.value = false
+  loading.value = false
+  Object.assign(formState, {id: 0, name: '', directoryId: [0], parentId: 0})
 }
 function upDirectory(val: any) {
+  if (val.index === 0) {
+    message.warn('已经是第一个了~')
+    return
+  }
   const params = {
     original_directory_id: val.id,
-    destination_directory_id: treeData.value[0].children[val.index-1].id
+    destination_directory_id: getLevelInfo(val, 'upper').children[val.index-1].id
   }
   http.moveBeforeDirectory({urlParams: params}).then(async(res: IBusinessResp) => {
-    if (!val.pid) {
-      getDirectoryFirst()
-    } else {
-      let data = await getDirectorySub(treeData.value[0].children[val.pindex])
-      // treeData.value[0]
-      treeData.value[0].children[val.pindex].children = data
-          //   val.children = data
-    }
+    successHandle(val)
   })
 }
 function downDirectory(val: any) {
+  if (!getLevelInfo(val, 'upper').children[val.index+1]) {
+    message.warn('已经是最后一个了~')
+    return
+  }
   console.log(val)
   const params = {
     original_directory_id: val.id,
-    destination_directory_id: treeData.value[0].children[val.index+1].id
+    destination_directory_id: getLevelInfo(val, 'upper').children[val.index+1].id
   }
   http.moveAfterDirectory({urlParams: params}).then(async(res: IBusinessResp) => {
-    if (!val.pid) {
-      getDirectoryFirst()
-    } else {
-      let data = await getDirectorySub(treeData.value[0].children[val.pindex])
-      treeData.value[0].children[val.pindex].children = data
-          //   val.children = data
-    }
+    successHandle(val)
   })
 }
-function editDirectory(val: any) {}
+function editDirectory(val: any) {
+  visible.value = true
+  Object.assign(formState, {...val})
+  formState.directoryId = val.directoryName
+  formState.parentId = val.pid
+}
 function deletDirectory(val: any) {
   Modal.confirm({
     title: "确定要删除这个文件夹吗？",
@@ -332,22 +253,59 @@ function deletDirectory(val: any) {
     cancelText: "取消",
     onOk() {
       http.deleteDirectory({urlParams: {directory_id: val.id}}).then(async(res: IBusinessResp) => {
-        // if (val.pid) {
-        //   let data = await getDirectorySub(val.pid)
-        //   val.children = data
-        //   treeData.value = [...[val]];
-        // } else {
-          getDirectoryFirst()
-        // }
+        successHandle(val)
       })
     }
   })
 }
 
+// 操作成功后的处理
+async function successHandle(val: any) {
+  if (!val.pid) {
+    getDirectoryFirst()
+  } else {
+    let data: any = await getDirectorySub(getLevelInfo(val, 'upper'))
+    getLevelInfo(val, 'upper').children = data
+        //   val.children = data
+  }
+}
+
 // 获取层级信息
-function getLevelInfo(current: any, upper: any) {
-  console.log(current)
-  console.log(upper)
+function getLevelInfo(val: any, type: string) {
+  if (type === 'current') {  // 当前层级
+    if (val.pPindex||val.pPindex===0) { // 第三层文件夹
+      return treeData.value[0].children[val.pPindex].children[val.pindex].children[val.index]
+    } else if (val.pindex||val.pindex===0) {  // 第二层文件夹
+      return treeData.value[0].children[val.pindex].children[val.index]
+    } else {
+      return treeData.value[0].children[val.index]
+    }
+  } else {   // 上一层
+    if (val.pPindex || val.pPindex===0) { // 第三层文件夹
+      return treeData.value[0].children[val.pPindex].children[val.pindex]
+    } else if (val.pindex||val.pindex===0) {  // 第二层文件夹
+      return treeData.value[0].children[val.pindex]
+    } else {
+      return treeData.value[0]
+    }
+  }
+}
+interface IFormState {
+  id: number
+  name: string
+  directoryId: (number|string)[]
+  parentId: number|string
+}
+interface ITreeList {
+  id: number
+  name: string
+  has_children: number
+  children: ITreeList[]
+  pid?: number
+  index: number
+  pindex?: number
+  pPindex?: number
+  directoryName?: string[]
 }
 </script>
 
@@ -357,7 +315,8 @@ function getLevelInfo(current: any, upper: any) {
   width: 100%;
   .name { 
     display: inline-block;
-    width: 150px
+    width: 150px;
+    vertical-align: bottom;
   }
   .btns {
     display: none;
