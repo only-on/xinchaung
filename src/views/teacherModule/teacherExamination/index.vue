@@ -20,6 +20,19 @@
   <antiCheatingSetting v-model:visible="settingModal" :data="antiCheat" @save="saveSetting"/>
   <!-- 编辑基本信息 -->
   <editBaseInfo v-model:visible="editModal" :id="currentOperateId" :type="type" @updateInfo="getList"/>
+  <!-- 导出试卷 -->
+  <a-modal :visible="exportVisible" title="导出试卷" :width="400" @cancel="cancelExport">
+    <div>
+      已为您导出了试卷对应的PDF文件
+      <div class="exportContent">
+        <img :src="iconList['pdf']" alt="">
+        <span>考试名称考试名称考试名称考试名称.pdf</span>
+      </div>
+    </div>
+    <template #footer>
+      <Submit @submit="saveExport" @cancel="cancelExport" okText="下载"></Submit>
+    </template>
+  </a-modal>
 </template>
 <script lang="ts" setup>
 import {ref, reactive, inject, provide, createVNode, computed, onMounted} from 'vue'
@@ -32,9 +45,12 @@ import cardItem from "./component/cardItem.vue"
 import antiCheatingSetting from "./component/antiCheatingSetting.vue";
 import editBaseInfo from "./component/editBaseInfo.vue";
 import Pagination from 'src/components/Pagination.vue'
+import Submit from "src/components/submit/index.vue";
+import iconList from 'src/utils/iconList.ts'
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import {initialData} from './utils'
+import {downloadUrl} from 'src/utils/download.ts'
 interface IlistData {
   loading: Boolean;
   total: number,
@@ -148,6 +164,18 @@ const editCancel = () => {
 }
 // 复用
 const handleCopy = () => {}
+// 导出试卷相关
+const exportVisible = ref<boolean>(false)
+const handleExport = () => {
+  exportVisible.value = true
+}
+const saveExport = () => {
+  // downloadUrl()
+  exportVisible.value = false
+}
+const cancelExport = () => {
+  exportVisible.value = false
+}
 // 防作弊相关
 const antiCheat = reactive({})
 const saveSetting = (data:any) => {
@@ -174,9 +202,16 @@ const menuClick = (type:string, val:any) => {
       deleteItem();
       break;
     case 'copy':
-      handleCopy();
+      router.push({
+        path: '/teacher/teacherExamination/createExamination',
+        query: {
+          type: 'manual',
+          id: val.id
+        }
+      })
       break;
     case 'export':
+      handleExport()
       break;
   }
 }
@@ -214,5 +249,11 @@ onMounted(()=>{
 <style lang="less" scoped>
 .mainBox{
   margin: 20px 0;
+}
+.exportContent{
+  margin:20px 0;
+  img{
+    margin-right: 10px;
+  }
 }
 </style>

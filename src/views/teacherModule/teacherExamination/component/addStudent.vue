@@ -59,7 +59,7 @@
           >
           </a-table>
           <template #renderEmpty>
-            <div><Empty :height='80' :text='ifSearch?"抱歉，未搜到相关数据！":"抱歉，暂无数据！"' type="tableEmpty" /></div>
+            <div><Empty :type="EmptyType" /></div>
           </template>
         </a-config-provider> 
       </div>
@@ -68,17 +68,15 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, toRefs, onMounted,reactive,watch } from "vue";
+import { ref, toRefs, onMounted,reactive,watch, computed } from "vue";
 import request from 'src/api/index'
 const http = (request as any).teacherExamination;
 interface Props {
-  type: any;
   visable:any;
   courseId:any;
   studentIds: any
 }
 const props = withDefaults(defineProps<Props>(), {
-  type: () => {},
   visable:()=>{},
   courseId:()=>{},
   studentIds: () => {}
@@ -145,7 +143,15 @@ function getCheckboxProps(record: any) {
   return {
     disabled: alreadySelect.value.includes(record.id)
   };
-}
+}const EmptyType:any=computed(()=>{
+  let str=''
+  if(params.name||params.class||params.grade||params.direct){
+    str= 'tableSearchEmpty'
+  }else{
+    str= 'tableEmpty'
+  }
+  return str
+})
 function onSearch(value: any) {
   console.log(value);
   params.page=1
@@ -203,6 +209,7 @@ function getallstudent(){
 }
 watch(() =>props.visable,newVal => {
   if(newVal){
+    params.page=1
     getallstudent()
   }
 },

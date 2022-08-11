@@ -122,6 +122,7 @@ export default defineComponent({
     let upload:any =null
     var currFileOption = ref<any>(null)
     const handleFileChange = (info:any) => {
+      console.log(info.fileList)
       fileList.value = info.fileList
     }
     
@@ -137,6 +138,7 @@ export default defineComponent({
       uploadUrlType.value = newVal
     })
     const handleUpload =(file:any) =>{
+      console.log(file.file)
       let obj = {
         uploadFiled: file.file,
         upload_path: uploadParams[uploadUrlType.value].upload_path

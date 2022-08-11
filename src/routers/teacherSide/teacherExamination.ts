@@ -24,7 +24,9 @@ export default {
       name: "createExamination",
       component: () => import("src/views/teacherModule/teacherExamination/create.vue"),
       meta: {
-        title: '创建考试',
+        title: (params?: RouteParams, query?: RouteParams) => {
+          return query!.id?'复用考试':'创建考试'
+        },
         authCode: "createExamination",
       },
     },

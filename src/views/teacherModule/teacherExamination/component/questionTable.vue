@@ -18,6 +18,10 @@
           :customRow="customRow"
         >
           <template v-slot:bodyCell="{ column, record, index }">
+            <template v-if="column.dataIndex === 'type'">
+              <i class="iconfont icon-tuozhuai"></i>
+              {{record.type}}
+            </template>
             <template v-if="column.dataIndex === 'operation'">
               <a-button type="link" @click="delOuter(record, index)">删除</a-button>
             </template>
@@ -35,10 +39,14 @@
                 :data-index="index"
               >
                 <template v-slot:bodyCell="{ column, record, index }">
+                  <template v-if="column.dataIndex === 'id'">
+                    <i class="iconfont icon-tuozhuai"></i>
+                    {{record.id}}
+                  </template>
                   <template v-if="column.dataIndex === 'difficulty'">
-                    <span class="level" :style="{background: levelTypeList[record.difficulty].bgColor,color: levelTypeList[record.difficulty].color}">
+                    <!-- <span class="level" :style="{background: levelTypeList[record.difficulty].bgColor,color: levelTypeList[record.difficulty].color}">
                       {{levelTypeList[record.difficulty].name}}
-                    </span>
+                    </span> -->
                   </template>
                   <template v-if="column.dataIndex === 'score'">
                       <a-form-item :name="[index, 'score']" :rules="rulesInput">
@@ -80,7 +88,8 @@
     </template>
   </a-modal>
   <!-- 选择题目 -->
-  <a-drawer
+  <addQuestion v-model:visible="addVisible" @select="questionSelect"/>
+  <!-- <a-drawer
       class="addQuestion"
       :destroyOnClose="true"
       :closable="false"
@@ -97,13 +106,13 @@
         <span class="iconfont icon-guanbi" @click="closeDrawer"></span>
       </div>
       <questionBank :inDrawer="true" :activeTab="selectNum" @addData="handleAddData"/>
-  </a-drawer>
+  </a-drawer> -->
 </template>
 <script lang="ts" setup>
 import { ref, reactive, watch } from "vue";
 import CommonCard from "src/components/common/CommonCard.vue";
 import Submit from "src/components/submit/index.vue";
-import questionBank from 'src/views/teacherModule/QuestionBank/index.vue'
+import addQuestion from './addQuestion.vue'
 import { message } from "ant-design-vue";
 import getTopicType from "src/components/TopicDisplay/topictype.ts"
 import {TotalScore} from "src/utils/common.ts"
@@ -125,16 +134,8 @@ const emit = defineEmits<{
 }>();
 var listData = ref<any>([]); // 表格当前页展示的数据
 var allData = reactive<any>([]); // 所有数据
-const handleAddData = (data:any) => {
-  console.log(data)
-  addVisible.value = false
-}
-const selectNum = ref<number>(1)
-const selectType=(v:number)=>{
-  selectNum.value=v
-}
-const closeDrawer = () => {
-  addVisible.value = false
+const questionSelect = (data:any) => {
+  console.log('选择的题目',data)
 }
 const columns = [
   {
@@ -161,8 +162,8 @@ const columns = [
 const innerColumns = [
   {
     title: "编号",
-    dataIndex: "stu_no",
-    key: "stu_no",
+    dataIndex: "id",
+    key: "id",
   },
   {
     title: "题目",
@@ -338,23 +339,25 @@ const delInner = (record: any, index: any) => {
   listData.value[outerIndex].data.splice(index,1)
 };
 // 统计总分及题目数量
-const handleStatistical = () => {
+const handleStatistical = (setItem:Boolean=false) => {
   topInfo.totalScore = 0
   topInfo.num = 0
   listData.value.forEach((item:any) => {
     topInfo.num += item.data.length
-    batchData.forEach((batchItem:any) => {
+    if (setItem) {
+      batchData.forEach((batchItem:any) => {
       if (batchItem.type === item.type && batchItem.score) {
-        item.score = 0
-        item.data.forEach((questionItem:any) => {
-          item.score += Number(batchItem.score) // 类型总分
-          questionItem.score = batchItem.score // 每道题分值
-        })
-      }
-    })
-    topInfo.totalScore += Number(item.score)
+          item.score = 0
+          item.data.forEach((questionItem:any) => {
+            item.score += Number(batchItem.score)
+            questionItem.score = batchItem.score // 每道题分值
+          })
+        }
+      })
+    }
+    
   })
-  // emit("update:data", listData.value);
+  topInfo.totalScore = TotalScore(listData.value, 'score')
 }
 // 批量设置分值
 const setScore = () => { 
@@ -376,7 +379,7 @@ const changeCheck = (checkedValue:any) => {
 const saveSetting = () => {
   batchFormRef.value.validate().then(()=>{
     modelVisible.value = false
-    handleStatistical()
+    handleStatistical(true)
   })
 }
 const cancelSetting = () => {
@@ -386,7 +389,6 @@ const cancelSetting = () => {
 const addVisible = ref<boolean>(false)
 const handleSelect = () => {
   addVisible.value = true
-  selectNum.value = 0
 }
 const handleBlur = () => {
   topInfo.totalScore = 0
@@ -430,6 +432,9 @@ defineExpose({
   }
   .scoreInput{
     width: 100px;
+  }
+  .icon-tuozhuai{
+    color: var(--black-45);
   }
 }
 .innerTable :deep(.ant-table) {

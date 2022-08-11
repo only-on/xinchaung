@@ -5,7 +5,7 @@
     </template>
   </common-card>
   <!-- 手动创建 -->
-  <questionTable v-if="!isRandom" :data="questionData" ref="questionTableRef"/>
+  <questionTable v-if="!isRandom" :data="baseForm.questions_info" ref="questionTableRef"/>
   <!-- 随机创建 -->
   <div v-if="isRandom" class="random">
     <common-card title="题目范围">
@@ -60,7 +60,7 @@
     </common-card>
   </div>
   <!-- 选择学生 -->
-  <studentTable :courseId="baseForm.relation[0]" ref="studentTableRef"/>
+  <studentTable :courseId="baseForm.relation[0]" ref="studentTableRef" :data="baseForm.students_info"/>
   <Submit @submit="handleSave" @cancel="cancelSave" :loading="saveLoading"></Submit>
 </template>
 <script lang="ts" setup>
@@ -85,10 +85,11 @@ const type = ref('考试')
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 const isRandom = ref<boolean>(route.query.type === "manual" ? false : true)
+const editId = ref(route.query?.id)
 updata({
   tabs: [
     {
-      name: `${isRandom.value ? "随机创建" : "手动创建"}`,
+      name: `${isRandom.value ? "随机创建" : editId ? '复用考试信息编辑':"手动创建"}`,
       componenttype: 0,
     },
   ],
@@ -99,11 +100,13 @@ updata({
 const baseInfoRef = ref()
 const questionTableRef = ref()
 const studentTableRef = ref()
-const baseForm = reactive({
+const baseForm = reactive<any>({
   name: '',
   date: [],
   note: '',
-  relation: [0]
+  relation: [0],
+  students_info: [],
+  questions_info: []
 })
 const questionData = ref([
   {
@@ -325,9 +328,40 @@ const handleSave = async() => {
 const cancelSave = () => {
   router.go(-1)
 }
+const getExamDetail = () => {
+  http.examDetail({urlParams:{ID: editId.value}}).then((res:IBusinessResp) => {
+    let result = res?.data
+    console.log(result.students_info)
+    let questionData = []
+    if (Object.keys(result.questions_info).length) {
+      for (let i  in result.questions_info) {
+        questionData.push({
+          id: questionData.length,
+          type: i,
+          num: result.questions_info[i].length,
+          score: 0,
+          data: result.questions_info[i]
+        })
+      }
+    }
+    Object.assign(baseForm,{
+      name: result.name,
+      date: [result.started_at, result.closed_at],
+      note: result.note,
+      course_id: result.course_id,
+      relation: result.course_id ? [1, result.course_direction.id, result.course_id] : [0],
+      students_info: result.students_info,
+      questions_info: questionData
+    })
+    console.log(questionData)
+  })
+}
 onMounted(()=>{
   if (isRandom.value) {
     getQuestionMaxLimit()
+  }
+  if (editId.value) {
+    getExamDetail()
   }
 })
 </script>

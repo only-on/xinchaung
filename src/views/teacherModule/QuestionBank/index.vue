@@ -304,12 +304,8 @@ const checkedAllHandle = (e: any) => {
     e.target.checked ? v.checked = true :v.checked = false
   })
 }
-watch(
-  () => {
-    return configuration.componenttype;
-  },
-  (val) => {
-    currentTab.value = Number(val);
+// 重置条件进行查询
+const resetSearch = () => {
     pageInfo.page = 1
     searchInfo.keyWord = ''
     resetKeyword.value = !resetKeyword.value
@@ -321,6 +317,14 @@ watch(
     searchInfo.categoryId = 1 
     searchInfo.knowledgeIds = []
     initData();
+}
+watch(
+  () => {
+    return configuration.componenttype;
+  },
+  (val) => {
+    currentTab.value = Number(val);
+    resetSearch()
   }
 );
 watch(
@@ -348,6 +352,10 @@ watch(
   },
   {deep:true,immediate:true}
 );
+watch(()=>props.inDrawer, newVal => {
+  resetSearch()
+},{deep:true,immediate:true})
+// 选择题目的抽屉
 watch(()=>props.activeTab, newVal => {
   currentTab.value = newVal
   initData()
@@ -377,7 +385,7 @@ interface Iuser {
   avatar: string
 }
 const componentList = ['getPublicQuestionsList', 'getMyQuestionsList',]
-const initData = () => {
+function initData () {
   const param = {...pageInfo};
   questionListData.length = 0
   pageTotal.value=0

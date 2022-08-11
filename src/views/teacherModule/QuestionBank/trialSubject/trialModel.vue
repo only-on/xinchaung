@@ -101,7 +101,6 @@ const rules = {
 }
 const submitData = reactive<any>({
   object_question_id: '',
-  object_type: '',
   result: [],
   process: [],
   remark: ''
