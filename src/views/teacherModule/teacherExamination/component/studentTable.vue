@@ -36,7 +36,7 @@
       </template>
     </common-card>
     <!-- 选择学生500060 -->
-    <addstudent :visable='visable' :courseId='50001' :studentIds="studentIds" @updateSelectStuVisable="updateSelectStuVisable" :type="1"></addstudent>
+    <addstudent :visable='visable' :courseId='50001' :studentIds="studentIds" @updateSelectStuVisable="updateSelectStuVisable"></addstudent>
   </div>
 </template>
 <script lang="ts" setup>
@@ -49,9 +49,11 @@ import request from 'src/api/index'
 const http = (request as any).teacherExamination;
 interface Props {
   courseId:any;
+  data:any
 }
 const props = withDefaults(defineProps<Props>(), {
-  courseId: ''
+  courseId: '',
+  data: []
 })
 const emit = defineEmits<{
   (e: "delete", val: any): void;
@@ -125,10 +127,12 @@ const handleSelect= () => {
 }
 const updateSelectStuVisable = (value:any, studentids:any, studentInfo?:any) => {
   visable.value = false;
-  if (studentInfo) {
-    allData.push(...studentInfo)
-    studentIds.push(...studentids)
-  }
+  studentids.forEach((item:any,index:any) => {
+    if (!studentIds.includes(item)) {
+      studentIds.push(item)
+      allData.push(studentInfo[index])
+    }
+  })
 }
 const handleChange = (selectedRowKeys: (string | number)[]) => {
   selectIds.value = selectedRowKeys;
@@ -173,7 +177,12 @@ const batchDel = () => {
     }
   })
 }
-// 关联课程
+// 获取id
+const getIds = (arr:[]) => {
+  if (!arr.length) return []
+  return arr.map((item:any) => item.id)
+}
+// 关联课程,根据课程id查出课程下的学生
 watch(()=>props.courseId, (newVal:any) => {
   columns.value = JSON.parse(JSON.stringify(initialColumns))
   allData.length = 0
@@ -183,13 +192,23 @@ watch(()=>props.courseId, (newVal:any) => {
     columns.value.pop()
     http.examsUserList({param:{courseId:newVal}}).then((res:any) => {
       allData.push(...res.data.list)
-      let allIds = res.data.list.map((item:any) => item.id)
+      let allIds = getIds(res.data.list)
       studentIds.push(...allIds)
     })
   } else {
     showBtn.value = true
   }
 },{immediate:true})
+// 编辑传入的数据
+watch(()=>props.data, newVal => {
+  if (newVal) {
+    allData.length = 0
+    studentIds.length = 0
+    Object.assign(allData,newVal)
+    studentIds.push(...getIds(allData))
+  }
+},{deep:true,immediate:true})
+// 监测数据处理分页
 watch(()=>allData,newVal => {
   pageInfo.total = newVal.length
   getListData()

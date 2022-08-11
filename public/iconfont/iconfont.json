@@ -6,6 +6,27 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "31160337",
+      "name": "拖拽",
+      "font_class": "tuozhuai",
+      "unicode": "e67d",
+      "unicode_decimal": 59005
+    },
+    {
+      "icon_id": "24087695",
+      "name": "滑块",
+      "font_class": "huakuai1",
+      "unicode": "e62c",
+      "unicode_decimal": 58924
+    },
+    {
+      "icon_id": "30989675",
+      "name": "文件夹",
+      "font_class": "wenjianjia",
+      "unicode": "e67b",
+      "unicode_decimal": 59003
+    },
+    {
       "icon_id": "1029205",
       "name": "下载",
       "font_class": "download-1-copy",

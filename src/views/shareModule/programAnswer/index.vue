@@ -23,7 +23,7 @@
             <codeMirror :height="codeHeight" v-model:code="code" :lang="lanuageVal.label"/>
           </div>
           <div class="resize">
-            <i class="iconfont icon-yidong" @mousedown="dragEagle"></i>
+            <i class="iconfont icon-huakuai1" @mousedown="dragEagle"></i>
           </div>
         </div>
         <div class="resultArea">

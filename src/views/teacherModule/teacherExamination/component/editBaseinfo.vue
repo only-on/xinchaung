@@ -34,7 +34,6 @@ const baseInfoRef = ref()
 const getExamDetail = (id:any) => {
   http.examDetail({urlParams:{ID: id}}).then((res:IBusinessResp) => {
     let result = res?.data
-    console.log(result.started_at.length)
     Object.assign(editInfo,{
       name: result.name,
       date: [result.started_at, result.closed_at],

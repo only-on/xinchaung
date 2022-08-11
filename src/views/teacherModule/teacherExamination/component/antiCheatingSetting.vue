@@ -36,6 +36,9 @@ const emit = defineEmits<{
 const modelVisible = ref<boolean>(false)
 watch(()=>props.visible, newVal => {
   modelVisible.value = newVal
+  if (newVal) {
+     Object.assign(form, props.data)
+  }
 })
 const form = reactive(JSON.parse(JSON.stringify(initialData)))
 const settingList = reactive([
