@@ -436,26 +436,22 @@ onMounted(() => {
     configuration.componenttype = 1
   }
 })
+// 重置条件进行查询
+const resetSearch = () => {
+    pageInfo.page = 1
+    searchInfo.keyWord = ''
+    resetKeyword.value = !resetKeyword.value
+    searchInfo.categoryId = 1 
+    searchInfo.knowledgeIds = []
+    initData();
+}
 watch(
   () => {
     return configuration.componenttype;
   },
   (val) => {
-    if (val == 0 || val == 1) {
-      checkedQuestionId.length = 0
-      currentTab.value = Number(val);
-      pageInfo.page = 1
-      resetKeyword.value = !resetKeyword.value
-      Object.assign(searchInfo, {
-        keyWord: '',
-        kind: '',
-        difficulty: '',
-        usedBy: '',
-        categoryId: 0,
-        knowledgeIds: [],
-      })
-      initData();
-    }
+    currentTab.value = Number(val);
+    resetSearch()
   }
 );
 watch(
@@ -483,6 +479,10 @@ watch(
   },
   {deep:true,immediate:true}
 );
+watch(()=>props.inDrawer, newVal => {
+  resetSearch()
+},{deep:true,immediate:true})
+// 选择题目的抽屉
 watch(()=>props.activeTab, newVal => {
   currentTab.value = newVal
   initData()
