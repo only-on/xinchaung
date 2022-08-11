@@ -85,10 +85,11 @@ const headerObj:any=reactive({
         display: flex;
         justify-content: space-between;
         .achievementLeft{
-            width: 944px;
+            // width: 914px;
+            margin-right: 12px;
         }
         .achievementRight{
-            width: 240px;
+            // width: 240px;
           .caozuo{
             margin-top: 20px;
             justify-content: space-between;
@@ -97,7 +98,7 @@ const headerObj:any=reactive({
     }
     .ViolationRecord{
       margin-top: 40px;
-      width: 240px;
+      width: 270px;
       background-color: var(--white);
       .title{
         text-align: center;

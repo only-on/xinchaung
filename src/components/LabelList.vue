@@ -49,7 +49,6 @@ import {
   nextTick,
 } from "vue";
 import { message } from "ant-design-vue";
-import { defaults } from "lodash";
 interface Props {
   tag: any;
   recommend?:any;

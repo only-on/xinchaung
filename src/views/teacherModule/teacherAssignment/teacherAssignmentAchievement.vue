@@ -70,10 +70,11 @@ const headerObj:any=reactive({
         display: flex;
         justify-content: space-between;
         .achievementLeft{
-            width: 944px;
+            // width: 914px;
+            margin-right: 12px;
         }
         .achievementRight{
-            width: 240px;
+            // width: 270px;
           .caozuo{
             margin-top: 20px;
             justify-content: space-between;
