@@ -4,7 +4,7 @@
     :options="options"
     :load-data="loadData"
     placeholder="Please select"
-    :field-names="{ label: 'knowledge_map_name', value: 'id' }"
+    :field-names="{ label: 'name', value: 'id' }"
     @change="changeHandle"
     :allow-clear="false"
   />
@@ -15,7 +15,7 @@ import { ref, watch } from 'vue'
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
-const http = (request as any).QuestionBank;
+const http = (request as any).teachCourse;
 interface Props {
   relation: any[]
 }
@@ -29,14 +29,14 @@ const relation = ref([0])
 const options = ref([
   {
     id: 0,
-    knowledge_map_name: "否",
+    name: "否",
     isLeaf: true,
     children: [],
     level: 0
   },
   {
     id: 1,
-    knowledge_map_name: "有",
+    name: "有",
     isLeaf: false,
     children: [],
     level: 0
@@ -47,7 +47,7 @@ const loadData = (selectedOptions: any) => {
   targetOption.loading = true;
 
   if (targetOption.level === 0) {
-    http.getKnowledgeFirst().then((res: IBusinessResp) => {
+    http.courseCategory().then((res: IBusinessResp) => {
       console.log(res)
       targetOption.loading = false;
       if (res.data?.length) {
@@ -62,7 +62,8 @@ const loadData = (selectedOptions: any) => {
     })
   }
   if (targetOption.level === 1) {
-    http.getKnowledgeSub({urlParams: {id: targetOption.id}}).then((res: IBusinessResp) => {
+    console.log(targetOption.name)
+    http.getDirectiveCourseList({urlParams: {tagName: targetOption.name}}).then((res: IBusinessResp) => {
       targetOption.loading = false;
       console.log(res)
       if (res.data?.length) {

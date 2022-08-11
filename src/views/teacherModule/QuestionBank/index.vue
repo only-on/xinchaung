@@ -7,7 +7,6 @@
     :isShowAdd="isMyQuestion"
     :isReset="resetKeyword"
   ></search-add>
-  <!-- <directory-tree></directory-tree> -->
   <filter-condition :searchInfo="searchInfo" @searchFn="searchFn" :inDrawer="inDrawer" @add="handleDrawer"></filter-condition>
   <div class="question-content">
     <div class="left" v-if="isMyQuestion">
@@ -46,15 +45,17 @@
           <a-button class="btn" @click="publicQuestion">批量公开</a-button>
           <a-button class="btn" @click="deleteQuestion">批量删除</a-button>
         </span>
-        <a-button class="btn" type="primary" @click="releaseVisible=true;releaseType='作业'">发布作业</a-button>
-        <a-button class="btn" type="primary" @click="releaseVisible=true;releaseType='考试'">发布考试</a-button>
+        <!-- 1-作业，2-考试 -->
+        <a-button class="btn" type="primary" @click="releaseVisible=true;releaseType=1">发布作业</a-button>
+        <a-button class="btn" type="primary" @click="releaseVisible=true;releaseType=2">发布考试</a-button>
       </div>
       <div class="right">
-        <span class="iconfont icon-guanbi pointer" @click="bottomVisible=false"></span>
+        <span class="iconfont icon-guanbi pointer" @click="cancelBottom"></span>
       </div>
     </div>
   </div>
   <a-modal
+    v-if="moveVisible"
     :visible="moveVisible"
     title="移动到"
     @cancel="moveCancel()"
@@ -66,15 +67,15 @@
   </a-modal>
   <a-modal
     :visible="releaseVisible"
-    :title="releaseType+'发布设置'"
+    :title="releaseTypeList[releaseType]+'发布设置'"
     @cancel="releaseCancel()"
     :width="900"
   >
-    <baseInfo :formState="formState" :type="releaseType"></baseInfo>
+    <baseInfo ref="formRef" :formState="formState" :type="releaseTypeList[releaseType]"></baseInfo>
     <!-- 选择学生 -->
-    <studentTable v-if="formState.relation.length===1" :data="tableData" :pageInfo="studentPageInfo" @delete="delStudent"/>
+    <studentTable :courseId="formState.relation[formState.relation.length - 1]" ref="studentTableRef"/>
     <template #footer>
-      <Submit @submit="releaseSubmit()" @cancel="releaseCancel()" :loading="releaseLoading" :okText="'发布'+releaseType"></Submit>
+      <Submit @submit="releaseSubmit()" @cancel="releaseCancel()" :loading="releaseLoading" :okText="'发布'+releaseTypeList[releaseType]"></Submit>
     </template>
   </a-modal>
 </template>
@@ -94,6 +95,7 @@ import { createQuestionTypeList, IQuestionList } from "./questionConfig"
 import Submit from "src/components/submit/index.vue";
 import baseInfo from "src/components/ReleasePaper/baseInfo.vue"
 import studentTable from "src/views/teacherModule/teacherExamination/component/studentTable.vue"
+import { downloadUrl } from "src/utils/download";
 const props =withDefaults(defineProps<{
   inDrawer?: boolean
   activeTab?:number
@@ -107,6 +109,8 @@ const emit = defineEmits<{
 const router = useRouter();
 const route = useRoute();
 const http = (request as any).QuestionBank;
+const httpExam = (request as any).teacherExamination;
+const httpAssign = (request as any).teacherAssignment;
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 if (!props.inDrawer) {
@@ -129,111 +133,21 @@ const pageInfo = reactive({
   page: 1,
   pageLimit: 10,
 });
-let list = reactive<IMaterialList[]>([]);
 const pageTotal = ref<number>(0);
 const checkedAll = ref(false)
 let questionListData = reactive<any[]>([]);
-const data = [
-  {
-    id: 1,
-    type: 1,
-    level: 1,
-    use: 1,
-    desc: '在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱， 设计规范性差，设计沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向 进行京东国际频道的品牌视觉全新升级，实现加强正品心智，提升频道访问量，品牌强化的业务目标。',
-    analysis: 'fasdkfj;lqre',
-    options: ['aaaaaaa', 'bbbbbbbb', 'ccccccc', 'ddddddddd'],
-    answers: ['aaaaaaa'],
-    user_profile: {
-      name: "小黄帽姑娘",
-      portrait: ""
-    },
-    created_at: '',
-  },
-  {
-    id: 2,
-    type: 2,
-    level: 2,
-    use: 2,
-    desc: '在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱， 设计规范性差，设计沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向 进行京东国际频道的品牌视觉全新升级，实现加强正品心智，提升频道访问量，品牌强化的业务目标。',
-    analysis: 'fasdkfj;lqre',
-    answers: [0],
-    user_profile: {
-      name: "小黄帽姑娘",
-      portrait: ""
-    },
-    created_at: '',
-  },
-  {
-    id: 3,
-    type: 3,
-    level: 3,
-    use: 1,
-    desc: '在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱， 设计规范性差，设计沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向 进行京东国际频道的品牌视觉全新升级，实现加强正品心智，提升频道访问量，品牌强化的业务目标。',
-    analysis: 'fasdkfj;lqre',
-    answers: ['填空答案1','填空答案2'],
-    user_profile: {
-      name: "小黄帽姑娘",
-      portrait: ""
-    },
-    created_at: '',
-  },
-  {
-    id: 4,
-    type: 4,
-    level: 1,
-    use: 2,
-    desc: '在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱， 设计规范性差，设计沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向 进行京东国际频道的品牌视觉全新升级，实现加强正品心智，提升频道访问量，品牌强化的业务目标。',
-    analysis: 'fasdkfj;lqre',
-    answers: ['导致不同对齐的原因：有时候你希望能降低人们速度，使他们有时间进行深思熟虑。也可能受到屏幕显示的限制，要求表单纵向或者横向空间最小化。也可能由 于本地化需要，表单要适应不同长度的多种语言。所以标签顶对齐、左对齐或者右对齐的正确答案取决于这些及其他更多因素。'],
-    keyword: '导致不同对齐的原因：有时候你希望能降低人们速度，使他们有时间进行深思熟虑。也可能受到屏幕显示的限制，要求表单纵向或者横向空间最小化。也可能由 于本地化需要，表单要适应不同长度的多种语言。所以标签顶对齐、左对齐或者右对齐的正确答案取决于这些及其他更多因素。',
-    user_profile: {
-      name: "小黄帽姑娘",
-      portrait: ""
-    },
-    created_at: '',
-  },
-  {
-    id: 5,
-    type: 5,
-    level: 2,
-    use: 1,
-    desc: '在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱， 设计规范性差，设计沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向 进行京东国际频道的品牌视觉全新升级，实现加强正品心智，提升频道访问量，品牌强化的业务目标。',
-    analysis: 'fasdkfj;lqre',
-    user_profile: {
-      name: "小黄帽姑娘",
-      portrait: ""
-    },
-    created_at: '',
-  },
-  {
-    id: 61,
-    type: 6,
-    level: 3,
-    use: 2,
-    desc: '在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱， 设计规范性差，设计沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向 进行京东国际频道的品牌视觉全新升级，实现加强正品心智，提升频道访问量，品牌强化的业务目标。',
-    analysis: 'fasdkfj;lqre',
-    user_profile: {
-      name: "小黄帽姑娘",
-      portrait: ""
-    },
-    created_at: '',
-  },
-  {
-    id: 7,
-    type: 7,
-    level: 1,
-    use: 1,
-    desc: '在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱， 设计规范性差，设计沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向 进行京东国际频道的品牌视觉全新升级，实现加强正品心智，提升频道访问量，品牌强化的业务目标。',
-    analysis: 'fasdkfj;lqre',
-    user_profile: {
-      name: "小黄帽姑娘",
-      portrait: ""
-    },
-    created_at: '',
-  },
-]
 const checkedQuestionId = reactive<number[]>([])
 const bottomVisible = ref(false)
+const isMyQuestion = computed(() => currentTab.value==1)
+const EmptyType: any = computed(() => {
+  let str = ''
+  if(searchInfo.keyWord === ''){
+    str = 'empty'
+  }else{
+    str = 'searchEmpty'
+  }
+  return str
+})
 
 // 搜索
 const searchInfo = reactive({
@@ -241,14 +155,18 @@ const searchInfo = reactive({
   kind: '',
   difficulty: '',
   usedBy: '',
-  categoryId: 1,
+  categoryId: 0,
   knowledgeIds: [],
 })
 const resetKeyword = ref<boolean>(false)  // 重置keyword
 const searchFn = (key?: string) => {
   console.log(searchInfo)
-  key ? searchInfo.keyWord = key:''
+  searchInfo.keyWord = key ? key : ''
   pageInfo.page = 1
+  initData();
+};
+const pageChange = (page: number) => {
+  pageInfo.page = page;
   initData();
 };
 const handleDrawer = () => {
@@ -265,37 +183,19 @@ const handleDrawer = () => {
   console.log(selectData)
   emit('addData', selectData)
 }
-const selectedTree = (id: number) => {
+const selectedTree = (id: number) => {  // 选择目录
   searchInfo.categoryId = id
   searchFn();
 }
-const isMyQuestion = computed(() => currentTab.value==1)
-const EmptyType: any = computed(() => {
-  let str = ''
-  if(searchInfo.keyWord === ''){
-    str = 'empty'
-  }else{
-    str = 'searchEmpty'
-  }
-  return str
-})
-const handleMenuClick = ({ key }: { key: number|string }) => {
+const handleMenuClick = ({ key }: { key: number|string }) => {  // 创建
   let name = ''
-  let path:any=''
   createQuestionTypeList.forEach((v => {
-    if (v.key === key){
-      name = v.name
-      path=v.path
-    }
+    if (v.key === key) name = v.name
   }))
   router.push ({
-    path:path,
+    path:"./QuestionBank/createQues",
     query:{value:key, name}
   })
-};
-const pageChange = (page: number) => {
-  pageInfo.page = page;
-  initData();
 };
 // 全选
 const checkedAllHandle = (e: any) => {
@@ -304,117 +204,56 @@ const checkedAllHandle = (e: any) => {
     e.target.checked ? v.checked = true :v.checked = false
   })
 }
-watch(
-  () => {
-    return configuration.componenttype;
-  },
-  (val) => {
-    currentTab.value = Number(val);
-    pageInfo.page = 1
-    searchInfo.keyWord = ''
-    resetKeyword.value = !resetKeyword.value
-    console.log(searchInfo)
-    searchInfo.keyWord = ''
-    searchInfo.kind = ''
-    searchInfo.difficulty = ''
-    searchInfo.usedBy = ''
-    searchInfo.categoryId = 1 
-    searchInfo.knowledgeIds = []
-    initData();
-  }
-);
-watch(
-  () => {
-    return questionListData;
-  },
-  (val) => {
-    console.log(val)
-    let i = 0
-    val.forEach((v: any, k: number) => {
-      if (!v.checked) {
-        const index = checkedQuestionId.indexOf(v.id)
-        if (index !== -1) {
-          checkedQuestionId.splice(index, 1)
-        }
-      } else {
-        i++
-        if (!checkedQuestionId.includes(v.id)) {
-          checkedQuestionId.push(v.id)
-          bottomVisible.value = true
-        }
-      }
-    })
-    checkedAll.value = i===pageInfo.pageLimit
-  },
-  {deep:true,immediate:true}
-);
-watch(()=>props.activeTab, newVal => {
-  currentTab.value = newVal
-  initData()
-})
-
-interface ILabel {
-  uid: string;
-  name: string;
-}
-interface IMaterialList {
-  id: number
-  name: string
-  type: number
-  description: string
-  tags: string[]
-  item_size: number
-  item_count: string
-  is_public: number
-  cover: string
-  type_name: string
-  username: string
-  user: Iuser
-  avatar: string
-}
-interface Iuser {
-  username: string
-  avatar: string
+// 隐藏底部操作按钮
+function cancelBottom() {
+  bottomVisible.value = false
+  checkedQuestionId.length = 0
+  questionListData.forEach((v: any) => {
+    v.checked = false
+  })
 }
 const componentList = ['getPublicQuestionsList', 'getMyQuestionsList',]
 const initData = () => {
-  const param = {...pageInfo};
-  questionListData.length = 0
+  const param = {...pageInfo, ...searchInfo};
   pageTotal.value=0
   loading.value=true
   questionListData.length = 0
-  // http[componentList[currentTab.value]]({param: param}).then((res: IBusinessResp) => {
-  //   loading.value = false
-  //   if (!res) return
-  //   const {list, page} = res.data
-  //   questionListData.push(...list)
-  //   pageTotal.value = page.totalCount
-  //   questionListData.forEach((v: any) => {
-  //     v.type = 1
-  //     v.level = 1
-  //     v.use = 1
-  //   })
-  // }).catch(() => {
-  //   loading.value = false
-  // })
-  setTimeout(() => {
-    questionListData.push(...data)
+  http[componentList[currentTab.value]]({param: param}).then((res: IBusinessResp) => {
+    if (!res) return
+    const {list, page} = res.data
+    questionListData.push(...list)
+    pageTotal.value = page.totalCount
+    questionListData.forEach((v: any) => {
+      v.kind = v.kind ? v.kind : 'choice'
+      v.difficulty = v.difficulty ? v.difficulty : 'easy'
+      v.type = 1 
+      v.level = 1
+      v.use = 1
+      checkedQuestionId.includes(v.id) ? v.checked = true : ''
+    })
+    // questionListData.shift()
+    console.log(questionListData)
     loading.value = false
-  }, 1000)
+  }).catch(() => {
+    loading.value = false
+  })
 };
 function menuClick(type:string, val: any) {
   console.log(type)
+  checkedQuestionId.length = 0
+  checkedQuestionId[0] = val.id
   switch (type) {
     case 'edit':
       editQuestion(val.type)
       break;
     case 'delete':
-      
+      deleteQuestion()
       break;
     case 'public':
-      
+      publicQuestion()
       break;
     case 'export':
+      exportQuestion()
       break;
     case 'move':
       moveVisible.value = true
@@ -447,16 +286,48 @@ function deleteQuestion() {
     okText: "确认",
     cancelText: "取消",
     onOk() {
-
+      http.batchDeleteQuestion({param: {questionIds: [...checkedQuestionId]}}).then((res: IBusinessResp) => {
+        console.log(res)
+        initData()
+      })
     }
   })
 }
 function publicQuestion() {
   console.log('public')
+  http.batchPublicQuestion({param: {questionIds: [...checkedQuestionId]}}).then((res: IBusinessResp) => {
+    console.log(res)
+  })
 }
 function exportQuestion() {
-  console.log('export')
+  const dev_base_url = "";
+  let url = `${dev_base_url}/api/v1/xinchuang/question/multiple/questions-export`;
+  fetch(url, {
+    method: "post",
+    body: JSON.stringify({
+      questionIds: [...checkedQuestionId]
+    }),
+    headers:{
+      'Content-Type':'application/json',
+    },
+    // responseType: "arraybuffer"
+  }).then((res: any) => {
+    return res.blob();
+  }).then((content: any) => {
+    console.log(content)
+    let blobUrl = window.URL.createObjectURL(content);
+    const fileName = "习题export.xlsx";
+    const link = document.createElement("a"); // 创建a标签
+    link.download = fileName; // a标签添加属性
+    link.style.display = "none";
+    link.href = blobUrl;
+    document.body.appendChild(link);
+    link.click(); // 执行下载
+    URL.revokeObjectURL(link.href); // 释放url
+    document.body.removeChild(link); // 释放标签
+  })
 }
+// 移动到
 function moveQuestion() {
   console.log('move')
   moveVisible.value = true
@@ -468,41 +339,94 @@ function moveSelectedTree(id: number) {
   console.log(id)
   moveCategoryId.value = id
 }
-function moveSubmit() {}
+function moveSubmit() {
+  moveLoading.value = true
+  http.batchMoveQuestion({
+    param: {
+      questionIds: [...checkedQuestionId],
+      directoryId: moveCategoryId.value
+    }}).then((res: IBusinessResp) => {
+      console.log(res)
+      moveLoading.value = false
+      moveVisible.value = false
+  }).catch(() => {
+    moveLoading.value = false
+  })
+}
 function moveCancel() {
+  moveLoading.value = false
   moveVisible.value = false
+  moveCategoryId.value = 0
 }
 
 // 发布考试或作业
-const releaseType = ref('考试')
+const formRef = ref()
+const studentTableRef = ref()
+const releaseType = ref(1)
+const releaseTypeList = {
+  1: '作业',
+  2: '考试'
+}
 const formState = reactive({
   name: '',
   desc: '',
   date: [],
-  relation: ['是', 'kajshdf', 'qaz']
+  relation: [0]
 })
 const releaseVisible = ref(false)
 const releaseLoading = ref(false)
-function releaseSubmit() {
+async function releaseSubmit() {
   console.log(formState)
   console.log(checkedQuestionId)
+  await formRef.value.fromValidate()
+  let params:any = {
+    is_publish: true,  // 快捷发布考试
+    course_id: formState.relation.length > 1 ? formState.relation[formState.relation.length - 1] : '',
+    name: formState.name,
+    started_at: formState.date[0] + ':00',
+    closed_at: formState.date[1] + ':00',
+    note: formState.desc
+  }
+  if (!studentTableRef.value?.studentIds.length) {
+    message.warning('请选择学生')
+    return
+  }
+  // 学生信息
+  Object.assign(params, {student_ids: studentTableRef.value.studentIds})
+  // 题目ids
+  const obj = {}
+  checkedQuestionId.forEach((v: number) => {
+    obj[String(v)] = {score: 0}
+  })
+  Object.assign(params, {question_ids: obj} )
+  console.log(params)
+  if (releaseType.value === 1) {
+    httpAssign.addAssignment({param: params}).then((res:IBusinessResp) => {
+      releaseCancel()
+      message.success('添加成功')
+    }).catch(()=>{
+      releaseLoading.value = false
+    })
+  } else {
+    httpExam.addExam({param: params}).then((res:IBusinessResp) => {
+      releaseCancel()
+      message.success('添加成功')
+    }).catch(()=>{
+      releaseLoading.value = false
+    })
+  }
 }
 function releaseCancel() {
   releaseVisible.value = false
-}
-// 学生相关
-const studentPageInfo = reactive({
-  page: 1,
-  size: 1,
-  total: 2
-})
-const tableData = reactive([])
-const delStudent = (ids:number[]) => {
-  tableData.forEach((item:any, index:number) => {
-    ids.includes(item.id) && tableData.splice(index,1)
+  releaseLoading.value = false
+  Object.assign(formState, {
+    name: '',
+    desc: '',
+    date: [],
+    relation: [0]
   })
-  studentPageInfo.total = tableData.length
 }
+
 onMounted(() => {
   if (!Number(route.query.currentTab)) {
     currentTab.value = 0
@@ -511,6 +435,57 @@ onMounted(() => {
     currentTab.value = 1
     configuration.componenttype = 1
   }
+})
+watch(
+  () => {
+    return configuration.componenttype;
+  },
+  (val) => {
+    if (val == 0 || val == 1) {
+      checkedQuestionId.length = 0
+      currentTab.value = Number(val);
+      pageInfo.page = 1
+      resetKeyword.value = !resetKeyword.value
+      Object.assign(searchInfo, {
+        keyWord: '',
+        kind: '',
+        difficulty: '',
+        usedBy: '',
+        categoryId: 0,
+        knowledgeIds: [],
+      })
+      initData();
+    }
+  }
+);
+watch(
+  () => {
+    return questionListData;
+  },
+  (val) => {
+    console.log(val)
+    let i = 0
+    val.forEach((v: any, k: number) => {
+      if (!v.checked) {
+        const index = checkedQuestionId.indexOf(v.id)
+        if (index !== -1) {
+          checkedQuestionId.splice(index, 1)
+        }
+      } else {
+        i++
+        if (!checkedQuestionId.includes(v.id)) {
+          checkedQuestionId.push(v.id)
+          bottomVisible.value = true
+        }
+      }
+    })
+    pageTotal.value >= pageInfo.pageLimit ? checkedAll.value = i===pageInfo.pageLimit : checkedAll.value = i===pageTotal.value
+  },
+  {deep:true,immediate:true}
+);
+watch(()=>props.activeTab, newVal => {
+  currentTab.value = newVal
+  initData()
 })
 </script>
 

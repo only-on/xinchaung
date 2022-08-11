@@ -2,28 +2,29 @@
   <div class="question-lists">
     <div class="list" v-for="v in props.questionList" :key="v.id">
       <div class="question-type">
-        <span class="type" :style="{background: getTopicType[v.type].bgColor}">{{getTopicType[v.type].subname}}</span>
+        <span class="type" :style="{background: getTopicType[v.kind].bgColor}">{{getTopicType[v.kind].subname}}</span>
       </div>
       <div class="question-content">
         <div class="question-main">
           <div class="left">
-            <div class="desc">在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素</div>
+            <div class="desc">{{v.question}}</div>
             <!-- <marked-editor v-model="content" :preview="true" /> -->
             <template v-if="v.visible">
-            <!-- 选择题 -->
-            <div class="option" v-if="v.type===1">
-              <a-checkbox-group v-model:value="v.answer" style="width: 100%" :disabled="true">
-                <a-row v-for="(option, o) in v.options" :key="o">
+            <!-- 选择题 --> 
+            <!-- choice,judge,blank,short-answer,program,ai -->
+            <div class="option" v-if="v.kind==='choice'">
+              <a-checkbox-group v-model:value="v.choice_correct_options" style="width: 100%" :disabled="true">
+                <a-row v-for="(option, o) in v.choice_options" :key="o">
                   <a-checkbox :value="optionType[o]">{{`${optionType[o]}、`}}</a-checkbox>
-                  <div> {{option}}</div>
+                  <div> {{option.content}}</div>
                 </a-row>
               </a-checkbox-group>
             </div>
             <!-- 判断题 -->
-            <div class="option" v-if="v.type===2">
+            <div class="option" v-if="v.kind==='judge'">
               <a-radio-group v-model:value="v.answers" :disabled="true">
                 <a-row>
-                  <a-radio :value="0">正确</a-radio>
+                  <a-radio :value="'right'">正确</a-radio>
                 </a-row>
                 <a-row>
                   <a-radio :value="1">错误</a-radio>
@@ -31,56 +32,56 @@
               </a-radio-group>
             </div>
             <!-- 填空题 -->
-            <div class="option" v-if="v.type===3">
-              <div class="tiankong flexCenter" v-for="(ans, a) in v.answers" :key="a">
+            <div class="option" v-if="v.kind==='blank'">
+              <div class="tiankong flexCenter" v-for="(ans, a) in v.blank_correct" :key="a">
                 <span class="tiankong-tit">{{`填空${a+1}`}}</span>
                 <a-input v-model:value="v.answer" :disabled="true" />
               </div>
             </div>
             <!-- 简答题 -->
-            <div class="option" v-if="v.type===4">
+            <div class="option" v-if="v.kind==='short-answer'">
               <div class="jianda">
                 <div class="jianda-tit">答案</div>
                 <a-textarea v-model:value="v.answer" :disabled="true" placeholder="" :autoSize="{ minRows: 4, maxRows: 6 }" />
               </div>
             </div>
             <!-- 四种基本题型的答案和解析 -->
-            <template v-if="[1,2,3,4].includes(v.type)">
+            <template v-if="['choice','judge','blank','short-answer'].includes(v.kind)">
               <div class="answer">
                 <div class="answer-tit">答案：</div>
-                <div class="answer-content" v-if="v.type===1">{{optionType[v.options.indexOf(v.answers[0])]}}</div>
-                <div class="answer-content" v-if="v.type===2">{{['正确','错误'][v.answers[0]]}}</div>
-                <div class="answer-content" v-if="v.type===3">
-                  <span v-for="(ans, a) in v.answers" :key="a">填空{{a+1}}({{ans}}){{a===v.answers.length-1?'':' / '}}</span>
+                <div class="answer-content" v-if="v.kind==='choice'">{{v.choice_correct_options.join('、')}}</div>
+                <div class="answer-content" v-if="v.kind==='judge'">{{judgeOption[v.judge_correct]}}</div>
+                <div class="answer-content" v-if="v.kind==='blank'">
+                  <span v-for="(ans, a) in v.blank_correct" :key="a">填空{{a+1}}({{ans}}){{a===v.blank_correct.length-1?'':' / '}}</span>
                 </div>
-                <div class="answer-content" v-if="v.type===4">{{v.answers[0]}}</div>
+                <div class="answer-content" v-if="v.kind==='short-answer'">{{v.short_answer_reference}}</div>
               </div>
               <div class="topic-analysis">
                 <div class="tit">题目解析：</div>
                 <div class="analysis-content">
-                  <marked-editor v-model="content" :preview="true" />
+                  <marked-editor v-model="v.question_analysis" :preview="true" />
                 </div>
               </div>
             </template>
             <!-- 简答题关键字 -->
-            <div class="keyword" v-if="v.type===4">
-              <div class="keyword-tit">关键字</div>
-              <div class="keyword-content">{{v.keyword}}</div>
+            <div class="keyword" v-if="v.kind==='short-answer'">
+              <div class="keyword-tit">关键字：</div>
+              <div class="keyword-content">{{v.short_answer_keys}}</div>
             </div>
             <!-- 编程题 -->
-            <div class="program" v-if="v.type === 5">
+            <div class="program" v-if="v.kind === 'program'">
               <Programming></Programming>
             </div>
             <!-- 模型题 -->
-            <div class="model" v-if="v.type === 6">
+            <div class="model" v-if="v.kind === 'ai'">
               <ModelQuestion></ModelQuestion>
             </div>
             <!-- SQL题 -->
-            <div class="sql" v-if="v.type === 7">
+            <div class="sql" v-if="v.kind === 'sql'">
               <Sqldetail></Sqldetail>
             </div>
             <!-- 后面三种题型的试用 -->
-            <div class="shiyong pointer" v-if="[5,6,7].includes(v.type)" @click="trialHandle(v)">试用</div>
+            <div class="shiyong pointer" v-if="['program','ai','sql'].includes(v.kind)" @click="trialHandle(v)">试用</div>
             </template>
           </div>
           <div class="right">
@@ -95,11 +96,11 @@
             </span>
             <span 
               class="level" 
-              :style="{background: levelTypeList[v.level].bgColor,color: levelTypeList[v.level].color}"
-            >{{levelTypeList[v.level].name}}</span>
-            <span class="use">{{useTypeList[v.use].name}}</span>
-            <span class="create-time">创建时间：2022 / 01 / 12</span>
-            <span class="num">使用次数：10</span>
+              :style="{background: levelTypeList[v.difficulty].bgColor,color: levelTypeList[v.difficulty].color}"
+            >{{levelTypeList[v.difficulty].name}}</span>
+            <span class="use">{{useTypeList[v.used_by].name}}</span>
+            <span class="create-time">创建时间：{{moment(new Date()).format('YYYY/MM/DD')}}</span>
+            <span class="num">使用次数：{{v.used_counts||0}}</span>
           </div>
           <div class="right">
             <template v-if="props.isOperation">
@@ -139,6 +140,7 @@
 <script lang="ts" setup>
 import { ref, reactive } from 'vue'
 import { useRouter, useRoute } from "vue-router";
+import moment from 'moment';
 import defaultAvatar from 'src/assets/images/user/admin_p.png'
 import Programming from 'src/components/TopicDisplay/detail/programming.vue'
 import ModelQuestion from 'src/components/TopicDisplay/detail/ModelQuestion.vue'
@@ -274,6 +276,11 @@ function trialHandle(val:any) {
     }
   })
   window.open(href,'_blank')
+}
+
+const judgeOption = {
+  right: '正确',
+  lll: '错误'
 }
 </script>
 

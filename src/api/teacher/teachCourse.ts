@@ -119,6 +119,9 @@ export default {
 
   // 课程树
   coursesChaptersTree: { url: `  /api/course/courses/chapters/tree`, method: "GET" },
+
+  // 获取课程方向下所有的课程
+  getDirectiveCourseList: { url: `/api/course/direction/{tagName}/courses`, method: "GET" }
 }
 
 export interface ITeacherCourseApis {
@@ -155,4 +158,6 @@ export interface ITeacherCourseApis {
   canAccessVm: TFHttpSend
   maxLimit: TFHttpSend
   coursesChaptersTree: TFHttpSend
+
+  getDirectiveCourseList: TFHttpSend
 }

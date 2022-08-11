@@ -17,6 +17,10 @@ export default {
   // 习题
   getMyQuestionsList: { url: `/api/v1/xinchuang/question/myQuestions`, method: "GET" },
   getPublicQuestionsList: { url: `/api/v1/xinchuang/question/publicQuestions`, method: "GET" },
+  batchDeleteQuestion: { url: `/api/v1/xinchuang/question/multiple/to-delete`, method: "PUT", dataType: "json" },
+  batchPublicQuestion: { url: `/api/v1/xinchuang/question/multiple/to-public`, method: "PUT", dataType: "json" },
+  batchMoveQuestion: { url: `/api/v1/xinchuang/question/multiple/to-directory`, method: "PUT", dataType: "json" },
+  batchExportQuestion: { url: `/api/v1/xinchuang/question/multiple/questions-export`, method: "POST", dataType: "json" },
   // 创建习题
   choiceQues: { url: `/api/v1/xinchuang/question/choice_question`, method: "POST", dataType: "json" },
   judgeQues:{url: `/api/v1/xinchuang/question/judge_questions`, method: "POST", dataType: "json"},
@@ -58,10 +62,16 @@ export interface IQuestionBank {
   deleteDirectory: TFHttpSend
   moveBeforeDirectory: TFHttpSend
   moveAfterDirectory: TFHttpSend
+
   getKnowledgeFirst: TFHttpSend
   getKnowledgeSub: TFHttpSend
+
   getMyQuestionsList: TFHttpSend
   getPublicQuestionsList: TFHttpSend
+  batchDeleteQuestion: TFHttpSend
+  batchPublicQuestion: TFHttpSend
+  batchMoveQuestion: TFHttpSend
+  batchExportQuestion: TFHttpSend
 
   // 创建习题
   choiceQues:TFHttpSend
