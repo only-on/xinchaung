@@ -40,10 +40,10 @@
       </div>
       <div class="center">
         <span v-if="isMyQuestion">
-          <a-button class="btn" @click="moveQuestion">批量移动到</a-button>
-          <a-button class="btn" @click="exportQuestion">批量导出</a-button>
-          <a-button class="btn" @click="publicQuestion">批量公开</a-button>
-          <a-button class="btn" @click="deleteQuestion">批量删除</a-button>
+          <a-button class="btn" @click="batchOperateHandle('move')">批量移动到</a-button>
+          <a-button class="btn" @click="batchOperateHandle('export')">批量导出</a-button>
+          <a-button class="btn" @click="batchOperateHandle('public')">批量公开</a-button>
+          <a-button class="btn" @click="batchOperateHandle('delete')">批量删除</a-button>
         </span>
         <!-- 1-作业，2-考试 -->
         <a-button class="btn" type="primary" @click="releaseVisible=true;releaseType=1">发布作业</a-button>
@@ -238,10 +238,13 @@ const initData = () => {
     loading.value = false
   })
 };
+
+const isBatchOperate = ref(false)  // 是否批量操作
+const currentQuestionId = ref(0)
 function menuClick(type:string, val: any) {
   console.log(type)
-  checkedQuestionId.length = 0
-  checkedQuestionId[0] = val.id
+  isBatchOperate.value = false
+  currentQuestionId.value = val.id
   switch (type) {
     case 'edit':
       editQuestion(val.type)
@@ -280,14 +283,18 @@ function editQuestion(key: number) {
 function deleteQuestion() {
   console.log('delete')
   Modal.confirm({
-    title: "确定要删除选中题目吗？",
+    title: `确定要删除${isBatchOperate.value?'选中':'这个'}题目吗？`,
     icon: createVNode(ExclamationCircleOutlined),
     content: "删除后不可恢复",
     okText: "确认",
     cancelText: "取消",
     onOk() {
-      http.batchDeleteQuestion({param: {questionIds: [...checkedQuestionId]}}).then((res: IBusinessResp) => {
-        console.log(res)
+      const param = {
+        questionIds: isBatchOperate.value?[...checkedQuestionId]:[currentQuestionId.value]
+      }
+      http.batchDeleteQuestion({param}).then((res: IBusinessResp) => {
+        message.success('删除成功')
+        cancelBottom()
         initData()
       })
     }
@@ -295,18 +302,23 @@ function deleteQuestion() {
 }
 function publicQuestion() {
   console.log('public')
-  http.batchPublicQuestion({param: {questionIds: [...checkedQuestionId]}}).then((res: IBusinessResp) => {
-    console.log(res)
+  const param = {
+    questionIds: isBatchOperate.value?[...checkedQuestionId]:[currentQuestionId.value]
+  }
+  http.batchPublicQuestion({param}).then((res: IBusinessResp) => {
+    message.success('公开成功')
+    cancelBottom()
   })
 }
 function exportQuestion() {
   const dev_base_url = "";
   let url = `${dev_base_url}/api/v1/xinchuang/question/multiple/questions-export`;
+  const param = {
+    questionIds: isBatchOperate.value?[...checkedQuestionId]:[currentQuestionId.value]
+  }
   fetch(url, {
     method: "post",
-    body: JSON.stringify({
-      questionIds: [...checkedQuestionId]
-    }),
+    body: JSON.stringify(param),
     headers:{
       'Content-Type':'application/json',
     },
@@ -314,6 +326,7 @@ function exportQuestion() {
   }).then((res: any) => {
     return res.blob();
   }).then((content: any) => {
+    cancelBottom()
     console.log(content)
     let blobUrl = window.URL.createObjectURL(content);
     const fileName = "习题export.xlsx";
@@ -343,12 +356,15 @@ function moveSubmit() {
   moveLoading.value = true
   http.batchMoveQuestion({
     param: {
-      questionIds: [...checkedQuestionId],
+      questionIds: isBatchOperate.value?[...checkedQuestionId]:[currentQuestionId.value],
       directoryId: moveCategoryId.value
     }}).then((res: IBusinessResp) => {
-      console.log(res)
+      message.success('操作成功')
       moveLoading.value = false
       moveVisible.value = false
+      pageInfo.page = 1
+      cancelBottom()
+      initData()
   }).catch(() => {
     moveLoading.value = false
   })
@@ -357,6 +373,23 @@ function moveCancel() {
   moveLoading.value = false
   moveVisible.value = false
   moveCategoryId.value = 0
+}
+function batchOperateHandle(val: string) {
+  isBatchOperate.value = true
+  switch (val) {
+    case 'delete':
+      deleteQuestion()
+      break;
+    case 'public':
+      publicQuestion()
+      break;
+    case 'export':
+      exportQuestion()
+      break;
+    case 'move':
+      moveQuestion()
+      break;
+  }
 }
 
 // 发布考试或作业
@@ -403,14 +436,16 @@ async function releaseSubmit() {
   if (releaseType.value === 1) {
     httpAssign.addAssignment({param: params}).then((res:IBusinessResp) => {
       releaseCancel()
-      message.success('添加成功')
+      message.success('发布成功')
+      cancelBottom()
     }).catch(()=>{
       releaseLoading.value = false
     })
   } else {
     httpExam.addExam({param: params}).then((res:IBusinessResp) => {
       releaseCancel()
-      message.success('添加成功')
+      message.success('发布成功')
+      cancelBottom()
     }).catch(()=>{
       releaseLoading.value = false
     })
@@ -441,7 +476,7 @@ const resetSearch = () => {
     pageInfo.page = 1
     searchInfo.keyWord = ''
     resetKeyword.value = !resetKeyword.value
-    searchInfo.categoryId = 1 
+    searchInfo.categoryId = 0
     searchInfo.knowledgeIds = []
     initData();
 }
@@ -450,8 +485,10 @@ watch(
     return configuration.componenttype;
   },
   (val) => {
-    currentTab.value = Number(val);
-    resetSearch()
+    if (val == 0 || val == 1) {
+      currentTab.value = Number(val);
+      resetSearch()
+    }
   }
 );
 watch(

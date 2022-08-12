@@ -42,7 +42,7 @@
             <div class="option" v-if="v.kind==='short-answer'">
               <div class="jianda">
                 <div class="jianda-tit">答案</div>
-                <a-textarea v-model:value="v.answer" :disabled="true" placeholder="" :autoSize="{ minRows: 4, maxRows: 6 }" />
+                <a-textarea v-model:value="v.answer" :disabled="true" placeholder="" :autoSize="{ minRows: 2, maxRows: 6 }" />
               </div>
             </div>
             <!-- 四种基本题型的答案和解析 -->
@@ -56,6 +56,11 @@
                 </div>
                 <div class="answer-content" v-if="v.kind==='short-answer'">{{v.short_answer_reference}}</div>
               </div>
+              <!-- 简答题关键字 -->
+              <div class="keyword" v-if="v.kind==='short-answer'">
+                <div class="keyword-tit">关键字：</div>
+                <div class="keyword-content">{{v.short_answer_keys}}</div>
+              </div>
               <div class="topic-analysis">
                 <div class="tit">题目解析：</div>
                 <div class="analysis-content">
@@ -63,11 +68,6 @@
                 </div>
               </div>
             </template>
-            <!-- 简答题关键字 -->
-            <div class="keyword" v-if="v.kind==='short-answer'">
-              <div class="keyword-tit">关键字：</div>
-              <div class="keyword-content">{{v.short_answer_keys}}</div>
-            </div>
             <!-- 编程题 -->
             <div class="program" v-if="v.kind === 'program'">
               <Programming></Programming>
@@ -354,8 +354,8 @@ const judgeOption = {
             display: flex;
             color: #3094EF;
             padding-bottom: 16px;
-            margin-top: 16px;
-            border-bottom: 1px solid var(--black-15);
+            // margin-top: 16px;
+            // border-bottom: 1px solid var(--black-15);
             .keyword-tit {
               width: 58px;
             }

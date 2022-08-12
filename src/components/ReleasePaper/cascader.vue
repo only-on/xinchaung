@@ -25,7 +25,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<{
   (e: "update:relation", val: any): void;
 }>();
-const relation = ref([0])
+const relation = ref(props.relation)
 const options = ref([
   {
     id: 0,
@@ -48,7 +48,6 @@ const loadData = (selectedOptions: any) => {
 
   if (targetOption.level === 0) {
     http.courseCategory().then((res: IBusinessResp) => {
-      console.log(res)
       targetOption.loading = false;
       if (res.data?.length) {
         res.data.forEach((v: any) => {
@@ -57,15 +56,13 @@ const loadData = (selectedOptions: any) => {
         })
       }
       targetOption.children = res.data
-      console.log(targetOption)
+      // console.log(targetOption)
       // options.value = [...targetOption];
     })
   }
   if (targetOption.level === 1) {
-    console.log(targetOption.name)
     http.getDirectiveCourseList({urlParams: {tagName: targetOption.name}}).then((res: IBusinessResp) => {
       targetOption.loading = false;
-      console.log(res)
       if (res.data?.length) {
         res.data.forEach((v: any) => {
           v.isLeaf = true
@@ -73,21 +70,21 @@ const loadData = (selectedOptions: any) => {
         })
       }
       targetOption.children = res.data
-      console.log(targetOption)
+      // console.log(targetOption)
       // options.value = [...targetOption];
     })
   }
 };
 const changeHandle = (value: any, selectedOptions: any) => {
-  console.log(value)
-  console.log(selectedOptions)
-  console.log(relation.value)
+  // console.log(value)
+  // console.log(selectedOptions)
+  // console.log(relation.value)
   emit("update:relation", relation.value)
 }
-watch(()=> props.relation, (newVal:any) => {
-  console.log(newVal)
-  relation.value = props.relation
-},{deep:true,immediate:true})
+// watch(()=> props.relation, (newVal:any) => {
+//   console.log(newVal)
+//   relation.value = props.relation
+// },{deep:true,immediate:true})
 </script>
 
 <style lang="less" scoped>
