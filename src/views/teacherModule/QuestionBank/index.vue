@@ -96,7 +96,6 @@ import { createQuestionTypeList, IQuestionList } from "./questionConfig"
 import Submit from "src/components/submit/index.vue";
 import baseInfo from "src/components/ReleasePaper/baseInfo.vue"
 import studentTable from "src/views/teacherModule/teacherExamination/component/studentTable.vue"
-import { downloadUrl } from "src/utils/download";
 const props =withDefaults(defineProps<{
   inDrawer?: boolean
   activeTab?:number
@@ -190,11 +189,15 @@ const selectedTree = (id: number) => {  // 选择目录
 }
 const handleMenuClick = ({ key }: { key: number|string }) => {  // 创建
   let name = ''
+  let path:any=''
   createQuestionTypeList.forEach((v => {
-    if (v.key === key) name = v.name
+    if (v.key === key){
+      name = v.name
+      path=v.path
+    }
   }))
   router.push ({
-    path:"./QuestionBank/createQues",
+    path:path,
     query:{value:key, name}
   })
 };
@@ -295,8 +298,7 @@ function deleteQuestion() {
       }
       http.batchDeleteQuestion({param}).then((res: IBusinessResp) => {
         message.success('删除成功')
-        cancelBottom()
-        initData()
+        successAfterHandle()
       })
     }
   })
@@ -308,7 +310,7 @@ function publicQuestion() {
   }
   http.batchPublicQuestion({param}).then((res: IBusinessResp) => {
     message.success('公开成功')
-    cancelBottom()
+    successAfterHandle()
   })
 }
 function exportQuestion() {
@@ -327,7 +329,7 @@ function exportQuestion() {
   }).then((res: any) => {
     return res.blob();
   }).then((content: any) => {
-    cancelBottom()
+    successAfterHandle()
     console.log(content)
     let blobUrl = window.URL.createObjectURL(content);
     const fileName = "习题export.xlsx";
@@ -364,8 +366,7 @@ function moveSubmit() {
       moveLoading.value = false
       moveVisible.value = false
       pageInfo.page = 1
-      cancelBottom()
-      initData()
+      successAfterHandle()
   }).catch(() => {
     moveLoading.value = false
   })
@@ -391,6 +392,10 @@ function batchOperateHandle(val: string) {
       moveQuestion()
       break;
   }
+}
+function successAfterHandle() {
+  cancelBottom()
+  initData()
 }
 
 // 发布考试或作业
@@ -438,7 +443,7 @@ async function releaseSubmit() {
     httpAssign.addAssignment({param: params}).then((res:IBusinessResp) => {
       releaseCancel()
       message.success('发布成功')
-      cancelBottom()
+      successAfterHandle()
     }).catch(()=>{
       releaseLoading.value = false
     })
@@ -446,7 +451,7 @@ async function releaseSubmit() {
     httpExam.addExam({param: params}).then((res:IBusinessResp) => {
       releaseCancel()
       message.success('发布成功')
-      cancelBottom()
+      successAfterHandle()
     }).catch(()=>{
       releaseLoading.value = false
     })
@@ -518,7 +523,7 @@ watch(
   {deep:true,immediate:true}
 );
 watch(()=>props.inDrawer, newVal => {
-  resetSearch()
+  newVal ? resetSearch() : ''
 },{deep:true,immediate:true})
 // 选择题目的抽屉
 watch(()=>props.activeTab, newVal => {
@@ -600,4 +605,3 @@ watch(()=>props.activeTab, newVal => {
   }
 }
 </style>
-

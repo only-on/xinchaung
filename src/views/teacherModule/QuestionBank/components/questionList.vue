@@ -7,8 +7,10 @@
       <div class="question-content">
         <div class="question-main">
           <div class="left">
-            <div class="desc">{{v.question}}</div>
-            <!-- <marked-editor v-model="content" :preview="true" /> -->
+            <div class="desc">
+              <div class="simple single_ellipsis" :title="v.question" v-if="['program','ai','sql'].includes(v.kind)">{{v.question}}</div>
+              <marked-editor v-else v-model="v.question" :preview="true" />
+            </div>
             <template v-if="v.visible">
             <!-- 选择题 --> 
             <!-- choice,judge,blank,short-answer,program,ai -->
@@ -151,8 +153,8 @@ import getTopicType from 'src/components/TopicDisplay/topictype'
 import { levelTypeList, useTypeList } from 'src/components/TopicDisplay/configType'
 interface Props {
   isOperation: boolean,
-  questionList: any,
-  inDrawer:boolean
+  questionList: any
+  inDrawer: boolean
 }
 const props = withDefaults(defineProps<Props>(), {
   isOperation: true,
@@ -165,101 +167,7 @@ const emit = defineEmits<{
 const router = useRouter();
 const route = useRoute();
 const optionType:any=reactive(['A','B','C','D','E','F','G'])
-const content="zsfasd"
-const checked = false
-const questionList = reactive([
-  {
-    id: 1,
-    type: 1,
-    level: 1,
-    use: 1,
-    desc: '在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱， 设计规范性差，设计沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向 进行京东国际频道的品牌视觉全新升级，实现加强正品心智，提升频道访问量，品牌强化的业务目标。',
-    analysis: 'fasdkfj;lqre',
-    user_profile: {
-      name: "小黄帽姑娘",
-      portrait: ""
-    },
-    created_at: '',
-  },
-  {
-    id: 2,
-    type: 2,
-    level: 2,
-    use: 2,
-    desc: '在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱， 设计规范性差，设计沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向 进行京东国际频道的品牌视觉全新升级，实现加强正品心智，提升频道访问量，品牌强化的业务目标。',
-    analysis: 'fasdkfj;lqre',
-    user_profile: {
-      name: "小黄帽姑娘",
-      portrait: ""
-    },
-    created_at: '',
-  },
-  {
-    id: 3,
-    type: 3,
-    level: 3,
-    use: 1,
-    desc: '在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱， 设计规范性差，设计沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向 进行京东国际频道的品牌视觉全新升级，实现加强正品心智，提升频道访问量，品牌强化的业务目标。',
-    analysis: 'fasdkfj;lqre',
-    user_profile: {
-      name: "小黄帽姑娘",
-      portrait: ""
-    },
-    created_at: '',
-  },
-  {
-    id: 4,
-    type: 4,
-    level: 1,
-    use: 2,
-    desc: '在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱， 设计规范性差，设计沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向 进行京东国际频道的品牌视觉全新升级，实现加强正品心智，提升频道访问量，品牌强化的业务目标。',
-    analysis: 'fasdkfj;lqre',
-    user_profile: {
-      name: "小黄帽姑娘",
-      portrait: ""
-    },
-    created_at: '',
-  },
-  {
-    id: 5,
-    type: 5,
-    level: 2,
-    use: 1,
-    desc: '在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱， 设计规范性差，设计沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向 进行京东国际频道的品牌视觉全新升级，实现加强正品心智，提升频道访问量，品牌强化的业务目标。',
-    analysis: 'fasdkfj;lqre',
-    user_profile: {
-      name: "小黄帽姑娘",
-      portrait: ""
-    },
-    created_at: '',
-  },
-  {
-    id: 61,
-    type: 6,
-    level: 3,
-    use: 2,
-    desc: '在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱， 设计规范性差，设计沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向 进行京东国际频道的品牌视觉全新升级，实现加强正品心智，提升频道访问量，品牌强化的业务目标。',
-    analysis: 'fasdkfj;lqre',
-    user_profile: {
-      name: "小黄帽姑娘",
-      portrait: ""
-    },
-    created_at: '',
-  },
-  {
-    id: 1,
-    type: 1,
-    level: 1,
-    use: 1,
-    desc: '在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱， 设计规范性差，设计沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向 进行京东国际频道的品牌视觉全新升级，实现加强正品心智，提升频道访问量，品牌强化的业务目标。',
-    analysis: 'fasdkfj;lqre',
-    user_profile: {
-      name: "小黄帽姑娘",
-      portrait: ""
-    },
-    created_at: '',
-  },
-])
+
 function checkedHandle(e: any) {
   console.log(props.questionList)
   console.log(e)
@@ -320,6 +228,13 @@ const judgeOption = {
         display: flex;
         .left {
           flex: 1;
+          width: 0;
+          .desc {
+            width: 100%;
+            :deep(.mark__preview) {
+              padding: 0;
+            }
+          }
           .answer {
             color: var(--brightBtn);
             display: flex;

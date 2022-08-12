@@ -6,7 +6,7 @@
           <a-input v-model:value="props.formState.name" :placeholder="'请输入'+props.type+'名称'" />
         </a-form-item>
         <a-form-item label="起始时间" name="date">
-          <div class="tip">关联课程起止时间为2022/07/07 - 2022/07/07</div>
+          <div class="tip" v-if="props.formState.relation.length===3">关联课程起止时间为{{currentCourseInfo.start_time}} - {{currentCourseInfo.end_time}}</div>
           <a-range-picker @change="dateChange" v-model:value="props.formState.date" :showTime="{format: 'HH:mm'}" valueFormat="YYYY-MM-DD HH:mm" format="YYYY-MM-DD HH:mm" :disabledDate="disabledDate">
             <template #suffixIcon>
               <calendar-outlined />
@@ -16,7 +16,7 @@
       </div>
       <div class="right">
         <a-form-item :label="'关联课程'">
-          <cascader v-model:relation="props.formState.relation"></cascader>
+          <cascader v-model:relation="props.formState.relation" @getCurrentCourse="getCurrentCourse"></cascader>
         </a-form-item>
       </div>
     </div>
@@ -46,6 +46,7 @@ const rules = {
   date: {required: true, message: `请选择起始时间`}
 }
 
+const currentCourseInfo = reactive({})
 const baseInfoFormRef = ref()
 const dateChange = () => {}
 const disabledDate=(current: Moment)=>{
@@ -57,6 +58,12 @@ const fromValidate = () => {
       resolve()
     })
   })
+}
+function getCurrentCourse(val: any) {
+  if (!val.id) return
+  val.start_time = val.start_time.split(' ')[0].replace(/-/g, '/')
+  val.end_time = val.end_time.split(' ')[0].replace(/-/g, '/')
+  Object.assign(currentCourseInfo, val)
 }
 // watch(()=> editInfoData, (newVal:any) => {
 //   console.log(newVal)
@@ -78,9 +85,10 @@ defineExpose({
     }
     .tip {
       position: absolute;
-      top: -30px;
+      top: -27px;
       left: 76px;
       color: var(--black-25);
+      font-size: var(--font-size-sm);
     }
   }
   .right {

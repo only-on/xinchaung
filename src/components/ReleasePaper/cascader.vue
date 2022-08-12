@@ -24,6 +24,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 const emit = defineEmits<{
   (e: "update:relation", val: any): void;
+  (e: "getCurrentCourse", val: any): void;
 }>();
 const relation = ref(props.relation)
 const options = ref([
@@ -77,9 +78,10 @@ const loadData = (selectedOptions: any) => {
 };
 const changeHandle = (value: any, selectedOptions: any) => {
   // console.log(value)
-  // console.log(selectedOptions)
-  // console.log(relation.value)
+  console.log(selectedOptions)
+  console.log(relation.value)
   emit("update:relation", relation.value)
+  emit("getCurrentCourse", selectedOptions[selectedOptions.length-1])
 }
 // watch(()=> props.relation, (newVal:any) => {
 //   console.log(newVal)

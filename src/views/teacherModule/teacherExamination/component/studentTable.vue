@@ -49,7 +49,7 @@ import request from 'src/api/index'
 const http = (request as any).teacherExamination;
 interface Props {
   courseId:any;
-  data:any
+  data?:any
 }
 const props = withDefaults(defineProps<Props>(), {
   courseId: '',
