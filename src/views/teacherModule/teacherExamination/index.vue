@@ -206,7 +206,8 @@ const menuClick = (type:string, val:any) => {
         path: '/teacher/teacherExamination/createExamination',
         query: {
           type: 'manual',
-          id: val.id
+          id: val.id,
+          isCopy: true
         }
       })
       break;

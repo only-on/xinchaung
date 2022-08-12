@@ -20,7 +20,7 @@
           <template v-slot:bodyCell="{ column, record, index }">
             <template v-if="column.dataIndex === 'type'">
               <i class="iconfont icon-tuozhuai"></i>
-              {{record.type}}
+              {{getTopicType[record.type].name}}
             </template>
             <template v-if="column.dataIndex === 'operation'">
               <a-button type="link" @click="delOuter(record, index)">删除</a-button>
@@ -44,12 +44,12 @@
                     {{record.id}}
                   </template>
                   <template v-if="column.dataIndex === 'difficulty'">
-                    <!-- <span class="level" :style="{background: levelTypeList[record.difficulty].bgColor,color: levelTypeList[record.difficulty].color}">
+                    <span class="level" :style="{background: levelTypeList[record.difficulty].bgColor,color: levelTypeList[record.difficulty].color}">
                       {{levelTypeList[record.difficulty].name}}
-                    </span> -->
+                    </span>
                   </template>
                   <template v-if="column.dataIndex === 'score'">
-                      <a-form-item :name="[index, 'score']" :rules="rulesInput">
+                      <a-form-item :name="[index, 'score']" :rules="validateNum">
                         <a-input class="scoreInput" type="text" v-model:value="record.score" @blur="handleBlur"></a-input>
                       </a-form-item>
                   </template>
@@ -76,7 +76,7 @@
               <a-checkbox :value="item.type">
                 <span class="questionType">{{item.name}}</span>
               </a-checkbox>
-                <a-form-item :name="[index, 'score']" :rules="checkArr.includes(item.type) ? rulesInput : {}">
+                <a-form-item :name="[index, 'score']" :rules="checkArr.includes(item.type) ? validateNum : {}">
                   <a-input class="scoreInput" type="text" v-model:value="item.score" :disabled="!checkArr.includes(item.type)"></a-input>分/题
                 </a-form-item>
             </a-col>
@@ -89,27 +89,9 @@
   </a-modal>
   <!-- 选择题目 -->
   <addQuestion v-model:visible="addVisible" @select="questionSelect"/>
-  <!-- <a-drawer
-      class="addQuestion"
-      :destroyOnClose="true"
-      :closable="false"
-      placement="right"
-      :visible="addVisible"
-      width="1300"
-      @close="closeDrawer"
-    >
-      <div class="select flexCenter">
-        <div class="flexCenter type">
-          <span @click="selectType(0)" :class="{active: selectNum === 0}"> 公开题库 </span>
-          <span @click="selectType(1)" :class="{active: selectNum === 1}"> 我的题库 </span>
-        </div>
-        <span class="iconfont icon-guanbi" @click="closeDrawer"></span>
-      </div>
-      <questionBank :inDrawer="true" :activeTab="selectNum" @addData="handleAddData"/>
-  </a-drawer> -->
 </template>
 <script lang="ts" setup>
-import { ref, reactive, watch } from "vue";
+import { ref, reactive, watch, onMounted, provide } from "vue";
 import CommonCard from "src/components/common/CommonCard.vue";
 import Submit from "src/components/submit/index.vue";
 import addQuestion from './addQuestion.vue'
@@ -117,7 +99,7 @@ import { message } from "ant-design-vue";
 import getTopicType from "src/components/TopicDisplay/topictype.ts"
 import {TotalScore} from "src/utils/common.ts"
 import {validateNum} from "../utils"
-import { levelTypeList, useTypeList } from 'src/components/TopicDisplay/configType'
+import { levelTypeList } from 'src/components/TopicDisplay/configType'
 
 const props = defineProps({
   data: Array,
@@ -133,9 +115,33 @@ const emit = defineEmits<{
   (e: "update:data", val: any): void;
 }>();
 var listData = ref<any>([]); // 表格当前页展示的数据
-var allData = reactive<any>([]); // 所有数据
 const questionSelect = (data:any) => {
   console.log('选择的题目',data)
+  data.forEach((item:any) => {
+    console.log(listData.value)
+    let isExitType = listData.value.filter((a:any) => item.kind === a.type).length
+    let questionItem:any = {
+      id: item.id,
+      question: item.question,
+      difficulty: item.difficulty,
+      score: 5
+    }
+    // 已选的题目里面不存在当前选择题目的类型
+    if (!isExitType) {
+      listData.value.push({
+        id: listData.value.length, // 表格展开
+        type: item.kind,
+        data: [questionItem]
+      })
+    } else {
+      listData.value.forEach((a:any,index:any) => {
+        if (item.kind === a.type) {
+          a.data.push(questionItem)
+        }
+      })
+    }
+  })
+  handleStatistical()
 }
 const columns = [
   {
@@ -199,52 +205,60 @@ var outerIndex:any = null
 const checkArr = ref<string[]>([])
 // 批量设置分数表单验证
 const batchFormRef = ref<any>()
-const rulesInput = validateNum
-const batchData = reactive([
-  {
-    type: 'choice',
-    name: '选择题',
-    score: '',
-    disabled: true
-  },
-  {
-    type: 'program',
-    name: '编程题',
-    score: '',
-    disabled: false
-  },
-  {
-    type: 'judge',
-    name: '判断题',
-    score: '',
-    disabled: false
-  },
-  {
-    type: 'model',
-    name: '模型题',
-    score: '',
-    disabled: false
-  },
-  {
-    type: 'complete',
-    name: '填空题',
-    score: '',
-    disabled: false
-  },
-  {
-    type: 'sql',
-    name: 'SQL题',
-    score: '',
-    disabled: false
-  },
-  {
-    type: 'shortAnswer',
-    name: '简答题',
-    score: '',
-    disabled: false
-  }
+const batchData = reactive<any>([
+  // {
+  //   type: 'choice',
+  //   name: '选择题',
+  //   score: '',
+  //   disabled: true
+  // },
+  // {
+  //   type: 'program',
+  //   name: '编程题',
+  //   score: '',
+  //   disabled: false
+  // },
+  // {
+  //   type: 'judge',
+  //   name: '判断题',
+  //   score: '',
+  //   disabled: false
+  // },
+  // {
+  //   type: 'model',
+  //   name: '模型题',
+  //   score: '',
+  //   disabled: false
+  // },
+  // {
+  //   type: 'complete',
+  //   name: '填空题',
+  //   score: '',
+  //   disabled: false
+  // },
+  // {
+  //   type: 'sql',
+  //   name: 'SQL题',
+  //   score: '',
+  //   disabled: false
+  // },
+  // {
+  //   type: 'shortAnswer',
+  //   name: '简答题',
+  //   score: '',
+  //   disabled: false
+  // }
 ])
-
+onMounted(()=>{
+  for (let i in getTopicType) {
+    batchData.push({
+      type: i,
+      name: getTopicType[i].name,
+      score: '',
+      disabled: true
+    })
+  }
+})
 const customRow = (record:any,index:any) => {
   return {
     style: {
@@ -344,6 +358,8 @@ const handleStatistical = (setItem:Boolean=false) => {
   topInfo.num = 0
   listData.value.forEach((item:any) => {
     topInfo.num += item.data.length
+    item.num = item.data.length
+    item.score = TotalScore(item.data, 'score')
     if (setItem) {
       batchData.forEach((batchItem:any) => {
       if (batchItem.type === item.type && batchItem.score) {
@@ -355,7 +371,6 @@ const handleStatistical = (setItem:Boolean=false) => {
         }
       })
     }
-    
   })
   topInfo.totalScore = TotalScore(listData.value, 'score')
 }
@@ -415,13 +430,30 @@ const tablefromValidate = () => {
 watch(
   () => props.data,
   (newVal:any) => {
+    console.log('传递的数据题目')
     listData.value = JSON.parse(JSON.stringify(newVal))
     handleStatistical()
   },
   { deep: true, immediate: true }
 );
+const questions_ids = ref<any>({})
+const allQuestionIds = reactive<any>([]) // 所有选中题目的id数组
+provide('selectIds', allQuestionIds)
+watch(()=>listData.value, newVal => {
+  allQuestionIds.length = 0
+  questions_ids.value = {}
+  newVal.forEach((item:any) => {
+    item.data.forEach((dItem:any) => {
+      allQuestionIds.push(dItem.id)
+      questions_ids.value[dItem.id] = {
+        score: dItem.score
+      }
+    })
+  })
+  handleStatistical()
+},{ deep: true, immediate: true })
 defineExpose({
-  listData,
+  questions_ids,
   tablefromValidate
 })
 </script>

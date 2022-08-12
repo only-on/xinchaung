@@ -2,6 +2,7 @@
   <common-card title="基础信息">
     <template #content>
       <baseInfo ref="baseInfoRef" :type="type" :formState="baseForm"/>
+      {{baseForm.relation[baseForm.relation.length-1]}}----
     </template>
   </common-card>
   <!-- 手动创建 -->
@@ -41,8 +42,7 @@
               <a-form :model="randomQuestion" ref="randomFormRef">
                 <li v-for="(item,index) in randomQuestion" :key="index">
                   <span class="label">
-                    选择题
-                    <!-- {{getTopicType[item.type].name}}  -->
+                    {{getTopicType[item.type].name}} 
                     <span>({{item.num}}道题可选)</span>
                   </span>
                   <a-form-item :name="[index, 'selectNum']" :rules="validateInput">
@@ -60,7 +60,7 @@
     </common-card>
   </div>
   <!-- 选择学生 -->
-  <studentTable :courseId="baseForm.relation[0]" ref="studentTableRef" :data="baseForm.students_info"/>
+  <studentTable :courseId="baseForm.relation[baseForm.relation.length-1]" ref="studentTableRef" :data="baseForm.students_info"/>
   <Submit @submit="handleSave" @cancel="cancelSave" :loading="saveLoading"></Submit>
 </template>
 <script lang="ts" setup>
@@ -76,8 +76,8 @@ import getTopicType from "src/components/TopicDisplay/topictype"
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import {randomCreatScore} from 'src/utils/common'
-import {validateNum} from "./utils"
-import { object } from "vue-types";
+import {validateNum, formatTime} from "./utils"
+import { levelTypeList } from 'src/components/TopicDisplay/configType'
 const route = useRoute();
 const router = useRouter()
 const http = (request as any).teacherExamination;
@@ -89,7 +89,7 @@ const editId = ref(route.query?.id)
 updata({
   tabs: [
     {
-      name: `${isRandom.value ? "随机创建" : editId ? '复用考试信息编辑':"手动创建"}`,
+      name: `${isRandom.value ? "随机创建" : editId.value ? '复用考试信息编辑':"手动创建"}`,
       componenttype: 0,
     },
   ],
@@ -219,20 +219,7 @@ const validateInput = reactive(
   },trigger: "blur",}
 )
 const randomFormRef = ref<any>()
-const difficultyList= reactive([
-  {
-    value: 'easy',
-    label: '简单'
-  },
-  {
-    value: 'normal',
-    label: '适中'
-  },
-  {
-    value: 'hard',
-    label: '困难'
-  }
-])
+const difficultyList= reactive<any>([])
 const rangeList = reactive([
   {
     value: 1,
@@ -287,11 +274,11 @@ const handleSave = async() => {
   let params:any = {
     course_id: baseForm.relation.length > 1 ? baseForm.relation[baseForm.relation.length - 1] : '',
     name: baseForm.name,
-    started_at: baseForm.date[0] + ':00',
-    closed_at: baseForm.date[1] + ':00',
+    started_at: formatTime(baseForm.date[0]),
+    closed_at: formatTime(baseForm.date[1]),
     note: baseForm.note
   }
-  // 题目信息
+  // 随机创建题目信息
   if (isRandom.value) {
     await randomFormValidate()
     let question_random = {
@@ -306,8 +293,10 @@ const handleSave = async() => {
     })
     Object.assign(params,{question_random: question_random} )
   } else {
+    // 手动创建题目信息
     await questionTableRef.value.tablefromValidate()
-    console.log(questionTableRef.value.listData)
+    Object.assign(params,{question_ids: questionTableRef.value.questions_ids} )
+    console.log(questionTableRef.value.questions_ids)
   }
   if (!studentTableRef.value.studentIds.length) {
     message.warning('请选择学生')
@@ -319,7 +308,7 @@ const handleSave = async() => {
   saveLoading.value = true
   http.addExam({param: params}).then((res:IBusinessResp) => {
     saveLoading.value = false
-    message.success('添加成功')
+    message.success(route.query.isCopy ? '复用成功' : '添加成功')
     router.go(-1)
   }).catch(()=>{
     saveLoading.value = false
@@ -328,18 +317,17 @@ const handleSave = async() => {
 const cancelSave = () => {
   router.go(-1)
 }
+// 获取详情
 const getExamDetail = () => {
   http.examDetail({urlParams:{ID: editId.value}}).then((res:IBusinessResp) => {
     let result = res?.data
-    console.log(result.students_info)
+    if(!result) return
     let questionData = []
     if (Object.keys(result.questions_info).length) {
       for (let i  in result.questions_info) {
         questionData.push({
           id: questionData.length,
           type: i,
-          num: result.questions_info[i].length,
-          score: 0,
           data: result.questions_info[i]
         })
       }
@@ -356,7 +344,17 @@ const getExamDetail = () => {
     console.log(questionData)
   })
 }
+
 onMounted(()=>{
+  for (let i in levelTypeList) {
+    difficultyList.push(
+      {
+        value: i,
+        label: levelTypeList[i].name
+      }
+    )
+  }
+  // 随机创建----获取可选题目的最大数量
   if (isRandom.value) {
     getQuestionMaxLimit()
   }

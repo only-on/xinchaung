@@ -20,7 +20,7 @@
       <div class="right">
         <div class="codeArea">
           <div id="customCode" :style="{'height': codeHeight + 'px'}">
-            <codeMirror :height="codeHeight" v-model:code="code" :lang="lanuageVal.label"/>
+            <codeMirror :height="codeHeight" v-model:code="code" :lang="languageVal.label"/>
           </div>
           <div class="resize">
             <i class="iconfont icon-huakuai1" @mousedown="dragEagle"></i>
@@ -61,7 +61,7 @@
 </a-spin>
 </template>
 <script lang="ts" setup>
-import { ref, reactive, watch, provide, inject ,computed} from "vue";
+import { ref, reactive, watch, provide, inject ,computed, onMounted} from "vue";
 import question from './component/question.vue'
 import codeMirror from './component/codeMirror.vue'
 import lanuageSelect from "./component/lanuageSelect.vue";
@@ -83,15 +83,15 @@ const route = useRoute()
 const http = (request as any).QuestionBank;
 const questionId = ref<any>(route.query.id)
 const problemData = reactive<IproblemData>({
-  title: '题目名称1111',
-  input: '输入格式1111',
-  output: '输出格式1111',
-  sample_input: '样例输入1111',
-  sample_output: '样例输出11111',
+  title: '',
+  input: '',
+  output: '',
+  sample_input: '',
+  sample_output: '',
   time_limit: '0',
   memeoy_limit: 0
 })
-const lanuageVal = reactive({
+const languageVal = reactive({
   value: '',
   label: ''
 })
@@ -149,12 +149,14 @@ const lanuageList = [
     }
   }
   const changeLanugae = (val:any) => {
-    Object.assign(lanuageVal,val)
+    Object.assign(languageVal,val)
+    console.log(languageVal)
   }
 // 题目详情
 const getQuestionDetail = () => {
   http.programDetail({urlParams: {ID: questionId.value}}).then((res:IBusinessResp) => {
     Object.assign(problemData, res.data.problem)
+    problemData.title = res.data.question
     testData.sample = problemData.sample_input
   })
 }
@@ -166,11 +168,11 @@ const getResult = () => {
       testData.loading = false
       clearInterval(testData.timer)
       testData.timer = null
-      if (Object.keys(result.compile_info).length > 0) {
+      if (result.compile_info) {
         testData.resultText = result.compile_info.error
         return
       }
-      if (Object.keys(result.runtime_info).length > 0) {
+      if (result.runtime_info) {
         testData.resultText = result.runtime_info.error
       }
     }
@@ -178,12 +180,13 @@ const getResult = () => {
     testData.loading = false
     clearInterval(testData.timer)
     testData.timer = null
+    testData.resultText = ''
   })
 }
 // 提交
 const handleSubmit =(test_run:boolean) => {
   if (!code.value.trim().length){
-    message.warning('代码不能为空')
+    message.warning('请输入代码')
     return
   }
   if (test_run && !testData.sample.trim().length) {
@@ -191,19 +194,19 @@ const handleSubmit =(test_run:boolean) => {
     return
   }
   let params = {
-    lanuage: lanuageVal.value,
+    language: languageVal.value,
     test_run: test_run,
     source: code.value,
     input_text: testData.sample
   }
-  console.log(params)
-  // testData.loading = true
   http.submitProgramQuestion({urlParams:{ID:questionId.value},param: params}).then((res:IBusinessResp) => {
     if (test_run) {
      solutionId.value = res.data.solution_id
      testData.loading = true
      getResult()
      testData.timer = setInterval(getResult, 3000);
+    } else {
+      message.success('提交成功')
     }
   })
 }
@@ -218,6 +221,9 @@ const closeTab = () => {
     },
   });
 }
+onMounted(()=>{
+  getQuestionDetail()
+})
 
 </script>
 <style lang="less" scoped>

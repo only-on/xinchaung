@@ -85,7 +85,8 @@
             </template>
           </div>
           <div class="right">
-            <a-checkbox v-model:checked="v.checked" @change="checkedHandle"></a-checkbox>
+            <!-- 已选择的在抽屉中禁用 -->
+            <a-checkbox v-model:checked="v.checked" @change="checkedHandle" :disabled="inDrawer && v.checked"></a-checkbox>
           </div>
         </div>
         <div class="info">
@@ -150,11 +151,13 @@ import getTopicType from 'src/components/TopicDisplay/topictype'
 import { levelTypeList, useTypeList } from 'src/components/TopicDisplay/configType'
 interface Props {
   isOperation: boolean,
-  questionList: any
+  questionList: any,
+  inDrawer:boolean
 }
 const props = withDefaults(defineProps<Props>(), {
   isOperation: true,
-  questionList: {}
+  questionList: {},
+  inDrawer: false
 });
 const emit = defineEmits<{
   (e: "menuClick", type: string, val: any): void;
@@ -266,11 +269,11 @@ function handleClick(operateType:string, val: any) {
 }
 function trialHandle(val:any) {
   let path = {
-    5: '/programAnswer',
-    6: './QuestionBank/trialModel'
+    'program': '/programAnswer',
+    'ai': './QuestionBank/trialModel'
   }
   const {href} = router.resolve({
-    path: path[val.type],
+    path: path[val.kind],
     query: {
       id: val.id
     }

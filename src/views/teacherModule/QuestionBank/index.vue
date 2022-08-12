@@ -19,6 +19,7 @@
             :isOperation="isMyQuestion"
             @menuClick="menuClick"
             :questionList="questionListData"
+            :inDrawer="inDrawer"
           ></question-list>
           <Empty v-if="!questionListData.length && !loading" :type="EmptyType" />
           <a-pagination
@@ -136,7 +137,7 @@ const pageInfo = reactive({
 const pageTotal = ref<number>(0);
 const checkedAll = ref(false)
 let questionListData = reactive<any[]>([]);
-const checkedQuestionId = reactive<number[]>([])
+const checkedQuestionId = props.inDrawer ? inject('selectIds') as [] :reactive<number[]>([])
 const bottomVisible = ref(false)
 const isMyQuestion = computed(() => currentTab.value==1)
 const EmptyType: any = computed(() => {
@@ -599,3 +600,4 @@ watch(()=>props.activeTab, newVal => {
   }
 }
 </style>
+

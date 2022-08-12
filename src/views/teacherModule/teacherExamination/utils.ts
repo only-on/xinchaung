@@ -43,3 +43,8 @@ export const initialData = {
   face_verify: false,
   dystropic: false
 }
+// 时间处理
+export const formatTime = (time) => {
+  if (!time) return
+  return time.length < 19 ? time + ':00' : time
+}

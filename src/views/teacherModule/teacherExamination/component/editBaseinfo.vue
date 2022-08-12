@@ -14,6 +14,7 @@ import { Modal, message } from "ant-design-vue";
 import Submit from "src/components/submit/index.vue";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
+import {formatTime} from '../utils.ts'
 const http = (request as any).teacherExamination;
 interface Props {
   type: any;
@@ -34,33 +35,35 @@ const baseInfoRef = ref()
 const getExamDetail = (id:any) => {
   http.examDetail({urlParams:{ID: id}}).then((res:IBusinessResp) => {
     let result = res?.data
+    if (!result) return
     Object.assign(editInfo,{
       name: result.name,
       date: [result.started_at, result.closed_at],
       note: result.note,
       course_id: result.course_id,
-      relation: result.course_id ? [1, result.course_direction.id, result.course_id] : [0]
+      relation: result.course_id ? [1, result.course_direction.name, result.course_info.name] : [0]
     })
+    console.log(editInfo.relation)
   })
 }
-watch(()=>props.id, newVal => {
-  if (newVal) {
-    getExamDetail(newVal)
-  }
-},{immediate:true})
+// watch(()=>props.id, newVal => {
+//   if (newVal) {
+//     console.log('这里')
+//     getExamDetail(newVal)
+//   }
+// },{immediate:true})
 watch(()=>props.visible, newVal => {
   if (newVal) {
     getExamDetail(props.id)
   }
 },{deep:true,immediate:true})
 const handleEdit = async() => {
-  console.log(editInfo)
   await baseInfoRef.value.fromValidate()
   let params = {
     name: editInfo.name,
     course_id: editInfo.relation.length > 1 ?  editInfo.relation[ editInfo.relation.length-1] : 0,
-    started_at: editInfo.date[0].length < 19 ? editInfo.date[0] + ':00' : editInfo.date[0],
-    closed_at: editInfo.date[1].length < 19 ? editInfo.date[1] + ':00' : editInfo.date[1],
+    started_at: formatTime(editInfo.date[0]),
+    closed_at: formatTime(editInfo.date[1]),
     note: editInfo.note
   }
   http.editExam({urlParams:{ID: props.id},param:params}).then((res:IBusinessResp) => {
