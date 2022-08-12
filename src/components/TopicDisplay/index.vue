@@ -249,7 +249,7 @@ const editScore=()=>{
 const optionType:any=reactive(['A','B','C','D','E','F','G'])
 var list:any=reactive([
   {
-    type:1,
+    type:'choice',
     question:[
       {
         question_desc:'在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱，设计规范性差，设计 沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向进行京东国际频道的品牌视觉全新升级， 实现加强正品心智，提升频',
@@ -316,7 +316,7 @@ var list:any=reactive([
     ]
   },
   {
-    type:2,
+    type:'judge',
     question:[
       {
         question_desc:'在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱，设计规范性差，设计 沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向进行京东国际频道的品牌视觉全新升级， 实现加强正品心智，提升频',
@@ -331,7 +331,7 @@ var list:any=reactive([
     ]
   },
   {
-    type:3,
+    type:'blank',
     question:[
       {
         question_desc:'Python关键字elif表示( ▁▁▁▁▁▁ )和( ▁▁▁▁▁▁ )两个单词的缩写。',
@@ -348,7 +348,7 @@ var list:any=reactive([
     ]
   },
   {
-    type:4,
+    type:'short-answer',
     question:[
       {
         question_desc:'在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱，设计规范性差，设计沟通维护成本高。结合前期对用户及竞',
@@ -365,7 +365,7 @@ var list:any=reactive([
     ]
   },
   {
-    type:5,
+    type:'program',
     question:[
       {
         score:22,
@@ -377,7 +377,7 @@ var list:any=reactive([
     ]
   },
   {
-    type:6,
+    type:'ai',
     question:[
       {
         score:15,
@@ -387,7 +387,7 @@ var list:any=reactive([
     ]
   },
   {
-    type:7,
+    type:'sql',
     question:[
       {
         score:28,
