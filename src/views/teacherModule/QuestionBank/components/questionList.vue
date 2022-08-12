@@ -94,8 +94,8 @@
         <div class="info">
           <div class="left">
             <span class="user-info" v-if="!isOperation">
-              <img :src="defaultAvatar" alt="" srcset="">
-              <span class="user-name">小黄帽姑娘</span>
+              <img :src="v.user_profile?.profilephoto?v.user_profile.profilephoto:defaultAvatar" alt="" srcset="">
+              <span class="user-name">{{v.user_profile?.name?v.user_profile.name:'小黄帽姑娘'}}</span>
             </span>
             <span 
               class="level" 
@@ -335,6 +335,7 @@ const judgeOption = {
             display: inline-block;
             width: 24px;
             height: 24px;
+            border-radius: 12px;
           }
         }
         .level {

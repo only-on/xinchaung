@@ -20,7 +20,7 @@
         <span class="iconfont icon-wenjianjia2-mianxing" v-if="expanded"></span>
         <span class="iconfont icon-wenjianjia1-mianxing" v-else></span>
       </span>
-      <span v-else><span class="iconfont icon-wenjianjia2-mianxing"></span></span>
+      <span v-else><span class="iconfont icon-wenjianjia"></span></span>
     </template>
     <template #title="{ dataRef }">
       <span class="tree-title">
