@@ -4,7 +4,6 @@
       v-model:fileList="fileList"
       name="file"
       :multiple="true"
-      action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
       @change="handleChange1"
       @drop="handleDrop"
       :before-upload="beforeUpload"
@@ -32,16 +31,13 @@ import { Modal, message } from "ant-design-vue";
 import uploadFile from "src/request/uploadFile";
 const env = process.env.NODE_ENV == "development" ? true : false;
 interface Props {
-  apiInterface: any;
-  path: any;
-  useCaseFile: any;
+  fileInfo: any;
 }
 const props = withDefaults(defineProps<Props>(), {
-  apiInterface: () => null,
-  path: () => "",
-  useCaseFile: () => {},
+  fileInfo: () => {},
 });
 const fileList: any = ref([]);
+const infoList:any=ref([])
 function handleChange1(info: any) {
   const status = info.file.status;
   if (status !== "uploading") {
@@ -54,11 +50,10 @@ function handleChange1(info: any) {
   }
 }
 function handleDrop(e: any) {
-  console.log(e);
-  console.log(props.apiInterface);
+
 }
 const emit = defineEmits<{
-  (e: "update:useCaseFile", val: any): void;
+  (e: "update:fileInfo", val: any): void;
 }>();
 // 上传前
 function beforeUpload(file: any) {
@@ -76,19 +71,27 @@ function beforeUpload(file: any) {
   fileList.value[i].status = "loading";
   const body = {
     file: file,
-    uploadFiled: "file",
-    upload_path: "temp/",
+    upload_path: "createQues",
+    default_name:1,
   };
 
   fileList.value[i].upload = new uploadFile({
-    url: env ? props.apiInterface : props.apiInterface,
+    url: env ? '/proxyPrefix/api/instance/uploads/file':'/api/instance/uploads/file',
     body,
     success: (res: any) => {
       if (res.code == 1) {
         fileList.value[i].status = "finish";
         fileList.value [i].progress = "100%";
         console.log(res.data.pdf_path, "res.data.props.path");
-        emit("update:useCaseFile", res.data.pdf_path);
+        let suffix = res.data.name.slice(res.data.name.indexOf('.')+1)
+        const info={
+          file_name:res.data.name,
+          file_url:res.data.full_url,
+          size:res.data.size,
+          suffix:suffix
+        }
+        infoList.value.push(info)
+        emit("update:fileInfo",infoList.value);
       } else {
         fileList.value[i].progress = 0;
         message.warn(res.msg);

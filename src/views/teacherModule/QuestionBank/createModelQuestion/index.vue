@@ -33,11 +33,13 @@
         </a-col>
         <a-col :span="12">
           <a-form-item name="catalogue" label="选择目录">
-            <a-cascader
+            <!-- <a-cascader
               v-model:value="formState.catalogue"
               :options="options"
               placeholder="请选择"
-            />
+            /> -->
+             {{formState.catalogue}}
+            <select-directory v-model:catalogue='formState.catalogue'></select-directory>
           </a-form-item>
         </a-col>
         <a-col v-if="['5', '6'].includes(type)" :span="12">
@@ -101,7 +103,7 @@
         </a-col>
         <a-col v-if="type == 6" :span="12">
           <a-form-item name="trainingSetPath" label="上传训练集">
-            <a-upload-dragger
+            <!-- <a-upload-dragger
               v-model:fileList="fileList"
               name="file"
               :multiple="true"
@@ -113,7 +115,9 @@
                     <i class="iconfont icon-upload"></i>
                 </p>
                 <p class="ant-upload-text">点击或将文件拖拽到这里上传</p>
-            </a-upload-dragger>
+            </a-upload-dragger> -->
+            {{formState.trainingSetPath}}
+            <upload-file v-model:fileInfo='formState.trainingSetPath'></upload-file>
           </a-form-item>
         </a-col>
         <a-col v-if="type == 6" :span="12">
@@ -122,7 +126,7 @@
               上传验证集
               <span class="tiptit">此文件不对学生展示</span>
             </template>
-            <a-upload-dragger
+            <!-- <a-upload-dragger
               v-model:fileList="fileList"
               name="file"
               :multiple="true"
@@ -134,7 +138,9 @@
                     <i class="iconfont icon-upload"></i>
                 </p>
                 <p class="ant-upload-text">点击或将文件拖拽到这里上传</p>
-            </a-upload-dragger>
+            </a-upload-dragger> -->
+            {{formState.validationSetPath}}
+            <upload-file v-model:fileInfo='formState.validationSetPath'></upload-file>
           </a-form-item>
         </a-col>
       </a-row>
@@ -164,6 +170,7 @@ import request from "src/api/index";
 import markedEditor from "src/components/editor/markedEditor.vue";
 import labelSelection from 'src/components/labelSelection/index.vue'
 import uploadFile from 'src/components/uploadFile.vue'
+import selectDirectory from 'src/components/selectDirectory/index.vue'
 import { Modal, message } from "ant-design-vue";
 const route = useRoute();
 const router = useRouter();
@@ -222,9 +229,9 @@ const formState = reactive({
   // 评测数据
   evaluationData:'',
   // 训练集路径
-  trainingSetPath:'',
+  trainingSetPath:[],
   // 验证集路径
-  validationSetPath:'',
+  validationSetPath:[],
   // 导入的题目路径
   topicTemplatePath:'',
 
@@ -388,26 +395,15 @@ const rules = {
 function createModelQues(){
   const params={
     question:formState.name,
-    used_by:formState.purpose,
-    category_id:1,
+    usedBy:formState.purpose,
+    categoryId:1,
     difficulty:formState.difficulty,
-    // knowledge_ids:formState.knowledgePoints,
-    knowledge:[],
-    question_desc:formState.stem,
-    ai_test_desc:formState.evaluationDescription,
+    knowledgeMapIds:formState.knowledgePoints,
+    questionDesc:formState.stem,
+    aiTestDesc:formState.evaluationDescription,
     pattern:formState.evaluationData,
-    // practice: [{
-    // file_name: "aaa124.txt",
-    // file_url: "/tmp/aaa1144.txt",
-    // size: 100,
-    // suffix: "txt"
-    //   }],
-    // verify: [{
-    // file_name: "aaa63444.txt",
-    // file_url: "/tmp/aaa163222.txt",
-    // size: 100,
-    // suffix: "txt"
-    // }]
+    practice:formState.trainingSetPath,
+    verify:formState.validationSetPath
   }
   http.modelQues({param:params}).then((res:any)=>{
     if(res.code==1){
@@ -416,7 +412,7 @@ function createModelQues(){
   })
 }
 function onSubmit(){
-  console.log(formState.multipleQuesSelection,'哈哈哈哈西西休息')
+  console.log(formState.multipleQuesSelection,'哈哈哈哈西西休息') 
   formRef.value
     .validate()
     .then((res: any) => {

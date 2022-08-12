@@ -458,6 +458,7 @@ function createSolutionQues(){
     })
 }
 function onSubmit(){
+  createSolutionQues()
   formRef.value.validate().then((res: any) => {
       switch(type.value){
         case "1":

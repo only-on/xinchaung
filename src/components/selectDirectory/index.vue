@@ -31,12 +31,14 @@ const props = withDefaults(defineProps<Props>(),{
 });
 const emit = defineEmits<{
   (e: "update:catalogue", val: any): void;
+  (e: "vertifyAgain",val:any): void;
 }>();
+const options:any=ref([])
 function change(value:any, selectedOptions:any){
     console.log(value,selectedOptions,'value,selectedOptions')
   emit("update:catalogue",props.catalogue);
-};
-const options:any=ref([])
+  emit("vertifyAgain",props.catalogue)
+}
 function loadData(selectedOptions:any){
     console.log(selectedOptions[0].id,'selectedOptions')
       const targetOption = selectedOptions[selectedOptions.length - 1];

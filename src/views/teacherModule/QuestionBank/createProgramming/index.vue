@@ -10,7 +10,7 @@
       :rules="rules"
     >
       <a-row :gutter="24">
-        <a-col v-if="['5', '6'].includes(type)" :span="12">
+        <a-col :span="12">
           <a-form-item name="name" label="题目名称">
             <a-input
               v-model:value="formState.name"
@@ -18,7 +18,7 @@
             ></a-input>
           </a-form-item>
         </a-col>
-        <a-col v-if="type != 7" :span="12">
+        <a-col :span="12">
           <a-form-item name="purpose" label="题目用途">
             <a-select
               ref="select"
@@ -29,26 +29,23 @@
             </a-select>
           </a-form-item>
         </a-col>
-        <a-col v-if="!['5', '6'].includes(type) && type != 7" :span="12">
-          <a-form-item name="difficulty" label="难度系数">
-            <label-selection v-model:difficulty='formState.difficulty' :options='[{name:"简单",value:1},{name:"适中",value:2},{name:"困难",value:3}]'></label-selection>
-          </a-form-item>
-        </a-col>
         <a-col :span="12">
           <a-form-item name="catalogue" label="选择目录">
-            <a-cascader
+            <!-- <a-cascader
               v-model:value="formState.catalogue"
               :options="options"
               placeholder="请选择"
-            />
+            /> -->
+             {{formState.catalogue}}
+            <select-directory v-model:catalogue='formState.catalogue' @vertifyAgain='validateCataloge'></select-directory>
           </a-form-item>
         </a-col>
-        <a-col v-if="['5', '6'].includes(type)" :span="12">
+        <a-col :span="12">
           <a-form-item name="difficulty" label="难度系数">
             <label-selection v-model:difficulty='formState.difficulty' :options='[{name:"简单",value:"easy"},{name:"适中",value:"normal"},{name:"困难",value:"hard"}]'></label-selection>
           </a-form-item>
         </a-col>
-         <a-col :span="['1','2','3','4','7'].includes(type)? 12 : 24">
+         <a-col :span="24">
           <a-form-item name="knowledgePoints">
             <template v-slot:label>
               <div>
@@ -66,7 +63,7 @@
           </a-form-item>
         </a-col> 
         <!-- 编程题 模型题 -->
-        <a-col v-if="type == 5" :span="12">
+        <a-col :span="12">
           <a-form-item label="内存限制" name="memoryLimit">
             <a-input
               v-model:value="formState.memoryLimit"
@@ -74,7 +71,7 @@
             ></a-input>
           </a-form-item>
         </a-col>
-        <a-col v-if="type == 5" :span="12">
+        <a-col :span="12">
           <a-form-item label="时间限制" name="timeLimit">
             <a-input
               v-model:value="formState.timeLimit"
@@ -83,7 +80,7 @@
           </a-form-item>
         </a-col>
         <!-- 编程题-->
-        <a-col v-if="type != 7" :span="24">
+        <a-col :span="24">
           <a-form-item name="stem" label="题目描述">
             <marked-editor
               v-model="formState.stem"
@@ -92,7 +89,7 @@
             />
           </a-form-item>
         </a-col>
-        <a-col v-if="type == 5" :span="24">
+        <a-col :span="24">
           <a-form-item label="输入格式" name="inputFormat">
             <marked-editor
               v-model="formState.inputFormat"
@@ -101,7 +98,7 @@
             />
           </a-form-item>
         </a-col>
-        <a-col v-if="type == 5" :span="24">
+        <a-col  :span="24">
           <a-form-item label="输出格式" name="outputFormat">
             <marked-editor
               v-model="formState.outputFormat"
@@ -110,17 +107,17 @@
             />
           </a-form-item>
         </a-col>
-        <a-col v-if="type == 5" :span="12">
+        <a-col  :span="12">
           <a-form-item label="样例输入" name="sampleInput">
             <a-textarea v-model:value="formState.sampleInput" :rows="4" />
           </a-form-item>
         </a-col>
-        <a-col v-if="type == 5" :span="12">
+        <a-col  :span="12">
           <a-form-item label="样例输出" name="sampleOutput">
             <a-textarea v-model:value="formState.sampleOutput" :rows="4" />
           </a-form-item>
         </a-col>
-        <a-col v-if="type == 5" :span="24">
+        <a-col  :span="24">
           <a-form-item label="测试用例" name="testCase">
             <div class="spance_bet">
               <a-radio-group v-model:value="formState.testCase" name="radioGroup">
@@ -132,17 +129,17 @@
           </a-form-item>
         </a-col>
          {{inputAndOut}}
-        <a-col v-if="type == 5&&formState.testCase=='text'" :span="24">
+        <a-col v-if="formState.testCase=='text'" :span="24">
           <test-case v-model:inputAndOut='inputAndOut'></test-case>
         </a-col>
-        <a-col v-if="type == 5&&formState.testCase=='file'" :span="12">
+        <a-col v-if="formState.testCase=='file'" :span="12">
           <a-form-item label="批量上传用例文件" name="useCaseFile">
             {{formState.useCaseFile}}00
-            <upload-file apiInterface='/api/simple/report/templates/import-template' path='pdf_path' v-model:useCaseFile='formState.useCaseFile'>
+            <upload-file v-model:fileInfo='formState.useCaseFile'>
             </upload-file>
           </a-form-item>
         </a-col>
-        <a-col v-if="type == 5&&formState.testCase=='file'" :span="12">
+        <a-col v-if="formState.testCase=='file'" :span="12">
           <div class="upload_limit">
             上传限制：
             <br />
@@ -150,15 +147,6 @@
             2、输入输出文件需文件名称一一对应，未对应时，将无法上传。 <br />
             3、单个上传文件不能超过100MB，超过时可以分批次上传。
           </div>
-        </a-col>
-        <a-col v-if="!['5', '6'].includes(type) && type != 7" :span="24">
-          <a-form-item label="题目解析" name="topicAnalysis">
-            <marked-editor
-              v-model="formState.topicAnalysis"
-              :preview="preview"
-              style="width: 100%"
-            />
-          </a-form-item>
         </a-col>
       </a-row>
     </a-form>
@@ -188,8 +176,11 @@ import markedEditor from "src/components/editor/markedEditor.vue";
 import labelSelection from 'src/components/labelSelection/index.vue'
 import testCase from '../components/testCase/index.vue'
 import uploadFile from 'src/components/uploadFile.vue'
+import selectDirectory from 'src/components/selectDirectory/index.vue'
+
 
 import { Modal, message } from "ant-design-vue";
+import type { Rule } from 'ant-design-vue/es/form';
 const route = useRoute();
 const router = useRouter();
 const type: any = ref(route.query.value);
@@ -266,40 +257,6 @@ const formState = reactive({
   // 答案
   judgeAnswer: "1",
 });
-var options: any[] = [
-  {
-    value: "zhejiang",
-    label: "Zhejiang",
-    children: [
-      {
-        value: "hangzhou",
-        label: "Hangzhou",
-        children: [
-          {
-            value: "xihu",
-            label: "West Lake",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    value: "jiangsu",
-    label: "Jiangsu",
-    children: [
-      {
-        value: "nanjing",
-        label: "Nanjing",
-        children: [
-          {
-            value: "zhonghuamen",
-            label: "Zhong Hua Men",
-          },
-        ],
-      },
-    ],
-  },
-];
 const options1: any = [
   {
     label: "Light",
@@ -338,6 +295,15 @@ const selectOptions: any = ref([
   { label: 0, value: "" },
   { label: 1, value: "" },
 ]);
+let validateCataloge = async (_rule?: Rule, value?: any) => {
+  setTimeout(()=>{
+    if(formState.catalogue?.length==0){
+    return Promise.reject('请选择目录！！');
+  }else{
+    return Promise.resolve();
+  }
+  },1000)
+};
 const rules = {
   name: [
     {
@@ -356,7 +322,8 @@ const rules = {
   catalogue: [
     {
       required: true,
-      message: "请选择目录",
+      validator:validateCataloge,
+      // message: "请选择目录",
     },
   ],
   memoryLimit:[
@@ -422,7 +389,7 @@ function createProgramQues(){
   const params={
     question:formState.name,
     used_by:formState.purpose,
-    category_id:1,
+    category_id:formState.catalogue[formState.catalogue.length-1],
     difficulty:formState.difficulty,
     // knowledge_ids:formState.knowledgePoints,
     knowledge_ids:[],
@@ -435,7 +402,7 @@ function createProgramQues(){
     sample_output:formState.sampleOutput,
     test_case: { // 测试用例
         type: formState.testCase,
-        data:testCaseData,
+        data:formState.testCase=='text'?testCaseData:formState.useCaseFile,
     }   
   }
   http.programQues({param:params}).then((res:any)=>{
