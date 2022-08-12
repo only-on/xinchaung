@@ -115,34 +115,6 @@ const emit = defineEmits<{
   (e: "update:data", val: any): void;
 }>();
 var listData = ref<any>([]); // 表格当前页展示的数据
-const questionSelect = (data:any) => {
-  console.log('选择的题目',data)
-  data.forEach((item:any) => {
-    console.log(listData.value)
-    let isExitType = listData.value.filter((a:any) => item.kind === a.type).length
-    let questionItem:any = {
-      id: item.id,
-      question: item.question,
-      difficulty: item.difficulty,
-      score: 5
-    }
-    // 已选的题目里面不存在当前选择题目的类型
-    if (!isExitType) {
-      listData.value.push({
-        id: listData.value.length, // 表格展开
-        type: item.kind,
-        data: [questionItem]
-      })
-    } else {
-      listData.value.forEach((a:any,index:any) => {
-        if (item.kind === a.type) {
-          a.data.push(questionItem)
-        }
-      })
-    }
-  })
-  handleStatistical()
-}
 const columns = [
   {
     title: "题目类型",
@@ -175,6 +147,7 @@ const innerColumns = [
     title: "题目",
     dataIndex: "question",
     key: "question",
+    ellipsis: true
   },
   {
     title: "难度",
@@ -205,50 +178,7 @@ var outerIndex:any = null
 const checkArr = ref<string[]>([])
 // 批量设置分数表单验证
 const batchFormRef = ref<any>()
-const batchData = reactive<any>([
-  // {
-  //   type: 'choice',
-  //   name: '选择题',
-  //   score: '',
-  //   disabled: true
-  // },
-  // {
-  //   type: 'program',
-  //   name: '编程题',
-  //   score: '',
-  //   disabled: false
-  // },
-  // {
-  //   type: 'judge',
-  //   name: '判断题',
-  //   score: '',
-  //   disabled: false
-  // },
-  // {
-  //   type: 'model',
-  //   name: '模型题',
-  //   score: '',
-  //   disabled: false
-  // },
-  // {
-  //   type: 'complete',
-  //   name: '填空题',
-  //   score: '',
-  //   disabled: false
-  // },
-  // {
-  //   type: 'sql',
-  //   name: 'SQL题',
-  //   score: '',
-  //   disabled: false
-  // },
-  // {
-  //   type: 'shortAnswer',
-  //   name: '简答题',
-  //   score: '',
-  //   disabled: false
-  // }
-])
+const batchData = reactive<any>([])
 onMounted(()=>{
   for (let i in getTopicType) {
     batchData.push({
@@ -259,6 +189,36 @@ onMounted(()=>{
     })
   }
 })
+// 选择的题目
+const questionSelect = (data:any) => {
+  console.log('选择的题目',data)
+  data.forEach((item:any) => {
+    let isExitType = listData.value.filter((a:any) => item.kind === a.type).length
+    let questionItem:any = {
+      id: item.id,
+      question: item.question,
+      difficulty: item.difficulty,
+      score: 5
+    }
+    // 已选的题目里面不存在当前选择题目的类型
+    if (!isExitType) {
+      listData.value.push({
+        id: listData.value.length, // 表格展开
+        type: item.kind,
+        data: [questionItem]
+      })
+    } else {
+      listData.value.forEach((outerItem:any,index:any) => {
+        if (item.kind === outerItem.type) {
+          let isExit = outerItem.data.filter((innerItem:any) => innerItem.id === questionItem.id).length
+          if (isExit) return
+          outerItem.data.push(questionItem)
+        }
+      })
+    }
+  })
+  handleStatistical()
+}
 const customRow = (record:any,index:any) => {
   return {
     style: {
@@ -430,7 +390,6 @@ const tablefromValidate = () => {
 watch(
   () => props.data,
   (newVal:any) => {
-    console.log('传递的数据题目')
     listData.value = JSON.parse(JSON.stringify(newVal))
     handleStatistical()
   },
@@ -439,6 +398,7 @@ watch(
 const questions_ids = ref<any>({})
 const allQuestionIds = reactive<any>([]) // 所有选中题目的id数组
 provide('selectIds', allQuestionIds)
+// 监测表格数据，计算统计数据
 watch(()=>listData.value, newVal => {
   allQuestionIds.length = 0
   questions_ids.value = {}

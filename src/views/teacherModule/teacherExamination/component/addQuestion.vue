@@ -40,7 +40,6 @@ const closeDrawer = () => {
   emit('update:visible', false)
 }
 const handleAddData = (data:any) => {
-  console.log(data)
   emit('select',data)
   emit('update:visible', false)
 }

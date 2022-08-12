@@ -136,7 +136,7 @@ const pageInfo = reactive({
 const pageTotal = ref<number>(0);
 const checkedAll = ref(false)
 let questionListData = reactive<any[]>([]);
-const checkedQuestionId = props.inDrawer ? inject('selectIds') as [] :reactive<number[]>([])
+const checkedQuestionId = props.inDrawer ? JSON.parse(JSON.stringify(inject('selectIds') as number[])) :reactive<number[]>([])
 const bottomVisible = ref(false)
 const isMyQuestion = computed(() => currentTab.value==1)
 const EmptyType: any = computed(() => {
@@ -169,6 +169,7 @@ const pageChange = (page: number) => {
   pageInfo.page = page;
   initData();
 };
+// 添加题目
 const handleDrawer = () => {
   let selectData:any = []
   questionListData.forEach((item:any)=>{
@@ -180,7 +181,6 @@ const handleDrawer = () => {
     message.warning('请选择要添加的数据')
     return
   }
-  console.log(selectData)
   emit('addData', selectData)
 }
 const selectedTree = (id: number) => {  // 选择目录

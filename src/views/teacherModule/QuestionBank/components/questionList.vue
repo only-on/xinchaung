@@ -88,7 +88,7 @@
           </div>
           <div class="right">
             <!-- 已选择的在抽屉中禁用 -->
-            <a-checkbox v-model:checked="v.checked" @change="checkedHandle" :disabled="inDrawer && v.checked"></a-checkbox>
+            <a-checkbox v-model:checked="v.checked" @change="checkedHandle" :disabled="selectIds.includes(v.id) && v.checked"></a-checkbox>
           </div>
         </div>
         <div class="info">
@@ -141,7 +141,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, inject } from 'vue'
 import { useRouter, useRoute } from "vue-router";
 import moment from 'moment';
 import defaultAvatar from 'src/assets/images/user/admin_p.png'
@@ -164,6 +164,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<{
   (e: "menuClick", type: string, val: any): void;
 }>();
+const selectIds = inject('selectIds') as number[] // 已选中的题目id
 const router = useRouter();
 const route = useRoute();
 const optionType:any=reactive(['A','B','C','D','E','F','G'])

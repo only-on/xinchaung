@@ -2,7 +2,6 @@
   <common-card title="基础信息">
     <template #content>
       <baseInfo ref="baseInfoRef" :type="type" :formState="baseForm"/>
-      {{baseForm.relation[baseForm.relation.length-1]}}----
     </template>
   </common-card>
   <!-- 手动创建 -->
