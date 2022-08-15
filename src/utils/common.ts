@@ -7,39 +7,12 @@ import { message } from "ant-design-vue";
 function numToAbc(num: number) {
   return String.fromCharCode(64 + num);
 }
-
-// 节内转换算法
-function SectionToChinese(section: any) {
-  let chnNumChar = ["零", "一", "二", "三", "四", "五", "六", "七", "八", "九"];
-  var chnUnitChar = ["", "十", "百", "千"];
-  var strIns = "",
-    chnStr = "";
-  var unitPos = 0;
-  var zero = true;
-  while (section > 0) {
-    var v = section % 10;
-    if (v === 0) {
-      if (!zero) {
-        zero = true;
-        chnStr = chnNumChar[v] + chnStr;
-      }
-    } else {
-      zero = false;
-      strIns = chnNumChar[v];
-      strIns += chnUnitChar[unitPos];
-      chnStr = strIns + chnStr;
-    }
-    unitPos++;
-    section = Math.floor(section / 10);
-  }
-  return chnStr;
-}
 /**
  * @param num 数字
  * @description 数字转换中文数字
  */
 
-function NoToCh(num: number) {
+function NoToCh (num: number) {
   var arr1 = new Array('零', '一', '二', '三', '四', '五', '六', '七', '八', '九');    
 
     var arr2 = new Array('', '十', '百', '千', '万', '十', '百', '千', '亿', '十', '百', '千','万', '十', '百', '千','亿');//可继续追加更高位转盯蚂言换值    

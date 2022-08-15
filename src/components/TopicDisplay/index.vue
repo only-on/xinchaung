@@ -217,7 +217,7 @@ import storage from "src/utils/extStorage";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
-import {NoToCh,TotalScore,randomCreatScore,Debounce} from 'src/utils/common'
+import {NoToCh,TotalScore,Debounce} from 'src/utils/common'
 import getTopicType from './topictype'
 const role = Number(storage.lStorage.get("role"));
 const router = useRouter();
