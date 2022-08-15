@@ -33,17 +33,17 @@ export default {
   choiceDetail:{url: ` /api/v1/xinchuang/question/choice_question/{questionId}`, method: "GET"},
   judgeDetail:{url:`/api/v1/xinchuang/question/judge_questions/{questionId}`, method: "GET"},
   complateDetail:{url:`/api/v1/xinchuang/question/blank_questions/{questionId}`, method: "GET"},
-  solutionDetail:{url:`/api/v1/xinchuang/question/blank_questions/{questionId}`, method: "GET"},
+  solutionDetail:{url:`/api/v1/xinchuang/question/short_answer_question/{questionId}`, method: "GET"},
   programDetail:{url:`/api/v1/xinchuang/question/program-questions/{ID}`,method: "GET"},
   modelDeatil:{url:` /api/v1/xinchuang/question/model-questions/{questionId}`,method: "GET"},
 
   // 编辑习题
   editChoice:{url:` /api/v1/xinchuang/question/choice_question/{questionId}`,method: "PUT",dataType: "json"},
-  editJudge:{url:` /api/v1/xinchuang/question/judge_questions/{questionId}`,method: "PUT"},
-  editComplate:{url:`/api/v1/xinchuang/question/blank_questions/{questionId}`,method: "PUT"},
-  editSolution:{url:`/api/v1/xinchuang/question/short_answer_question/{questionId}`,method: "PUT"},
-  editProgram:{url:`/api/v1/xinchuang/question/program-questions/{ID}`,method: "PUT"},
-  editModel:{url:`/api/v1/xinchuang/question/model-questions/{questionId}`,method: "PUT"},
+  editJudge:{url:` /api/v1/xinchuang/question/judge_questions/{questionId}`,method: "PUT",dataType: "json"},
+  editComplate:{url:`/api/v1/xinchuang/question/blank_questions/{questionId}`,method: "PUT",dataType: "json"},
+  editSolution:{url:`/api/v1/xinchuang/question/short_answer_question/{questionId}`,method: "PUT",dataType: "json"},
+  editProgram:{url:`/api/v1/xinchuang/question/program-questions/{ID}`,method: "PUT",dataType: "json"},
+  editModel:{url:`/api/v1/xinchuang/question/model-questions/{questionId}`,method: "PUT",dataType: "json"},
 
   // 试用编程题
   ojConfig:{url:`/api/v1/oj/config`,method: "GET"},

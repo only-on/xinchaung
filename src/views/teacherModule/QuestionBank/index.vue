@@ -251,8 +251,7 @@ function menuClick(type:string, val: any) {
   currentQuestionId.value = val.i
   switch (type) {
     case 'edit':
-      // const kind={'choice':'1';judge:'2',black:'3',short-answer:'4',program:'5',ai:'6'}
-      editQuestion(val.type,val.id)
+      editQuestion(val.kind,val.id)
       break;
     case 'delete':
       deleteQuestion()
@@ -269,18 +268,37 @@ function menuClick(type:string, val: any) {
   }
 }
 function editQuestion(key: number,id:any) {
+  console.log(key,'key')
   let name = ''
   let path=''
   let questionId:any=id
+   // let kind:any={choice:1,judge:2,black:3,'short-answer':4,program:5,ai:6}
+  let kind:any=[
+    {key:'choice',value:1},
+    {key:'judge',value:2},
+    {key:'blank',value:3},
+    {key:'short-answer',value:4},
+    {key:'program',value:5},
+    {key:'ai',value:6},
+  ]
+  let typeNum:any=''
+  kind.forEach((item:any,index:any)=> {
+    if(item.key==key){
+      console.log('hahhahahhah',item)
+      typeNum=item.value
+      return
+    }
+  });
   createQuestionTypeList.forEach((v => {
-    if (v.key === key){
+    if (v.key ==typeNum){
+      console.log('hhhh ',v)
       name = v.name
       path=v.path
     }
   }))
   router.push ({
     path:path,
-    query:{ questionId:questionId,value:key, name}
+    query:{ questionId:questionId,value:typeNum,name:name}
   })
 }
 function deleteQuestion() {

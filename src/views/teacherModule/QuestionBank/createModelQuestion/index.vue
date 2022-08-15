@@ -39,7 +39,7 @@
               placeholder="请选择"
             /> -->
              {{formState.catalogue}}
-            <select-directory v-model:catalogue='formState.catalogue'></select-directory>
+            <select-directory v-model:catalogue='formState.catalogue' @vertifyAgain='validateCataloge'></select-directory>
           </a-form-item>
         </a-col>
         <a-col v-if="['5', '6'].includes(type)" :span="12">
@@ -172,16 +172,18 @@ import labelSelection from 'src/components/labelSelection/index.vue'
 import uploadFile from 'src/components/uploadFile.vue'
 import selectDirectory from 'src/components/selectDirectory/index.vue'
 import { Modal, message } from "ant-design-vue";
+import type { Rule } from 'ant-design-vue/es/form';
 const route = useRoute();
 const router = useRouter();
 const type: any = ref(route.query.value);
 const name: any = route.query.name;
+const editId:any=route.query?.questionId;
 const http = (request as any).QuestionBank;
 const caseFile=http.caseFile
 var updata = inject("updataNav") as Function;
 const fileList: any = [];
 updata({
-  tabs: [{ name: "创建" + name, componenttype: 0 }],
+  tabs: [{ name:(editId?"编辑":"创建") + name, componenttype: 0 }],
   showContent: true,
   componenttype: undefined,
   showNav: true,
@@ -316,6 +318,15 @@ const selectOptions: any = ref([
   { label: 0, value: "" },
   { label: 1, value: "" },
 ]);
+let validateCataloge = async (_rule?: Rule, value?: any) => {
+  setTimeout(()=>{
+    if(formState.catalogue?.length==0){
+    return Promise.reject('请选择目录！！');
+  }else{
+    return Promise.resolve();
+  }
+  },1000)
+};
 const rules = {
   name: [
     {
@@ -333,8 +344,9 @@ const rules = {
   ],
   catalogue: [
     {
-      required: true,
-      message: "请选择目录",
+      // required: true,
+      // message: "请选择目录",
+      validator:validateCataloge,
     },
   ],
   memoryLimit:[
@@ -411,12 +423,31 @@ function createModelQues(){
     }
   })
 }
+function editModalQues(){
+  const params={
+    question:formState.name,
+    usedBy:formState.purpose,
+    categoryId:188,
+    difficulty:formState.difficulty,
+    knowledgeMapIds:formState.knowledgePoints,
+    questionDesc:formState.stem,
+    aiTestDesc:formState.evaluationDescription,
+    pattern:formState.evaluationData,
+    practice:formState.trainingSetPath,
+    verify:formState.validationSetPath
+  }
+  http.editModel({param:params,urlParams:{questionId:editId}}).then((res:any)=>{
+    if(res.code==1){
+      message.success('编辑成功')
+    }
+  })
+}
 function onSubmit(){
   console.log(formState.multipleQuesSelection,'哈哈哈哈西西休息') 
   formRef.value
     .validate()
     .then((res: any) => {
-      createModelQues()  
+      editId?editModalQues():createModelQues()  
     })
     .catch((err: any) => {
       console.log("error", err);
@@ -426,6 +457,27 @@ function reset(){
   // formRef.value.resetFields();
   router.go(-1);
 };
+function getModalQuesData(){
+   http.modelDeatil({urlParams:{questionId:editId}}).then((res:any)=>{
+      if(res.code==1){
+        const data=res.data
+        formState.name=data.question
+        formState.purpose=data.usedBy
+        formState.difficulty=data.difficulty
+        formState.evaluationDescription=data.aiTestDesc
+        // formState.catalogue=data.category_id
+        // formState.catalogue=selectDire.value.processingEchoData([93,188])
+        formState.knowledgePoints=data.knowledge_map_ids
+        formState.stem=data.questionDesc
+        formState.evaluationData=data.pattern
+      }
+    })
+}
+onMounted(()=>{
+  if(editId){
+     getModalQuesData();
+  }
+})
 </script>
 <style lang="less" scoped>
 .create_ques {

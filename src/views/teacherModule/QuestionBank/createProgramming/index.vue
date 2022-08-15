@@ -186,11 +186,12 @@ const router = useRouter();
 const type: any = ref(route.query.value);
 const name: any = route.query.name;
 const http = (request as any).QuestionBank;
+const editId:any=route.query?.questionId;
 const caseFile=http.caseFile
 var updata = inject("updataNav") as Function;
 const fileList: any = [];
 updata({
-  tabs: [{ name: "创建" + name, componenttype: 0 }],
+  tabs: [{ name:(editId?"编辑":"创建") + name, componenttype: 0 }],
   showContent: true,
   componenttype: undefined,
   showNav: true,
@@ -405,9 +406,41 @@ function createProgramQues(){
         data:formState.testCase=='text'?testCaseData:formState.useCaseFile,
     }   
   }
+
   http.programQues({param:params}).then((res:any)=>{
     if(res.code==1){
         message.success('创建成功')
+      }
+  })
+}
+function editProgressQues(){
+  const testCaseData:any=[]
+  inputAndOut.value.forEach((item:any,index:any)=>{
+    testCaseData.push({in:item.inputCon,out:item.outCon})
+  })
+  const params={
+    question:formState.name,
+    used_by:formState.purpose,
+    category_id:formState.catalogue[formState.catalogue.length-1],
+    difficulty:formState.difficulty,
+    // knowledge_ids:formState.knowledgePoints,
+    knowledge_ids:[],
+    memory_limit:Number(formState.memoryLimit),
+    time_limit:Number(formState.timeLimit),
+    question_desc:formState.stem,
+    input:formState.inputFormat,
+    output:formState.outputFormat,
+    sample_input:formState.sampleInput,
+    sample_output:formState.sampleOutput,
+    test_case: { // 测试用例
+        type: formState.testCase,
+        data:formState.testCase=='text'?testCaseData:formState.useCaseFile,
+    }   
+  }
+
+  http.editProgram({param:params,urlParams:{ID:editId}}).then((res:any)=>{
+    if(res.code==1){
+        message.success('编辑成功')
       }
   })
 }
@@ -416,7 +449,7 @@ function onSubmit(){
   formRef.value
     .validate()
     .then((res:any) => {
-      createProgramQues()
+       editId?editProgressQues():createProgramQues();
     })
     .catch((err: any) => {
       console.log("error", err);
@@ -426,6 +459,32 @@ function reset(){
   // formRef.value.resetFields();
   router.go(-1);
 };
+function getProgressData(){
+   http.programDetail({urlParams:{ID:editId}}).then((res:any)=>{
+      if(res.code==1){
+        const data=res.data
+        formState.name=data.question
+        formState.purpose=data.used_by
+        formState.difficulty=data.difficulty
+
+        // formState.catalogue=data.category_id
+        // formState.catalogue=selectDire.value.processingEchoData([93,188])
+        formState.knowledgePoints=data.knowledge_map_ids
+        formState.stem=data.question_desc
+        formState.memoryLimit=data.problem.memory_limit
+        formState.timeLimit=data.problem.time_limit
+        formState.inputFormat=data.problem.input
+        formState.outputFormat=data.problem.output
+        formState.sampleInput=data.problem.sample_input
+        formState.sampleOutput=data.problem.sample_output
+      }
+    })
+}
+onMounted(()=>{
+  if(editId){
+     getProgressData();
+  }
+})
 </script>
 <style lang="less" scoped>
 .create_ques {

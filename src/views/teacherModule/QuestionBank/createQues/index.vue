@@ -461,16 +461,17 @@ function getJudgeData(){
 function getCompleData(){
    http.complateDetail({urlParams:{questionId:editId}}).then((res:any)=>{
       if(res.code==1){
-      const data=res.data
-      formState.purpose=data.used_by
-      formState.difficulty=data.difficulty
-      formState.catalogue=data.category_id
-      formState.knowledgePoints=data.knowledge_map_ids
-      formState.stem=data.question
-      formState.multipleQuesSelection.forEach((item:any,index:any)=>{
-          item.value=data.blankCorrect[index]
-        })
-      formState.topicAnalysis=data.question_analysis
+        const data=res.data
+        formState.purpose=data.used_by
+        formState.difficulty=data.difficulty
+        formState.catalogue=data.category_id
+        formState.knowledgePoints=data.knowledge_map_ids
+        formState.stem=data.question
+        formState.topicAnalysis=data.question_analysis
+        formState.multipleQuesSelection=[]
+        data.blank_correct.forEach((item:any,index:any)=> {
+          formState.multipleQuesSelection.push({value:item,ifAnswer:false})
+        });
       }
     })
 }
@@ -484,11 +485,10 @@ function getSolutionData(){
         formState.catalogue=data.category_id
         formState.knowledgePoints=data.knowledge_map_ids
         formState.stem=data.question
-        formState.multipleQuesSelection.forEach((item:any,index:any)=>{
-            item.value=data.blankCorrect[index]
-          })
-        formState.topicAnalysis=data.question_analysis
-        }
+        formState.topicAnalysis=data.question_question_analysis
+        formState.keyword=data.short_answer_keys
+        formState.referenceAnswer=data.short_answer_reference
+      }
     })
 }
 // 编辑选择
@@ -529,28 +529,31 @@ function editJudge(){
       judgeCorrect:formState.judgeAnswer,
       questionAnalysis:formState.topicAnalysis
     }
-    http.editJudge({param:params}).then((res:any)=>{
+    http.editJudge({param:params,urlParams:{questionId:editId}}).then((res:any)=>{
       if(res.code==1){
         message.success('编辑成功！')
       }
     })
 }
 function editComple(){
-   const blankCorrect:any=[]
+   let blankCorrect:any=[]
+   console.log(formState.multipleQuesSelection,'formState.multipleQuesSelection')
    formState.multipleQuesSelection.forEach((item:any,index:any)=>{
+     console.log('哈哈哈',item)
     blankCorrect.push(item.value)
   })
+  console.log(blankCorrect,'blankCorrect')
   const params={
       usedBy:formState.purpose,
       difficulty:formState.difficulty,
-      categoryId:1,
+      categoryId:94,
       // knowledgeIds:[],
       knowledgeMapIds:[],
       question:formState.stem, 
       blankCorrect:blankCorrect,
       questionAnalysis:formState.topicAnalysis
     }
-  http.editComplate({param:params}).then((res:any)=>{
+  http.editComplate({param:params,urlParams:{questionId:editId}}).then((res:any)=>{
      if(res.code==1){
         message.success('编辑成功！')
       }
@@ -567,7 +570,7 @@ function editSolution(){
       shortAnswerKeys:formState.keyword,
       questionAnalysis:formState.topicAnalysis
     }
-    http.editSolution({param:params}).then((res:any)=>{
+    http.editSolution({param:params,urlParams:{questionId:editId}}).then((res:any)=>{
        if(res.code==1){
         message.success('编辑成功！')
       }
