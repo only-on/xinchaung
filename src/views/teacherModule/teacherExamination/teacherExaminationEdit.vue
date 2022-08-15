@@ -1,11 +1,15 @@
 <template>
   <div class="teacherExaminationEdit">
     <BasicInfo @edit="EditBaseFn()" :name="headerObj.name" :time="headerObj.time" :explainText="headerObj.explainText" />
-    <TopicDisplay :list="questionsList" :purpose="'IsEdit'" :category="'exam'" @updateList="getExamDetail" />
+    <TopicDisplay :list="questionsList" 
+      :purpose="'IsEdit'" 
+      :category="'exam'" 
+      @updateList="getExamDetail"
+     @updataQuestion="updataQuestion" />
   </div>
   <div class="teacherExaminationEditFooter">
-    <div class="flexCenter">
-      <Submit :okText="'保存试卷'" @submit="save" @cancel="cancel"></Submit>
+    <div class="flexCenter"> 
+      <Submit :okText="'保存试卷'" @submit="save" @cancel="cancel" :loading="loading"></Submit>
     </div>
   </div>
   <!-- 编辑基本信息 -->
@@ -75,11 +79,22 @@ const cancel=()=>{
   })
 }
 const save=()=>{
-  cancel()
-  // router.push('/teacher/teacherAssignment')
+  if(!updataQuestionData.length){
+    cancel()
+    return
+  }
+  loading.value=true
+  http.editExam({param:{question_ids:updataQuestionData} ,urlParams: { ID:id}}).then((res: any) => {
+    loading.value=false
+    message.success("保存成功");
+    cancel()
+  });
 }
-const setBatchScore=()=>{
-
+var loading:Ref<boolean> = ref(false);
+const updataQuestionData:any=reactive([])
+const updataQuestion=(arr:any)=>{
+  updataQuestionData.length=0
+  updataQuestionData.push(...arr)
 }
 const questionsList:any=reactive([])
 const getExamDetail = () => {

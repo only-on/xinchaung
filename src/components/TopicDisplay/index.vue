@@ -22,8 +22,8 @@
         </div>
         <div class="right">
           <div v-if="props.purpose==='IsEdit'"  class="batchcaozuo flexCenter">
-            <a-button @click="SetupScore(0,v)" type="primary" class="brightBtn" size="small"> 批量设置分值 </a-button>
-            <a-button @click="deleteTopic(0,v)" type="primary" class="del" size="small"> 删除 </a-button>
+            <a-button @click="SetupScore(0,v,k)" type="primary" class="brightBtn" size="small"> 批量设置分值 </a-button>
+            <a-button @click="deleteTopic(0,v,k)" type="primary" class="del" size="small"> 删除 </a-button>
           </div>
         </div>
       </div>
@@ -41,8 +41,8 @@
                 </div>
                 <div class="right">
                   <div v-if="props.purpose==='IsEdit'" class="caozuo flexCenter">
-                    <a-button @click="SetupScore(1,element)" type="text" class="" size="small"> 设置分值 </a-button>
-                    <a-button @click="deleteTopic(1,element)" type="link" class="del" size="small">删除</a-button>
+                    <a-button @click="SetupScore(1,element,k)" type="text" class="" size="small"> 设置分值 </a-button>
+                    <a-button @click="deleteTopic(1,element,k)" type="link" class="del" size="small">删除</a-button>
                   </div>
                 </div>
               </div>
@@ -239,9 +239,10 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<{
-  (e: "setScore", val: number[]): void;
-  (e: "setBatchScore", val: number[]): void;
-  (e: "updateList"): void;
+  // (e: "setScore", val: number[]): void;
+  // (e: "setBatchScore", val: number[]): void;
+  (e: "updataQuestion", val: any): void;   // 设置分数/删除后处理的数据格式    遵循后端更新接口
+  (e: "updateList"): void;            // 通知父组件更新数据
 }>();
 const onStart=()=>{
   return true
@@ -430,12 +431,12 @@ var statisticsInfo:any=reactive({
     selectScore:0
 })
 watch(()=>{return props.list},(val:any)=>{
+  console.log(val)
   let obj:any={
     selectNum:0,
     selectScore:0
   }
   val.map((v:any)=>{
-    // v.answer=v.answer?v.answer:[]
     v.question.map((i:any)=>{
       i.answer=i.answer?i.answer:[]
     })
@@ -474,20 +475,38 @@ function getId(arr:any[]){
   let arr2=arr.map((v:any)=> {return v.id})
   selectIds.push(...arr2)
 }
+function getQuestionIds(arr:any[]){
+  let arr2:any[]=[]
+  arr.map((v:any)=>{
+    v.question.map((i:any)=>{
+      let obj={
+        id:i.id,
+        score:i.score
+      }
+      arr2.push(obj)
+    })
+  })
+  return arr2
+}
 var setScoreType:Ref<number> = ref(0);
+var setScoreData:any[]=[]
+var setScoreKey:Ref<number> = ref(0);
+var setScoreId:Ref<number> = ref(0);
 var kind:Ref<string> = ref('');
 var loading:Ref<boolean> = ref(false);
-const SetupScore=(type:number,data:any)=>{
+const SetupScore=(type:number,item:any,key:number)=>{
   setScoreType.value=type
+  setScoreKey.value=key
   batchData.title=titleArr[type]
-  batchData.label=!type?getTopicType[data.type]['name']:'本题分值'
+  batchData.label=!type?getTopicType[item.type]['name']:'本题分值'
   Visible.value=true
-  // !type?getId(data.question):getId([data])
   if(!type){
-    getId(data.question)
-    kind.value=data.type
+    // getId(data.question)
+    // kind.value=item.type
+    setScoreId.value=0
   }else{
-    getId([data])
+    setScoreId.value=item.id
+    // getId([data])
   }
 }
 const formRef = ref();
@@ -510,47 +529,78 @@ const cancel=()=>{
 }
 const Save=()=>{
   formRef.value.validate().then(()=>{ 
-    let pro:any=null
-    let type=props.category==='exam'?2:1
-    if(setScoreType.value){
-      pro=httpExam.questionsScore({param:{...formState},urlParams:{examsId:id,questionsId:selectIds,type:type}})
-      // emit('setScore',selectIds)
-    }else{
-      pro=httpExam.questionsBatchScore({param:{...formState,kind:kind.value},urlParams:{examsId:id,type:type}})
-      // emit('setBatchScore',selectIds)
-    }
-    loading.value=true
-    pro.then((res: any)=>{
-      message.success('操作成功')
-      emit('updateList')
-      formRef.value.resetFields()
-      Visible.value=false
-      loading.value=false
-    }).catch((err:any)=>{
-      loading.value=false
+    props.list.map((v:any,k:number)=>{
+      if(v.type===props.list[setScoreKey.value].type){
+          props.list[setScoreKey.value].question.map((i:any)=>{
+            if(setScoreType.value===0){//批量   
+              i.score=formState.score
+            }else{
+              if(setScoreId.value===i.id){
+                i.score=formState.score
+              }
+            }
+          })
+        }
     })
+    message.success('操作成功')
+    emit('updataQuestion',getQuestionIds(props.list))
+    formRef.value.resetFields()
+    Visible.value=false
+    
+    // let pro:any=null
+    // let type=props.category==='exam'?2:1
+    // if(setScoreType.value){
+    //   pro=httpExam.questionsScore({param:{...formState},urlParams:{examsId:id,questionsId:selectIds,type:type}})
+    // }else{
+    //   pro=httpExam.questionsBatchScore({param:{...formState,kind:kind.value},urlParams:{examsId:id,type:type}})
+    // }
+    // loading.value=true
+    // pro.then((res: any)=>{
+    //   message.success('操作成功')
+    //   emit('updateList')
+    //   formRef.value.resetFields()
+    //   Visible.value=false
+    //   loading.value=false
+    // }).catch((err:any)=>{
+    //   loading.value=false
+    // })
   })
 }
 /**
  * 批量删除
  */
-const deleteTopic=(type:number,data:any)=>{
-  !type?getId(data.question):getId([data])
-  let title=['确认批量删除吗？','确认删除吗？'][type]
+const deleteTopic=(type:number,data:any,key:number)=>{
+  // 前端删除   保存才生效
+  // !type?getId(data.question):getId([data])
+  props.list.map((v:any,k:number)=>{
+    if(type===0){//批量
+      if(v.type===data.type){
+        props.list.splice(k,1)
+      }
+    }else{
+      props.list[key].question.map((i:any,idx:any)=>{
+        if(data.id===i.id){
+          props.list[k].question.splice(idx,1)
+        }
+      })
+    }
+  })
+  message.success('操作成功')
+  emit('updataQuestion',getQuestionIds(props.list))
+  // let title=['确认批量删除吗？','确认删除吗？'][type]
   // batchData.label=!type?getTopicType[data.type]['name']:'本题分值'
-  Modal.confirm({
-    title: title,
-    icon: createVNode(ExclamationCircleOutlined),
-    content: "删除后不可恢复",
-    okText: "确认",
-    cancelText: "取消",
-    onOk() {
-      // selectIds
-      // httpStu.deleteTopic({ urlParams: { courseId: '' } }).then((res: any) => {
-      //     message.success("删除成功");
-      // });
-    },
-  });
+  // Modal.confirm({
+  //   title: title,
+  //   icon: createVNode(ExclamationCircleOutlined),
+  //   content: "删除后不可恢复",
+  //   okText: "确认",
+  //   cancelText: "取消",
+  //   onOk() {
+  //     httpStu.deleteTopic({ urlParams: { courseId: '' } }).then((res: any) => {
+  //         message.success("删除成功");
+  //     });
+  //   },
+  // });
 }
 function getQuestionAnswers(){
   // 看情况加loading

@@ -15,9 +15,9 @@ export default {
 
 
   //设置题目分数
-  questionsScore:{url: `/api/v1/question/exams/{examsId}/questions/{questionsId}/score?type={type}`, method: "PUT",dataType: 'json'},
+  // questionsScore:{url: `/api/v1/question/exams/{examsId}/questions/{questionsId}/score?type={type}`, method: "PUT",dataType: 'json'},
   //批量设置题目分数
-  questionsBatchScore:{url: ` /api/v1/question/exams/{examsId}/questions/batch-score?type={type}`, method: "PUT",dataType: 'json'}
+  // questionsBatchScore:{url: ` /api/v1/question/exams/{examsId}/questions/batch-score?type={type}`, method: "PUT",dataType: 'json'}
 }
 
 export interface ITeacherExamination {
@@ -31,6 +31,6 @@ export interface ITeacherExamination {
   addExam: TFHttpSend;
   examDetail:TFHttpSend;
   editExam: TFHttpSend;
-  questionsScore: TFHttpSend;
-  questionsBatchScore: TFHttpSend;
+  // questionsScore: TFHttpSend;
+  // questionsBatchScore: TFHttpSend;
 }
