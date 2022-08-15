@@ -5,11 +5,12 @@
           }">
             <template v-slot:label>
               <div>
-                知识点<span class="tiptit">最多可选择3个</span>
+                知识点<span class="tiptit">最多可选择{{maxNum}}个</span>
               </div>
             </template>
             <a-cascader
-              class="knowLedge"
+            ref="cascaderRef"
+              dropdownClassName="knowLedge"
               v-model:value="knowledgePoints"
               multiple
               :options="options1"
@@ -17,6 +18,7 @@
               placeholder="请选择"
               :load-data="loadData"
               @change='changeData'
+              @dropdownVisibleChange="dropdownVisibleChange"
             >
             </a-cascader>
           </a-form-item>
@@ -30,16 +32,26 @@ import { defineComponent, ref, reactive, toRefs } from 'vue'
 const http = (request as any).QuestionBank;
 interface Props { 
 knowledgePoints:any[];
+maxNum: number
 }
 const props = withDefaults(defineProps<Props>(),{
- knowledgePoints:()=>[]
+ knowledgePoints:()=>[],
+ maxNum: 3
 });
 const emit = defineEmits<{
   (e: "update:knowledgePoints", val: any): void;
+  (e: "close"): void;
 }>();
+const cascaderRef = ref()
+var endData = ref([])
 function changeData(value:any, selectedOptions:any){
   if(selectedOptions.length<4){
     emit("update:knowledgePoints",props.knowledgePoints)
+  }
+}
+function dropdownVisibleChange(value:any) {
+  if (!value) {
+    emit('close')
   }
 }
 const options1:any =ref([]);
@@ -80,16 +92,30 @@ onMounted(()=>{
     getKnowledgeFirst()
 })
 </script> 
-<style lang="less">
+<style lang="less" scoped>
 .tiptit{
   font-size: 12px;
   margin-left: 10px;
   color:var(--black-45);
 }
-.ant-select-dropdown .ant-cascader-menus .ant-cascader-menu:nth-child(1) .ant-cascader-menu-item .ant-cascader-checkbox{
-  display: none;
+:deep(.ant-form-item){
+  display: flex;
+  flex-direction: column;
+  .ant-form-item-label{
+    text-align: left;
+  }
 }
-.ant-select-dropdown .ant-cascader-menus .ant-cascader-menu:nth-child(2) .ant-cascader-menu-item .ant-cascader-checkbox{
-  display: none;
+</style>
+<style lang="less">
+
+.knowLedge{
+ &.ant-select-dropdown .ant-cascader-menus .ant-cascader-menu{
+    &:nth-child(1) .ant-cascader-menu-item .ant-cascader-checkbox{
+      display: none;
+    }
+    &:nth-child(2) .ant-cascader-menu-item .ant-cascader-checkbox{
+      display: none;
+    }
+  }
 }
 </style>

@@ -101,7 +101,7 @@
               class="level" 
               :style="{background: levelTypeList[v.difficulty].bgColor,color: levelTypeList[v.difficulty].color}"
             >{{levelTypeList[v.difficulty].name}}</span>
-            <span class="use">{{useTypeList[v.used_by].name}}</span>
+            <span class="use">{{useTypeList[v.used_by]?.name}}</span>
             <span class="create-time">创建时间：{{moment(new Date()).format('YYYY/MM/DD')}}</span>
             <span class="num">使用次数：{{v.used_counts||0}}</span>
           </div>
@@ -164,7 +164,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<{
   (e: "menuClick", type: string, val: any): void;
 }>();
-const selectIds = inject('selectIds') as number[] // 已选中的题目id
+const selectIds = props.inDrawer ? inject('selectIds') as number[]: []// 已选中的题目id
 const router = useRouter();
 const route = useRoute();
 const optionType:any=reactive(['A','B','C','D','E','F','G'])

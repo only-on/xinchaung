@@ -29,7 +29,6 @@ import {ref, reactive, watch, inject, defineExpose} from 'vue'
 import { CalendarOutlined  } from '@ant-design/icons-vue';
 import moment, { Moment } from 'moment';
 import cascader from "src/components/ReleasePaper/cascader.vue"
-import { AnyARecord } from 'dns';
 const props =withDefaults(defineProps<{
   formState:any
   type: string,

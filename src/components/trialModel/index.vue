@@ -2,21 +2,21 @@
   <div class="trialModel">
     <common-card title="题目描述">
       <template #content>
-        <antdv-markdown v-model="formData.question_desc"  :preview-only="true" />
+        <antdv-markdown v-model="formData.questionDesc"  :preview-only="true" />
       </template>
     </common-card>
     <a-row :gutter="24">
       <a-col :span="12">
         <common-card title="评测说明" :height="200">
           <template #content>
-            <antdv-markdown v-model="formData.ai_test_desc"  :preview-only="true" />
+            <antdv-markdown v-model="formData.aiTestDesc"  :preview-only="true" />
           </template>
         </common-card>
       </a-col>
       <a-col :span="12">
         <common-card title="评测数据列表" :height="200">
           <template #right>
-            <a-button type="primary" @click="downLoadAll">下载全部</a-button>
+            <a-button type="primary" @click="downLoadAll"  :loading="downLoading" :disabled="!formData.practice.length">下载全部</a-button>
           </template>
           <template #content>
             <ul class="dataList setScrollbar">
@@ -71,28 +71,12 @@ const route = useRoute()
 const questionId = ref<any>(route.query.id)
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
-const formData = reactive({
+const formData = reactive<any>({
   question: '',
-  question_desc: '',
-  ai_test_desc: '',
-  practice: [
-    {
-      file_name: 'train list.txt',
-      file_url: ''
-    }
-  ]
+  questionDesc: '',
+  aiTestDesc: '',
+  practice: []
 })
-updata({
-  tabs: [
-    {
-      name: `${formData.question}`,
-      componenttype: 0,
-    },
-  ],
-  showContent: true,
-  componenttype: undefined,
-  showNav: true,
-});
 const rules = {
   remark: [
     {required: true,message: '请输入作品提交说明', trigger: 'blur'},
@@ -100,7 +84,7 @@ const rules = {
   ]
 }
 const submitData = reactive<any>({
-  object_question_id: '',
+  question_id: '',
   result: [],
   process: [],
   remark: ''
@@ -111,16 +95,36 @@ const getDetail = () => {
     let result = res.data
     Object.assign(formData, {
       question: result.question,
-      question_desc: result.question_desc,
-      ai_test_desc: result.ai_test_desc,
+      questionDesc: result.questionDesc,
+      aiTestDesc: result.aiTestDesc,
       practice: result.practice
     })
+    updata({
+      tabs: [
+        {
+          name: `${formData.question}`,
+          componenttype: 0,
+        },
+      ],
+      showContent: true,
+      componenttype: undefined,
+      showNav: true,
+    });
   })
 }
 const downLoad = (item:any) => {
   downloadUrl(item.file_name, item.file_url)
 }
-const downLoadAll = () => {}
+const downLoading = ref<boolean>(false)
+const downLoadAll = () => {
+  console.log(questionId.value)
+  downLoading.value = true
+  http.batchDownLoad({urlParams:{questionId: questionId.value}}).then((res:IBusinessResp) => {
+    downLoading.value = false
+  }).catch(()=>{
+    downLoading.value = false
+  })
+}
 const fileList = reactive([])
 const resultSuccess = (data:any) => {
   submitData.result = [data]
@@ -139,7 +143,7 @@ const formRef = ref()
 const handleSave = () => {
   formRef.value.validate(()=>{
     // saveLoading.value = true
-    // http.runModelQuestions({urlParams:{questionId: questionId.value}}).then((res:IBusinessResp) => {
+    // http.runModelQuestions({urlParams:{questionId: questionId.value},params: submitData}).then((res:IBusinessResp) => {
     //   saveLoading.value = false
     // }).catch(()=>{
     //   saveLoading.value = false
@@ -148,7 +152,7 @@ const handleSave = () => {
 }
 const cancelSave = () => {}
 onMounted(()=>{
-  // getDetail()
+  getDetail()
 })
 </script>
 <style lang="less" scoped>
@@ -159,13 +163,15 @@ onMounted(()=>{
       display: flex;
       justify-content: space-between;
       cursor: pointer;
+      line-height: 24px;
       padding: 0 10px;
+      margin-bottom: 10px;
       i{
         display: none;
         color: var(--primary-color);
       }
       &:hover{
-        background: var(--primary-1);
+        background: var(--primary-2);
         i{
           display: block;
         }

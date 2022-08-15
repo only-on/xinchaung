@@ -395,21 +395,26 @@ watch(
   },
   { deep: true, immediate: true }
 );
-const questions_ids = ref<any>({})
+const questions_ids = ref<any>([])
 const allQuestionIds = reactive<any>([]) // 所有选中题目的id数组
 provide('selectIds', allQuestionIds)
 // 监测表格数据，计算统计数据
 watch(()=>listData.value, newVal => {
   allQuestionIds.length = 0
-  questions_ids.value = {}
+  questions_ids.value.length = 0
+  console.log(newVal)
   newVal.forEach((item:any) => {
     item.data.forEach((dItem:any) => {
       allQuestionIds.push(dItem.id)
-      questions_ids.value[dItem.id] = {
-        score: dItem.score
-      }
+      questions_ids.value.push(
+        {
+          id: dItem.id,
+          score: dItem.score
+        }
+      )
     })
   })
+  console.log(questions_ids.value)
   handleStatistical()
 },{ deep: true, immediate: true })
 defineExpose({

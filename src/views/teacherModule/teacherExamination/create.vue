@@ -15,9 +15,10 @@
       <template #content>
         <a-row>
           <a-col :span="10">
-             <div class="item">
-              <div class="title">知识点</div>
-             </div>
+           knowledgesArr----- {{knowledgesArr.data}}
+            <div style="width:400px">
+              <knowLedge v-model:knowledgePoints="knowledgesArr.data" :maxNum="6" @close="closeKnowledge"/>
+            </div>
              <div class="item">
               <div class="title">难度系数</div>
               <div class="multiSelect">
@@ -69,7 +70,8 @@ import { message } from "ant-design-vue";
 import CommonCard from "src/components/common/CommonCard.vue";
 import baseInfo from "./component/baseInfo.vue";
 import questionTable from "./component/questionTable.vue";
-import studentTable from "./component/studentTable.vue"
+import studentTable from "./component/studentTable.vue";
+import knowLedge from 'src/components/knowLedge/index.vue'
 import Submit from "src/components/submit/index.vue";
 import getTopicType from "src/components/TopicDisplay/topictype"
 import request from "src/api/index";
@@ -186,11 +188,27 @@ const questionData = ref([
   },
 ]);
 
-// 手动创建题目相关
+// 随机创建题目相关
 const searchInfo = reactive({
   is_public: '1',
   difficulty: '',
   knowledges: ''
+})
+const knowledgesArr = reactive<any>({
+  data: []
+})
+const closeKnowledge = () => {
+  let arr:any = []
+  knowledgesArr.data.forEach((item:any) => {
+    arr.push(item[item.length -1])
+  })
+  searchInfo.knowledges = arr.join()
+  getQuestionMaxLimit()
+}
+watch(()=>knowledgesArr.data, newVal => {
+  if(!newVal.length) {
+    closeKnowledge()
+  }
 })
 const topInfo = reactive({
   num: 0,

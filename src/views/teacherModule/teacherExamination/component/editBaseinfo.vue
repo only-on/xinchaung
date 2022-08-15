@@ -1,7 +1,6 @@
 <template>
   <a-modal :visible="visible" :title="'编辑'+type+'基本信息'" :width="900" @cancel="handleCancel">
     <baseInfo ref="baseInfoRef" :formState="editInfo" :type="type"/>
-    {{editInfo.relation}}----
     <template #footer>
       <Submit @submit="handleEdit" @cancel="handleCancel"></Submit>
     </template>

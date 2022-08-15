@@ -51,6 +51,7 @@ export default {
   solutionSatus:{url:` /api/v1/xinchuang/question/program-questions/{ID}/solution/{solution_id}/status`,method: "GET"},
   // 试用模型题
   runModelQuestions:{url:`/api/v1/xinchuang/question/model-questions/run/{questionId}`,method: "POST", dataType: "json"},
+  batchDownLoad:{url:`/api/v1/xinchuang/question/model-questions/download/{questionId}`,method: "GET"},
 
 
 
@@ -110,4 +111,5 @@ export interface IQuestionBank {
   solutionSatus: TFHttpSend
   // 试用模型题
   runModelQuestions: TFHttpSend
+  batchDownLoad: TFHttpSend
 }
