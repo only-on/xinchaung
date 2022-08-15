@@ -10,7 +10,7 @@
       </div>
       <div class="flexCenter right">
         <div class="tip">小题之间可以拖拽排序</div>
-        <a-button type="primary">继续选择</a-button>
+        <a-button type="primary" @click="keepOn()">继续选择</a-button>
       </div>
     </div>
     <div v-for="(v,k) in list" :key="v" class="TypeDifference">
@@ -88,7 +88,7 @@
                 </div>
                 <!-- 编程题 -->
                 <div class="option option5" v-if="v.type==='program'">
-                  <Programming :info="programmingObj" /> 
+                  <Programming :info="element.problem" :desc="element.question_desc" /> 
                   <div v-if="props.purpose==='achievement'" class="details operationResults">
                     <div class="outputTit">学生代码+运行日志</div>
                     <div class="outputContent" v-html="'最后执行的输入： 90 执行出错信息：'">
@@ -98,7 +98,7 @@
                 </div>
                 <!-- 模型题 -->
                 <div class="option option6" v-if="v.type==='ai'">
-                  <ModelQuestion :info="ModelObj" />
+                  <ModelQuestion :desc="element.question_desc" :evaluating="element.question_desc" />
                   <div v-if="props.purpose==='achievement'" class="details operationResults">
                     <div class="outputTit">学生答案</div>
                     <div class="outputContent">
@@ -184,6 +184,8 @@
       <Submit @submit="Save" @cancel="cancel" :loading="loading"></Submit>
     </template>
   </a-modal>
+  <!-- 选择题目 -->
+  <addQuestion v-model:visible="addVisible" @select="questionSelect"/>
 </template>
 <script lang="ts" setup>
 import {
@@ -203,6 +205,7 @@ import {
   createVNode
 } from "vue";
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
+import addQuestion from 'src/views/teacherModule/teacherExamination/component/addQuestion.vue'
 import Submit from "src/components/submit/index.vue";
 import Draggable from 'vuedraggable'
 import Programming from './detail/programming.vue'
@@ -408,21 +411,6 @@ var list2:any=reactive([
     ]
   }
 ])
-const programmingObj:any=reactive({
-  desc:'在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱，设计规范性差，设计 沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向进行京东国际频道的品牌视觉全新升级， 实现加强正品心智，提升频道访问量，品牌强化的业务目标。',
-  access:{
-    input:'输入内容',
-    output:'输出内容'
-  },
-  example:{
-    input:'样例输入内容',
-    output:'样例输出内容'
-  },
-})
-const ModelObj:any=reactive({
-  desc:'在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱，设计规范性差，设计沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向进行京东国际频道的品牌视觉全新升级，实现加强正品心智，提升频道访问量，品牌强化的业务目标。在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱，设计规范性差，设计沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向进行京东国际频道的品牌视觉全新升级，实现加强正品心智，提升频道访问量，品牌强化的业务目标。',
-  evaluating:'在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱，设计规范性差，设计沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向进行京东国际频道的品牌视觉全新升级，实现加强正品心智，提升频道访问量，品牌强化的业务目标。 在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱，设计规范性差，设计沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向进行京东国际频道的品牌视觉全新升级，实现加强正品心智，提升频道访问量，品牌强化的业务目标。'
-})
 const SqllObj:any=reactive({
   desc:'在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱，设计规范性差，设计沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向进行京东国际频道的品牌视觉全新升级，实现加强正品心智，提升频道访问量，品牌强化的业务目标。在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱，设计规范性差，设计沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向进行京东国际频道的品牌视觉全新升级，实现加强正品心智，提升频道访问量，品牌强化的业务目标。'
 })
@@ -542,7 +530,7 @@ const Save=()=>{
           })
         }
     })
-    message.success('操作成功')
+    // message.success('操作成功')
     emit('updataQuestion',getQuestionIds(props.list))
     formRef.value.resetFields()
     Visible.value=false
@@ -585,7 +573,7 @@ const deleteTopic=(type:number,data:any,key:number)=>{
       })
     }
   })
-  message.success('操作成功')
+  // message.success('操作成功')
   emit('updataQuestion',getQuestionIds(props.list))
   // let title=['确认批量删除吗？','确认删除吗？'][type]
   // batchData.label=!type?getTopicType[data.type]['name']:'本题分值'
@@ -615,6 +603,15 @@ const programAnswer=(v:any)=>{
     path:'/programAnswer',
     query:{id:v}
   })
+}
+// 继续选择题目
+const addVisible = ref<boolean>(false)
+const keepOn=()=>{
+  addVisible.value=true
+}
+const questionSelect=(data:any)=>{
+  console.log('选择的题目',data)
+  
 }
 onMounted(()=>{
   // const selectSorce =randomCreateSorce

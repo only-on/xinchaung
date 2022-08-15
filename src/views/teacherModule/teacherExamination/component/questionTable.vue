@@ -96,8 +96,8 @@ import CommonCard from "src/components/common/CommonCard.vue";
 import Submit from "src/components/submit/index.vue";
 import addQuestion from './addQuestion.vue'
 import { message } from "ant-design-vue";
-import getTopicType from "src/components/TopicDisplay/topictype.ts"
-import {TotalScore} from "src/utils/common.ts"
+import getTopicType from "src/components/TopicDisplay/topictype"
+import {TotalScore} from "src/utils/common"
 import {validateNum} from "../utils"
 import { levelTypeList } from 'src/components/TopicDisplay/configType'
 

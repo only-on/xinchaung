@@ -2,11 +2,11 @@
   <div class="ModelDetail">
     <div class="details details1">
       <div class="detailsTit">题目描述</div>
-      <MarkedEditor v-model="props.info.desc" class="markdown__editor" :preview="true"/>
+      <MarkedEditor v-model="props.desc" class="markdown__editor" :preview="true"/>
     </div>
     <div class="details details1">
       <div class="detailsTit">评测说明</div>
-      <MarkedEditor v-model="props.info.evaluating" class="markdown__editor" :preview="true"/>
+      <MarkedEditor v-model="props.evaluating" class="markdown__editor" :preview="true"/>
     </div>
   </div>
 </template>
@@ -31,15 +31,12 @@ interface Iinfo{
   evaluating:string;
 }
 interface Props {
-  info:Iinfo
+  desc: string;
+  evaluating:string;
 }
 const props = withDefaults(defineProps<Props>(), {
-  info:()=>{
-    return {
-      desc:'',
-      evaluating:''
-    }
-  }
+  desc: '',
+  evaluating:''
 });
 
 // const emit = defineEmits<{

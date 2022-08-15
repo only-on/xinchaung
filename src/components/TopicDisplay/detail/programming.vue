@@ -2,16 +2,16 @@
   <div class="programmingDetail">
     <div class="details details1">
       <div class="detailsTit">题目描述</div>
-      <MarkedEditor v-model="props.info.desc" class="markdown__editor" :preview="true"/>
+      <MarkedEditor v-model="props.desc" class="markdown__editor" :preview="true"/>
     </div>
     <div class="details details2 flexCenter content">
       <div class="contentLeft">
         <div class="detailsTit detailsTit2">输入格式</div>
-        <MarkedEditor v-model="props.info.access.input" class="markdown__editor" :preview="true"/>
+        <MarkedEditor v-model="props.info.input" class="markdown__editor" :preview="true"/>
       </div>
       <div class="contentRight">
         <div class="detailsTit detailsTit2">输出格式</div>
-        <MarkedEditor v-model="props.info.access.output" class="markdown__editor" :preview="true"/>
+        <MarkedEditor v-model="props.info.output" class="markdown__editor" :preview="true"/>
       </div>
     </div>
     <div class="details details3">
@@ -22,14 +22,14 @@
             <span>输入</span>
             <span class="copy">复制</span>
           </div>
-          <a-textarea v-model:value="props.info.example.output" :disabled="true" placeholder="" :autoSize="{ minRows: 4, maxRows: 6 }" />
+          <a-textarea v-model:value="props.info.sample_input" :disabled="true" placeholder="" :autoSize="{ minRows: 4, maxRows: 6 }" />
         </div>
         <div class="contentRight">
           <div class="detailsTit detailsTit2 detailsTit3 flexCenter">
             <span>输入</span>
             <span class="copy">复制</span>
           </div>
-          <a-textarea v-model:value="props.info.example.output" :disabled="true" placeholder="" :autoSize="{ minRows: 4, maxRows: 6 }" />
+          <a-textarea v-model:value="props.info.sample_output" :disabled="true" placeholder="" :autoSize="{ minRows: 4, maxRows: 6 }" />
         </div>
       </div>
     </div>
@@ -52,25 +52,20 @@ import {
 } from "vue";
 import MarkedEditor from "src/components/editor/markedEditor.vue";
 interface Iinfo{
-  desc: string;
   access:any;
   example:any;
 }
 interface Props {
-  info:Iinfo
+  desc:string
+  info:any
 }
 const props = withDefaults(defineProps<Props>(), {
   info:()=>{
     return {
-      desc:'',
-      access:{
-        input:'',
-        output:''
-      },
-      example:{
-        input:'',
-        output:''
-      },
+      input:'',
+      output:'',
+      sample_input:'',
+      sample_output:'',
     }
   }
 });
