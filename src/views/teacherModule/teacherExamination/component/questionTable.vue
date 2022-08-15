@@ -88,7 +88,7 @@
     </template>
   </a-modal>
   <!-- 选择题目 -->
-  <addQuestion v-model:visible="addVisible" @select="questionSelect"/>
+  <addQuestion v-model:visible="addVisible" @select="questionSelect" :allQuestionIds="allQuestionIds" />
 </template>
 <script lang="ts" setup>
 import { ref, reactive, watch, onMounted, provide } from "vue";
@@ -397,7 +397,7 @@ watch(
 );
 const questions_ids = ref<any>([])
 const allQuestionIds = reactive<any>([]) // 所有选中题目的id数组
-provide('selectIds', allQuestionIds)
+// provide('selectIds', allQuestionIds)
 // 监测表格数据，计算统计数据
 watch(()=>listData.value, newVal => {
   allQuestionIds.length = 0

@@ -185,7 +185,7 @@
     </template>
   </a-modal>
   <!-- 选择题目 -->
-  <addQuestion v-model:visible="addVisible" @select="questionSelect"/>
+  <addQuestion v-model:visible="addVisible" @select="questionSelect" :allQuestionIds="[]"/>
 </template>
 <script lang="ts" setup>
 import {

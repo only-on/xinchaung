@@ -21,12 +21,14 @@
   </div>
 </template>
 <script lang="ts" setup>
-import{ref,reactive} from 'vue'
+import{ref,reactive,provide,watch} from 'vue'
 import questionBank from 'src/views/teacherModule/QuestionBank/index.vue'
 const props =withDefaults(defineProps<{
   visible: boolean
+  allQuestionIds:number[]
 }>(), {
-  visible: false
+  visible: false,
+  allQuestionIds:()=>{return []}
 })
 const emit = defineEmits<{
   (e: "update:visible", val: any): void;
@@ -43,6 +45,11 @@ const handleAddData = (data:any) => {
   emit('select',data)
   emit('update:visible', false)
 }
+// watch(()=>{return props.allQuestionIds},(val:any)=>{
+//   console.log(val);
+//   provide('selectIds', val)
+// },{immediate:true,deep:true})
+provide('selectIds', props.allQuestionIds)
 </script>
 <style lang="less" scoped>
 .addQuestion{
