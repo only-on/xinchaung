@@ -1,7 +1,7 @@
 <template>
   <div class="teacherExaminationPreview">
     <Outline :title="headerObj.title" :explain="headerObj.explain" :explainText="headerObj.explainText" />
-    <TopicDisplay :purpose="'IsPreview'" />
+    <TopicDisplay :list="questionsList" :purpose="'IsPreview'" />
   </div>
   <div class="teacherExaminationPreviewFooter">
     <div class="flexCenter">
@@ -33,8 +33,8 @@ import TopicDisplay from 'src/components/TopicDisplay/index.vue'
 import Outline from 'src/components/TopicDisplay/outline.vue'
 const router = useRouter();
 const route = useRoute();
-const { editId } = route.query;
-const http = (request as any).teacherAssignment;
+const { id } = route.query;
+const http = (request as any).teacherExamination;
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 updata({
@@ -68,9 +68,30 @@ const edit=()=>{
   //     <!-- achievement IsEdit teacherExaminationAchievement     teacherExaminationEdit-->
   router.push({
     path:'/teacher/teacherExamination/teacherExaminationEdit',
-    query:{editId:editId}
+    query:{id:id}
   })
 }
+const questionsList:any=reactive([])
+const getExamDetail = () => {
+  http.examDetail({urlParams:{ID: id}}).then((res:IBusinessResp) => {
+    questionsList.length=0
+    const {data}=res
+    headerObj.title=data.name
+    // headerObj.explain=data.note
+    headerObj.explainText=data.note
+    let questions_info=data.questions_info
+    Object.keys(questions_info).map((v:any)=>{
+      let obj={
+        type:v,
+        question:questions_info[v]
+      }
+      questionsList.push(obj)
+    })
+  })
+}
+onMounted(()=>{
+  getExamDetail()
+})
 </script>
 <style scoped lang="less">
 .teacherExaminationPreview{

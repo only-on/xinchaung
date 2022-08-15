@@ -14,7 +14,7 @@
       </div>
     </div>
     <div v-for="(v,k) in list" :key="v" class="TypeDifference">
-      <!-- 题型标题 v-for="(a,i) in v.question" :key="a"  -->
+      <!-- 题型标题 v-for="(a,i) in v.question" :key="a"  questionsList-->
       <div class="QuestionType flexCenter">
         <div class="left flexCenter">
           <div>{{getTopicType[v.type]['name']}}</div>
@@ -48,21 +48,21 @@
               </div>
               <!-- 题干 -->
               <div class="stem">
-                {{element.question_desc}}
+                {{element.question}}
               </div>
               <!-- 答案可选项 -->
               <div class="optionBox">
                 <!-- 选择题答案选项 -->
-                <div class="option option1" v-if="v.type===1">
+                <div class="option option1" v-if="v.type==='choice'">
                   <a-checkbox-group v-model:value="element.answer" style="width: 100%" @change="changebox(v,element)" :disabled="CanDisabled()">
-                    <a-row v-for="(j,b) in element.option" :key="j">
+                    <a-row v-for="(j,b) in element.choice_options" :key="j">
                       <a-checkbox :value="optionType[b]">{{`${optionType[b]}、`}}</a-checkbox>
-                      <div> {{j.text}}</div>
+                      <div> {{j.content}}</div>
                     </a-row>
                   </a-checkbox-group>
                 </div>
                 <!-- 判断题答案选项 -->
-                <div class="option option2" v-if="v.type===2">
+                <div class="option option2" v-if="v.type==='judge'">
                   <a-radio-group v-model:value="element.answer[0]" :disabled="CanDisabled()" @change="changebox(v,element)">
                     <a-row>
                       <a-radio :value="1">正确</a-radio>
@@ -73,31 +73,31 @@
                   </a-radio-group>
                 </div>
                 <!-- 填空题答案选项 -->
-                <div class="option option3" v-if="v.type===3">
+                <div class="option option3" v-if="v.type==='blank'">
                   <div class="tiankong flexCenter" v-for="(j,b) in element.option" :key="element">
                     <span>{{`填空${b+1}`}}</span>
                     <a-input v-model:value="element.answer[b]" @blur="changebox(v,element)" :disabled="CanDisabled()" />
                   </div>
                 </div>
                 <!-- 简答题 -->
-                <div class="option option4" v-if="v.type===4">
+                <div class="option option4" v-if="v.type==='short-answer'">
                     <div class="jianda">
                       <div class="daan">答案</div>
                       <a-textarea v-model:value="element.answer[0]" :disabled="CanDisabled()" placeholder="" :autoSize="{ minRows: 4, maxRows: 6 }" />
                     </div>
                 </div>
                 <!-- 编程题 -->
-                <div class="option option5" v-if="v.type===5">
+                <div class="option option5" v-if="v.type==='program'">
                   <Programming :info="programmingObj" /> 
                   <div v-if="props.purpose==='achievement'" class="details operationResults">
                     <div class="outputTit">学生代码+运行日志</div>
                     <div class="outputContent" v-html="'最后执行的输入： 90 执行出错信息：'">
                     </div>
                   </div>
-                  <div v-if="props.purpose==='IsStuAnswer'" class="reply"> 答 题 </div>
+                  <div @click="programAnswer(v.id)" v-if="props.purpose==='IsStuAnswer'" class="reply"> 答 题 </div>
                 </div>
                 <!-- 模型题 -->
-                <div class="option option6" v-if="v.type===6">
+                <div class="option option6" v-if="v.type==='ai'">
                   <ModelQuestion :info="ModelObj" />
                   <div v-if="props.purpose==='achievement'" class="details operationResults">
                     <div class="outputTit">学生答案</div>
@@ -119,14 +119,14 @@
                   <div v-if="props.purpose==='IsStuAnswer'" class="reply"> 答 题 </div>
                 </div>
                 <!-- SQL题 -->
-                <div class="option option7" v-if="v.type===7">
+                <div class="option option7" v-if="v.type==='sql'">
                   <Sqldetail :info="SqllObj" />
                   <div v-if="props.purpose==='IsStuAnswer'" class="reply"> 答 题 </div>
                 </div>
               </div>
               <!-- 题目结果 -->
               <div v-if="props.purpose==='achievement'" class="achievement" >
-                <template v-if="[1,2,3,4].includes(v.type)">
+                <template v-if="['choice','judge','blank','short-answer'].includes(v.type)">
                   <div class="achievement1 Adjudicate flexCenter">
                     <div class="left flexCenter" :class="k%2===0?'left1':'left2'">
                       <!-- icon-cuowu -->
@@ -140,14 +140,14 @@
                       <div class="resultscore">
                         得<span>10</span>分
                       </div>
-                      <div v-if="v.type===4 && editScore()" class="flexCenter changeScore">
+                      <div v-if="v.type==='short-answer' && editScore()" class="flexCenter changeScore">
                         <span class="iconfont icon-bianji1"></span>
                         <span>修改得分</span>
                       </div>
                     </div>
                   </div>
                   <div class="achievement1 rightkey">
-                    <div class="tip">{{`${v.type===2?'参考':'正确'}`}}答案：</div>
+                    <div class="tip">{{`${v.type==='judge'?'参考':'正确'}`}}答案：</div>
                     <div class="text">填空1（答案1） / 填空2（答案2）频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的 品牌认知；并且视觉信息层级混乱，设计规范性差，设计沟通维护成本高</div>
                   </div>
                   <div class="achievement2 analysis">
@@ -155,7 +155,7 @@
                     <div>在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的 品牌认知；并且视觉信息层级混乱，设计规范性差，设计沟通维护成本高。</div>
                   </div>
                 </template>
-                <template v-if="[5,6,7].includes(v.type)">
+                <template v-if="['program','ai','sql'].includes(v.type)">
                   <div class="achievement1 modifyscore flexCenter">
                     <div class="resultscore">
                       得<span>10</span>分
@@ -181,7 +181,7 @@
       </a-form-item>
     </a-form>
     <template #footer>
-      <Submit @submit="Save" @cancel="cancel"></Submit>
+      <Submit @submit="Save" @cancel="cancel" :loading="loading"></Submit>
     </template>
   </a-modal>
 </template>
@@ -219,20 +219,30 @@ import getTopicType from './topictype'
 const role = Number(storage.lStorage.get("role"));
 const router = useRouter();
 const route = useRoute();
-const { editId } = route.query;
+const { id } = route.query;
 const httpStu = (request as any).studentAssignment;
+const httpExam= (request as any).teacherExamination
 
 type Tpurpose= 'IsPreview' | 'IsEdit' | 'IsStuAnswer' | 'achievement'  //预览// 编辑// 学生作答 //成绩查看
+type Tcategory= 'assignment' | 'exam'
 interface Props {
+  category?:Tcategory
   purpose?:Tpurpose
+  list:any
+
 }
 const props = withDefaults(defineProps<Props>(), {
-  purpose:'achievement'
+  category:'assignment',
+  purpose:'achievement',
+  list:()=>{[]}
+  
 });
 
-// const emit = defineEmits<{
-//   (e: "selectedImage", val: any): void;
-// }>();
+const emit = defineEmits<{
+  (e: "setScore", val: number[]): void;
+  (e: "setBatchScore", val: number[]): void;
+  (e: "updateList"): void;
+}>();
 const onStart=()=>{
   return true
 }
@@ -247,7 +257,7 @@ const editScore=()=>{
   return role===3
 }
 const optionType:any=reactive(['A','B','C','D','E','F','G'])
-var list:any=reactive([
+var list2:any=reactive([
   {
     type:'choice',
     question:[
@@ -415,21 +425,26 @@ const ModelObj:any=reactive({
 const SqllObj:any=reactive({
   desc:'在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱，设计规范性差，设计沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向进行京东国际频道的品牌视觉全新升级，实现加强正品心智，提升频道访问量，品牌强化的业务目标。在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱，设计规范性差，设计沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向进行京东国际频道的品牌视觉全新升级，实现加强正品心智，提升频道访问量，品牌强化的业务目标。'
 })
-var statisticsInfo=computed(()=>{
+var statisticsInfo:any=reactive({
+   selectNum:0,
+    selectScore:0
+})
+watch(()=>{return props.list},(val:any)=>{
   let obj:any={
     selectNum:0,
     selectScore:0
   }
-  if(list.length===0){
-    return obj
-  }
-  list.forEach((v:any)=>{
+  val.map((v:any)=>{
+    // v.answer=v.answer?v.answer:[]
+    v.question.map((i:any)=>{
+      i.answer=i.answer?i.answer:[]
+    })
     obj.selectNum+=v.question && v.question.length 
     obj.selectScore+=TotalScore(v.question,'score')
-    //question
   })
-  return obj
-})
+  statisticsInfo.selectNum= obj.selectNum
+  statisticsInfo.selectScore= obj.selectScore
+},{immediate:true,deep:true})
 
 const DebounceUse:Function= new Debounce().use(submitAnswers,1.5) //延时
 // 答题
@@ -459,11 +474,21 @@ function getId(arr:any[]){
   let arr2=arr.map((v:any)=> {return v.id})
   selectIds.push(...arr2)
 }
+var setScoreType:Ref<number> = ref(0);
+var kind:Ref<string> = ref('');
+var loading:Ref<boolean> = ref(false);
 const SetupScore=(type:number,data:any)=>{
+  setScoreType.value=type
   batchData.title=titleArr[type]
   batchData.label=!type?getTopicType[data.type]['name']:'本题分值'
   Visible.value=true
-  !type?getId(data.question):getId([data])
+  // !type?getId(data.question):getId([data])
+  if(!type){
+    getId(data.question)
+    kind.value=data.type
+  }else{
+    getId([data])
+  }
 }
 const formRef = ref();
 var Visible: Ref<boolean> = ref(false);
@@ -485,12 +510,24 @@ const cancel=()=>{
 }
 const Save=()=>{
   formRef.value.validate().then(()=>{ 
-    return
-    // selectIds
-      httpStu.SetupScore({param:{chapter_name:formState.name},urlParams:{courseId:''}}).then((res: any)=>{
-        message.success('操作成功')
-        formState.name=''
-        Visible.value=false
+    let pro:any=null
+    let type=props.category==='exam'?2:1
+    if(setScoreType.value){
+      pro=httpExam.questionsScore({param:{...formState},urlParams:{examsId:id,questionsId:selectIds,type:type}})
+      // emit('setScore',selectIds)
+    }else{
+      pro=httpExam.questionsBatchScore({param:{...formState,kind:kind.value},urlParams:{examsId:id,type:type}})
+      // emit('setBatchScore',selectIds)
+    }
+    loading.value=true
+    pro.then((res: any)=>{
+      message.success('操作成功')
+      emit('updateList')
+      formRef.value.resetFields()
+      Visible.value=false
+      loading.value=false
+    }).catch((err:any)=>{
+      loading.value=false
     })
   })
 }
@@ -522,7 +559,15 @@ function getQuestionAnswers(){
       message.success("获取成功");
   })
 }
+//编程题作答
+const programAnswer=(v:any)=>{
+  router.push({
+    path:'/programAnswer',
+    query:{id:v}
+  })
+}
 onMounted(()=>{
+  // const selectSorce =randomCreateSorce
   // const {selectNum,selectScore}=randomCreatScore(list,'','')
   // getQuestionAnswers()
 })

@@ -1,7 +1,7 @@
 <template>
   <div class="teacherExaminationEdit">
-    <BasicInfo @edit="EditBaseFn()" :name="headerObj.title" :time="headerObj.explain" :explainText="headerObj.explainText" />
-    <TopicDisplay :purpose="'IsEdit'" />
+    <BasicInfo @edit="EditBaseFn()" :name="headerObj.name" :time="headerObj.time" :explainText="headerObj.explainText" />
+    <TopicDisplay :list="questionsList" :purpose="'IsEdit'" :category="'exam'" @updateList="getExamDetail" />
   </div>
   <div class="teacherExaminationEditFooter">
     <div class="flexCenter">
@@ -9,7 +9,7 @@
     </div>
   </div>
   <!-- 编辑基本信息 -->
-  <EditBaseInfo v-model:visible="editModal" :id="editId" :type="'考试'" @updateInfo="initData"/>
+  <EditBaseInfo v-model:visible="editModal" :id="id" :type="'考试'" @updateInfo="getExamDetail"/>
 </template>
 <script lang="ts" setup>
 import {
@@ -36,8 +36,8 @@ import TopicDisplay from 'src/components/TopicDisplay/index.vue'
 import BasicInfo from 'src/components/TopicDisplay/BasicInfo.vue'
 const router = useRouter();
 const route = useRoute();
-const { editId } = route.query;
-const http = (request as any).teacherAssignment;
+const { id } = route.query;
+const http = (request as any).teacherExamination;
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 updata({
@@ -71,16 +71,37 @@ const cancel=()=>{
   // router.go(-1)
   router.replace({
     path:'/teacher/teacherExamination/teacherExaminationPreview',
-    query:{editId:editId}
+    query:{id:id}
   })
 }
 const save=()=>{
   cancel()
   // router.push('/teacher/teacherAssignment')
 }
-const initData=()=>{
+const setBatchScore=()=>{
 
 }
+const questionsList:any=reactive([])
+const getExamDetail = () => {
+  http.examDetail({urlParams:{ID: id}}).then((res:IBusinessResp) => {
+    questionsList.length=0
+    const {data}=res
+    headerObj.name=data.name
+    headerObj.time=`${data.started_at}-${data.closed_at}`
+    headerObj.explainText=data.note
+    let questions_info=data.questions_info
+    Object.keys(questions_info).map((v:any)=>{
+      let obj={
+        type:v,
+        question:questions_info[v]
+      }
+      questionsList.push(obj)
+    })
+  })
+}
+onMounted(()=>{
+  getExamDetail()
+})
 </script>
 <style scoped lang="less">
 .teacherExaminationEdit{

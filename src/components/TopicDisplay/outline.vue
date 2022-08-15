@@ -62,6 +62,7 @@ const props = withDefaults(defineProps<Props>(), {
     .explainTextBox{
       background-color: var(--lightgray-2);
       padding: 24px 30px;
+      width:100%;
       .explain{
         text-align: center;
         padding-bottom: 16px;

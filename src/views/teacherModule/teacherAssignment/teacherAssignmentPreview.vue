@@ -1,7 +1,7 @@
 <template>
   <div class="teacherAssignmentPreview">
     <Outline :title="headerObj.title" :explain="headerObj.explain" :explainText="headerObj.explainText" />
-    <TopicDisplay :purpose="'IsPreview'" />
+    <TopicDisplay :purpose="'IsStuAnswer'" />
   </div>
   <div class="teacherAssignmentPreviewFooter">
     <div class="flexCenter">
