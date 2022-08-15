@@ -88,7 +88,7 @@
           </div>
           <div class="right">
             <!-- 已选择的在抽屉中禁用 -->
-            <a-checkbox v-model:checked="v.checked" @change="checkedHandle" :disabled="selectIds.includes(v.id) && v.checked"></a-checkbox>
+            <a-checkbox v-model:checked="v.checked" @change="checkedHandle" :disabled="selectIds?.includes(v.id) && v.checked"></a-checkbox>
           </div>
         </div>
         <div class="info">

@@ -26,7 +26,7 @@ const emit = defineEmits<{
   (e: "update:relation", val: any): void;
   (e: "getCurrentCourse", val: any): void;
 }>();
-const relation = ref(props.relation)
+const relation = ref([0])
 const options = ref([
   {
     id: 0,
@@ -83,10 +83,10 @@ const changeHandle = (value: any, selectedOptions: any) => {
   emit("update:relation", relation.value)
   emit("getCurrentCourse", selectedOptions[selectedOptions.length-1])
 }
-// watch(()=> props.relation, (newVal:any) => {
-//   console.log(newVal)
-//   relation.value = props.relation
-// },{deep:true,immediate:true})
+watch(()=> props.relation, (newVal:any) => {
+  console.log(newVal)
+  relation.value = props.relation
+},{deep:true,immediate:true})
 </script>
 
 <style lang="less" scoped>
