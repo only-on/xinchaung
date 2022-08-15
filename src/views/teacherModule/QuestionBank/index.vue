@@ -246,12 +246,13 @@ const initData = () => {
 const isBatchOperate = ref(false)  // 是否批量操作
 const currentQuestionId = ref(0)
 function menuClick(type:string, val: any) {
-  console.log(type)
+  console.log(type,val,'val')
   isBatchOperate.value = false
-  currentQuestionId.value = val.id
+  currentQuestionId.value = val.i
   switch (type) {
     case 'edit':
-      editQuestion(val.type)
+      // const kind={'choice':'1';judge:'2',black:'3',short-answer:'4',program:'5',ai:'6'}
+      editQuestion(val.type,val.id)
       break;
     case 'delete':
       deleteQuestion()
@@ -267,16 +268,14 @@ function menuClick(type:string, val: any) {
       break;
   }
 }
-function editQuestion(key: number) {
+function editQuestion(key: number,id:any) {
   let name = ''
   let path=''
-  let questionId:any=''
+  let questionId:any=id
   createQuestionTypeList.forEach((v => {
-    if (v.key === key) name = v.name
     if (v.key === key){
       name = v.name
       path=v.path
-      questionId=v.key
     }
   }))
   router.push ({

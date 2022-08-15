@@ -28,17 +28,12 @@
         </a-col>
         <a-col :span="12">
           <a-form-item name="catalogue" label="选择目录">
-            <!-- <a-cascader
-              v-model:value="formState.catalogue"
-              :options="options"
-              placeholder="请选择"
-            /> -->
             {{formState.catalogue}}
-            <select-directory v-model:catalogue='formState.catalogue'></select-directory>
+            <select-directory v-model:catalogue='formState.catalogue' @vertifyAgain='validateCataloge' ref='selectDire'></select-directory>
           </a-form-item>
         </a-col>
         <a-col :span="['1','2','3','4','7'].includes(type)? 12 : 24">
-          <a-form-item name="knowledgePoints">
+          <!-- <a-form-item name="knowledgePoints">
             <template v-slot:label>
               <div>
                 知识点<span class="tiptit">最多可选择3个</span>
@@ -52,8 +47,9 @@
               :options="options1"
               placeholder="请选择"
             ></a-cascader>
-          </a-form-item>
-          <knowledge></knowledge>
+          </a-form-item> -->
+          {{formState.knowledgePoints}}
+          <knowledge v-model:knowledgePoints="formState.knowledgePoints"></knowledge>
         </a-col> 
         <!-- 题干 公有 -->
         <a-col v-if="type != 7" :span="24">
@@ -154,16 +150,18 @@ const http = (request as any).QuestionBank;
 const caseFile=http.caseFile
 var updata = inject("updataNav") as Function;
 import type { Rule } from 'ant-design-vue/es/form';
+import { edit } from "ace-builds";
 const catalogue1:any=ref([])
 const fileList: any = [];
 updata({
-  tabs: [{ name: "创建" + name, componenttype: 0 }],
+  tabs: [{ name:(editId?"编辑":"创建" )+ name, componenttype: 0 }],
   showContent: true,
   componenttype: undefined,
   showNav: true,
 });
 const preview = false;
 const formRef = ref<any>();
+const selectDire=ref<any>()
 const formState = reactive({
   // 名称
   name: "",
@@ -218,84 +216,20 @@ const formState = reactive({
   // 答案
   judgeAnswer: "right",
 });
-var options: any[] = [
-  {
-    value: "zhejiang",
-    label: "Zhejiang",
-    children: [
-      {
-        value: "hangzhou",
-        label: "Hangzhou",
-        children: [
-          {
-            value: "xihu",
-            label: "West Lake",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    value: "jiangsu",
-    label: "Jiangsu",
-    children: [
-      {
-        value: "nanjing",
-        label: "Nanjing",
-        children: [
-          {
-            value: "zhonghuamen",
-            label: "Zhong Hua Men",
-          },
-        ],
-      },
-    ],
-  },
-];
-const options1: any = [
-  {
-    label: "Light",
-    value: "light",
-    children: new Array(20)
-      .fill(null)
-      .map((_, index) => ({ label: `Number ${index}`, value: index })),
-  },
-  {
-    label: "Bamboo",
-    value: "bamboo",
-    children: [
-      {
-        label: "Little",
-        value: "little",
-        children: [
-          {
-            label: "Toy Fish",
-            value: "fish",
-          },
-          {
-            label: "Toy Cards",
-            value: "cards",
-          },
-          {
-            label: "Toy Bird",
-            value: "bird",
-          },
-        ],
-      },
-    ],
-  },
-];
 var selectLabels: any = ref(["A", "B", "C", "D", "E", "F"]);
 const selectOptions: any = ref([
   { label: 0, value: "" },
   { label: 1, value: "" },
 ]);
-let validateCatalogue = async (_rule: Rule, value: string) => {
-  console.log(value,'value hhhhhhhh fffffff')
-      if (value.length ==0) {
-        return Promise.reject('请选择目录来了');
-      }
-    };
+let validateCataloge = async (_rule?: Rule, value?: any) => {
+  setTimeout(()=>{
+    if(formState.catalogue?.length==0){
+    return Promise.reject('请选择目录！！');
+  }else{
+    return Promise.resolve();
+  }
+  },1000)
+};
 const rules = {
   name: [
     {
@@ -314,8 +248,8 @@ const rules = {
   catalogue: [
     {
       required: true,
-      message: "请选择目录",
-      // validator: validateCatalogue, 
+      // message: "请选择目录",
+      validator:validateCataloge, 
       // trigger: 'change'
     },
   ],
@@ -458,7 +392,6 @@ function createSolutionQues(){
     })
 }
 function onSubmit(){
-  createSolutionQues()
   formRef.value.validate().then((res: any) => {
       switch(type.value){
         case "1":
@@ -483,28 +416,29 @@ function reset(){
   // formRef.value.resetFields();
   router.go(-1);
 };
-function handleChange1(info: any) {
-  const status = info.file.status;
-  if (status !== "uploading") {
-    console.log(info.file, info.fileList);
-  }
-  if (status === "done") {
-    message.success(`${info.file.name} file uploaded successfully.`);
-  } else if (status === "error") {
-    message.error(`${info.file.name} file upload failed.`);
-  }
-}
-function handleDrop(e: any) {
-  console.log(e);
-}
 function selectAnswer(){
 
 }
 //获取选择数据
 function getChoiceData(){
+  // console.log(selectDire.value.processingEchoData([93,188]))
+  //  formState.catalogue=selectDire.value.processingEchoData([93,188])
     http.choiceDetail({urlParams:{questionId:editId}}).then((res:any)=>{
       if(res.code==1){
-        
+        const data=res.data
+        formState.purpose=data.used_by
+        formState.difficulty=data.difficulty
+        // formState.catalogue=data.category_id
+        // formState.catalogue=selectDire.value.processingEchoData([93,188])
+        formState.knowledgePoints=data.knowledge_map_ids
+        formState.stem=data.question
+        formState.judgeAnswer=data.judge_correct
+        formState.topicAnalysis=data.question_analysis
+        // 答案选项
+        formState.multipleQuesSelection=[]
+        data.choice_options.forEach((item:any)=>{
+          formState.multipleQuesSelection.push({value:item.content,ifAnswer:data.choice_correct_options.includes(item.origin_option)},)
+        })
       }
     })
 }
@@ -570,15 +504,15 @@ function editChoice(){
   const params={
     question:formState.stem,
     difficulty:formState.difficulty,
-    categoryId:1,
-    knowledgeIds:[1,2],
+    categoryId:formState.catalogue[formState.catalogue.length-1],
+    knowledgeIds:[1],
     questionAnalysis:formState.topicAnalysis,
     choiceOptions:choiceOptions,
     choiceCorrectOptions:choiceCorrectOptions,
     usedBy:formState.purpose
 
   }
-  http.editChoice({param:params}).then((res:any)=>{
+  http.editChoice({param:params,urlParams:{questionId:editId}}).then((res:any)=>{
     if(res.code==1){
       message.success('编辑成功！')
     }

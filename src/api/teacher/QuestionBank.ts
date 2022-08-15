@@ -30,7 +30,7 @@ export default {
   modelQues:{url:`/api/v1/xinchuang/question/model-questions`,method: "POST", dataType: "json"},
 
   // 习题详情
-  choiceDetail:{url: `/api/v1/xinchuang/question/choice_question`, method: "GET"},
+  choiceDetail:{url: ` /api/v1/xinchuang/question/choice_question/{questionId}`, method: "GET"},
   judgeDetail:{url:`/api/v1/xinchuang/question/judge_questions/{questionId}`, method: "GET"},
   complateDetail:{url:`/api/v1/xinchuang/question/blank_questions/{questionId}`, method: "GET"},
   solutionDetail:{url:`/api/v1/xinchuang/question/blank_questions/{questionId}`, method: "GET"},
@@ -38,7 +38,7 @@ export default {
   modelDeatil:{url:` /api/v1/xinchuang/question/model-questions/{questionId}`,method: "GET"},
 
   // 编辑习题
-  editChoice:{url:`/api/v1/xinchuang/question/choice_question/{questionId}`,method: "PUT"},
+  editChoice:{url:` /api/v1/xinchuang/question/choice_question/{questionId}`,method: "PUT",dataType: "json"},
   editJudge:{url:` /api/v1/xinchuang/question/judge_questions/{questionId}`,method: "PUT"},
   editComplate:{url:`/api/v1/xinchuang/question/blank_questions/{questionId}`,method: "PUT"},
   editSolution:{url:`/api/v1/xinchuang/question/short_answer_question/{questionId}`,method: "PUT"},
@@ -51,6 +51,13 @@ export default {
   solutionSatus:{url:` /api/v1/xinchuang/question/program-questions/{ID}/solution/{solution_id}/status`,method: "GET"},
   // 试用模型题
   runModelQuestions:{url:`/api/v1/xinchuang/question/model-questions/run/{questionId}`,method: "POST", dataType: "json"},
+
+
+
+  // 知识点
+  allCourseDir:{url:`/api/category/课程方向/tags`,method: "GET"},
+  allCourseOfDir:{url:`/api/course/direction/{tagName}/courses`,method: "GET"},
+  allknowledges:{url:`/api/course/courses/{ID}/knowledges`,method: "GET"}
 
 }
 

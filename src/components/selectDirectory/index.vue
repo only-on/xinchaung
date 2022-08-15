@@ -21,7 +21,8 @@ import {
   reactive,
   withDefaults,
   onMounted,
-  ref
+  ref,
+  nextTick
 } from "vue";
 interface Props { 
   catalogue:any[];
@@ -40,7 +41,6 @@ function change(value:any, selectedOptions:any){
   emit("vertifyAgain",props.catalogue)
 }
 function loadData(selectedOptions:any){
-    console.log(selectedOptions[0].id,'selectedOptions')
       const targetOption = selectedOptions[selectedOptions.length - 1];
         targetOption.loading = true;
         http.getDirectoryChidren({urlParams:{directory_id:selectedOptions[selectedOptions.length - 1]?.id}}).then((res:any) => {
@@ -51,6 +51,16 @@ function loadData(selectedOptions:any){
             })
         })
     };
+function getLoadData(id:any,options:any){
+
+ http.getDirectoryChidren({urlParams:{directory_id:id}}).then((res:any) => {
+          options.forEach((item:any,index:any)=> {
+            if(item.id==id){
+              options.value[index].children=res.data
+            }
+      });
+  })
+}
 // 获取第一层目录
 function getDirectoryFirst() {
   http.getDirectoryFirst().then((res:any) => {
@@ -63,7 +73,22 @@ function getDirectoryFirst() {
     }
   })
 }
+async function processingEchoData(ids:any){
+  //   console.log(ids,'idsidsidsids')
+  //  let arrdata:any=await getDirectoryFirst()
+  //   console.log(arrdata,"arrdata",options.value,'options.valueoptions.valueoptions.valueoptions.value',)
+    nextTick(()=>{
+      setTimeout(() => {
+        console.log(options.value,'options.valueoptions.valueoptions.valueoptions.value',)
+        ids.forEach((item:any,index:any)=>{
+            getLoadData(item,options.value)
+        })
+      }, 200)
+    }) 
+}
 onMounted(() => {
   getDirectoryFirst()
+  console.log('哈哈哈吧')
 })
+defineExpose({processingEchoData})
 </script> 
