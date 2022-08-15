@@ -71,6 +71,7 @@
     :title="releaseTypeList[releaseType]+'发布设置'"
     @cancel="releaseCancel()"
     :width="900"
+    class="release-modal"
   >
     <baseInfo ref="formRef" :formState="formState" :type="releaseTypeList[releaseType]"></baseInfo>
     <!-- 选择学生 -->
@@ -230,9 +231,7 @@ const initData = () => {
     questionListData.forEach((v: any) => {
       v.kind = v.kind ? v.kind : 'choice'
       v.difficulty = v.difficulty ? v.difficulty : 'easy'
-      v.type = 1 
-      v.level = 1
-      v.use = 1
+      v.used_by = v.used_by ? v.used_by : 'exam'
       checkedQuestionId.includes(v.id) ? v.checked = true : ''
     })
     // questionListData.shift()
@@ -246,7 +245,7 @@ const initData = () => {
 const isBatchOperate = ref(false)  // 是否批量操作
 const currentQuestionId = ref(0)
 function menuClick(type:string, val: any) {
-  console.log(type,val,'val')
+   console.log(type,val,'val')
   isBatchOperate.value = false
   currentQuestionId.value = val.i
   switch (type) {
@@ -450,9 +449,12 @@ async function releaseSubmit() {
   // 学生信息
   Object.assign(params, {student_ids: studentTableRef.value.studentIds})
   // 题目ids
-  const obj = {}
+  const obj: any[] = []
   checkedQuestionId.forEach((v: number) => {
-    obj[String(v)] = {score: 0}
+    obj.push({
+      id: v,
+      score: 0
+    })
   })
   Object.assign(params, {question_ids: obj} )
   console.log(params)
@@ -621,4 +623,13 @@ watch(()=>props.activeTab, newVal => {
     }
   }
 }
+</style>
+
+<style lang="less">
+  .release-modal {
+    .ant-modal-body {
+      max-height: 621px;
+      overflow: auto;
+    }
+  }
 </style>
