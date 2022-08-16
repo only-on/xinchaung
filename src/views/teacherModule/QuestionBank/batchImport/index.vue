@@ -12,48 +12,28 @@
       <a-row :gutter="24">
         <a-col :span="12">
           <a-form-item name="catalogue" label="选择目录">
-            <a-cascader
-              v-model:value="formState.catalogue"
-              :options="options"
-              placeholder="请选择"
-            />
+            <select-directory v-model:catalogue='formState.catalogue' @vertifyAgain='validateCataloge' ref='selectDire'></select-directory>
           </a-form-item>
         </a-col>
-         <a-col :span="['1','2','3','4','7'].includes(type)? 12 : 24">
-          <a-form-item name="knowledgePoints">
-            <template v-slot:label>
-              <div>
-                知识点<span class="tiptit">最多可选择3个</span>
-              </div>
-            </template>
-            <a-cascader
-              v-model:value="formState.knowledgePoints"
-              :style="['1','2','3','4','7'].includes(type) ? 'width:100%' : 'width:50%'"
-              :multiple="true"
-              max-tag-count="responsive"
-              :options="options1"
-              placeholder="请选择"
-            ></a-cascader>
-          </a-form-item>
+         <a-col :span="12">
+           {{formState.knowledgePoints}}
+          <knowledge v-model:knowledgePoints="formState.knowledgePoints"></knowledge>
         </a-col>
-        <a-col v-if="type == 7" :span="24">
-          <a-form-item
-            name="topicTemplatePath"
-          >
-            <template v-slot:label>
-              <div>
+        <a-col :span="24">
+          <div>
+            <span style="color:red">*</span>
                 下载导入
-                <span @click="DownloadTemplate" class="download">题目模板</span>
+                <span class='download'>题目模板</span>
                 每次最多导入100条。
               </div>
-            </template>
+          <a-form-item >
+             <!-- @change="handleChange1"
+              @drop="handleDrop" -->
             <a-upload-dragger
               v-model:fileList="fileList"
               name="file"
               :multiple="true"
-              action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-              @change="handleChange1"
-              @drop="handleDrop"
+              :before-upload="beforeUpload"
             >
                 <p class="ant-upload-drag-icon">
                     <i class="iconfont icon-upload"></i>
@@ -83,11 +63,15 @@ import {
   toRaw,
 } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { DownOutlined, UpOutlined } from "@ant-design/icons-vue";
 import { Form } from "ant-design-vue";
 import request from "src/api/index";
-import markedEditor from "src/components/editor/markedEditor.vue";
 import { Modal, message } from "ant-design-vue";
+import knowledge from 'src/components/knowLedge/index.vue'
+import selectDirectory from 'src/components/selectDirectory/index.vue'
+import type { Rule } from 'ant-design-vue/es/form';
+import {saveAs} from "file-saver";
+import uploadFile from "src/request/uploadFile";
+const env = process.env.NODE_ENV == "development" ? true : false;
 const route = useRoute();
 const router = useRouter();
 const type: any = ref(route.query.value);
@@ -95,9 +79,10 @@ const name: any = route.query.name;
 const http = (request as any).QuestionBank;
 const caseFile=http.caseFile
 var updata = inject("updataNav") as Function;
-const fileList: any = [];
+const fileInfo:any=ref()
+const fileList: any = ref([]);
 updata({
-  tabs: [{ name: "创建" + name, componenttype: 0 }],
+  tabs: [{ name:"批量导入", componenttype: 0 }],
   showContent: true,
   componenttype: undefined,
   showNav: true,
@@ -111,44 +96,21 @@ const formState = reactive({
   // 导入的题目路径
   topicTemplatePath:'',
 });
-const options1: any = [
-  {
-    label: "Light",
-    value: "light",
-    children: new Array(20)
-      .fill(null)
-      .map((_, index) => ({ label: `Number ${index}`, value: index })),
-  },
-  {
-    label: "Bamboo",
-    value: "bamboo",
-    children: [
-      {
-        label: "Little",
-        value: "little",
-        children: [
-          {
-            label: "Toy Fish",
-            value: "fish",
-          },
-          {
-            label: "Toy Cards",
-            value: "cards",
-          },
-          {
-            label: "Toy Bird",
-            value: "bird",
-          },
-        ],
-      },
-    ],
-  },
-];
+let validateCataloge = async (_rule?: Rule, value?: any) => {
+  setTimeout(()=>{
+    if(formState.catalogue?.length==0){
+    return Promise.reject('请选择目录！！');
+  }else{
+    return Promise.resolve();
+  }
+  },1000)
+};
 const rules = {
   catalogue: [
     {
       required: true,
-      message: "请选择目录",
+      validator:validateCataloge, 
+      // message: "请选择目录",
     },
   ],
   topicTemplatePath:[
@@ -158,6 +120,65 @@ const rules = {
     }
   ]
 };
+// 上传前
+function beforeUpload(file: any) {
+  if (file.size / 1024 / 1024 >= 500) {
+    message.warn("上传文件不能超过500MB");
+    return false;
+  }
+  fileList.value.push(file);
+  fileInfo.value=file
+  // let i = fileList.value.findIndex((item: any) => {
+  //   return item.uid === file.uid;
+  // });
+
+  // fileList.value[i].progress = 0;
+  // fileList.value[i].status = "loading";
+  // const body = {
+  //   file:file,
+  //   upload_path: "createQues",
+  //   default_name:1,
+  // };
+
+  // fileList.value[i].upload = new uploadFile({
+  //   url: env ? '/proxyPrefix/api/instance/uploads/file':'/api/instance/uploads/file',
+  //   body,
+  //   success: (res: any) => {
+  //     if (res.code == 1) {
+  //       fileList.value[i].status = "finish";
+  //       fileList.value [i].progress = "100%";
+  //       console.log(res.data.pdf_path, "res.data.props.path");
+  //     } else {
+  //       fileList.value[i].progress = 0;
+  //       message.warn(res.msg);
+  //     }
+  //     fileList.value[i].upload = "";         
+  //     fileList.value.push({});
+  //     fileList.value.pop();
+  //   },
+  //   progress: (e: ProgressEvent) => {
+  //     if (e.total > 0) {
+  //       let prog: any = Number(
+  //         Number((e.loaded / e.total) * 100).toFixed(2)
+  //       ) as any;
+  //       fileList.value[i].progress = prog == 100 ? 99 : prog;
+  //       fileList.value[i] = Object.assign(fileList.value[i], {
+  //         progress:fileList.value[i].progress,
+  //       });
+  //       fileList.value.push({});
+  //       fileList.value.pop();
+  //     }
+  //   },
+  //   abort: (xhr: XMLHttpRequest) => {
+  //     console.log("终止上传成功", xhr);
+  //   },
+  //   error: (err:any) => {
+  //     console.log(err);
+  //   },
+  // });
+  // fileList.value[i].upload.request();
+  return false;
+}
 const handleChange = (value: string) => {
   console.log(`selected ${value}`);
 };
@@ -165,8 +186,21 @@ const onSubmit = () => {
   formRef.value
     .validate()
     .then((res: any) => {
-      console.log(res, toRaw(formState));
-      
+      const fd:any=new FormData()
+      let ids:any=[]
+      formState.knowledgePoints.forEach((item:any,index:any)=>{
+        ids.push(item[item.length-1])
+      })
+      fd.append('directoryId',formState.catalogue[formState.catalogue.length-1])
+      ids.forEach((item:any)=> {
+        fd.append('knowledgeMapIds[]',item)
+      });
+      fd.append('importQuestionFile',fileInfo.value)
+      http.batchImport({param:fd}).then((res:any)=>{
+          if(res?.code==1){
+            message.success('导入成功！')
+          }
+      }) 
     })
     .catch((err: any) => {
       console.log("error", err);
@@ -176,25 +210,17 @@ const reset = () => {
   formRef.value.resetFields();
   router.go(-1);
 };
-function handleChange1(info: any) {
-  const status = info.file.status;
-  if (status !== "uploading") {
-    console.log(info.file, info.fileList);
-  }
-  if (status === "done") {
-    message.success(`${info.file.name} file uploaded successfully.`);
-  } else if (status === "error") {
-    message.error(`${info.file.name} file upload failed.`);
-  }
+function handleChange1(){
+
 }
-function handleDrop(e: any) {
-  console.log(e);
+function handleDrop(){
+
 }
 function DownloadTemplate() {
       const isDev = process.env.NODE_ENV == "development" ? true : false;
       let url = isDev
-        ? "./public/template/Teacher.xlsx"
-        : "/api/template/Teacher.xlsx";
+        ? "/public/template/importTemplate.xlsx"
+        : "/api/template/QuestionImport.xlsx";
       const a = document.createElement("a");
       a.href = url;
       a.download = "题目模板.xlsx";

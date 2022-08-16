@@ -58,7 +58,11 @@ export default {
   // 知识点
   allCourseDir:{url:`/api/category/课程方向/tags`,method: "GET"},
   allCourseOfDir:{url:`/api/course/direction/{tagName}/courses`,method: "GET"},
-  allknowledges:{url:`/api/course/courses/{ID}/knowledges`,method: "GET"}
+  allknowledges:{url:`/api/course/courses/{ID}/knowledges`,method: "GET"},
+
+
+  // 批量导入
+  batchImport:{url:'/api/v1/xinchuang/question/multiple/questions-import',method: "POST",dataType: 'formdata'},
 
 }
 
@@ -112,4 +116,7 @@ export interface IQuestionBank {
   // 试用模型题
   runModelQuestions: TFHttpSend
   batchDownLoad: TFHttpSend
+
+
+  batchImport:TFHttpSend
 }

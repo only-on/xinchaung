@@ -319,7 +319,7 @@ function createChoiceQues(){
     const params={
       question:formState.stem,
       difficulty:formState.difficulty,
-      categoryId:1,
+      categoryId:formState.catalogue[formState.catalogue.length-1],
       knowledgeIds:[1,2],
       questionAnalysis:formState.topicAnalysis,
       choiceOptions:choiceOptions,
@@ -338,7 +338,7 @@ function createJudgeQues(){
   const params={
       usedBy:formState.purpose,
       difficulty:formState.difficulty,
-      categoryId:1,
+      categoryId:formState.catalogue[formState.catalogue.length-1],
       // knowledgeIds:[],
       knowledgeMapIds:[],
       question:formState.stem, 
@@ -360,7 +360,7 @@ function createCompleQues(){
   const params={
       usedBy:formState.purpose,
       difficulty:formState.difficulty,
-      categoryId:1,
+      categoryId:formState.catalogue[formState.catalogue.length-1],
       // knowledgeIds:[],
       knowledgeMapIds:[],
       question:formState.stem, 
@@ -378,7 +378,7 @@ function createSolutionQues(){
   const params={
       usedBy:formState.purpose,
       difficulty:formState.difficulty,
-      categoryId:1,
+      categoryId:formState.catalogue[formState.catalogue.length-1],
       knowledgeMapIds:[],
       question:formState.stem, 
       shortAnswerReference:formState.referenceAnswer,//参考答案
@@ -522,7 +522,7 @@ function editJudge(){
    const params={
       usedBy:formState.purpose,
       difficulty:formState.difficulty,
-      categoryId:1,
+      categoryId:formState.catalogue[formState.catalogue.length-1],
       // knowledgeIds:[],
       knowledgeMapIds:[],
       question:formState.stem, 
@@ -546,7 +546,7 @@ function editComple(){
   const params={
       usedBy:formState.purpose,
       difficulty:formState.difficulty,
-      categoryId:94,
+      categoryId:formState.catalogue[formState.catalogue.length-1],
       // knowledgeIds:[],
       knowledgeMapIds:[],
       question:formState.stem, 
@@ -563,7 +563,7 @@ function editSolution(){
    const params={
       usedBy:formState.purpose,
       difficulty:formState.difficulty,
-      categoryId:1,
+      categoryId:formState.catalogue[formState.catalogue.length-1],
       knowledgeMapIds:[],
       question:formState.stem, 
       shortAnswerReference:formState.referenceAnswer,//参考答案
