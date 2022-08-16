@@ -2,7 +2,7 @@
   <div class="question-lists">
     <div class="list" v-for="v in props.questionList" :key="v.id">
       <div class="question-type">
-        <span class="type" :style="{background: getTopicType[v.kind].bgColor}">{{getTopicType[v.kind].subname}}</span>
+        <span class="type" :style="{background: getTopicType[v.kind]?.bgColor}">{{getTopicType[v.kind]?.subname}}</span>
       </div>
       <div class="question-content">
         <div class="question-main">
@@ -72,15 +72,15 @@
             </template>
             <!-- 编程题 -->
             <div class="program" v-if="v.kind === 'program'">
-              <Programming></Programming>
+              <Programming :desc="v.question_desc?v.question_desc:''" :info="{}"></Programming>
             </div>
             <!-- 模型题 -->
             <div class="model" v-if="v.kind === 'ai'">
-              <ModelQuestion></ModelQuestion>
+              <ModelQuestion :desc="v.question_desc?v.question_desc:''" :evaluating="''"></ModelQuestion>
             </div>
             <!-- SQL题 -->
             <div class="sql" v-if="v.kind === 'sql'">
-              <Sqldetail></Sqldetail>
+              <Sqldetail :info="{desc: v.question_desc?v.question_desc:''}"></Sqldetail>
             </div>
             <!-- 后面三种题型的试用 -->
             <div class="shiyong pointer" v-if="['program','ai','sql'].includes(v.kind)" @click="trialHandle(v)">试用</div>
@@ -99,8 +99,8 @@
             </span>
             <span 
               class="level" 
-              :style="{background: levelTypeList[v.difficulty].bgColor,color: levelTypeList[v.difficulty].color}"
-            >{{levelTypeList[v.difficulty].name}}</span>
+              :style="{background: levelTypeList[v.difficulty]?.bgColor,color: levelTypeList[v.difficulty]?.color}"
+            >{{levelTypeList[v.difficulty]?.name}}</span>
             <span class="use">{{useTypeList[v.used_by]?.name}}</span>
             <span class="create-time">创建时间：{{moment(new Date()).format('YYYY/MM/DD')}}</span>
             <span class="num">使用次数：{{v.used_counts||0}}</span>
