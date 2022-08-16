@@ -35,8 +35,8 @@
         />
       </template>
     </common-card>
-    <!-- 选择学生500060 -->
-    <addstudent :visable='visable' :courseId='50001' :studentIds="studentIds" @updateSelectStuVisable="updateSelectStuVisable"></addstudent>
+    <!-- 选择学生 :courseId='courseId'  -->
+    <addstudent :visable='visable' :studentIds="studentIds" @updateSelectStuVisable="updateSelectStuVisable"></addstudent>
   </div>
 </template>
 <script lang="ts" setup>
@@ -190,7 +190,7 @@ watch(()=>props.courseId, (newVal:any) => {
   if (newVal) {
     showBtn.value = false
     columns.value.pop()
-    http.examsUserList({param:{courseId:newVal}}).then((res:any) => {
+    http.examsUserList({param:{course_id:newVal}}).then((res:any) => {
       allData.push(...res.data.list)
       let allIds = getIds(res.data.list)
       studentIds.push(...allIds)

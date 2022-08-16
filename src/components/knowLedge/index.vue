@@ -1,7 +1,7 @@
 <template>
     <div>
        <a-form-item :rules="{
-           message:knowledgePoints?.length>3?'知识点最多可选三个':'',
+           message:knowledgePoints?.length>maxNum?`知识点最多可选${NoToCh(maxNum)}个`:'',
           }">
             <template v-slot:label>
               <div>
@@ -29,6 +29,7 @@ import { onMounted } from "@vue/runtime-core";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { defineComponent, ref, reactive, toRefs } from 'vue'
+import {NoToCh} from 'src/utils/common'
 const http = (request as any).QuestionBank;
 interface Props { 
 knowledgePoints:any[];
@@ -42,11 +43,14 @@ const emit = defineEmits<{
   (e: "update:knowledgePoints", val: any): void;
   (e: "close"): void;
 }>();
-const cascaderRef = ref()
-var endData = ref([])
+const arr = ref<any>([])
 function changeData(value:any, selectedOptions:any){
-  if(selectedOptions.length<4){
+  arr.value = value
+  if(selectedOptions.length <= props.maxNum){
     emit("update:knowledgePoints",props.knowledgePoints)
+  } else {
+    arr.value.splice(arr.value.length - 2, 1)
+    emit("update:knowledgePoints",arr.value)
   }
 }
 function dropdownVisibleChange(value:any) {

@@ -3,6 +3,8 @@ declare module '*.md';
 declare module 'swiper/vue';
 declare module 'http-build-query';
 declare module 'echarts/extension/dataTool'
+declare module 'vue-codemirror'
+declare module '@codemirror/*'
 interface Window {
     _config:{
         TUS_SERVE_IP: string,

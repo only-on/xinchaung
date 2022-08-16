@@ -6,7 +6,7 @@
         {{problemData.title}}
       </div>
       <div class="right">
-         内存限制: <span>{{problemData.memeoy_limit}}kb</span>
+         内存限制: <span>{{problemData.memory_limit}}kb</span>
          时间限制: <span>{{problemData.time_limit}}ms</span>
          <lanuageSelect @change="changeLanugae"/>
         <a-divider type="vertical" style="background:#2C3A54;height:20px"/>
@@ -30,6 +30,7 @@
           <a-tabs v-model:activeKey="activeKey">
             <a-tab-pane key="sample" tab="测试样例">
               <a-textarea
+              :bordered="false"
                 resize="none"
                 autoSize
                 placeholder="请输入内容"
@@ -38,6 +39,7 @@
             </a-tab-pane>
             <a-tab-pane key="result" tab="测试结果" force-render>
               <a-textarea
+              :bordered="false"
                 resize="none"
                 autoSize
                 :readonly="true"
@@ -46,12 +48,12 @@
             </a-tab-pane>
           </a-tabs>
           <div class="resultInfo">
-            <span>消耗内存：{{testData.memeory}}kb</span>
+            <span>消耗内存：{{testData.memory}}kb</span>
             <span>代码执⾏时⻓：{{testData.time}}ms</span>
           </div>
         </div>
         <div class="operateBtn">
-          <a-button>取消</a-button>
+          <a-button @click="closeTab">取消</a-button>
           <a-button type="primary" class="brightBtn" @click="handleSubmit(true)">测试</a-button>
           <a-button type="primary" @click="handleSubmit(false)">提交</a-button>
         </div>
@@ -77,7 +79,7 @@ interface IproblemData {
   sample_input: string,
   sample_output: string,
   time_limit: string,
-  memeoy_limit: number | string
+  memory_limit: number | string
 }
 const route = useRoute()
 const http = (request as any).QuestionBank;
@@ -89,7 +91,7 @@ const problemData = reactive<IproblemData>({
   sample_input: '',
   sample_output: '',
   time_limit: '0',
-  memeoy_limit: 0
+  memory_limit: 0
 })
 const languageVal = reactive({
   value: '',
@@ -99,11 +101,12 @@ const codeHeight = ref(400)
 const code = ref('')
 const solutionId = ref('')
 const activeKey = ref('sample')
+const timerNum = ref<number>(0) // 轮询次数
 const testData = reactive<any>({
   sample: '测试样例内容',
   resultText: '',
   time: 0,
-  memeory: 0,
+  memory: 0,
   timer: null,
   loading: false
 })
@@ -160,11 +163,24 @@ const getQuestionDetail = () => {
     testData.sample = problemData.sample_input
   })
 }
+const resetContent = () => {
+  testData.loading = false
+  clearInterval(testData.timer)
+  testData.timer = null
+  testData.resultText = ''
+  message.warning('测试失败')
+}
 // 查询测试结果
 const getResult = () => {
+  timerNum.value += 1
+  if (timerNum.value > 20) {
+    resetContent()
+  }
   http.solutionSatus({urlParams:{ID: questionId.value, solution_id:solutionId.value}}).then((res:IBusinessResp) => {
     let result = res.data
     if (result.result === 4 || result.result === 13) {
+      testData.memory = result.memory
+      testData.time = result.time
       testData.loading = false
       clearInterval(testData.timer)
       testData.timer = null
@@ -177,10 +193,7 @@ const getResult = () => {
       }
     }
   }).catch(()=>{
-    testData.loading = false
-    clearInterval(testData.timer)
-    testData.timer = null
-    testData.resultText = ''
+    resetContent()
   })
 }
 // 提交
@@ -324,12 +337,6 @@ onMounted(()=>{
         :deep(.ant-tabs){
           .ant-tabs-nav-list, .ant-tabs-content{
             padding: 0 20px;
-          }
-          .ant-input{
-            border: 0;
-          }
-          .ant-input:focus, .ant-input-focused{
-            box-shadow: none;
           }
         }
       }

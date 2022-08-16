@@ -67,14 +67,15 @@ const handleEdit = async() => {
     note: editInfo.note
   }
   loading.value=true
-  http.editExam({urlParams:{ID: props.id},param:params}).then((res:IBusinessResp) => {
-    loading.value=false
-    message.success('编辑成功')
-    emit('update:visible', false)
-    emit('updateInfo')
-  }).catch((err:any)=>{
-    loading.value=false
-  })
+  console.log(editInfo.relation)
+  // http.editExam({urlParams:{ID: props.id},param:params}).then((res:IBusinessResp) => {
+  //   loading.value=false
+  //   message.success('编辑成功')
+  //   emit('update:visible', false)
+  //   emit('updateInfo')
+  // }).catch((err:any)=>{
+  //   loading.value=false
+  // })
 }
 const handleCancel = () => {
   emit('update:visible', false)

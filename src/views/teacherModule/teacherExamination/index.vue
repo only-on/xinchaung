@@ -26,7 +26,7 @@
       已为您导出了试卷对应的PDF文件
       <div class="exportContent">
         <img :src="iconList['pdf']" alt="">
-        <span>考试名称考试名称考试名称考试名称.pdf</span>
+        <span>{{exportName}}.pdf</span>
       </div>
     </div>
     <template #footer>
@@ -157,19 +157,17 @@ const deleteItem = () => {
     },
   });
 }
-// 编辑
-const handleEdit = () => {}
-const editCancel = () => {
-  editModal.value= false
-}
-// 复用
-const handleCopy = () => {}
 // 导出试卷相关
 const exportVisible = ref<boolean>(false)
-const handleExport = () => {
+const exportName = ref<string>('')
+const handleExport = (val:any) => {
   exportVisible.value = true
+  exportName.value = val.name
 }
 const saveExport = () => {
+  http.exportPaper({urlParams:{exam:currentOperateId.value}}).then((res:IBusinessResp) => {
+
+  })
   // downloadUrl()
   exportVisible.value = false
 }
@@ -207,12 +205,12 @@ const menuClick = (type:string, val:any) => {
         query: {
           type: 'manual',
           id: val.id,
-          isCopy: true
+          isCopy: 'true'
         }
       })
       break;
     case 'export':
-      handleExport()
+      handleExport(val)
       break;
   }
 }

@@ -6,15 +6,15 @@
           <div class="left">
             提交情况： <span class="submitNum">10</span> /100
             <a-input-search 
-              v-model:value="searchInfo.keyword" 
+              v-model:value="searchInfo.name" 
               placeholder="请输入搜索关键词"
-              @search="getTableData"
-              @keyup.enter="getTableData" >
+              @search="searchName"
+              @keyup.enter="searchName">
             </a-input-search>
           </div>
           <div class="right">
             <a-button type="primary" class="brightBtn" @click="handleRecheck">代码查重</a-button>
-            <a-button type="primary">导出成绩</a-button>
+            <a-button type="primary" @click="handleExport">导出成绩</a-button>
           </div>
         </div>
         <a-spin :spinning="listData.loading" size="large" tip="Loading...">
@@ -25,9 +25,15 @@
               row-key="id"
               :pagination="false"
             >
-              <template v-slot:bodyCell="{ column, record, index }">
+              <template v-slot:bodyCell="{ column, record }">
+                <template v-if="column.dataIndex === 'is_submmit'">
+                  {{record.is_submmit ? '已提交' : '未提交'}}
+                </template>
+                <template v-if="column.dataIndex === 'total_score'">
+                  {{record.total_score ? record.total_score : '--'}}
+                </template>
                 <template v-if="column.dataIndex === 'operation'">
-                  <a-button type="link">查看</a-button>
+                  <a-button type="link" @click="checkDetail(record.id)" :disabled="!record.is_submmit">查看</a-button>
                 </template>
               </template>
             </a-table>
@@ -39,7 +45,7 @@
             v-model:page="searchInfo.page"
             v-model:size="searchInfo.limit"
             :total="listData.total"
-            @page-change="getTableData"
+            @page-change="getScoreList"
           />
         </a-spin>
       </template>
@@ -47,29 +53,35 @@
     <!-- 代码查重 -->
     <a-drawer
       :destroyOnClose="true"
-      :closable="true"
+      :closable="false"
       placement="right"
       :visible="drawerVisible"
       width="700"
       @close="closeDrawer"
     >
       <template #title>
-        代码查重 <span class="title">相似度设置，只支持编程题</span>
+        <div class="headerBox flexCenter">
+          <span>
+            代码查重 <span class="title">相似度设置，只支持编程题</span>
+          </span>
+          <span class="iconfont icon-guanbi" @click="closeDrawer"></span>
+        </div>
       </template>
       <div class="content">
         <a-row>
           <a-col :span="12">
-            <span class="label">学生姓名</span> <a-input v-model:value="recheckSearch.name"></a-input>
+            <span class="label">学生姓名</span> 
+            <a-input v-model:value="recheckSearch.name"></a-input>
           </a-col>
           <a-col :span="12">
             <span class="label">语言</span>
-            <lanuageSelect :inDrawer="true" @change="changeLanugae"/>
+            <lanuageSelect :inDrawer="true" @change="changeLanuage"/>
           </a-col>
           <a-col :span="12">
             <span class="label">相似度</span>
             <a-select v-model:value="recheckSearch.sim" placeholder="请选择">
               <a-select-option
-                v-for="(item, index) in simListData"
+                v-for="(item, index) in simList"
                 :key="index"
                 :value="item.value">
                 {{item.label}}
@@ -78,28 +90,31 @@
           </a-col>
         </a-row>
         <div class="searchResult">
-          <span>编程题 第一题 题目名称写在这里</span>
-          <a-table
-            :columns="recheckColumns"
-            :data-source="recheckTable"
-            row-key="id"
-            :pagination="false"
-          >
-          <template #expandedRowRender="{record}">
+          <div v-for="(item,index) in recheckResult" :key="index">
+            <span>{{item.question}}</span>
             <a-table
-              :columns="recheckInnerColumns"
-              :data-source="record.list"
-              row-key="id"
+              :columns="recheckColumns"
+              :data-source="item.items"
+              row-key="user_id"
               :pagination="false"
             >
-              <template v-slot:bodyCell="{ column, record}">
-                  <template v-if="column.dataIndex === 'sim'">
-                    <span class="sim serious">{{record.sim}}</span>
-                  </template>
-              </template>
+            <template #expandedRowRender="{record}">
+              <a-table
+                :columns="recheckInnerColumns"
+                :data-source="record.sims"
+                row-key="solution_id"
+                :pagination="false"
+              >
+                <template v-slot:bodyCell="{ column, record}">
+                    <template v-if="column.dataIndex === 'sim'">
+                      <span :class="['sim', record.sim <= 50 ? 'mild' : (record.sim > 50 && record.sim <= 80) ? 'medium' : 'serious']">{{record.sim + '%'}}</span>
+                    </template>
+                </template>
+              </a-table>
+            </template>
             </a-table>
-          </template>
-          </a-table>
+          </div>
+      
         </div>
       </div>
       <template #footer>
@@ -109,21 +124,27 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ref, reactive, watch, provide, inject ,computed} from "vue";
+import { ref, reactive, watch, provide, inject ,computed, onMounted} from "vue";
 import { useRoute, useRouter } from 'vue-router';
 import CommonCard from "src/components/common/CommonCard.vue";
 import Pagination from "src/components/Pagination.vue";
 import Submit from "src/components/submit/index.vue";
 import lanuageSelect from "src/views/shareModule/programAnswer/component/lanuageSelect.vue";
 import {simList} from './utils'
+import {downloadUrl} from 'src/utils/download.ts'
+import request from "src/api/index";
+import { IBusinessResp } from "src/typings/fetch.d";
+const http = (request as any).teacherExamination;
 const route = useRoute()
-const examName = route.query.name
+const router = useRouter()
+const examName = ref<any>(route.query.name)
+const examId = ref<any>(route.query.id)
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 updata({
   tabs: [
     {
-      name: `考试评阅 - ${examName}`,
+      name: `考试评阅 - ${examName.value}`,
       componenttype: 0,
     },
   ],
@@ -136,11 +157,13 @@ const columns = [
     title: "姓名",
     dataIndex: ['user_profile', 'name'],
     key: "name",
+    ellipsis: true
   },
   {
     title: "账号",
-    dataIndex: "username",
-    key: "username",
+    dataIndex: "user_sno",
+    key: "user_sno",
+    ellipsis: true
   },
   {
     title: "班级",
@@ -149,18 +172,18 @@ const columns = [
   },
   {
     title: "提交状态",
-    dataIndex: ['user_profile', 'grade'],
-    key: "grade",
+    dataIndex: "is_submmit",
+    key: "is_submmit",
   },
   {
     title: "提交时间",
-    dataIndex: ['user_profile', 'major'],
-    key: "major",
+    dataIndex: "submit_time",
+    key: "submit_time",
   },
   {
     title: "评分",
-    dataIndex: ['user_profile', 'department'],
-    key: "department",
+    dataIndex: "total_score",
+    key: "total_score",
   },
   {
     title: "专属解析",
@@ -176,14 +199,14 @@ const recheckColumns = [
   },
   {
     title: "代码满足查重条件的学生数",
-    dataIndex: 'num',
-    key: "num",
+    dataIndex: 'studentNum',
+    key: "studentNum",
   },
 ]
 const recheckInnerColumns = [
   {
     title: "提交编号",
-    dataIndex: 'number',
+    dataIndex: 'solution_id',
     key: "number",
   },
   {
@@ -193,8 +216,8 @@ const recheckInnerColumns = [
   },
   {
     title: "语言",
-    dataIndex: 'lanuage',
-    key: "lanuage",
+    dataIndex: 'language_name',
+    key: "language_name",
   },
   {
     title: "相似度",
@@ -213,45 +236,93 @@ const listData = reactive<IlistData>({
   data: []
 })
 const searchInfo = reactive({
-  keyword: '',
+  name: '',
   page:1,
   limit: 10
 })
 const EmptyType:any=computed(()=>{
   let str=''
-  if(searchInfo.keyword === ''){
+  if(searchInfo.name === ''){
     str= 'tableEmpty'
   }else{
     str= 'tableSearchEmpty'
   }
   return str
 })
-const getTableData = () => {
+// 查看成绩详情
+const checkDetail = (id: number | string) => {
+  router.push({
+    path: '/teacher/teacherExamination/teacherExaminationAchievement',
+    query: {
+      id: id
+    }
+  })
+} 
+// 导出成绩
+const handleExport = () => {
 
 }
 // 代码查重
 const drawerVisible = ref<boolean>(false)
-const simListData = simList
 const searchLoading = ref<boolean>(false)
 const recheckSearch = reactive({
   name: '',
-  lanuage: '',
+  language: '',
   sim: ''
 })
-const recheckTable = [
+const recheckResult = reactive<any>(
+[
   {
-    name: '张三',
-    num: 5,
-    list: [
-      {
-        number: 1111,
-        name: '李四',
-        lanuage: 'C',
-        sim: '100%'
-      }
-    ]
-  }
+            "id":77, // 编程题目ID
+            "question":"测试编程题", // 编程题目名称
+            "items": [
+                {
+                    "user_id":102,   // 查重学生ID(参考者)
+                    "name":"lmm",   // 查重学生姓名(参考者)
+            studentNum: 3,
+                    "sims":[
+                        {
+                            "solution_id":1001,   // 提交编号
+                            "name":"test",   // 相似学生姓名
+                            "language_name":"c",   // 语言名称
+                            "language":0,   // 语言编号
+                            "sim":80,   // 相似度值
+                        },
+                        {
+                            "solution_id":1001,
+                            "name":"test",
+                            "language_name":"c",
+                            "language":0,
+                            "sim":70,
+                        }
+                    ]
+                },
+                {
+                    "user_id":103,
+                    "name":"aaa",
+            studentNum: 3,
+                    "sims":[
+                        {
+                            "solution_id":1001,
+                            "name":"test",
+                            "language_name":"c",
+                            "language":0,
+                            "sim":80,
+                        },
+                        {
+                            "solution_id":1001,
+                            "name":"test",
+                            "language_name":"c",
+                            "language":0,
+                            "sim":90,
+                        }
+                    ]
+                }
+            ]
+        }
 ]
+
+)
 const handleRecheck = () => {
   drawerVisible.value = true
 }
@@ -261,11 +332,40 @@ const closeDrawer = () => {
 }
 const handleSearch = () => {
   searchLoading.value = true
+  recheckResult.length = 0
+  http.simExam({urlParams:{ID: examId.value},param: recheckSearch}).then((res:IBusinessResp) => {
+    Object.assign(recheckResult, res.data)
+    recheckResult.forEach((item:any) => {
+      item.items.forEach((innerItem:any) => {
+        innerItem.studentNum = innerItem.sims.length
+      })
+    })
+    searchLoading.value = false
+  }).catch(()=>{
+    searchLoading.value = false
+  })
 }
-const changeLanugae = (val:any) => {
-  console.log(val)
+const changeLanuage = (val:any) => {
+  recheckSearch.language = val.value
 }
-
+// 成绩列表
+const getScoreList = () => {
+  listData.loading = true
+  http.studentsScores({urlParams: {exam: examId.value},param:searchInfo}).then((res:IBusinessResp) => {
+    listData.data = res.data.list
+    listData.total = res.data.page.totalCount
+    listData.loading = false
+  }).catch(()=>{
+    listData.loading = false
+  })
+}
+const searchName = () => {
+  searchInfo.page = 1
+  getScoreList()
+}
+onMounted(()=>{
+  getScoreList()
+})
 </script>
 <style lang="less" scoped>
 .reviewExamination{
@@ -296,8 +396,17 @@ const changeLanugae = (val:any) => {
       }
     }
   }
+  :deep(.ant-table){
+    margin-bottom: 20px;
+  }
 }
 .ant-drawer{
+  .headerBox{
+    justify-content: space-between;
+    .iconfont{
+      cursor: pointer;
+    }
+  }
   .title{
     font-size: 12px;
     color: var(--black-25);
@@ -316,7 +425,9 @@ const changeLanugae = (val:any) => {
       width: 240px;
     }
     .searchResult{
-      margin-bottom: 20px;
+      &>div{
+        margin-bottom: 20px;
+      }
       >span{
         display: inline-block;
         margin-bottom: 5px;

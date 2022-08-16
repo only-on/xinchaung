@@ -79,6 +79,7 @@ import { IBusinessResp } from "src/typings/fetch.d";
 import {randomCreatScore} from 'src/utils/common'
 import {validateNum, formatTime} from "./utils"
 import { levelTypeList } from 'src/components/TopicDisplay/configType'
+import { objectExpression } from "@babel/types";
 const route = useRoute();
 const router = useRouter()
 const http = (request as any).teacherExamination;
@@ -312,8 +313,15 @@ const handleSave = async() => {
   } else {
     // 手动创建题目信息
     await questionTableRef.value.tablefromValidate()
-    Object.assign(params,{question_ids: questionTableRef.value.questions_ids} )
-    console.log(questionTableRef.value.questions_ids)
+    Object.assign(params,{question_ids: questionTableRef.value.questions_ids})
+  }
+  if (isRandom.value && !topInfo.num) {
+    message.warning('请选择题目')
+    return
+  }
+  if (!isRandom.value && !params.question_ids.length) {
+    message.warning('请选择题目')
+    return
   }
   if (!studentTableRef.value.studentIds.length) {
     message.warning('请选择学生')
@@ -358,7 +366,6 @@ const getExamDetail = () => {
       students_info: result.students_info,
       questions_info: questionData
     })
-    console.log(questionData)
   })
 }
 

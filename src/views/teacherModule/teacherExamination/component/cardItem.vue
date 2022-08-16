@@ -29,10 +29,10 @@
           <template #overlay>
             <a-menu>
               <a-menu-item>
-                <a-button type="link" @click.stop="handleClick('edit', item)" :disabled="item.is_publish ? true : false">编辑</a-button>
+                <a-button type="link" @click.stop="handleClick('edit', item)" :disabled="item.is_publish && item.status !== 3  ? true : false">编辑</a-button>
               </a-menu-item>
               <a-menu-item>
-                <a-button type="link" @click.stop="handleClick('delete', item)">删除</a-button>
+                <a-button type="link" @click.stop="handleClick('delete', item)" :disabled="item.is_publish && item.status !== 3  ? true : false">删除</a-button>
               </a-menu-item>
               <a-menu-item>
                 <a-button type="link" @click.stop="handleClick('copy', item)">复用</a-button>

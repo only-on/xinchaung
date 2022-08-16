@@ -12,6 +12,10 @@ export default {
   addExam: {url: `/api/v1/question/exams?type=2`, method: "POST",dataType: 'json'}, // 添加考试
   examDetail: {url: `/api/v1/question/exams/{ID}`, method: "GET"}, // 详情
   editExam: {url: `/api/v1/question/exams/{ID}`, method: "PUT",dataType: 'json'}, // 编辑
+  exportPaper: {url: `/api/v1/question/exams/{exam}/export-paper`, method: "GET"}, // 导出
+  studentsScores: {url: `/api/v1/question/exams/{exam}/students/scores`, method: "GET"}, // 成绩列表
+  simExam: {url: ` /api/v1/question/exams/{ID}/sim`, method: "GET"}, // 代码查重
+
 
 
   //设置题目分数
@@ -31,6 +35,9 @@ export interface ITeacherExamination {
   addExam: TFHttpSend;
   examDetail:TFHttpSend;
   editExam: TFHttpSend;
+  exportPaper: TFHttpSend;
+  studentsScores: TFHttpSend;
+  simExam: TFHttpSend;
   // questionsScore: TFHttpSend;
   // questionsBatchScore: TFHttpSend;
 }
