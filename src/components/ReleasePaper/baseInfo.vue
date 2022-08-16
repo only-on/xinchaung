@@ -46,7 +46,10 @@ const rules = {
   date: {required: true, message: `请选择起始时间`}
 }
 
-const currentCourseInfo = reactive({})
+const currentCourseInfo = reactive({
+  start_time: '',
+  end_time: ''
+})
 const baseInfoFormRef = ref()
 const dateChange = () => {}
 const disabledDate=(current: Moment)=>{
