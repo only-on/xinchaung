@@ -46,11 +46,11 @@ import antiCheatingSetting from "./component/antiCheatingSetting.vue";
 import editBaseInfo from "./component/editBaseInfo.vue";
 import Pagination from 'src/components/Pagination.vue'
 import Submit from "src/components/submit/index.vue";
-import iconList from 'src/utils/iconList.ts'
+import iconList from 'src/utils/iconList'
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import {initialData} from './utils'
-import {downloadUrl} from 'src/utils/download.ts'
+import {downloadUrl} from 'src/utils/download'
 interface IlistData {
   loading: Boolean;
   total: number,

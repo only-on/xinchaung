@@ -39,7 +39,6 @@ import {
 
 import iconList from "src/utils/iconList";
 import { bytesToSize } from "src/utils/common"
-import { SelectTypes } from "ant-design-vue/es/select";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";

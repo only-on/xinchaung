@@ -39,7 +39,7 @@ const emit = defineEmits<{
 }>();
 const codeHeight = ref(props.height)
 const codeVal = ref(`console.log('Hello, world!')`);
-const options = reactive({
+const options = reactive<{mode: string, extensions: any[]}>({
   mode: '',
   extensions: [html()]
 })

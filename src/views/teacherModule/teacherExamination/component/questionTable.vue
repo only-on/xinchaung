@@ -17,26 +17,26 @@
           :pagination="false"
           :customRow="customRow"
         >
-          <template v-slot:bodyCell="{ column, record, index }">
+          <template v-slot:bodyCell="{ column, record1, index1 }">
             <template v-if="column.dataIndex === 'type'">
               <i class="iconfont icon-tuozhuai"></i>
-              {{getTopicType[record.type].name}}
+              {{getTopicType[record1.type].name}}
             </template>
             <template v-if="column.dataIndex === 'operation'">
-              <a-button type="link" @click="delOuter(record, index)">删除</a-button>
+              <a-button type="link" @click="delOuter(record1, index1)">删除</a-button>
             </template>
           </template>
-          <template #expandedRowRender="{record, index}">
-            <a-form :model="record.data" ref="tableFormRef">
+          <template #expandedRowRender="{record2, index2}">
+            <a-form :model="record2.data" ref="tableFormRef">
               <a-table
               class="innerTable"
                 :columns="innerColumns"
-                :data-source="record.data"
+                :data-source="record2.data"
                 row-key="id"
                 :pagination="false"
                 :customRow="innerCustomRow"
                 :scroll="{ y: 600 }"
-                :data-index="index"
+                :data-index="index2"
               >
                 <template v-slot:bodyCell="{ column, record, index }">
                   <template v-if="column.dataIndex === 'id'">

@@ -74,7 +74,7 @@ export default defineComponent({
         if (openList.includes(e.id)) {
           console.log(111)
           isOpentTree.value = index
-          openList = _.filter(openList, o => {
+          openList = _.filter(openList, (o: any) => {
             return o != e.id
           })
         } else {

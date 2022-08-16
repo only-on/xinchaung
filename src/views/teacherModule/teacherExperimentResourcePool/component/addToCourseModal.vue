@@ -40,7 +40,6 @@ import {
   nextTick,
 } from "vue";
 import { DownOutlined, SmileOutlined, FrownOutlined, FrownFilled } from '@ant-design/icons-vue';
-import { SelectEvent } from "ant-design-vue/es/tree/Tree";
 import { CarryOutOutlined, FormOutlined } from "@ant-design/icons-vue";
 import { IBusinessResp } from "src/typings/fetch.d";
 import request from "src/api/index";
@@ -81,7 +80,7 @@ const handleCancel = () => {
   emit("update:isShow", false);
 };
 
-const onSelect = (selectedKeys: string[], info: SelectEvent) => {
+const onSelect = (selectedKeys: string[], info: any) => {
   // console.log("selected", selectedKeys, info);
   selectNode.value = info.selectedNodes.length ? info.selectedNodes[0] : {}
 };

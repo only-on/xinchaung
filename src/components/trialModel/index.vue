@@ -63,7 +63,7 @@ import { message } from "ant-design-vue";
 import CommonCard from "src/components/common/CommonCard.vue";
 import uploadFile from 'src/views/teacherModule/QuestionBank/components/uploadFile.vue'
 import Submit from "src/components/submit/index.vue";
-import {downloadUrl} from 'src/utils/download.ts'
+import {downloadUrl} from 'src/utils/download'
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 const http = (request as any).QuestionBank;

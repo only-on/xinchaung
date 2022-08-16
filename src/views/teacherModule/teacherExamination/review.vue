@@ -98,10 +98,10 @@
               row-key="user_id"
               :pagination="false"
             >
-            <template #expandedRowRender="{record}">
+            <template #expandedRowRender="{record1}">
               <a-table
                 :columns="recheckInnerColumns"
-                :data-source="record.sims"
+                :data-source="record1.sims"
                 row-key="solution_id"
                 :pagination="false"
               >
@@ -131,7 +131,7 @@ import Pagination from "src/components/Pagination.vue";
 import Submit from "src/components/submit/index.vue";
 import lanuageSelect from "src/views/shareModule/programAnswer/component/lanuageSelect.vue";
 import {simList} from './utils'
-import {downloadUrl} from 'src/utils/download.ts'
+import {downloadUrl} from 'src/utils/download'
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 const http = (request as any).teacherExamination;

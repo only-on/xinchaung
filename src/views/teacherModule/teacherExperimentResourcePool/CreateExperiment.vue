@@ -368,7 +368,7 @@
 <script lang="ts" setup>
 import { getFileType,getFileTypeIcon,readFile } from "src/utils/getFileType";
 import iconList from "src/utils/iconList";
-import { SelectTypes } from "ant-design-vue/es/select";
+import type { SelectProps } from 'ant-design-vue';
 import SameScreen from "src/components/teacherExperiment/sameScreen.vue";
 import MarkedEditor from "src/components/editor/markedEditor.vue";
 import PdfVue from "src/components/pdf/pdf.vue";
@@ -1000,7 +1000,7 @@ const docOrMp4Drawer: any = reactive({
   activeFile: {}, //  选择或上传的文档、视频
 });
 // 目录  视频和文档公用字段   弹窗和抽屉共用
-const catalogueOptions = ref<SelectTypes["options"]>([
+const catalogueOptions = ref<SelectProps["options"]>([
   { label: "公有", options: [{ label: "共有1", value: 1 }] },
   { label: "私有", options: [{ label: "私有1", value: 2 }] },
 ]);

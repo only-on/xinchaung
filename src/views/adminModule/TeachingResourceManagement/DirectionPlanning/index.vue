@@ -38,7 +38,7 @@
                   }
                 : false
             ">
-              <template #bodyCell="{ column,text,record }">
+              <template #bodyCell="{ column,text,record, index }">
                   <template v-if="column.dataIndex === 'name'">
                     <div class="editable-cell">
                       <div
@@ -114,7 +114,6 @@ import {
 } from "vue";
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { useRouter, useRoute } from "vue-router";
-import { SelectTypes } from "ant-design-vue/es/select";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
