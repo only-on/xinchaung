@@ -44,7 +44,7 @@ export const initialData = {
   dystropic: false
 }
 // 时间处理
-export const formatTime = (time) => {
+export const formatTime = (time:any) => {
   if (!time) return
   return time.length < 19 ? time + ':00' : time
 }
