@@ -72,11 +72,11 @@ const EditBaseFn=()=>{
   editModal.value=true
 }
 const cancel=()=>{
-  // router.go(-1)
-  router.replace({
-    path:'/teacher/teacherExamination/teacherExaminationPreview',
-    query:{id:id}
-  })
+  router.go(-1)
+  // router.replace({
+  //   path:'/teacher/teacherExamination/teacherExaminationPreview',
+  //   query:{id:id}
+  // })
 }
 const save=()=>{
   if(!updataQuestionData.length){
