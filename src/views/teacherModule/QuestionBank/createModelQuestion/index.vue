@@ -93,7 +93,6 @@
               v-model:value="formState.evaluationData"
               style="width: 120px"
               @focus="focus"
-              @change="handleChange"
             >
               <a-select-option value="F1">Jack</a-select-option>
               <a-select-option value="ACC">ACC</a-select-option>

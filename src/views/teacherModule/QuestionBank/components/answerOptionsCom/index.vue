@@ -55,8 +55,8 @@ const props = withDefaults(defineProps<Props>(),{
 });
 var selectLabels: any = ref(["A", "B", "C", "D", "E", "F"]);
 const emit = defineEmits<{
-  (e: "addItem", val: any): void;
-  (e: "deleteItem", val: any): void;
+  (e: "addItem", index: any): void;
+  (e: "deleteItem",index: any): void;
 }>();
 function addItem(index: any) {
     emit("addItem",index);

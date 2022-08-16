@@ -28,7 +28,6 @@
         </a-col>
         <a-col :span="12">
           <a-form-item name="catalogue" label="选择目录">
-            {{formState.catalogue}}
             <select-directory v-model:catalogue='formState.catalogue' @vertifyAgain='validateCataloge' ref='selectDire'></select-directory>
           </a-form-item>
         </a-col>
@@ -63,7 +62,7 @@
         </a-col>
         <!-- 选择题 填空题-->
         <a-col v-if="['1','3'].includes(type)" :span="24">
-          <answer-option-com :type='type' v-model:multipleQuesSelection="formState.multipleQuesSelection" @addItem='addItem(index)' @deleteItem='deleteItem(index)'></answer-option-com>
+          <answer-option-com :type='type' v-model:multipleQuesSelection="formState.multipleQuesSelection" @addItem='addItem' @deleteItem='deleteItem'></answer-option-com>
         </a-col>
         <!-- 判断题 -->
         <a-col v-if="type == 2" :span="24">
@@ -421,15 +420,23 @@ function selectAnswer(){
 }
 //获取选择数据
 function getChoiceData(){
-  // console.log(selectDire.value.processingEchoData([93,188]))
-  //  formState.catalogue=selectDire.value.processingEchoData([93,188])
+    
     http.choiceDetail({urlParams:{questionId:editId}}).then((res:any)=>{
       if(res.code==1){
         const data=res.data
         formState.purpose=data.used_by
         formState.difficulty=data.difficulty
-        // formState.catalogue=data.category_id
-        // formState.catalogue=selectDire.value.processingEchoData([93,188])
+        // 目录回显
+        const categoryIds:any=[]
+        data.category_chains.forEach((item:any)=> {
+            categoryIds.push(item.id)
+        });
+        const promise:any=new Promise((resolve,reject)=>{
+          resolve(selectDire.value.processingEchoData(categoryIds))
+        })
+        promise().then(()=>{
+          formState.catalogue=categoryIds
+        })
         formState.knowledgePoints=data.knowledge_map_ids
         formState.stem=data.question
         formState.judgeAnswer=data.judge_correct
@@ -449,7 +456,12 @@ function getJudgeData(){
       const data=res.data
       formState.purpose=data.used_by
       formState.difficulty=data.difficulty
-      formState.catalogue=data.category_id
+       // 目录回显
+        const categoryIds:any=[]
+        data.category_chains.forEach((item:any)=> {
+            categoryIds.push(item.id)
+        });
+        formState.catalogue=categoryIds
       formState.knowledgePoints=data.knowledge_map_ids
       formState.stem=data.question
       formState.judgeAnswer=data.judge_correct
@@ -464,7 +476,12 @@ function getCompleData(){
         const data=res.data
         formState.purpose=data.used_by
         formState.difficulty=data.difficulty
-        formState.catalogue=data.category_id
+         // 目录回显
+        const categoryIds:any=[]
+        data.category_chains.forEach((item:any)=> {
+            categoryIds.push(item.id)
+        });
+        formState.catalogue=categoryIds
         formState.knowledgePoints=data.knowledge_map_ids
         formState.stem=data.question
         formState.topicAnalysis=data.question_analysis
@@ -482,7 +499,12 @@ function getSolutionData(){
           const data=res.data
         formState.purpose=data.used_by
         formState.difficulty=data.difficulty
-        formState.catalogue=data.category_id
+         // 目录回显
+        const categoryIds:any=[]
+        data.category_chains.forEach((item:any)=> {
+            categoryIds.push(item.id)
+        });
+        formState.catalogue=categoryIds
         formState.knowledgePoints=data.knowledge_map_ids
         formState.stem=data.question
         formState.topicAnalysis=data.question_question_analysis

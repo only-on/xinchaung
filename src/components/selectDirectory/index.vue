@@ -1,5 +1,6 @@
 <template>
     <div>
+      {{options}}
         <a-cascader
             v-model:value="catalogue"
             :options="options"
@@ -52,11 +53,11 @@ function loadData(selectedOptions:any){
         })
     };
 function getLoadData(id:any,options:any){
-
  http.getDirectoryChidren({urlParams:{directory_id:id}}).then((res:any) => {
           options.forEach((item:any,index:any)=> {
             if(item.id==id){
-              options.value[index].children=res.data
+              console.log(options,index,'options.value index')
+              options[index].children=res.data
             }
       });
   })
