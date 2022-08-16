@@ -46,7 +46,7 @@
           </a-form-item>
         </a-col>
          <a-col :span="24">
-          <a-form-item name="knowledgePoints">
+          <!-- <a-form-item name="knowledgePoints">
             <template v-slot:label>
               <div>
                 知识点<span class="tiptit">最多可选择3个</span>
@@ -60,7 +60,9 @@
               :options="options1"
               placeholder="请选择"
             ></a-cascader>
-          </a-form-item>
+          </a-form-item> -->
+          {{formState.knowledgePoints}}
+          <knowledge v-model:knowledgePoints="formState.knowledgePoints"></knowledge>
         </a-col> 
         <!-- 编程题 模型题 -->
         <a-col :span="12">
@@ -128,7 +130,6 @@
             </div>
           </a-form-item>
         </a-col>
-         {{inputAndOut}}
         <a-col v-if="formState.testCase=='text'" :span="24">
           <test-case v-model:inputAndOut='inputAndOut'></test-case>
         </a-col>
@@ -177,6 +178,7 @@ import labelSelection from 'src/components/labelSelection/index.vue'
 import testCase from '../components/testCase/index.vue'
 import uploadFile from 'src/components/uploadFile.vue'
 import selectDirectory from 'src/components/selectDirectory/index.vue'
+import knowledge from 'src/components/knowLedge/index.vue'
 
 
 import { Modal, message } from "ant-design-vue";
@@ -477,6 +479,10 @@ function getProgressData(){
         formState.outputFormat=data.problem.output
         formState.sampleInput=data.problem.sample_input
         formState.sampleOutput=data.problem.sample_output
+        inputAndOut.value=[]
+        data.test_case.forEach((item:any)=>{
+          inputAndOut.value.push({inputCon:item.in,outCon:item.out,ifShow:true})
+        })
       }
     })
 }

@@ -46,6 +46,7 @@ import {
 interface inputAndOutType{
     inputCon:any;
     outCon:any;
+    ifShow:any;
 }
 interface Props {
   inputAndOut: inputAndOutType[];

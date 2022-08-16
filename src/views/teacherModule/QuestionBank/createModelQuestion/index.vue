@@ -24,7 +24,6 @@
               ref="select"
               v-model:value="formState.purpose"
               @focus="focus"
-              @change="handleChange"
             >
               <a-select-option value="jack">考试题</a-select-option>
               <a-select-option value="lucy">作业题</a-select-option>
@@ -47,8 +46,8 @@
             <label-selection v-model:difficulty='formState.difficulty' :options='[{name:"简单",value:"easy"},{name:"适中",value:"normal"},{name:"困难",value:"hard"}]'></label-selection>
           </a-form-item>
         </a-col>
-        <a-col :span="['1','2','3','4','7'].includes(type)? 12 : 24">
-          <a-form-item name="knowledgePoints">
+        <a-col :span="12">
+          <!-- <a-form-item name="knowledgePoints">
             <template v-slot:label>
               <div>
                 知识点<span class="tiptit">最多可选择3个</span>
@@ -62,7 +61,10 @@
               :options="options1"
               placeholder="请选择"
             ></a-cascader>
-          </a-form-item>
+          </a-form-item> -->
+           {{formState.knowledgePoints}}
+          <knowledge v-model:knowledgePoints="formState.knowledgePoints"></knowledge>
+
         </a-col>
         <!-- 题干 公有 -->
         <a-col v-if="type != 7" :span="24">
@@ -180,6 +182,8 @@ const name: any = route.query.name;
 const editId:any=route.query?.questionId;
 const http = (request as any).QuestionBank;
 const caseFile=http.caseFile
+import knowledge from 'src/components/knowLedge/index.vue'
+
 var updata = inject("updataNav") as Function;
 const fileList: any = [];
 updata({
@@ -405,12 +409,16 @@ const rules = {
   ]
 };
 function createModelQues(){
+  const ids:any=[]
+  formState.knowledgePoints.forEach((item:any)=>{
+    ids.push(item[item.length-1])
+  })
   const params={
     question:formState.name,
     usedBy:formState.purpose,
     categoryId:1,
     difficulty:formState.difficulty,
-    knowledgeMapIds:formState.knowledgePoints,
+    knowledgeMapIds:ids,
     questionDesc:formState.stem,
     aiTestDesc:formState.evaluationDescription,
     pattern:formState.evaluationData,
@@ -424,12 +432,16 @@ function createModelQues(){
   })
 }
 function editModalQues(){
+   const ids:any=[]
+  formState.knowledgePoints.forEach((item:any)=>{
+    ids.push(item[item.length-1])
+  })
   const params={
     question:formState.name,
     usedBy:formState.purpose,
     categoryId:188,
     difficulty:formState.difficulty,
-    knowledgeMapIds:formState.knowledgePoints,
+    knowledgeMapIds:ids,
     questionDesc:formState.stem,
     aiTestDesc:formState.evaluationDescription,
     pattern:formState.evaluationData,
@@ -467,7 +479,7 @@ function getModalQuesData(){
         formState.evaluationDescription=data.aiTestDesc
         // formState.catalogue=data.category_id
         // formState.catalogue=selectDire.value.processingEchoData([93,188])
-        formState.knowledgePoints=data.knowledge_map_ids
+        formState.knowledgePoints=data.knowledgeMap.knowledge_names
         formState.stem=data.questionDesc
         formState.evaluationData=data.pattern
       }
