@@ -45,10 +45,11 @@ const handleAddData = (data:any) => {
   emit('select',data)
   emit('update:visible', false)
 }
-// watch(()=>{return props.allQuestionIds},(val:any)=>{
-//   console.log(val);
-//   provide('selectIds', val)
-// },{immediate:true,deep:true})
+console.log(props.allQuestionIds);
+watch(()=>{return props.allQuestionIds},(val:any)=>{
+  console.log(val);
+  // provide('selectIds', val)
+},{immediate:true,deep:true})
 provide('selectIds', props.allQuestionIds)
 </script>
 <style lang="less" scoped>

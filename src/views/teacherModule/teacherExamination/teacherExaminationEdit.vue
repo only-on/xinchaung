@@ -80,6 +80,7 @@ const cancel=()=>{
 }
 const save=()=>{
   if(!updataQuestionData.length){
+    message.success("保存成功");
     cancel()
     return
   }

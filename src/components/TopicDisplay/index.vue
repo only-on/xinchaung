@@ -172,7 +172,7 @@
         </template>
       </Draggable>
     </div>
-    <Empty v-if="!list.length" />
+    <!-- <Empty v-if="!list.length" /> -->
   </div>
   <a-modal v-model:visible="Visible"  :title="batchData.title" class="setupVisible" :width="500">
     <a-form :layout="'horizontal'" :rules="rules" :model="formState" ref="formRef">
@@ -185,7 +185,7 @@
     </template>
   </a-modal>
   <!-- 选择题目 -->
-  <addQuestion v-model:visible="addVisible" @select="questionSelect" :allQuestionIds="[]"/>
+  <addQuestion v-if="addVisible" v-model:visible="addVisible" @select="questionSelect" :allQuestionIds="allQuestionIds"/>
 </template>
 <script lang="ts" setup>
 import {
@@ -418,14 +418,16 @@ var statisticsInfo:any=reactive({
    selectNum:0,
     selectScore:0
 })
+const allQuestionIds:number[]=reactive([])
 watch(()=>{return props.list},(val:any)=>{
-  console.log(val)
   let obj:any={
     selectNum:0,
     selectScore:0
   }
+  allQuestionIds.length=0
   val.map((v:any)=>{
     v.question.map((i:any)=>{
+      allQuestionIds.push(i.id)
       i.answer=i.answer?i.answer:[]
     })
     obj.selectNum+=v.question && v.question.length 
@@ -433,6 +435,8 @@ watch(()=>{return props.list},(val:any)=>{
   })
   statisticsInfo.selectNum= obj.selectNum
   statisticsInfo.selectScore= obj.selectScore
+  // console.log(allQuestionIds);
+  
 },{immediate:true,deep:true})
 
 const DebounceUse:Function= new Debounce().use(submitAnswers,1.5) //延时
@@ -458,12 +462,7 @@ function submitAnswers(params:any) {
  * 批量设置分数
  */
 const selectIds:number[]=reactive([]) // 选中的 批量/单 修改/删除  的题id
-function getId(arr:any[]){
-  selectIds.length=0
-  let arr2=arr.map((v:any)=> {return v.id})
-  selectIds.push(...arr2)
-}
-function getQuestionIds(arr:any[]){
+function getQuestionIdsAndScore(arr:any[]){
   let arr2:any[]=[]
   arr.map((v:any)=>{
     v.question.map((i:any)=>{
@@ -531,7 +530,7 @@ const Save=()=>{
         }
     })
     // message.success('操作成功')
-    emit('updataQuestion',getQuestionIds(props.list))
+    emit('updataQuestion',getQuestionIdsAndScore(props.list))
     formRef.value.resetFields()
     Visible.value=false
     
@@ -574,7 +573,7 @@ const deleteTopic=(type:number,data:any,key:number)=>{
     }
   })
   // message.success('操作成功')
-  emit('updataQuestion',getQuestionIds(props.list))
+  emit('updataQuestion',getQuestionIdsAndScore(props.list))
   // let title=['确认批量删除吗？','确认删除吗？'][type]
   // batchData.label=!type?getTopicType[data.type]['name']:'本题分值'
   // Modal.confirm({
@@ -610,8 +609,26 @@ const keepOn=()=>{
   addVisible.value=true
 }
 const questionSelect=(data:any)=>{
-  console.log('选择的题目',data)
-  
+  console.log('选择的题目',data)  //props.list
+  data.map((v:any)=>{
+    let isExitType=props.list.filter((a:any) => v.kind === a.type).length
+    if(isExitType){
+      props.list.map((i:any)=>{
+        if(v.kind===i.type){
+          if(!allQuestionIds.includes(v.id)){
+            i.question.push(v)
+          }
+        }
+      })
+    }else{
+      let obj={
+        type:v.kind,
+        question:[v]
+      }
+      props.list.push(obj)
+    }
+  })
+  emit('updataQuestion',getQuestionIdsAndScore(props.list))
 }
 onMounted(()=>{
   // const selectSorce =randomCreateSorce
