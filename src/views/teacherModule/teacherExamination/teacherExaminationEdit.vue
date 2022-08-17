@@ -13,7 +13,7 @@
     </div>
   </div>
   <!-- 编辑基本信息 -->
-  <EditBaseInfo v-model:visible="editModal" :id="id" :type="'考试'" @updateInfo="getExamDetail"/>
+  <!-- <EditBaseInfo v-model:visible="editModal" :id="id" :type="'考试'" @updateInfo="getExamDetail"/> -->
 </template>
 <script lang="ts" setup>
 import {
@@ -30,7 +30,7 @@ import {
   defineProps,
   withDefaults,
 } from "vue";
-import EditBaseInfo from "./component/editBaseInfo.vue";
+// import EditBaseInfo from "./component/editBaseInfo.vue";
 import { useRouter, useRoute } from "vue-router";
 import request from "src/api/index";
 import Submit from "src/components/submit/index.vue";
