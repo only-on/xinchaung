@@ -40,11 +40,11 @@
           <a-row :gutter="24">
             <a-col :span="12">
               <div class="formLabel import">结果文件<span>必传项，成绩评测必备文件</span></div>
-              <uploadFile urlType="result" :file="fileList" @success="resultSuccess" @delete="resultDel"/>
+              <uploadFile v-model:fileInfo='submitData.result' :isMultiple="false" uploadPath="models"/>
             </a-col>
             <a-col :span="12">
               <div class="formLabel">过程文件<span>非必传项，分享建模思路</span></div>
-              <uploadFile urlType="process" :file="fileList" @success="processSuccess" @delete="processDel"/>
+              <uploadFile v-model:fileInfo='submitData.process' :isMultiple="true" uploadPath="models"/>
             </a-col>
           </a-row>
           <a-form-item label="作品提交说明" name="remark">
@@ -53,7 +53,7 @@
         </a-form>
       </template>
     </common-card>
-    <Submit @submit="handleSave" @cancel="cancelSave" :loading="saveLoading"></Submit>
+    <Submit @submit="handleSave" @cancel="cancelSave" :loading="saveLoading" ok-text="提交"></Submit>
   </div>
 </template>
 <script lang="ts" setup>
@@ -61,14 +61,17 @@ import { ref, reactive, watch, provide, inject, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { message } from "ant-design-vue";
 import CommonCard from "src/components/common/CommonCard.vue";
-import uploadFile from 'src/views/teacherModule/QuestionBank/components/uploadFile.vue'
+import uploadFile from 'src/components/uploadFile.vue'
 import Submit from "src/components/submit/index.vue";
 import {downloadUrl} from 'src/utils/download'
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
+import { lStorage } from "src/utils/extStorage";
 const http = (request as any).QuestionBank;
 const route = useRoute()
-const questionId = ref<any>(route.query.id)
+const questionId = ref<any>(route.query.questionId) // 题目id
+const examId = ref<any>(route.query?.examId) // 学生端考试id
+const userId= lStorage.get('uid')
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 const formData = reactive<any>({
@@ -84,7 +87,7 @@ const rules = {
   ]
 }
 const submitData = reactive<any>({
-  question_id: '',
+  question_id: questionId.value,
   result: [],
   process: [],
   remark: ''
@@ -141,16 +144,27 @@ const processDel = (id: number) => {
 const saveLoading = ref<boolean>(false)
 const formRef = ref()
 const handleSave = () => {
-  formRef.value.validate(()=>{
-    // saveLoading.value = true
-    // http.runModelQuestions({urlParams:{questionId: questionId.value},params: submitData}).then((res:IBusinessResp) => {
-    //   saveLoading.value = false
-    // }).catch(()=>{
-    //   saveLoading.value = false
-    // })
+  if (!submitData.result.length) {
+    message.warning('请上传结果文件')
+    return
+  }
+  if (examId.value) {
+    submitData.exam_id = examId.value
+  }
+  console.log(submitData)
+  formRef.value.validate().then(()=>{
+    saveLoading.value = true
+    http.runQuestions({urlParams:{user: userId},param: submitData}).then((res:IBusinessResp) => {
+      saveLoading.value = false
+      message.success('提交成功')
+    }).catch(()=>{
+      saveLoading.value = false
+    })
   })
 }
-const cancelSave = () => {}
+const cancelSave = () => {
+  window.close()
+}
 onMounted(()=>{
   getDetail()
 })

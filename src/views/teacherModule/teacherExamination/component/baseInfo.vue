@@ -15,7 +15,7 @@
       </div>
       <div class="right">
         <a-form-item label="关联课程">
-          <cascader v-model:relation="formState.relation"></cascader>
+          <cascader v-model:relation="formState.relation" @getCurrentCourse="getCurrentCourse"></cascader>
         </a-form-item>
       </div>
     </div>
@@ -36,6 +36,9 @@ const props =withDefaults(defineProps<{
   formState: {},
   type: '考试',
 })
+const emit = defineEmits<{
+  (e: "update:formSate", val: any): void;
+}>();
 const rules = {
   name: [
     { required: true, message: `请输入名称`, trigger: "blur" },
@@ -47,6 +50,9 @@ const baseInfoFormRef = ref()
 const dateChange = () => {}
 const disabledDate=(current: Moment)=>{
   return current && current <= moment().endOf('day').subtract(1, "days");
+}
+const getCurrentCourse = (val:any) => {
+  emit('update:formSate',{...props.formState, course_id: val.id})
 }
 const fromValidate = () => {
   return new Promise((resolve: any, reject: any) => {

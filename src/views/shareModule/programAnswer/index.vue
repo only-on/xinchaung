@@ -72,6 +72,7 @@ import { Modal,message } from "ant-design-vue";
 import { useRoute } from "vue-router";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
+import { lStorage } from "src/utils/extStorage";
 interface IproblemData {
   title: string,
   input: string,
@@ -83,7 +84,9 @@ interface IproblemData {
 }
 const route = useRoute()
 const http = (request as any).QuestionBank;
-const questionId = ref<any>(route.query.id)
+const questionId = ref<any>(route.query.questionId) // 题目id
+const examId = ref<any>(route.query?.examId) // 学生考试id
+const userId= lStorage.get('uid')
 const problemData = reactive<IproblemData>({
   title: '',
   input: '',
@@ -206,13 +209,17 @@ const handleSubmit =(test_run:boolean) => {
     message.warning('请输入测试样例')
     return
   }
-  let params = {
+  let params:any= {
+    question_id: questionId.value,
     language: languageVal.value,
     test_run: test_run,
     source: code.value,
     input_text: testData.sample
   }
-  http.submitProgramQuestion({urlParams:{ID:questionId.value},param: params}).then((res:IBusinessResp) => {
+  if (examId.value) {
+    params.exam_id = examId.value
+  }
+  http.runQuestions({urlParams:{user:userId},param: params}).then((res:IBusinessResp) => {
     if (test_run) {
      solutionId.value = res.data.solution_id
      testData.loading = true

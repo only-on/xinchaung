@@ -1,6 +1,7 @@
 <template>
   <a-modal :visible="visible" :title="'编辑'+type+'基本信息'" :width="900" @cancel="handleCancel">
-    <baseInfo ref="baseInfoRef" :formState="editInfo" :type="type"/>
+    {{editInfo.course_id}}
+    <baseInfo ref="baseInfoRef" v-model:formState="editInfo" :type="type"/>
     <template #footer>
       <Submit @submit="handleEdit" @cancel="handleCancel" :loading="loading"></Submit>
     </template>
@@ -42,7 +43,6 @@ const getExamDetail = (id:any) => {
       course_id: result.course_id,
       relation: result.course_id ? [1, result.course_direction.name, result.course_info.name] : [0]
     })
-    console.log(editInfo.relation)
   })
 }
 // watch(()=>props.id, newVal => {
@@ -61,21 +61,21 @@ const handleEdit = async() => {
   await baseInfoRef.value.fromValidate()
   let params = {
     name: editInfo.name,
-    course_id: editInfo.relation.length > 1 ?  editInfo.relation[ editInfo.relation.length-1] : 0,
+    course_id: editInfo.course_id,
     started_at: formatTime(editInfo.date[0]),
     closed_at: formatTime(editInfo.date[1]),
     note: editInfo.note
   }
+  console.log(params)
   loading.value=true
-  console.log(editInfo.relation)
-  // http.editExam({urlParams:{ID: props.id},param:params}).then((res:IBusinessResp) => {
-  //   loading.value=false
-  //   message.success('编辑成功')
-  //   emit('update:visible', false)
-  //   emit('updateInfo')
-  // }).catch((err:any)=>{
-  //   loading.value=false
-  // })
+  http.editExam({urlParams:{ID: props.id},param:params}).then((res:IBusinessResp) => {
+    loading.value=false
+    message.success('编辑成功')
+    emit('update:visible', false)
+    emit('updateInfo')
+  }).catch((err:any)=>{
+    loading.value=false
+  })
 }
 const handleCancel = () => {
   emit('update:visible', false)

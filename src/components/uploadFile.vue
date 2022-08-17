@@ -3,7 +3,7 @@
     <a-upload-dragger
       v-model:fileList="fileList"
       name="file"
-      :multiple="true"
+      :multiple="isMultiple"
       @change="handleChange1"
       @drop="handleDrop"
       :before-upload="beforeUpload"
@@ -32,10 +32,15 @@ import uploadFile from "src/request/uploadFile";
 const env = process.env.NODE_ENV == "development" ? true : false;
 interface Props {
   fileInfo: any;
+  isMultiple?: boolean;
+  uploadPath?:string
 }
 const props = withDefaults(defineProps<Props>(), {
   fileInfo: () => {},
+  isMultiple: true,
+  uploadPath: 'createQues'
 });
+const isMultiple = ref<boolean>(props.isMultiple)
 const fileList: any = ref([]);
 const infoList:any=ref([])
 function handleChange1(info: any) {
@@ -55,14 +60,21 @@ function handleDrop(e: any) {
 const emit = defineEmits<{
   (e: "update:fileInfo", val: any): void;
 }>();
+watch(()=>props.isMultiple, newVal => {
+  isMultiple.value = newVal
+},{immediate:true})
 // 上传前
 function beforeUpload(file: any) {
   if (file.size / 1024 / 1024 >= 500) {
     message.warn("上传文件不能超过500MB");
     return false;
   }
-  fileList.value.push(file);
-
+  if(isMultiple.value) {
+    fileList.value.push(file);
+  } else {
+    infoList.value = []
+    fileList.value = [file];
+  }
   let i = fileList.value.findIndex((item: any) => {
     return item.uid === file.uid;
   });
@@ -71,10 +83,9 @@ function beforeUpload(file: any) {
   fileList.value[i].status = "loading";
   const body = {
     file: file,
-    upload_path: "createQues",
+    upload_path: props.uploadPath,
     default_name:1,
   };
-
   fileList.value[i].upload = new uploadFile({
     url: env ? '/proxyPrefix/api/instance/uploads/file':'/api/instance/uploads/file',
     body,

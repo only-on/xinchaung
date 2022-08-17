@@ -50,10 +50,9 @@ export default {
 
   // 试用编程题
   ojConfig:{url:`/api/v1/oj/config`,method: "GET"},
-  submitProgramQuestion:{url:`/api/v1/xinchuang/question/program-questions/{ID}/submit`,method: "POST", dataType: "json"},
   solutionSatus:{url:` /api/v1/xinchuang/question/program-questions/{ID}/solution/{solution_id}/status`,method: "GET"},
-  // 试用模型题
-  runModelQuestions:{url:`/api/v1/xinchuang/question/model-questions/run/{questionId}`,method: "POST", dataType: "json"},
+  // 试用模型题、编程题共用
+  runQuestions:{url:`/api/v1/question/students/{user}/answer`,method: "POST", dataType: "json"},
   batchDownLoad:{url:`/api/v1/xinchuang/question/model-questions/download/{questionId}`,method: "GET"},
 
 
@@ -117,10 +116,9 @@ export interface IQuestionBank {
 
   // 试用编程题
   ojConfig: TFHttpSend
-  submitProgramQuestion:TFHttpSend
   solutionSatus: TFHttpSend
   // 试用模型题
-  runModelQuestions: TFHttpSend
+  runQuestions: TFHttpSend
   batchDownLoad: TFHttpSend
 
 

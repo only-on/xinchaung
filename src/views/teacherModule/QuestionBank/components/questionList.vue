@@ -184,7 +184,7 @@ function trialHandle(val:any) {
   const {href} = router.resolve({
     path: path[val.kind],
     query: {
-      id: val.id
+      questionId: val.id
     }
   })
   window.open(href,'_blank')

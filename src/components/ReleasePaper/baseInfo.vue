@@ -46,7 +46,7 @@ const rules = {
   date: {required: true, message: `请选择起始时间`}
 }
 
-const currentCourseInfo = reactive({
+const currentCourseInfo = reactive<any>({
   start_time: '',
   end_time: ''
 })
