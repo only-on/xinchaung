@@ -1,6 +1,5 @@
 <template>
     <div>
-      {{options}}
         <a-cascader
             v-model:value="catalogue"
             :options="options"

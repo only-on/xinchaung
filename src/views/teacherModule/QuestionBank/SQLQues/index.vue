@@ -31,7 +31,6 @@
         </a-col>
         <a-col :span="12">
           <a-form-item name="catalogue" label="选择目录">
-             {{formState.catalogue}}
             <select-directory v-model:catalogue='formState.catalogue' @vertifyAgain='validateCataloge'></select-directory>
           </a-form-item>
         </a-col>
@@ -130,6 +129,7 @@ import knowledge from 'src/components/knowLedge/index.vue'
 
 import { Modal, message } from "ant-design-vue";
 import type { Rule } from 'ant-design-vue/es/form';
+import { cascadeEcho,doSubmitData,doEditSubmit } from 'src/utils/cascadeEcho'
 const route = useRoute();
 const router = useRouter();
 const type: any = ref(route.query.value);
@@ -230,9 +230,9 @@ function createSqlQues(){
   const params={
     question:formState.name,
     used_by:formState.purpose,
-    category_id:formState.catalogue[formState.catalogue.length-1],
+    category_id:doSubmitData(formState.catalogue),
     difficulty:formState.difficulty,
-    knowledge_ids:formState.knowledgePoints,
+    knowledge_ids:doSubmitData(formState.knowledgePoints),
     memory_limit:Number(formState.memoryLimit),
     time_limit:Number(formState.timeLimit),
     question_desc:formState.stem,
@@ -248,14 +248,19 @@ function createSqlQues(){
       }
   })
 }
+const cascaData:any=reactive({
+    category_chains:'',
+    knowledge_map_details:''
+})
 function editSqlQues(){
+//   console.log(doEditSubmit(formState.catalogue,cascaData.category_chains),'nnnn')
+  console.log(doEditSubmit(formState.knowledgePoints,cascaData.knowledge_map_details),'哈哈哈哈哈哈哈哈嘻嘻嘻嘻嘻')
   const params={
     question:formState.name,
     used_by:formState.purpose,
-    category_id:formState.catalogue[formState.catalogue.length-1],
+    category_id:doEditSubmit(formState.catalogue,cascaData.category_chains),
     difficulty:formState.difficulty,
-    // knowledge_ids:formState.knowledgePoints,
-    knowledge_ids:[],
+    knowledge_ids:doEditSubmit(formState.knowledgePoints,cascaData.knowledge_map_details),
     memory_limit:Number(formState.memoryLimit),
     time_limit:Number(formState.timeLimit),
     question_desc:formState.stem,
@@ -264,11 +269,11 @@ function editSqlQues(){
         data:[{in:formState.sampleInput,out:formState.sampleOutput}]
     }   
   }
-  http.editSql({param:params,urlParams:{ID:editId}}).then((res:any)=>{
-    if(res.code==1){
-        message.success('编辑成功')
-      }
-  })
+//   http.editSql({param:params,urlParams:{ID:editId}}).then((res:any)=>{
+//     if(res.code==1){
+//         message.success('编辑成功')
+//       }
+//   })
 }
 function onSubmit(){
   formRef.value
@@ -287,13 +292,15 @@ function getSqlData(){
    http.sqlDetail({urlParams:{ID:editId}}).then((res:any)=>{
       if(res.code==1){
         const data=res.data
+        // 暂时把后端返回的目录知识点数据保存
+        cascaData.category_chains=data.category_chains
+        cascaData.knowledge_map_details=data.knowledge_map_details
+
         formState.name=data.question
         formState.purpose=data.used_by
         formState.difficulty=data.difficulty
-
-        // formState.catalogue=data.category_id
-        // formState.catalogue=selectDire.value.processingEchoData([93,188])
-        formState.knowledgePoints=data.knowledge_map_ids
+        formState.catalogue=cascadeEcho(data.category_chains)
+        formState.knowledgePoints=cascadeEcho(data.knowledge_map_details)
         formState.stem=data.question_desc
         formState.memoryLimit=data.problem.memory_limit
         formState.timeLimit=data.problem.time_limit
