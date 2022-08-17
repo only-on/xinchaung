@@ -3,7 +3,6 @@
     <BasicInfo @edit="EditBaseFn()" :name="headerObj.name" :time="headerObj.time" :explainText="headerObj.explainText" />
     <TopicDisplay :list="questionsList" 
       :purpose="'IsEdit'" 
-      :category="'exam'" 
       @updateList="getExamDetail"
      @updataQuestion="updataQuestion" />
   </div>
@@ -98,7 +97,9 @@ const updataQuestion=(arr:any)=>{
   updataQuestionData.push(...arr)
 }
 const questionsList:any=reactive([])
+var listLoading:Ref<boolean> = ref(false);
 const getExamDetail = () => {
+  listLoading.value=true
   http.examDetail({urlParams:{ID: id}}).then((res:IBusinessResp) => {
     questionsList.length=0
     const {data}=res
@@ -113,7 +114,8 @@ const getExamDetail = () => {
       }
       questionsList.push(obj)
     })
-  })
+    listLoading.value=false
+  }).catch((err:any)=>{listLoading.value=false})
 }
 onMounted(()=>{
   getExamDetail()

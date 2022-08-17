@@ -1,7 +1,7 @@
 <template>
   <div class="teacherExaminationPreview">
     <Outline :title="headerObj.title" :explain="headerObj.explain" :explainText="headerObj.explainText" />
-    <TopicDisplay :list="questionsList" :purpose="'IsPreview'" />
+    <TopicDisplay :list="questionsList" :purpose="'IsPreview'" :loading="listLoading" />
   </div>
   <div class="teacherExaminationPreviewFooter">
     <div class="flexCenter">
@@ -72,7 +72,9 @@ const edit=()=>{
   })
 }
 const questionsList:any=reactive([])
+var listLoading:Ref<boolean> = ref(false);
 const getExamDetail = () => {
+  listLoading.value=true
   http.examDetail({urlParams:{ID: id}}).then((res:IBusinessResp) => {
     questionsList.length=0
     const {data}=res
@@ -87,7 +89,8 @@ const getExamDetail = () => {
       }
       questionsList.push(obj)
     })
-  })
+    listLoading.value=false
+  }).catch((err:any)=>{listLoading.value=false})
 }
 onMounted(()=>{
   getExamDetail()
