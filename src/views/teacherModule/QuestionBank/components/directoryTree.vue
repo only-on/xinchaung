@@ -3,37 +3,39 @@
     <div class="title">文件夹目录</div>
     <div class="create-btn pointer" @click="visible=true">新建文件夹</div>
   </template>
-  <a-directory-tree
-    v-if="treeData[0].children.length"
-    v-model:expandedKeys="expandedKeys"
-    v-model:selectedKeys="selectedKeys"
-    :showIcon="true"
-    :showLine="false"
-    block-node
-    :tree-data="treeData"
-    @select="onSelect"
-    :load-data="onLoadData"
-    :field-names="fieldNames"
-  >
-    <template #icon="{expanded, dataRef}">
-      <span v-if="dataRef.has_children">
-        <span class="iconfont icon-wenjianjia2-mianxing" v-if="expanded"></span>
-        <span class="iconfont icon-wenjianjia1-mianxing" v-else></span>
-      </span>
-      <span v-else><span class="iconfont icon-wenjianjia"></span></span>
-    </template>
-    <template #title="{ dataRef }">
-      <span class="tree-title">
-        <span class="name single_ellipsis" :title="dataRef.name">{{ dataRef.name }}</span>
-        <span class="btns" v-if="dataRef.id!=0&&props.isOperateTree">
-          <span class="iconfont icon-shangyi" @click.stop="upDirectory(dataRef)"></span>
-          <span class="iconfont icon-shangyi-copy" @click.stop="downDirectory(dataRef)"></span>
-          <span class="iconfont icon-bianji" @click.stop="editDirectory(dataRef)"></span>
-          <span class="iconfont icon-shanchu" @click.stop="deletDirectory(dataRef)"></span>
+  <a-spin :spinning="firstLoading" tip="Loading...">
+    <a-directory-tree
+      v-if="!firstLoading"
+      v-model:expandedKeys="expandedKeys"
+      v-model:selectedKeys="selectedKeys"
+      :showIcon="true"
+      :showLine="false"
+      block-node
+      :tree-data="treeData"
+      @select="onSelect"
+      :load-data="onLoadData"
+      :field-names="fieldNames"
+    >
+      <template #icon="{expanded, dataRef}">
+        <span v-if="dataRef.has_children">
+          <span class="iconfont icon-wenjianjia2-mianxing" v-if="expanded"></span>
+          <span class="iconfont icon-wenjianjia1-mianxing" v-else></span>
         </span>
-      </span>
-    </template>
-  </a-directory-tree>
+        <span v-else><span class="iconfont icon-wenjianjia"></span></span>
+      </template>
+      <template #title="{ dataRef }">
+        <span class="tree-title">
+          <span class="name single_ellipsis" :title="dataRef.name">{{ dataRef.name }}</span>
+          <span class="btns" v-if="dataRef.id!=0&&props.isOperateTree">
+            <span class="iconfont icon-shangyi" @click.stop="upDirectory(dataRef)"></span>
+            <span class="iconfont icon-shangyi-copy" @click.stop="downDirectory(dataRef)"></span>
+            <span class="iconfont icon-bianji" @click.stop="editDirectory(dataRef)"></span>
+            <span class="iconfont icon-shanchu" @click.stop="deletDirectory(dataRef)"></span>
+          </span>
+        </span>
+      </template>
+    </a-directory-tree>
+  </a-spin>
   <!-- 创建目录弹框 -->
   <a-modal v-model:visible="visible"  :title="(formState.id?'编辑':'新建')+`文件夹`" class="create-directory" :width="400" @cancel="cancel()">
     <a-form :layout="'vertical'" :rules="rules" :model="formState" ref="formRef">
@@ -100,14 +102,17 @@ const onLoadData = (treeNode: any) => {
     const data = await getDirectorySub(treeNode.dataRef)
     treeNode.dataRef.children = data
     treeData.value = [...treeData.value];
+    console.log(treeData.value)
     resolve();
   });
 
 }
 
 // 获取第一层目录
+const firstLoading = ref(false)
 function getDirectoryFirst() {
-  treeData.value[0].children = []
+  firstLoading.value = true
+  // treeData.value[0].children = []
   expandedKeys.value = [0]
   http.getDirectoryFirst().then((res: IBusinessResp) => {
     console.log(res)
@@ -116,10 +121,13 @@ function getDirectoryFirst() {
       v.index = k
       v.directoryName = [treeData.value[0].name]
     })
-    loading.value = false
+    firstLoading.value = false
     if (res.data?.length) {
       treeData.value[0].has_children = 1
       treeData.value[0].children = res.data
+    } else {
+      treeData.value[0].has_children = 0
+      treeData.value[0].children = []
     }
   })
 }
@@ -129,12 +137,11 @@ function getDirectorySub(val: any) {
     http.getDirectoryChidren({urlParams: {directory_id: val.id}}).then((res: IBusinessResp) => {
       val.directoryName.push(val.name)
       res.data.forEach((v: any, k: number) => {
-        if (val.pindex) {
+        if (val.pid) {
+          v.pPid = val.pid
           v.pPindex = val.pindex
-          v.pindex = val.index
-        } else {
-          v.pindex = val.index
-        }
+        } 
+        v.pindex = val.index
         v.pid = val.id
         v.index = k
         v.directoryName = [...val.directoryName]
@@ -183,8 +190,7 @@ function submit() {
       return
     }
     http.createDirectory({param}).then(async(res: IBusinessResp) => {
-      loading.value = false
-      visible.value = false
+      cancel()
       const pid = formState.directoryId[formState.directoryId.length-1]
       // if (pid) {
       //   let data = await getDirectorySub(pid)
@@ -201,8 +207,7 @@ function editDirectorySubmit() {
     param: {name: formState.name}, 
     urlParams: {directory_id: formState.id}})
   .then((res: IBusinessResp) => {
-    loading.value = false
-    visible.value = false
+    cancel()
     successHandle(formState)
   })
 }
@@ -261,29 +266,28 @@ function deletDirectory(val: any) {
 
 // 操作成功后的处理
 async function successHandle(val: any) {
-  if (!val.pid) {
-    getDirectoryFirst()
-  } else {
+  if (val.pPid) {
     let data: any = await getDirectorySub(getLevelInfo(val, 'upper'))
     getLevelInfo(val, 'upper').children = data
-        //   val.children = data
+  } else {
+    getDirectoryFirst()
   }
 }
 
 // 获取层级信息
 function getLevelInfo(val: any, type: string) {
   if (type === 'current') {  // 当前层级
-    if (val.pPindex||val.pPindex===0) { // 第三层文件夹
+    if (val.pPid) { // 第三层文件夹
       return treeData.value[0].children[val.pPindex].children[val.pindex].children[val.index]
-    } else if (val.pindex||val.pindex===0) {  // 第二层文件夹
+    } else if (val.pid) {  // 第二层文件夹
       return treeData.value[0].children[val.pindex].children[val.index]
     } else {
       return treeData.value[0].children[val.index]
     }
   } else {   // 上一层
-    if (val.pPindex || val.pPindex===0) { // 第三层文件夹
+    if (val.pPid) { // 第三层文件夹
       return treeData.value[0].children[val.pPindex].children[val.pindex]
-    } else if (val.pindex||val.pindex===0) {  // 第二层文件夹
+    } else if (val.pid) {  // 第二层文件夹
       return treeData.value[0].children[val.pindex]
     } else {
       return treeData.value[0]

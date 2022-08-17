@@ -253,7 +253,7 @@ const currentQuestionId = ref(0)
 function menuClick(type:string, val: any) {
    console.log(type,val,'val')
   isBatchOperate.value = false
-  currentQuestionId.value = val.i
+  currentQuestionId.value = val.id
   switch (type) {
     case 'edit':
       editQuestion(val.kind,val.id)
