@@ -45,41 +45,7 @@ function cascadeEcho(cascaData:any){
  * @description 处理级联选择编辑后要提交的数据
  */
 function doEditSubmit(modelData:any,detailData:any){
-    // const ids:any=[]
-    // console.log(JSON.stringify(modelData),JSON.stringify(cascadeEcho(detailData)),JSON.stringify(modelData)==JSON.stringify(cascadeEcho(detailData)),'modelData==cascadeEcho(detailData)')
-    // if(JSON.stringify(modelData)==JSON.stringify(cascadeEcho(detailData))){
-    //     // detailData.forEach((item:any)=>{
-    //     //     if(Array.isArray(item)){
-    //     //         ids.push(item[item.length-1].id)
-    //     //     }
-    //     // })
-    //     return doSubmitData(detailData)
-    //     // return 'xixixixi'
-    // }else{
-    //     return doSubmitData(modelData)
-    //     // return 'haha'
-    // }
-    console.log(modelData,'modelData',detailData,'detailData')
-    // if(JSON.stringify(modelData)==JSON.stringify(cascadeEcho(detailData))){
-    //     return 
-    // }
-    const ids:any=[]
-    detailData.forEach((item:any,index:any)=>{
-        if(Array.isArray(item)){
-            if(item.includes(modelData[index])){
-                ids.push(item[item.length-1].id) 
-            }else{
-                console.log(item,detailData[index])
-            }
-        }else{
-            // if(item.includes(modelData[index])){
-            //     ids.push(item.id)
-            // }else{
-            //     console.log(item,detailData[index])
-            // }
-        }
-    })
-
+   console.log(modelData,'modelData',detailData,'detailData')
 }
 
 export{

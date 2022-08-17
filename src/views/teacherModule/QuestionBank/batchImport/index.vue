@@ -16,7 +16,6 @@
           </a-form-item>
         </a-col>
          <a-col :span="12">
-           {{formState.knowledgePoints}}
           <knowledge v-model:knowledgePoints="formState.knowledgePoints"></knowledge>
         </a-col>
         <a-col :span="24">

@@ -51,7 +51,7 @@ export default {
       },
     },
     {
-      path: "creatSQLQuestion",
+      path: "createModelQuestion",
       name: "",
       component: () =>
         import(

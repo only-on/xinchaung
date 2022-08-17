@@ -47,7 +47,6 @@
               placeholder="请选择"
             ></a-cascader>
           </a-form-item> -->
-          {{formState.knowledgePoints}}
           <knowledge v-model:knowledgePoints="formState.knowledgePoints"></knowledge>
         </a-col> 
         <!-- 题干 公有 -->
@@ -150,6 +149,8 @@ const caseFile=http.caseFile
 var updata = inject("updataNav") as Function;
 import type { Rule } from 'ant-design-vue/es/form';
 import { edit } from "ace-builds";
+import { cascadeEcho,doSubmitData,doEditSubmit } from 'src/utils/cascadeEcho'
+
 const catalogue1:any=ref([])
 const fileList: any = [];
 updata({
@@ -377,8 +378,8 @@ function createSolutionQues(){
   const params={
       usedBy:formState.purpose,
       difficulty:formState.difficulty,
-      categoryId:formState.catalogue[formState.catalogue.length-1],
-      knowledgeMapIds:[],
+      category_id:doSubmitData(formState.catalogue),
+      knowledge_ids:doSubmitData(formState.knowledgePoints),
       question:formState.stem, 
       shortAnswerReference:formState.referenceAnswer,//参考答案
       shortAnswerKeys:formState.keyword,
@@ -420,7 +421,6 @@ function selectAnswer(){
 }
 //获取选择数据
 function getChoiceData(){
-    
     http.choiceDetail({urlParams:{questionId:editId}}).then((res:any)=>{
       if(res.code==1){
         const data=res.data
@@ -431,13 +431,14 @@ function getChoiceData(){
         data.category_chains.forEach((item:any)=> {
             categoryIds.push(item.id)
         });
-        const promise:any=new Promise((resolve,reject)=>{
-          resolve(selectDire.value.processingEchoData(categoryIds))
-        })
-        promise().then(()=>{
-          formState.catalogue=categoryIds
-        })
-        formState.knowledgePoints=data.knowledge_map_ids
+        // const promise:any=new Promise((resolve,reject)=>{
+        //   resolve(selectDire.value.processingEchoData(categoryIds))
+        // })
+        // promise().then(()=>{
+        //   formState.catalogue=categoryIds
+        // })
+        formState.catalogue=cascadeEcho(data.category_chains)
+        formState.knowledgePoints=cascadeEcho(data.knowledge_map_details)
         formState.stem=data.question
         formState.judgeAnswer=data.judge_correct
         formState.topicAnalysis=data.question_analysis
