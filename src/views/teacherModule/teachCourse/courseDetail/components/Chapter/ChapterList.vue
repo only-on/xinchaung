@@ -699,6 +699,7 @@ const ProcessingData=(data:any)=>{
       selectChaptert({})
       selectExperiment({},{})
     }
+    console.log(data)
     ChaptersTreeList.push(...data)
 }
 const getChaptersTree=()=>{
