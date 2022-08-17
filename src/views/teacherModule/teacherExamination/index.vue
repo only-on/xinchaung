@@ -19,7 +19,7 @@
   <!-- 防作弊设置 -->
   <antiCheatingSetting v-model:visible="settingModal" :data="antiCheat" @save="saveSetting"/>
   <!-- 编辑基本信息 -->
-  <editBaseInfo v-model:visible="editModal" :id="currentOperateId" :type="type" @updateInfo="getList"/>
+  <!-- <editBaseInfo v-model:visible="editModal" :id="currentOperateId" :type="type" @updateInfo="getList"/> -->
   <!-- 导出试卷 -->
   <a-modal :visible="exportVisible" title="导出试卷" :width="400" @cancel="cancelExport">
     <div>
@@ -43,7 +43,7 @@ import classify from "src/components/classify/index.vue";
 import searchAdd from "src/components/searchAdd/searchAdd.vue";
 import cardItem from "./component/cardItem.vue"
 import antiCheatingSetting from "./component/antiCheatingSetting.vue";
-import editBaseInfo from "./component/editBaseInfo.vue";
+// import editBaseInfo from "./component/editBaseInfo.vue";
 import Pagination from 'src/components/Pagination.vue'
 import Submit from "src/components/submit/index.vue";
 import iconList from 'src/utils/iconList'
