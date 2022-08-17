@@ -285,6 +285,7 @@ function editQuestion(key: number,id:any) {
     {key:'short-answer',value:4},
     {key:'program',value:5},
     {key:'ai',value:6},
+    {key:'sql',value:7},
   ]
   let typeNum:any=''
   kind.forEach((item:any,index:any)=> {

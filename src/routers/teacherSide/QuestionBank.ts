@@ -51,7 +51,7 @@ export default {
       },
     },
     {
-      path: "createModelQuestion",
+      path: "creatSQLQuestion",
       name: "",
       component: () =>
         import(
@@ -60,6 +60,18 @@ export default {
       meta: {
         title: "创建题目",
         authCode: "createModelQuestion",
+      },
+    },
+    {
+      path: "createSQLQues",
+      name: "",
+      component: () =>
+        import(
+          "src/views/teacherModule/QuestionBank/SQLQues/index.vue"
+        ),
+      meta: {
+        title: "创建题目",
+        authCode: "createSQLQues",
       },
     },
     {
@@ -73,6 +85,6 @@ export default {
         title: "试用模型题",
         authCode: "trialModel",
       },
-    },
+    }
   ],
 };

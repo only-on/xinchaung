@@ -6,7 +6,8 @@ const createQuestionTypeList = [
   {key:4, name:'简答题',path:'./QuestionBank/createQues'},
   {key:5, name:'编程题',path:'./QuestionBank/createProgramming'},
   {key:6, name:'模型题',path:'./QuestionBank/createModelQuestion'},
-  {key:7, name:'批量导入',path:'./QuestionBank/batchImport'},
+  {key:7, name:'SQL题',path:'./QuestionBank/createSQLQues'},
+  {key:8, name:'批量导入',path:'./QuestionBank/batchImport'},
 ];
 
 interface IChoiceOptions {

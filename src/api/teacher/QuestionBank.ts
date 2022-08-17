@@ -28,6 +28,7 @@ export default {
   solutionQues:{url:`/api/v1/xinchuang/question/short_answer_question`,method: "POST", dataType: "json"},
   programQues:{url:`/api/v1/xinchuang/question/program-questions`,method: "POST", dataType: "json"},
   modelQues:{url:`/api/v1/xinchuang/question/model-questions`,method: "POST", dataType: "json"},
+  sqlQues:{url:`/api/v1/xinchuang/question/sql-questions`,method: "POST", dataType: "json"},
 
   // 习题详情
   choiceDetail:{url: ` /api/v1/xinchuang/question/choice_question/{questionId}`, method: "GET"},
@@ -36,6 +37,7 @@ export default {
   solutionDetail:{url:`/api/v1/xinchuang/question/short_answer_question/{questionId}`, method: "GET"},
   programDetail:{url:`/api/v1/xinchuang/question/program-questions/{ID}`,method: "GET"},
   modelDeatil:{url:` /api/v1/xinchuang/question/model-questions/{questionId}`,method: "GET"},
+  sqlDetail:{url:`/api/v1/xinchuang/question/sql-questions/{ID}`,method: "GET"},
 
   // 编辑习题
   editChoice:{url:` /api/v1/xinchuang/question/choice_question/{questionId}`,method: "PUT",dataType: "json"},
@@ -44,6 +46,7 @@ export default {
   editSolution:{url:`/api/v1/xinchuang/question/short_answer_question/{questionId}`,method: "PUT",dataType: "json"},
   editProgram:{url:`/api/v1/xinchuang/question/program-questions/{ID}`,method: "PUT",dataType: "json"},
   editModel:{url:`/api/v1/xinchuang/question/model-questions/{questionId}`,method: "PUT",dataType: "json"},
+  editSql:{url:` /api/v1/xinchuang/question/sql-questions/{ID}`,method: "PUT",dataType: "json"},
 
   // 试用编程题
   ojConfig:{url:`/api/v1/oj/config`,method: "GET"},
@@ -92,6 +95,7 @@ export interface IQuestionBank {
   solutionQues:TFHttpSend
   programQues:TFHttpSend
   modelQues:TFHttpSend
+  sqlQues:TFHttpSend
 
   // 习题详情
   choiceDetail:TFHttpSend
@@ -100,6 +104,7 @@ export interface IQuestionBank {
   solutionDetail:TFHttpSend
   programDetail:TFHttpSend
   modelDeatil:TFHttpSend
+  sqlDetail:TFHttpSend
 
   // 编辑习题
   editChoice:TFHttpSend
@@ -108,6 +113,7 @@ export interface IQuestionBank {
   editSolution:TFHttpSend
   editProgram:TFHttpSend
   editModel:TFHttpSend
+  editSql:TFHttpSend
 
   // 试用编程题
   ojConfig: TFHttpSend
