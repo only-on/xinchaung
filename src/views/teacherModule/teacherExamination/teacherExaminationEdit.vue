@@ -30,7 +30,7 @@ import {
   defineProps,
   withDefaults,
 } from "vue";
-import editBaseInfo from "./component/editBaseinfo.vue";
+import EditBaseInfo from "./component/editBaseinfo.vue";
 import { useRouter, useRoute } from "vue-router";
 import request from "src/api/index";
 import Submit from "src/components/submit/index.vue";
