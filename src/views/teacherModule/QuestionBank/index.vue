@@ -28,6 +28,7 @@
             :pageSize="pageInfo.pageLimit"
             :total="pageTotal"
             @change="pageChange"
+            @showSizeChange="handleSizeChange"
           />
         </div>
       </a-spin>
@@ -170,6 +171,11 @@ const pageChange = (page: number) => {
   pageInfo.page = page;
   initData();
 };
+const handleSizeChange = (page:number, size:number) => {
+ pageInfo.page = page;
+ pageInfo.pageLimit = size;
+ initData();
+}
 // 添加题目
 const handleDrawer = () => {
   let selectData:any = []

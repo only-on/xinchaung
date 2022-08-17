@@ -166,6 +166,8 @@ const deleteKnowledge = () =>  {
   currentDirective.value = 0
   selectKnowledgeVisible.value = false
   visible.value = false
+  props.searchInfo.knowledgeIds = []
+  emit('searchFn')
 }
 const onSubmit = () => {
   selectedCourseKnowledge.value = currentCourse.value.knowledge_map_name + ' > '
