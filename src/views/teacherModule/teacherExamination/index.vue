@@ -43,7 +43,7 @@ import classify from "src/components/classify/index.vue";
 import searchAdd from "src/components/searchAdd/searchAdd.vue";
 import cardItem from "./component/cardItem.vue"
 import antiCheatingSetting from "./component/antiCheatingSetting.vue";
-import editBaseInfo from "./component/editBaseInfo.vue";
+import editBaseInfo from "./component/editBaseinfo.vue";
 import Pagination from 'src/components/Pagination.vue'
 import Submit from "src/components/submit/index.vue";
 import iconList from 'src/utils/iconList'

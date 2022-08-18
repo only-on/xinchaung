@@ -273,59 +273,7 @@ const recheckSearch = reactive({
   language: '',
   sim: ''
 })
-const recheckResult = reactive<any>(
-[
-  {
-            "id":77, // 编程题目ID
-            "question":"测试编程题", // 编程题目名称
-            "items": [
-                {
-                    "user_id":102,   // 查重学生ID(参考者)
-                    "name":"lmm",   // 查重学生姓名(参考者)
-            studentNum: 3,
-                    "sims":[
-                        {
-                            "solution_id":1001,   // 提交编号
-                            "name":"test",   // 相似学生姓名
-                            "language_name":"c",   // 语言名称
-                            "language":0,   // 语言编号
-                            "sim":80,   // 相似度值
-                        },
-                        {
-                            "solution_id":1001,
-                            "name":"test",
-                            "language_name":"c",
-                            "language":0,
-                            "sim":70,
-                        }
-                    ]
-                },
-                {
-                    "user_id":103,
-                    "name":"aaa",
-            studentNum: 3,
-                    "sims":[
-                        {
-                            "solution_id":1001,
-                            "name":"test",
-                            "language_name":"c",
-                            "language":0,
-                            "sim":80,
-                        },
-                        {
-                            "solution_id":1001,
-                            "name":"test",
-                            "language_name":"c",
-                            "language":0,
-                            "sim":90,
-                        }
-                    ]
-                }
-            ]
-        }
-]
-
-)
+const recheckResult = reactive<any>([])
 const handleRecheck = () => {
   drawerVisible.value = true
 }
