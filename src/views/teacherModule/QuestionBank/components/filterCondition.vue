@@ -124,7 +124,7 @@ const knowledgeList = reactive<IKnowledge[]>([])
 const currentDirective = ref(0)
 const currentCourse = ref({
   id: 1,
-  knowledge_map_name: '多场景数据可视化数'
+  knowledge_map_name: ''
 })
 const currentKnowledge = ref<IKnowledge[]>([])
 const currentKnowledgeId = ref<number[]>([])
@@ -132,7 +132,7 @@ const selectDirective = (id: number) => {
   console.log(id)
   currentDirective.value = id
   id ? selectKnowledgeVisible.value = true : selectKnowledgeVisible.value = false
-  visible.value = false
+  // visible.value = false
   getKnowledgeSub(id, 'course')
 }
 const selectCourse = (list: IKnowledge) => {

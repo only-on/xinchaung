@@ -72,18 +72,28 @@
             </template>
             <!-- 编程题 -->
             <div class="program" v-if="v.kind === 'program'">
-              <Programming :desc="v.question_desc?v.question_desc:''" :info="{}"></Programming>
+              <Programming 
+                :desc="v.question_desc?v.question_desc:''" 
+                :info="{
+                  input: v.input?v.input:'input',
+                  output: v.output?v.output:'output',
+                  sample_input: v.sample_in?v.sample_in:'sample_in',
+                  sample_output: v.sample_out?v.sample_out:'sample_out',
+                }">
+              </Programming>
             </div>
             <!-- 模型题 -->
             <div class="model" v-if="v.kind === 'ai'">
-              <ModelQuestion :desc="v.question_desc?v.question_desc:''" :evaluating="v.ai_test_desc?v.ai_test_desc:''"></ModelQuestion>
+              <ModelQuestion :desc="v.question_desc?v.question_desc:''" :evaluating="v.ai_question_note?v.ai_question_note:''"></ModelQuestion>
             </div>
             <!-- SQL题 -->
             <div class="sql" v-if="v.kind === 'sql'">
               <Sqldetail :info="{desc: v.question_desc?v.question_desc:''}"></Sqldetail>
             </div>
             <!-- 后面三种题型的试用 -->
-            <div class="shiyong pointer" v-if="['program','ai','sql'].includes(v.kind) && !inDrawer" @click="trialHandle(v)">试用</div>
+            <div class="shiyong" v-if="['program','ai','sql'].includes(v.kind) && !inDrawer">
+              <div class="shiyong-btn pointer" @click="trialHandle(v)">试用</div>
+            </div>
             </template>
           </div>
           <div class="right">
@@ -94,8 +104,8 @@
         <div class="info">
           <div class="left">
             <span class="user-info" v-if="!isOperation">
-              <img :src="v.user_profile?.profilephoto?v.user_profile.profilephoto:defaultAvatar" alt="" srcset="">
-              <span class="user-name">{{v.user_profile?.name?v.user_profile.name:'小黄帽姑娘'}}</span>
+              <img :src="v.userProfile?.profilephoto?v.userProfile.profilephoto:defaultAvatar" alt="" srcset="">
+              <span class="user-name">{{v.userProfile?.name?v.userProfile.name:'小黄帽姑娘'}}</span>
             </span>
             <span 
               class="level" 
@@ -252,7 +262,7 @@ const judgeOption = {
             // padding: 16px 20px 0;
             // margin-bottom: 16px;
             background-color: var(--lightgray-2);
-            border-bottom: 1px solid var(--black-15);
+            border-bottom: 1px dashed var(--black-15);
             .tit {
               margin-bottom: 8px;
             }
@@ -284,7 +294,7 @@ const judgeOption = {
           }
           .option {
             padding-bottom: 12px;
-            border-bottom: 1px solid var(--black-15);
+            border-bottom: 1px dashed var(--black-15);
             padding-top: 6px;
             .ant-row,.tiankong,.jianda{
               padding: 6px 0;
@@ -306,13 +316,17 @@ const judgeOption = {
             }
           }
           .shiyong {
-            width: 100%;
-            height: 38px;
-            line-height: 38px;
-            text-align: center;
-            background: var(--black-0-7);
-            border-radius: 19px;
-            margin: 10px 0;
+            margin-top: 10px;
+            padding-bottom: 30px;
+            border-bottom: 1px dashed var(--black-15);
+            .shiyong-btn {
+              width: 100%;
+              height: 38px;
+              line-height: 38px;
+              text-align: center;
+              background: var(--black-0-7);
+              border-radius: 19px;
+            }
           }
         }
         .right {
