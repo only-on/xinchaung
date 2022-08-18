@@ -40,23 +40,7 @@
           </a-form-item>
         </a-col>
          <a-col :span="24">
-          <!-- <a-form-item name="knowledgePoints">
-            <template v-slot:label>
-              <div>
-                知识点<span class="tiptit">最多可选择3个</span>
-              </div>
-            </template>
-            <a-cascader
-              v-model:value="formState.knowledgePoints"
-              :style="['1','2','3','4','7'].includes(type) ? 'width:100%' : 'width:50%'"
-              :multiple="true"
-              max-tag-count="responsive"
-              :options="options1"
-              placeholder="请选择"
-            ></a-cascader>
-          </a-form-item> -->
-          {{formState.knowledgePoints}}
-          <knowledge v-model:knowledgePoints="formState.knowledgePoints"></knowledge>
+          <knowledge v-model:knowledgePoints="formState.knowledgePoints" :ifEdit='editId?true:false'></knowledge>
         </a-col> 
         <!-- 编程题 模型题 -->
         <a-col :span="12">
@@ -97,10 +81,14 @@
         </a-col>
       </a-row>
     </a-form>
-    <div class="bottom_btn">
+    <!-- <div class="bottom_btn">
       <a-button style="margin-right: 10px" @click="reset">取消</a-button>
       <a-button type="primary" @click="onSubmit">保存</a-button>
-    </div>
+    </div> -->
+      <!-- loading: false,
+  okText:'确定',
+  cancelText:'取消' -->
+    <Submit @submit="onSubmit" @cancel="reset" okText="保存" :loading='loading'></Submit>
   </div>
 </template>
 <script lang="ts" setup>
@@ -125,7 +113,7 @@ import testCase from '../components/testCase/index.vue'
 import uploadFile from 'src/components/uploadFile.vue'
 import selectDirectory from 'src/components/selectDirectory/index.vue'
 import knowledge from 'src/components/knowLedge/index.vue'
-
+import Submit from "src/components/submit/index.vue";
 
 import { Modal, message } from "ant-design-vue";
 import type { Rule } from 'ant-design-vue/es/form';
@@ -144,6 +132,7 @@ updata({
   componenttype: undefined,
   showNav: true,
 });
+const loading:any=ref(false)
 const preview = false;
 const formRef = ref<any>();
 const formState = reactive({
@@ -227,6 +216,7 @@ const rules = {
   ]
 };
 function createSqlQues(){
+  loading.value=true
   const params={
     question:formState.name,
     used_by:formState.purpose,
@@ -245,6 +235,7 @@ function createSqlQues(){
   http.sqlQues({param:params}).then((res:any)=>{
     if(res.code==1){
         message.success('创建成功')
+        loading.value=true
       }
   })
 }
@@ -253,8 +244,6 @@ const cascaData:any=reactive({
     knowledge_map_details:''
 })
 function editSqlQues(){
-//   console.log(doEditSubmit(formState.catalogue,cascaData.category_chains),'nnnn')
-  console.log(doEditSubmit(formState.knowledgePoints,cascaData.knowledge_map_details),'哈哈哈哈哈哈哈哈嘻嘻嘻嘻嘻')
   const params={
     question:formState.name,
     used_by:formState.purpose,
@@ -269,11 +258,11 @@ function editSqlQues(){
         data:[{in:formState.sampleInput,out:formState.sampleOutput}]
     }   
   }
-//   http.editSql({param:params,urlParams:{ID:editId}}).then((res:any)=>{
-//     if(res.code==1){
-//         message.success('编辑成功')
-//       }
-//   })
+  http.editSql({param:params,urlParams:{ID:editId}}).then((res:any)=>{
+    if(res.code==1){
+        message.success('编辑成功')
+      }
+  })
 }
 function onSubmit(){
   formRef.value
@@ -295,7 +284,6 @@ function getSqlData(){
         // 暂时把后端返回的目录知识点数据保存
         cascaData.category_chains=data.category_chains
         cascaData.knowledge_map_details=data.knowledge_map_details
-
         formState.name=data.question
         formState.purpose=data.used_by
         formState.difficulty=data.difficulty

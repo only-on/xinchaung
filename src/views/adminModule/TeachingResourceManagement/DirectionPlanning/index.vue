@@ -38,7 +38,7 @@
                   }
                 : false
             ">
-              <template #bodyCell="{ column,text,record, index }">
+              <template #bodyCell="{ column,text,record,index }">
                   <template v-if="column.dataIndex === 'name'">
                     <div class="editable-cell">
                       <div

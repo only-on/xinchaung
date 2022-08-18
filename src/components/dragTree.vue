@@ -210,7 +210,7 @@ export default defineComponent({
       }
     }
     // 开启拖拽
-    function dragstart(info: any) {
+    function dragstart(info:any) {
       console.log("开始拖拽", props.treeData);
       console.log(info);
     }
@@ -246,7 +246,7 @@ export default defineComponent({
     }
     // 点击文字触发
     let expandedKeys = ref<number[]>([]);
-    function handleSelected(keys: number[], info: any) {
+    function handleSelected(keys: number[], info:any) {
       // console.log('点击树节点触发', info.node.eventKey)
       // console.log('点击文字:', info.node.eventKey)
 
@@ -269,7 +269,7 @@ export default defineComponent({
       expandedKeys.value = [info];
     }
     // 拖动完成触发
-    function onDrop(info: any) {
+    function onDrop(info:any) {
       console.log("拖动完成:", info);
       const dropKey = info.node.eventKey; // 目标节点的id
       const dragKey = info.dragNode.eventKey; // 拖拽节点的id

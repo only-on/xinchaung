@@ -7,6 +7,7 @@ import { json } from "stream/consumers"
  */
 function cascadeEcho(cascaData:any){
     let names:any=[]
+    // if(cascaData)
     cascaData.forEach((item:any,index:any)=>{
         if(Array.isArray(item)){
             names.push([])
@@ -52,7 +53,6 @@ function doEditSubmit(modelData:any,detailData:any){
    detailData.forEach((item:any)=>{
        if(Array.isArray(item)){
            flagArr=true
-        //    ids.push(item[item.length-1])
        }
    })
    if(!flagArr){
@@ -69,29 +69,31 @@ function doEditSubmit(modelData:any,detailData:any){
             ids.push(item[item.length-1].id)
             console.log(ids)
         })
+        return ids
     }else{  
-            const arrs:any=[]
-            modelData.forEach((it:any)=>{
-                arrs.push()
-            })
-        // 如果不一致 先找到哪一项不一样
-        modelData.forEach((item:any,index:any)=>{
-                console.log(cascadeEcho(detailData),'哈哈哈哈哈哈哈哈哈哈')
-                console.log(item,'xixix额')
+        return doSubmitData(modelData)
+        //     const arrs:any=[]
+        //     modelData.forEach((it:any)=>{
+        //         arrs.push()
+        //     })
+        // // 如果不一致 先找到哪一项不一样
+        // modelData.forEach((item:any,index:any)=>{
+        //         console.log(cascadeEcho(detailData),'哈哈哈哈哈哈哈哈哈哈')
+        //         console.log(item,'xixix额')
           
-            let iIndex:any=cascadeEcho(detailData).indexOf(item)
-            if(iIndex!==-1){
-                console.log(iIndex,'iIndex')
-                // ids.push(detailData[iIndex-1][detailData[iIndex-1].length-1].id)
-                // console.log(ids,'ids')
-            }else{
-                console.log(iIndex,'jIndex')
-                // ids.push(item[item.length-1].id)
-                // console.log(ids,'ids')
-            }
-        })   
+        //     let iIndex:any=cascadeEcho(detailData).indexOf(item)
+        //     if(iIndex!==-1){
+        //         console.log(iIndex,'iIndex')
+        //         // ids.push(detailData[iIndex-1][detailData[iIndex-1].length-1].id)
+        //         // console.log(ids,'ids')
+        //     }else{
+        //         console.log(iIndex,'jIndex')
+        //         // ids.push(item[item.length-1].id)
+        //         // console.log(ids,'ids')
+        //     }
+        // })   
     }
-    return ids
+    // return ids
    }
 }
 export{

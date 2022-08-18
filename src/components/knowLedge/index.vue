@@ -2,14 +2,18 @@
     <div>
        <a-form-item :rules="{
            message:knowledgePoints?.length>maxNum?`知识点最多可选${NoToCh(maxNum)}个`:'',
-          }">
+          }"
+          >
             <template v-slot:label>
               <div>
                 知识点<span class="tiptit">最多可选择{{maxNum}}个</span>
               </div>
             </template>
-            <a-cascader
-            ref="cascaderRef"
+            <div style="display:flex">
+              <a-cascader
+              :style="ifEdit?'width:89.1%;margin-right:10px':''"
+              ref="cascaderRef"
+              :disabled='(ifEdit?true:false)&&disabled'
               dropdownClassName="knowLedge"
               v-model:value="knowledgePoints"
               multiple
@@ -21,6 +25,8 @@
               @dropdownVisibleChange="dropdownVisibleChange"
             >
             </a-cascader>
+            <a-button v-if="ifEdit" type="primary" @click="againSelect">重新选择</a-button>
+            </div>
           </a-form-item>
     </div>
 </template>
@@ -33,17 +39,20 @@ import {NoToCh} from 'src/utils/common'
 const http = (request as any).QuestionBank;
 interface Props { 
 knowledgePoints:any[];
-maxNum: number
+maxNum: number;
+ifEdit?:boolean
 }
 const props = withDefaults(defineProps<Props>(),{
  knowledgePoints:()=>[],
- maxNum: 3
+ maxNum: 3,
+ ifEdit:false
 });
 const emit = defineEmits<{
   (e: "update:knowledgePoints", val: any): void;
   (e: "close"): void;
 }>();
 const arr = ref<any>([])
+const disabled:any=ref(true)
 function changeData(value:any, selectedOptions:any){
   arr.value = value
   if(selectedOptions.length <= props.maxNum){
@@ -92,6 +101,11 @@ function loadData(selectedOptions:any){
         })
         }
     };
+
+function againSelect(){
+  emit("update:knowledgePoints",[])
+  disabled.value=false
+}
 onMounted(()=>{
     getKnowledgeFirst()
 })

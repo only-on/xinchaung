@@ -32,23 +32,7 @@
           </a-form-item>
         </a-col>
         <a-col :span="['1','2','3','4','7'].includes(type)? 12 : 24">
-          <!-- <a-form-item name="knowledgePoints">
-            <template v-slot:label>
-              <div>
-                知识点<span class="tiptit">最多可选择3个</span>
-              </div>
-            </template>
-            <a-cascader
-              v-model:value="formState.knowledgePoints"
-              :style="['1','2','3','4','7'].includes(type) ? 'width:100%' : 'width:50%'"
-              :multiple="true"
-              max-tag-count="responsive"
-              :options="options1"
-              placeholder="请选择"
-            ></a-cascader>
-          </a-form-item> -->
-          {{formState.knowledgePoints}}
-          <knowledge v-model:knowledgePoints="formState.knowledgePoints" :maxNum='3'></knowledge>
+          <knowledge v-model:knowledgePoints="formState.knowledgePoints" :maxNum='3' :ifEdit='editId?true:false'></knowledge>
         </a-col> 
         <!-- 题干 公有 -->
         <a-col v-if="type != 7" :span="24">
@@ -93,11 +77,7 @@
         </a-col>
         <a-col v-if="type == 4" :span="24">
           <a-form-item label="关键词" name="keyword">
-            <marked-editor
-              v-model="formState.keyword"
-              :preview="preview"
-              style="width: 100%"
-            />
+            <a-textarea v-model:value="formState.keyword" />
           </a-form-item>
         </a-col>
         <a-col v-if="!['5', '6'].includes(type) && type != 7" :span="24">
@@ -111,10 +91,11 @@
         </a-col>
       </a-row>
     </a-form>
-    <div class="bottom_btn">
+    <!-- <div class="bottom_btn">
       <a-button style="margin-right: 10px" @click="reset">取消</a-button>
       <a-button type="primary" @click.prevent="onSubmit">保存</a-button>
-    </div>
+    </div> -->
+    <Submit @submit="onSubmit" @cancel="reset" okText="保存" :loading='loading'></Submit>
   </div>
 </template>
 <script lang="ts" setup>
@@ -140,6 +121,8 @@ import answerOptionCom from '../components/answerOptionsCom/index.vue'
 import { Modal, message } from "ant-design-vue";
 import knowledge from 'src/components/knowLedge/index.vue'
 import selectDirectory from 'src/components/selectDirectory/index.vue'
+import Submit from "src/components/submit/index.vue";
+
 const route = useRoute();
 const router = useRouter();
 const type: any = ref(route.query.value);
@@ -154,6 +137,7 @@ import { cascadeEcho,doSubmitData,doEditSubmit } from 'src/utils/cascadeEcho'
 
 const catalogue1:any=ref([])
 const fileList: any = [];
+const loading:any=ref(false)
 updata({
   tabs: [{ name:(editId?"编辑":"创建" )+ name, componenttype: 0 }],
   showContent: true,
@@ -309,14 +293,18 @@ function deleteItem(index: any) {
 }
 // 创建选择题
 function createChoiceQues(){
+  loading.value=true
   const choiceOptions:any=[];
   const choiceCorrectOptions:any=[]
-  formState.multipleQuesSelection.forEach((item:any,index:any)=>{
-    choiceOptions.push({content:item.value,originOption:selectLabels.value[index]})
-    if(item.ifAnswer==true){
-      choiceCorrectOptions.push(selectLabels.value[index])
+    formState.multipleQuesSelection.forEach((item:any,index:any)=>{
+      choiceOptions.push({content:item.value,originOption:selectLabels.value[index]})
+      if(item.ifAnswer==true){
+        choiceCorrectOptions.push(selectLabels.value[index])
+      }
+    })
+    if(choiceCorrectOptions.length==0){
+      message.warning('答案不能为空！')
     }
-  })
     const params={
       question:formState.stem,
       difficulty:formState.difficulty,
@@ -331,11 +319,15 @@ function createChoiceQues(){
     http.choiceQues({param:params}).then((res:any)=>{
       if(res.code==1){
         message.success('创建成功')
+        loading.value=false
       }
+    }).catch((err:any)=>{
+      loading.value=false
     })
 }
 // 创建判断题
 function createJudgeQues(){
+  loading.value=true
   const params={
       usedBy:formState.purpose,
       difficulty:formState.difficulty,
@@ -348,11 +340,15 @@ function createJudgeQues(){
     http.judgeQues({param:params}).then((res:any)=>{
       if(res.code==1){
         message.success('创建成功')
+        loading.value=false
       }
+    }).catch((err:any)=>{
+      loading.value=false
     })
 }
 // 创建填空题
 function createCompleQues(){
+  loading.value=true
   const blankCorrect:any=[]
    formState.multipleQuesSelection.forEach((item:any,index:any)=>{
     blankCorrect.push(item.value)
@@ -369,11 +365,15 @@ function createCompleQues(){
   http.complateQues({param:params}).then((res:any)=>{
      if(res.code==1){
         message.success('创建成功')
+        loading.value=false
       }
+  }).catch((err:any)=>{
+    loading.value=false
   })
 }
 // 创建解答题
 function createSolutionQues(){
+  loading.value=true
   const params={
       usedBy:formState.purpose,
       difficulty:formState.difficulty,
@@ -387,6 +387,7 @@ function createSolutionQues(){
     http.solutionQues({param:params}).then((res:any)=>{
        if(res.code==1){
         message.success('创建成功')
+        loading.value=false
       }
     })
 }
@@ -450,6 +451,8 @@ function getJudgeData(){
    http.judgeDetail({urlParams:{questionId:editId}}).then((res:any)=>{
       if(res.code==1){
       const data=res.data
+      cascaData.category_chains=data.category_chains
+      cascaData.knowledge_map_details=data.knowledge_map_details
       formState.purpose=data.used_by
       formState.difficulty=data.difficulty
       formState.catalogue=cascadeEcho(data.category_chains)
@@ -465,10 +468,12 @@ function getCompleData(){
    http.complateDetail({urlParams:{questionId:editId}}).then((res:any)=>{
       if(res.code==1){
         const data=res.data
+        cascaData.category_chains=data.category_chains
+        cascaData.knowledge_map_details=data.knowledge_map_detials
         formState.purpose=data.used_by
         formState.difficulty=data.difficulty
         formState.catalogue=cascadeEcho(data.category_chains)
-        formState.knowledgePoints=cascadeEcho(data.knowledge_map_details)
+        formState.knowledgePoints=cascadeEcho(data.knowledge_map_detials)
         formState.stem=data.question
         formState.topicAnalysis=data.question_analysis
         formState.multipleQuesSelection=[]
@@ -483,6 +488,8 @@ function getSolutionData(){
    http.solutionDetail({urlParams:{questionId:editId}}).then((res:any)=>{
       if(res.code==1){
           const data=res.data
+        cascaData.category_chains=data.category_chains
+        cascaData.knowledge_map_details=data.knowledge_map_details
         formState.purpose=data.used_by
         formState.difficulty=data.difficulty
         formState.catalogue=cascadeEcho(data.category_chains)
@@ -496,6 +503,7 @@ function getSolutionData(){
 }
 // 编辑选择
 function editChoice(){
+  loading.value=true
   const choiceOptions:any=[];
   const choiceCorrectOptions:any=[]
   formState.multipleQuesSelection.forEach((item:any,index:any)=>{
@@ -519,10 +527,14 @@ function editChoice(){
   http.editChoice({param:params,urlParams:{questionId:editId}}).then((res:any)=>{
     if(res.code==1){
       message.success('编辑成功！')
+      loading.value=false
     }
+  }).catch((err:any)=>{
+    loading.value=false
   })
 }
 function editJudge(){
+    loading.value=true
    const params={
       usedBy:formState.purpose,
       difficulty:formState.difficulty,
@@ -535,10 +547,14 @@ function editJudge(){
     http.editJudge({param:params,urlParams:{questionId:editId}}).then((res:any)=>{
       if(res.code==1){
         message.success('编辑成功！')
+         loading.value=false
       }
+    }).catch((err:any)=>{
+       loading.value=false
     })
 }
 function editComple(){
+   loading.value=true
    let blankCorrect:any=[]
    console.log(formState.multipleQuesSelection,'formState.multipleQuesSelection')
    formState.multipleQuesSelection.forEach((item:any,index:any)=>{
@@ -558,10 +574,14 @@ function editComple(){
   http.editComplate({param:params,urlParams:{questionId:editId}}).then((res:any)=>{
      if(res.code==1){
         message.success('编辑成功！')
+        loading.value=false
       }
+  }).catch((err:any)=>{
+     loading.value=false
   })
 }
 function editSolution(){
+   loading.value=true
    const params={
       usedBy:formState.purpose,
       difficulty:formState.difficulty,
@@ -575,7 +595,10 @@ function editSolution(){
     http.editSolution({param:params,urlParams:{questionId:editId}}).then((res:any)=>{
        if(res.code==1){
         message.success('编辑成功！')
+         loading.value=false
       }
+    }).catch((err:any)=>{
+       loading.value=false
     })
 }
 onMounted(()=>{
