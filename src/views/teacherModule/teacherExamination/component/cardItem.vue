@@ -67,7 +67,7 @@ import { useRouter, useRoute } from "vue-router";
 const router = useRouter();
 const props =withDefaults(defineProps<{
   data: Object,
-  type: String
+  type: any
 }>(), {
   data: ()=>({}),
   type: '考试',
