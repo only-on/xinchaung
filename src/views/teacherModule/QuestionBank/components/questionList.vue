@@ -202,7 +202,7 @@ function trialHandle(val:any) {
 
 const judgeOption = {
   right: '正确',
-  lll: '错误'
+  wrong: '错误'
 }
 </script>
 
@@ -215,6 +215,9 @@ const judgeOption = {
     box-shadow: 0px 1px 1px 0px var(--black-0-7);
     display: flex;
     margin-bottom: 16px;
+    &:hover {
+      box-shadow: 0px 3px 6px 0px var(--black-15);
+    }
     .question-type {
       margin-right: 18px;
       margin-top: 15px;
