@@ -83,7 +83,7 @@
               <Sqldetail :info="{desc: v.question_desc?v.question_desc:''}"></Sqldetail>
             </div>
             <!-- 后面三种题型的试用 -->
-            <div class="shiyong pointer" v-if="['program','ai','sql'].includes(v.kind)" @click="trialHandle(v)">试用</div>
+            <div class="shiyong pointer" v-if="['program','ai','sql'].includes(v.kind) && !inDrawer" @click="trialHandle(v)">试用</div>
             </template>
           </div>
           <div class="right">
@@ -106,7 +106,7 @@
             <span class="num">使用次数：{{v.used_counts||0}}</span>
           </div>
           <div class="right">
-            <template v-if="props.isOperation">
+            <template v-if="props.isOperation && !inDrawer">
               <span class="edit pointer btn" @click="handleClick('edit', v)">编辑</span>
               <a-dropdown>
                 <span class="iconfont icon-gengduotianchong btn pointer ope"></span>

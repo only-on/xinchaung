@@ -31,6 +31,22 @@
                 </template>
                 <template v-if="column.dataIndex === 'total_score'">
                   {{record.total_score ? record.total_score : '--'}}
+                  <a-tooltip placement="right">
+                    <template #title>
+                      <span>教师已查阅</span>
+                    </template>
+                    <span class="customIcon review">
+                      <i class="iconfont icon-yipingyue"></i>
+                    </span>
+                  </a-tooltip>
+                  <a-tooltip placement="right">
+                    <template #title>
+                      <span>教师已调整得分</span>
+                    </template>
+                    <span class="customIcon edit">
+                      <i class="iconfont icon-bianji2"></i>
+                    </span>
+                  </a-tooltip>
                 </template>
                 <template v-if="column.dataIndex === 'operation'">
                   <a-button type="link" @click="checkDetail(record.id)" :disabled="!record.is_submmit">查看</a-button>
@@ -349,6 +365,19 @@ onMounted(()=>{
   }
   :deep(.ant-table){
     margin-bottom: 20px;
+    .customIcon{
+      border-radius: 4px;
+      padding: 4px;
+      margin-left: 5px;
+      &.review{
+        background: var(--primary-2);
+        color: var(--primary-color);
+      }
+      &.edit{
+        background: var(--brightBtn-24);
+        color: var(--brightBtn);
+      }
+    }
   }
 }
 .ant-drawer{

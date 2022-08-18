@@ -77,6 +77,7 @@ const themeColorList:any = [
     primary5: '#fe8020 ', // 鼠标移入颜色
     primary7: '#D78D0E', //主色点击颜色
     secondary24: 'rgba(28, 178, 179, 0.24)',
+    secondary2: 'rgba(28, 178, 179, 0.2)',
     primary24: 'rgba(255, 149, 68,0.24)'
   },
   {
@@ -92,6 +93,7 @@ const themeColorList:any = [
     primary5: '#3BDEDC', // 鼠标移入颜色
     primary7: '#0392AC', //主色点击颜色
     secondary24: 'rgba(250, 173, 20, 0.24)',
+    secondary2: 'rgba(250, 173, 20, 0.2)',
     primary24: 'rgba(5, 187, 201,0.24)'
   },
   {
@@ -107,6 +109,7 @@ const themeColorList:any = [
     primary5: '#FAAD14', // 主色鼠标移入颜色
     primary7: '#D78D0E', //主色点击颜色
     secondary24: 'rgba(255, 138, 23,0.24)',
+    secondary2: 'rgba(255, 138, 23,0.2)',
     primary24: 'rgba(255, 184, 73,0.24)'
   }
 ]
@@ -219,6 +222,7 @@ function setTheme () {
       bodyEle.style.setProperty('--primary-7', themeData.primary7)
       bodyEle.style.setProperty('--primary-atn-hover', themeData.primary5)
       bodyEle.style.setProperty('--brightBtn-24', themeData.secondary24)
+      bodyEle.style.setProperty('--brightBtn-2', themeData.secondary2)
       bodyEle.style.setProperty('--primary-24', themeData.primary24)
     }
     if (key === 'logo_url') {

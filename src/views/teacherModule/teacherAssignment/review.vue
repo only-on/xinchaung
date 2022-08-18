@@ -31,6 +31,22 @@
                 </template>
                 <template v-if="column.dataIndex === 'total_score'">
                   {{record.total_score ? record.total_score : '--'}}
+                  <a-tooltip placement="right">
+                    <template #title>
+                      <span>教师已查阅</span>
+                    </template>
+                    <span class="customIcon review">
+                      <i class="iconfont icon-yipingyue"></i>
+                    </span>
+                  </a-tooltip>
+                  <a-tooltip placement="right">
+                    <template #title>
+                      <span>教师已调整得分</span>
+                    </template>
+                    <span class="customIcon edit">
+                      <i class="iconfont icon-bianji2"></i>
+                    </span>
+                  </a-tooltip>
                 </template>
                 <template v-if="column.dataIndex === 'operation'">
                   <a-button type="link" @click="checkDetail(record.id)" :disabled="!record.is_submmit">查看</a-button>
@@ -273,59 +289,7 @@ const recheckSearch = reactive({
   language: '',
   sim: ''
 })
-const recheckResult = reactive<any>(
-[
-  {
-            "id":77, // 编程题目ID
-            "question":"测试编程题", // 编程题目名称
-            "items": [
-                {
-                    "user_id":102,   // 查重学生ID(参考者)
-                    "name":"lmm",   // 查重学生姓名(参考者)
-            studentNum: 3,
-                    "sims":[
-                        {
-                            "solution_id":1001,   // 提交编号
-                            "name":"test",   // 相似学生姓名
-                            "language_name":"c",   // 语言名称
-                            "language":0,   // 语言编号
-                            "sim":80,   // 相似度值
-                        },
-                        {
-                            "solution_id":1001,
-                            "name":"test",
-                            "language_name":"c",
-                            "language":0,
-                            "sim":70,
-                        }
-                    ]
-                },
-                {
-                    "user_id":103,
-                    "name":"aaa",
-            studentNum: 3,
-                    "sims":[
-                        {
-                            "solution_id":1001,
-                            "name":"test",
-                            "language_name":"c",
-                            "language":0,
-                            "sim":80,
-                        },
-                        {
-                            "solution_id":1001,
-                            "name":"test",
-                            "language_name":"c",
-                            "language":0,
-                            "sim":90,
-                        }
-                    ]
-                }
-            ]
-        }
-]
-
-)
+const recheckResult = reactive<any>([])
 const handleRecheck = () => {
   drawerVisible.value = true
 }
@@ -401,6 +365,19 @@ onMounted(()=>{
   }
   :deep(.ant-table){
     margin-bottom: 20px;
+    .customIcon{
+      border-radius: 4px;
+      padding: 4px;
+      margin-left: 5px;
+      &.review{
+        background: var(--primary-2);
+        color: var(--primary-color);
+      }
+      &.edit{
+        background: var(--brightBtn-24);
+        color: var(--brightBtn);
+      }
+    }
   }
 }
 .ant-drawer{
