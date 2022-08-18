@@ -1,7 +1,7 @@
 <template>
   <common-card title="基础信息">
     <template #content>
-      <baseInfo ref="baseInfoRef" :type="type" v-model:formState="baseForm"/>
+      <baseInfo ref="baseInfoRef" :type="type" :formState="baseForm"/>
     </template>
   </common-card>
   <!-- 手动创建 -->
@@ -68,31 +68,30 @@ import { ref, reactive, watch, provide, inject, onMounted} from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { message } from "ant-design-vue";
 import CommonCard from "src/components/common/CommonCard.vue";
-import baseInfo from "./component/baseInfo.vue";
-import questionTable from "./component/questionTable.vue";
-import studentTable from "./component/studentTable.vue";
+import baseInfo from "src/views/teacherModule/teacherExamination/component/baseInfo.vue";
+import questionTable from "src/views/teacherModule/teacherExamination/component/questionTable.vue";
+import studentTable from "src/views/teacherModule/teacherExamination/component/studentTable.vue";
 import knowLedge from 'src/components/knowLedge/index.vue'
 import Submit from "src/components/submit/index.vue";
 import getTopicType from "src/components/TopicDisplay/topictype"
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import {randomCreatScore} from 'src/utils/common'
-import {validateNum, formatTime} from "./utils"
+import {validateNum, formatTime} from "src/views/teacherModule/teacherExamination/utils"
 import { levelTypeList } from 'src/components/TopicDisplay/configType'
-import { objectExpression } from "@babel/types";
 const route = useRoute();
 const router = useRouter()
-const http = (request as any).teacherExamination;
-const type = ref('考试')
+const http = (request as any).teacherAssignment;
+const type = ref('作业')
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 const isRandom = ref<boolean>(route.query.type === "manual" ? false : true)
 const editId = ref(route.query?.id)
-const modelType = 2
+const modelType = 1
 updata({
   tabs: [
     {
-      name: `${isRandom.value ? "随机创建" : editId.value ? '复用考试信息编辑':"手动创建"}`,
+      name: `${isRandom.value ? "随机创建" : editId.value ? '复用作业信息编辑':"手动创建"}`,
       componenttype: 0,
     },
   ],
@@ -111,84 +110,7 @@ const baseForm = reactive<any>({
   students_info: [],
   questions_info: []
 })
-const questionData = ref([
-  {
-    id: 1,
-    type: "choice",
-    name: "1选择题",
-    num: 3,
-    score: 17,
-    data: [
-      {
-        id: 11,
-        stu_no: 715293,
-        question: "第一题的题目",
-        difficulty: 1,
-        score: "5",
-      },
-      {
-        id: 21,
-        stu_no: 722742,
-        question: "第二题的题目",
-        difficulty: 2,
-        score: "6",
-      },
-      {
-        id: 31,
-        stu_no: 722742,
-        question: "第三题的题目",
-        difficulty: 3,
-        score: "6",
-      },
-    ],
-  },
-  {
-    id: 2,
-    type: "complete",
-    name: "填空",
-    num: 2,
-    score: "11",
-    data: [
-      {
-        id: 13,
-        stu_no: 715293,
-        question: "第一题的题目",
-        difficulty: 1,
-        score: "5",
-      },
-      {
-        id: 23,
-        stu_no: 722742,
-        question: "第二题的题目",
-        difficulty: 2,
-        score: "6",
-      },
-    ],
-  },
-  {
-    id: 3,
-    type: "judge",
-    name: '判断',
-    num: 2,
-    score: "11",
-    data: [
-      {
-        id: 14,
-        stu_no: 715293,
-        question: "第一题的题目",
-        difficulty: 1,
-        score: "5",
-      },
-      {
-        id: 24,
-        stu_no: 722742,
-        question: "第二题的题目",
-        difficulty: 1,
-        score: "6",
-      },
-    ],
-  },
-]);
+const questionData = ref([]);
 
 // 随机创建题目相关
 const searchInfo = reactive({
@@ -333,7 +255,7 @@ const handleSave = async() => {
   Object.assign(params,{student_ids: studentTableRef.value.studentIds})
   console.log(params)
   saveLoading.value = true
-  http.addExam({param: params}).then((res:IBusinessResp) => {
+  http.addAssignment({param: params}).then((res:IBusinessResp) => {
     saveLoading.value = false
     message.success(route.query.isCopy ? '复用成功' : '添加成功')
     router.go(-1)
@@ -345,8 +267,8 @@ const cancelSave = () => {
   router.go(-1)
 }
 // 获取详情
-const getExamDetail = () => {
-  http.examDetail({urlParams:{ID: editId.value}}).then((res:IBusinessResp) => {
+const getAssignmentDetail = () => {
+  http.editAssignment({urlParams:{ID: editId.value}}).then((res:IBusinessResp) => {
     let result = res?.data
     if(!result) return
     let questionData = []
@@ -364,7 +286,7 @@ const getExamDetail = () => {
       date: [result.started_at, result.closed_at],
       note: result.note,
       course_id: result.course_id,
-      relation: result.course_id ? [1, result.course_direction.name, result.course_info.name] : [0],
+      relation: result.course_id ? [1, result.course_direction.id, result.course_id] : [0],
       students_info: result.students_info,
       questions_info: questionData
     })
@@ -385,7 +307,7 @@ onMounted(()=>{
     getQuestionMaxLimit()
   }
   if (editId.value) {
-    getExamDetail()
+    getAssignmentDetail()
   }
 })
 </script>

@@ -20,26 +20,26 @@ export default {
         authCode: "teacherAssignment",
       },
     },
-    // {
-    //   path: "createAssignment",
-    //   name: "createAssignment",
-    //   component: () => import("src/views/teacherModule/teacherAssignment/create.vue"),
-    //   meta: {
-    //     title: (params?: RouteParams, query?: RouteParams) => {
-    //       return query!.id?'复用作业':'创建作业'
-    //     },
-    //     authCode: "createAssignment",
-    //   },
-    // },
-    // {
-    //   path: "reviewAssignment",
-    //   name: "reviewAssignment",
-    //   component: () => import("src/views/teacherModule/teacherAssignment/review.vue"),
-    //   meta: {
-    //     title: '作业评阅',
-    //     authCode: "reviewAssignment",
-    //   },
-    // },
+    {
+      path: "createAssignment",
+      name: "createAssignment",
+      component: () => import("src/views/teacherModule/teacherAssignment/create.vue"),
+      meta: {
+        title: (params?: RouteParams, query?: RouteParams) => {
+          return query!.id?'复用作业':'创建作业'
+        },
+        authCode: "createAssignment",
+      },
+    },
+    {
+      path: "reviewAssignment",
+      name: "reviewAssignment",
+      component: () => import("src/views/teacherModule/teacherAssignment/review.vue"),
+      meta: {
+        title: '作业评阅',
+        authCode: "reviewAssignment",
+      },
+    },
     { 
       path: "teacherAssignmentPreview",
       name: "teacherAssignmentPreview",

@@ -1,7 +1,7 @@
 <template>
   <div class="cradItem" @click.stop.stop="goPreview">
     <div class="left">
-      <span class="type">考试</span>
+      <span class="type">{{type}}</span>
       <div :class="['img',item.is_publish == 0 ? 'unpublish' : item.status == 1 ? 'ongoing' :  item.status == 2 ? 'unstart' :  'end'] ">
         <span>{{item.is_publish == 0 ? '未发布' :item.status == 1 ? '进行中' :   item.status == 2 ? '未开始' : '已结束'}}</span>
       </div>
@@ -12,16 +12,23 @@
         {{item.name}}
       </div>
       <div>
-        <span>创建时间：{{item.created_at}}</span>
-        <span>开始时间：{{item.started_at}}</span>
-        <span>考试时长：{{item.times}}</span>
+        <template v-if="type === '考试'">
+          <span>创建时间：{{item.created_at}}</span>
+          <span>开始时间：{{item.started_at}}</span>
+          <span>考试时长：{{item.times}}</span>
+        </template>
+        <template v-else>
+          <span>创建时间：{{item.created_at}}</span>
+          <span>起止时间：{{item.started_at}} - {{item.created_at}}</span>
+        </template>
+        
         <!-- 已发布 并且状态是 进行中或已结束 -->
         <span v-if="item.is_publish && [1,3].includes(item.status)">提交人数：{{item.closed_students_count}}/{{item.students_count}}</span>
       </div>
     </div>
     <div class="right">
       <div>
-        <a-button type="link" @click.stop="handleClick('setting', item)">防作弊设置</a-button>
+        <a-button type="link" v-if="type === '考试'" @click.stop="handleClick('setting', item)">防作弊设置</a-button>
         <a-dropdown>
           <a class="ant-dropdown-link" @click.stop.prevent>
             <i class="iconfont icon-gengduotianchong"></i>
@@ -58,8 +65,12 @@
 import {ref,reactive, watch} from 'vue'
 import { useRouter, useRoute } from "vue-router";
 const router = useRouter();
-const props = defineProps({
-  data: Object
+const props =withDefaults(defineProps<{
+  data: Object,
+  type: String
+}>(), {
+  data: ()=>({}),
+  type: '考试',
 })
 const item = reactive<any>(props.data)
 const emit = defineEmits<{

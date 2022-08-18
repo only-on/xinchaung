@@ -46,7 +46,7 @@ import Pagination from "src/components/Pagination.vue";
 import addstudent from "./addStudent.vue";
 import { message } from "ant-design-vue";
 import request from 'src/api/index'
-const http = (request as any).teacherExamination;
+const httpExam = (request as any).teacherExamination;
 interface Props {
   courseId:any;
   data?:any
@@ -190,7 +190,7 @@ watch(()=>props.courseId, (newVal:any) => {
   if (newVal) {
     showBtn.value = false
     columns.value.pop()
-    http.examsUserList({param:{course_id:newVal}}).then((res:any) => {
+    httpExam.examsUserList({param:{course_id:newVal}}).then((res:any) => {
       allData.push(...res.data.list)
       let allIds = getIds(res.data.list)
       studentIds.push(...allIds)

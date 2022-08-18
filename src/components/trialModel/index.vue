@@ -116,13 +116,14 @@ const getDetail = () => {
   })
 }
 const downLoad = (item:any) => {
-  downloadUrl(item.file_name, item.file_url)
+  downloadUrl(item.file_url,item.file_name)
 }
 const downLoading = ref<boolean>(false)
 const downLoadAll = () => {
   console.log(questionId.value)
   downLoading.value = true
   http.batchDownLoad({urlParams:{questionId: questionId.value}}).then((res:IBusinessResp) => {
+    downloadUrl(res.data)
     downLoading.value = false
   }).catch(()=>{
     downLoading.value = false

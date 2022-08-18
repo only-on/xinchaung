@@ -11,7 +11,7 @@
   />
   <a-spin :spinning="listData.loading" size="large" tip="Loading...">
     <div class="mainBox">
-      <cardItem v-for="(item,index) in listData.data" :data="item" :key="index" @menuClick="menuClick" @operate="handleOperate"/>
+      <cardItem v-for="(item,index) in listData.data" type="考试" :data="item" :key="index" @menuClick="menuClick" @operate="handleOperate"/>
     </div>
     <Pagination v-model:page="searchInfo.page" v-model:size="searchInfo.limit" :total="listData.total" @page-change="getList"/>
     <Empty v-if="!listData.data.length && !listData.loading" :type="EmptyType"/>
@@ -43,14 +43,14 @@ import classify from "src/components/classify/index.vue";
 import searchAdd from "src/components/searchAdd/searchAdd.vue";
 import cardItem from "./component/cardItem.vue"
 import antiCheatingSetting from "./component/antiCheatingSetting.vue";
-import editBaseInfo from "./component/editBaseinfo.vue";
+import editBaseInfo from "./component/editBaseInfo.vue";
 import Pagination from 'src/components/Pagination.vue'
 import Submit from "src/components/submit/index.vue";
-import iconList from 'src/utils/iconList'
+import iconList from 'src/utils/iconList.ts'
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import {initialData} from './utils'
-import {downloadUrl} from 'src/utils/download'
+import {downloadUrl} from 'src/utils/download.ts'
 interface IlistData {
   loading: Boolean;
   total: number,
@@ -165,10 +165,12 @@ const handleExport = (val:any) => {
   exportName.value = val.name
 }
 const saveExport = () => {
-  http.exportPaper({urlParams:{exam:currentOperateId.value}}).then((res:IBusinessResp) => {
-
-  })
-  // downloadUrl()
+  let url = `/api/v1/question/exams/${currentOperateId.value}/export-paper?type=2`
+  const a:any = document.createElement('a')
+  a.href = url
+  document.body.append(a)
+  a.click()
+  document.body.removeChild(a)
   exportVisible.value = false
 }
 const cancelExport = () => {

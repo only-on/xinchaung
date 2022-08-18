@@ -17,7 +17,7 @@
           :pagination="false"
           :customRow="customRow"
         >
-          <template v-slot:bodyCell="{ column, record1, index1 }">
+          <template v-slot:bodyCell="{ column, record:record1, index:index1 }">
             <template v-if="column.dataIndex === 'type'">
               <i class="iconfont icon-tuozhuai"></i>
               {{getTopicType[record1.type].name}}
@@ -26,7 +26,7 @@
               <a-button type="link" @click="delOuter(record1, index1)">删除</a-button>
             </template>
           </template>
-          <template #expandedRowRender="{record2, index2}">
+          <template #expandedRowRender="{record:record2, index:index2}">
             <a-form :model="record2.data" ref="tableFormRef">
               <a-table
               class="innerTable"

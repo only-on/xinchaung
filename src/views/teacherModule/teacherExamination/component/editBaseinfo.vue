@@ -1,6 +1,5 @@
 <template>
   <a-modal :visible="visible" :title="'编辑'+type+'基本信息'" :width="900" @cancel="handleCancel">
-    {{editInfo.course_id}}
     <baseInfo ref="baseInfoRef" v-model:formState="editInfo" :type="type"/>
     <template #footer>
       <Submit @submit="handleEdit" @cancel="handleCancel" :loading="loading"></Submit>
@@ -15,7 +14,8 @@ import Submit from "src/components/submit/index.vue";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import {formatTime} from '../utils'
-const http = (request as any).teacherExamination;
+const httpExam = (request as any).teacherExamination;
+const httpAssignment = (request as any).teacherAssignment;
 interface Props {
   type: any;
   id: any;
@@ -32,8 +32,13 @@ const emit = defineEmits<{
 }>();
 const editInfo = reactive<any>({})
 const baseInfoRef = ref()
-const getExamDetail = (id:any) => {
-  http.examDetail({urlParams:{ID: id}}).then((res:IBusinessResp) => {
+const getDetail = (id:any) => {
+  console.log(props.type)
+  let request = {
+    '作业': httpAssignment.assignmentDetail, // 作业
+    '考试': httpExam.examDetail // 考试
+  }
+  request[props.type]({urlParams:{ID: id}}).then((res:IBusinessResp) => {
     let result = res?.data
     if (!result) return
     Object.assign(editInfo,{
@@ -45,15 +50,9 @@ const getExamDetail = (id:any) => {
     })
   })
 }
-// watch(()=>props.id, newVal => {
-//   if (newVal) {
-//     console.log('这里')
-//     getExamDetail(newVal)
-//   }
-// },{immediate:true})
 watch(()=>props.visible, newVal => {
   if (newVal) {
-    getExamDetail(props.id)
+    getDetail(props.id)
   }
 },{deep:true,immediate:true})
 var loading:Ref<boolean> = ref(false);
@@ -68,7 +67,11 @@ const handleEdit = async() => {
   }
   console.log(params)
   loading.value=true
-  http.editExam({urlParams:{ID: props.id},param:params}).then((res:IBusinessResp) => {
+  let request = {
+    '作业': httpAssignment.editAssignment, // 作业
+    '考试': httpExam.editExam // 考试
+  }
+  request[props.type]({urlParams:{ID: props.id},param:params}).then((res:IBusinessResp) => {
     loading.value=false
     message.success('编辑成功')
     emit('update:visible', false)

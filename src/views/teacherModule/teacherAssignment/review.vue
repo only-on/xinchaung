@@ -130,22 +130,22 @@ import CommonCard from "src/components/common/CommonCard.vue";
 import Pagination from "src/components/Pagination.vue";
 import Submit from "src/components/submit/index.vue";
 import lanuageSelect from "src/views/shareModule/programAnswer/component/lanuageSelect.vue";
-import {simList} from './utils'
+import {simList} from 'src/views/teacherModule/teacherExamination/utils'
 import {downloadUrl} from 'src/utils/download'
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
-const http = (request as any).teacherExamination;
+const http = (request as any).teacherAssignment;
 const route = useRoute()
 const router = useRouter()
 const examName = ref<any>(route.query.name)
 const examId = ref<any>(route.query.id)
-const modelType = 2
+const modelType = 1
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 updata({
   tabs: [
     {
-      name: `考试评阅 - ${examName.value}`,
+      name: `作业评阅 - ${examName.value}`,
       componenttype: 0,
     },
   ],
@@ -254,7 +254,7 @@ const EmptyType:any=computed(()=>{
 // 查看成绩详情
 const checkDetail = (id: number | string) => {
   router.push({
-    path: '/teacher/teacherExamination/teacherExaminationAchievement',
+    path: '/teacher/teacherAssignment/teacherAssignmentAchievement',
     query: {
       id: id
     }
@@ -336,7 +336,7 @@ const closeDrawer = () => {
 const handleSearch = () => {
   searchLoading.value = true
   recheckResult.length = 0
-  http.simSearch({urlParams:{ID: examId.value},param: recheckSearch}).then((res:IBusinessResp) => {
+  http.simExam({urlParams:{ID: examId.value},param: recheckSearch}).then((res:IBusinessResp) => {
     Object.assign(recheckResult, res.data)
     recheckResult.forEach((item:any) => {
       item.items.forEach((innerItem:any) => {
