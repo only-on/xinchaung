@@ -47,7 +47,8 @@
               placeholder="请选择"
             ></a-cascader>
           </a-form-item> -->
-          <knowledge v-model:knowledgePoints="formState.knowledgePoints"></knowledge>
+          {{formState.knowledgePoints}}
+          <knowledge v-model:knowledgePoints="formState.knowledgePoints" :maxNum='3'></knowledge>
         </a-col> 
         <!-- 题干 公有 -->
         <a-col v-if="type != 7" :span="24">
@@ -319,8 +320,8 @@ function createChoiceQues(){
     const params={
       question:formState.stem,
       difficulty:formState.difficulty,
-      categoryId:formState.catalogue[formState.catalogue.length-1],
-      knowledgeIds:[1,2],
+      categoryId:doSubmitData(formState.catalogue),
+      knowledgeIds:doSubmitData(formState.knowledgePoints),
       questionAnalysis:formState.topicAnalysis,
       choiceOptions:choiceOptions,
       choiceCorrectOptions:choiceCorrectOptions,
@@ -338,9 +339,8 @@ function createJudgeQues(){
   const params={
       usedBy:formState.purpose,
       difficulty:formState.difficulty,
-      categoryId:formState.catalogue[formState.catalogue.length-1],
-      // knowledgeIds:[],
-      knowledgeMapIds:[],
+      categoryId:doSubmitData(formState.catalogue),
+      knowledgeMapIds:doSubmitData(formState.knowledgePoints),
       question:formState.stem, 
       judgeCorrect:formState.judgeAnswer,
       questionAnalysis:formState.topicAnalysis
@@ -360,9 +360,8 @@ function createCompleQues(){
   const params={
       usedBy:formState.purpose,
       difficulty:formState.difficulty,
-      categoryId:formState.catalogue[formState.catalogue.length-1],
-      // knowledgeIds:[],
-      knowledgeMapIds:[],
+      categoryId:doSubmitData(formState.catalogue),
+      knowledgeMapIds:doSubmitData(formState.knowledgePoints),
       question:formState.stem, 
       blankCorrect:blankCorrect,
       questionAnalysis:formState.topicAnalysis
@@ -419,24 +418,20 @@ function reset(){
 function selectAnswer(){
 
 }
+const cascaData:any=reactive({
+    category_chains:'',
+    knowledge_map_details:''
+})
 //获取选择数据
 function getChoiceData(){
     http.choiceDetail({urlParams:{questionId:editId}}).then((res:any)=>{
       if(res.code==1){
         const data=res.data
+        cascaData.category_chains=data.category_chains
+        cascaData.knowledge_map_details=data.knowledge_map_details
         formState.purpose=data.used_by
         formState.difficulty=data.difficulty
         // 目录回显
-        const categoryIds:any=[]
-        data.category_chains.forEach((item:any)=> {
-            categoryIds.push(item.id)
-        });
-        // const promise:any=new Promise((resolve,reject)=>{
-        //   resolve(selectDire.value.processingEchoData(categoryIds))
-        // })
-        // promise().then(()=>{
-        //   formState.catalogue=categoryIds
-        // })
         formState.catalogue=cascadeEcho(data.category_chains)
         formState.knowledgePoints=cascadeEcho(data.knowledge_map_details)
         formState.stem=data.question
@@ -457,13 +452,8 @@ function getJudgeData(){
       const data=res.data
       formState.purpose=data.used_by
       formState.difficulty=data.difficulty
-       // 目录回显
-        const categoryIds:any=[]
-        data.category_chains.forEach((item:any)=> {
-            categoryIds.push(item.id)
-        });
-        formState.catalogue=categoryIds
-      formState.knowledgePoints=data.knowledge_map_ids
+      formState.catalogue=cascadeEcho(data.category_chains)
+      formState.knowledgePoints=cascadeEcho(data.knowledge_map_details)
       formState.stem=data.question
       formState.judgeAnswer=data.judge_correct
       formState.topicAnalysis=data.question_analysis
@@ -477,13 +467,8 @@ function getCompleData(){
         const data=res.data
         formState.purpose=data.used_by
         formState.difficulty=data.difficulty
-         // 目录回显
-        const categoryIds:any=[]
-        data.category_chains.forEach((item:any)=> {
-            categoryIds.push(item.id)
-        });
-        formState.catalogue=categoryIds
-        formState.knowledgePoints=data.knowledge_map_ids
+        formState.catalogue=cascadeEcho(data.category_chains)
+        formState.knowledgePoints=cascadeEcho(data.knowledge_map_details)
         formState.stem=data.question
         formState.topicAnalysis=data.question_analysis
         formState.multipleQuesSelection=[]
@@ -500,13 +485,8 @@ function getSolutionData(){
           const data=res.data
         formState.purpose=data.used_by
         formState.difficulty=data.difficulty
-         // 目录回显
-        const categoryIds:any=[]
-        data.category_chains.forEach((item:any)=> {
-            categoryIds.push(item.id)
-        });
-        formState.catalogue=categoryIds
-        formState.knowledgePoints=data.knowledge_map_ids
+        formState.catalogue=cascadeEcho(data.category_chains)
+        formState.knowledgePoints=cascadeEcho(data.knowledge_map_details)
         formState.stem=data.question
         formState.topicAnalysis=data.question_question_analysis
         formState.keyword=data.short_answer_keys
@@ -527,13 +507,14 @@ function editChoice(){
   const params={
     question:formState.stem,
     difficulty:formState.difficulty,
-    categoryId:formState.catalogue[formState.catalogue.length-1],
-    knowledgeIds:[1],
+    categoryId:doEditSubmit(formState.catalogue,cascaData.category_chains),
+    knowledgeIds:doEditSubmit(formState.knowledgePoints,cascaData.knowledge_map_details),
+    // // categoryId:215,
+    // knowledgeIds:[1],
     questionAnalysis:formState.topicAnalysis,
     choiceOptions:choiceOptions,
     choiceCorrectOptions:choiceCorrectOptions,
     usedBy:formState.purpose
-
   }
   http.editChoice({param:params,urlParams:{questionId:editId}}).then((res:any)=>{
     if(res.code==1){
@@ -545,9 +526,8 @@ function editJudge(){
    const params={
       usedBy:formState.purpose,
       difficulty:formState.difficulty,
-      categoryId:formState.catalogue[formState.catalogue.length-1],
-      // knowledgeIds:[],
-      knowledgeMapIds:[],
+      categoryId:doEditSubmit(formState.catalogue,cascaData.category_chains),
+      knowledgeMapIds:doEditSubmit(formState.knowledgePoints,cascaData.knowledge_map_details),
       question:formState.stem, 
       judgeCorrect:formState.judgeAnswer,
       questionAnalysis:formState.topicAnalysis
@@ -569,9 +549,8 @@ function editComple(){
   const params={
       usedBy:formState.purpose,
       difficulty:formState.difficulty,
-      categoryId:formState.catalogue[formState.catalogue.length-1],
-      // knowledgeIds:[],
-      knowledgeMapIds:[],
+      categoryId:doEditSubmit(formState.catalogue,cascaData.category_chains),
+      knowledgeMapIds:doEditSubmit(formState.knowledgePoints,cascaData.knowledge_map_details),
       question:formState.stem, 
       blankCorrect:blankCorrect,
       questionAnalysis:formState.topicAnalysis
@@ -586,8 +565,8 @@ function editSolution(){
    const params={
       usedBy:formState.purpose,
       difficulty:formState.difficulty,
-      categoryId:formState.catalogue[formState.catalogue.length-1],
-      knowledgeMapIds:[],
+      categoryId:doEditSubmit(formState.catalogue,cascaData.category_chains),
+      knowledgeMapIds:doEditSubmit(formState.knowledgePoints,cascaData.knowledge_map_details),
       question:formState.stem, 
       shortAnswerReference:formState.referenceAnswer,//参考答案
       shortAnswerKeys:formState.keyword,
