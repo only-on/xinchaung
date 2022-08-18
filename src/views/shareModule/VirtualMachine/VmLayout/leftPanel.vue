@@ -48,7 +48,7 @@ import report from "../component/report/index.vue";
 import questionsAndAnswers from "../component/questionsAndAnswers/index.vue";
 import createPost from "src/views/shareModule/VirtualMachine/component/createPost.vue";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
-import getMenuRole, { menuTypeArr } from "../menuRole";
+import getMenuRole, { menuTypeArr, experimentTypeList } from "../menuRole";
 import storage from "src/utils/extStorage";
 
 const route = useRoute();
@@ -103,8 +103,8 @@ let lastKey = ref(navData[0].key);
 const contentShow = inject("contentShow", ref(false));
 
 const roleArry: menuTypeArr = ["recommend", "test"].includes(opType as any)
-  ? (getMenuRole(role as any, "vnc", opType as any) as any)
-  : (getMenuRole(role as any, "vnc") as any);
+  ? (getMenuRole(role as any, experimentTypeList[Number(experType)].name, opType as any) as any)
+  : (getMenuRole(role as any, experimentTypeList[Number(experType)].name) as any);
 const contentModal = ref(false)  // 报告modal
 watch(
   () => contentModal.value,

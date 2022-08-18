@@ -7,6 +7,7 @@
     ></QuillEditor>
     <div class="experimental-action">
       <a-button type="primary" @click="submitNote">提交笔记</a-button>
+      <a-button type="primary" @click="downloadNote" class="brightBtn">下载笔记</a-button>
     </div>
   </div>
 </template>
@@ -53,6 +54,11 @@ onMounted(() => {
           console.log(err);
         });
     }
+
+    // 下载笔记
+    function downloadNote() {
+      console.log('downloadNote')
+    }
 </script>
 
 <style lang="less" scoped>
@@ -73,9 +79,12 @@ onMounted(() => {
     height: 100%;
   }
   .experimental-action {
-    text-align: center;
+    // text-align: center;
     margin-top: 15px;
     flex-shrink: 0;
+    .brightBtn {
+      margin-left: 16px;
+    }
   }
 }
 </style>

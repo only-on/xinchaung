@@ -24,6 +24,10 @@
       >
     </div>
     <div class="right-box">
+      <div class="use-time" v-if="roleArry.includes('time')">
+        <span class="iconfont icon-jishiqi"></span>
+        <span>{{ experimentTime?.h + ":" + experimentTime?.m + ":" + experimentTime?.s }}</span>
+      </div>
       <div
         class="ip-list"
         :class="loading ? 'none-event' : ''"
@@ -67,6 +71,9 @@
       >
         <span class="iconfont icon-gongjuxiang"></span>
         <span>工具箱</span>
+      </div>
+      <div class="jupy-submit" v-if="experType == 4">
+        <a-button type="primary" size="small">提交（ 2/3 ）</a-button>
       </div>
       <div
         class="switch pointer"
@@ -915,7 +922,7 @@ async function showChange() {
 let finishingExperimentVisible = ref(false)
 function finishExperiment() {
   let modal = Modal.confirm({
-    title: `确认结束${opType === "help" ? "演示" : role === 4 ? "实验" : "备课"}吗？`,
+    title: `确认退出${opType === "help" ? "演示" : role === 4 ? "实验" : "备课"}吗？`,
     okText: "确认",
     onOk: async () => {
       // 文档视频实验
@@ -1377,6 +1384,17 @@ function times() {
   }, 1000);
 }
 
+function getExperimentTime() {
+  if (timer) {
+    clearInterval(timer);
+    timer = null;
+  }
+  timer = setInterval(() => {
+    experimentTime!.value = secondToHHMMSS(Number(use_time.value));
+    use_time.value++;
+  }, 1000);
+}
+
 // 操作虚拟机
 function VmOperatesHandle(actionType: any) {
   return new Promise((resolve: any, reject: any) => {
@@ -1661,6 +1679,7 @@ watch(
   async() => {
     if (roleArry.value.includes('delayed')&&Number(baseInfo.value?.current?.status)<2) {
       times();
+      getExperimentTime()
     }
     delayNum.value = baseInfo.value?.current?.delay_num
     if (role === 4&&baseInfo.value?.current?.is_teamed == 1&&baseInfo.value?.current?.is_lead == 0) {  // 高配分组 非组长
@@ -1826,9 +1845,19 @@ i {
     display: flex;
     // height: 70px;
     // line-height: 20px;
-    .ip-list {
+    .use-time {
+      color: var(--primary-color);
       padding: 0 20px;
       // border-left: 1px solid #2c3a54;
+      .iconfont {
+        font-size: var(--font-size-20);
+        margin-right: 8px;
+        vertical-align: bottom;
+      }
+    }
+    .ip-list {
+      padding: 0 20px;
+      border-left: 1px solid #2c3a54;
       .ant-select {
         // border: 1px solid var(--cyan-100);
         color: var(--cyan-100);
@@ -1895,6 +1924,13 @@ i {
     }
     .vnc-change {
       color: #3094ef;
+    }
+    .jupy-submit {
+      padding: 0 20px;
+      border-left: 1px solid #2c3a54;
+      margin-top: 10px;
+      height: 24px;
+      line-height: 24px;
     }
   }
 }

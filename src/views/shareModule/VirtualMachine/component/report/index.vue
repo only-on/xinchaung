@@ -53,7 +53,17 @@
         </div>
       </div>
       <div class="btns">
-        <Submit @submit="handleOk" @cancel="cancel" :loading="saveLoading"></Submit>
+        <!-- <Submit @submit="handleOk" @cancel="cancel" :loading="saveLoading" :okText="'提交'"></Submit> -->
+        <a-button @click="cancel">取消</a-button>
+        <a-popconfirm
+          title="提交后此前提交的报告会被覆盖?"
+          ok-text="是"
+          cancel-text="否"
+          @confirm="handleOk"
+          @cancel="cancel"
+        >
+          <a-button type="primary" :loading="saveLoading" :disabled="false">{{'提交（ 2/3 ）'}}</a-button>
+        </a-popconfirm>
       </div>
     </div>
   </div>
@@ -441,6 +451,10 @@ onMounted(() => {
   height: 100%;
   .btns {
     margin-top: 24px;
+    text-align: center;
+    .ant-btn {
+      margin: 0 1rem;
+    }
   }
   .iframe {
     width: 100%;

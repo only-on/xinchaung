@@ -89,6 +89,7 @@ let {
 
 const baseInfo: any = inject("baseInfo", ref({}));
 const taskType: any = inject("taskType");
+const use_time: any = inject("use_time");
 
 const disableVisable: any = ref(false);
 const disableData: any = ref({});
@@ -158,7 +159,6 @@ function getVmBase() {
       //   resolve();
       //   return;
       // }
-
       taskType.value = res.data.base_info.task_type.type;
       resolve();
     });

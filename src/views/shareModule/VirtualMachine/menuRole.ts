@@ -7,6 +7,7 @@
  *             classTest 随堂测试
  *             switchVm 切换虚拟机
  *             delayed 延时
+ *             time 实验时间
  *             switchSSH  切换SSH
  *             full 全屏
  *             save  保存进度
@@ -23,34 +24,29 @@
  */
 const menuRole= {
     vnc:{
-        4:['guide','note','report','question','classTest','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','help','end','tools'],
+        4:['guide','note','report','question','classTest','time','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','help','end','tools'],
         3:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','share','end','tools'],
         5:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','share','end','tools'],
     },
     ssh:{
-        4:['guide','note','report','question','classTest','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','record','help','end','tools'],
+        4:['guide','note','report','question','classTest','time','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','record','help','end','tools'],
         3:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','end','tools'],
         5:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','end','tools'],
     },
-    cmd:{
-        4:['guide','note','report','question','classTest','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','help','end','tools'],
-        3:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','share','end','tools'],
-        5:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','share','end','tools'],
-    },
     task:{
-        4:['guide','note','report','question','classTest','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','help','end','tools'],
+        4:['guide','note','report','question','classTest','time','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','help','end','tools'],
         3:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','share','end','tools'],
         5:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','share','end','tools'],
     },
     webide:{
-        4:['guide','note','report','question','classTest','delayed','end'],
+        4:['guide','note','report','question','classTest','time','delayed','end'],
         3:['guide','question','end'],
         5:['guide','question','end'],
     },
     jupyter:{
-        4:['guide','note','report','question','classTest','delayed','end'],
-        3:['guide','question','end'],
-        5:['guide','question','end'],
+        4:['guide','note','report','question','classTest','time','delayed','full','save','closeOrStart','reset','share','end','tools'],
+        3:['guide','question','full','closeOrStart','reset','share','end','tools'],
+        5:['guide','question','full','closeOrStart','reset','share','end','tools'],
     },
     document:{
         4:['guide','note','report','question','classTest','end'],
@@ -65,7 +61,6 @@ const menuRole= {
     studyType:{
         test:{
             vnc:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','record','share','end','tools'],
-            cmd:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','record','share','end','tools'],
             ssh:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','record','share','end','tools'],
             task:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','record','share','end','tools'],
             webide:['guide','question','end'],
@@ -75,7 +70,6 @@ const menuRole= {
         },
         recommend:{
             vnc:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','share','end','tools'],
-            cmd:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','share','end','tools'],
             ssh:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','share','end','tools'],
             task:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','share','end','tools'],
             webide:['guide','question','end'],
@@ -85,7 +79,6 @@ const menuRole= {
         },
         help: {
             vnc:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','end','tools'],
-            cmd:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','copy','end','tools'],
             ssh:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','end','tools'],
             task:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','end','tools'],
             webide:['guide','question','end'],
@@ -94,16 +87,16 @@ const menuRole= {
             video:['guide','question','end'],
         },
         highGroup: {
-            vnc: ['guide','note','report','question','classTest','switchVm','delayed','switchSSH','full','closeOrStart','reset','upload','down','copy','record','share','help','tools'],
-            ssh: ['guide','note','report','question','classTest','switchVm','delayed','switchSSH','full','closeOrStart','reset','upload','down','record','help','tools'],
-            task: ['guide','note','report','question','classTest','switchVm','delayed','switchSSH','full','closeOrStart','reset','upload','down','copy','record','share','help','tools'],
+            vnc: ['guide','note','report','question','classTest','time','switchVm','delayed','switchSSH','full','closeOrStart','reset','upload','down','copy','record','share','help','tools'],
+            ssh: ['guide','note','report','question','classTest','time','switchVm','delayed','switchSSH','full','closeOrStart','reset','upload','down','record','help','tools'],
+            task: ['guide','note','report','question','classTest','time','switchVm','delayed','switchSSH','full','closeOrStart','reset','upload','down','copy','record','share','help','tools'],
         }
     },
 }
-// 实验类型{vnc:VNC,ssh:SSH,cmd:命令行,task:任务制实验,webide:DE实验,jupyter:Jupyter,document:文档,video:视频}
-type taskType="vnc"|"ssh"|"cmd"|"task"|"webide"|"jupyter"|"document"|"video"
+// 实验类型{vnc:VNC,ssh:SSH,task:任务制实验,webide:DE实验,jupyter:Jupyter,document:文档,video:视频}
+type taskType="vnc"|"ssh"|"task"|"webide"|"jupyter"|"document"|"video"
 
-type studyType="test"|"recommend"|"highGroup"
+type studyType="test"|"recommend"|"highGroup"|"help"
 
 export type menuTypeArr=['guide','note','report','question','classTest','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','help','end','tools']
 

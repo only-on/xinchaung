@@ -1,40 +1,67 @@
 <template>
   <layout :navData="navData" ref="layoutRef">
-    <template v-slot:right
-      >
-      <template v-if="currentInterface === 'ssh'">
-        <div v-if="!sshIsOpen" class="close-vm-bg">
-          <img :src="closevmImg" alt="" srcset="" width="324" height="68">
+    <template v-slot:right>
+      <div class="vm-content" ref="contentRef">
+        <div class="vm-top" :style="{ height: topHeight + 'px',overflow: 'hidden'}">
+          <template v-if="currentInterface === 'ssh'">
+            <div v-if="!sshIsOpen" class="close-vm-bg">
+              <img :src="closevmImg" alt="" srcset="" width="324" height="68">
+            </div>
+            <div class="vncloading" v-else-if="loading || vncLoading">
+              <div class="word">
+                <div class="loading">
+                  <img :src="loadingGif" alt="" srcset="" />
+                  <span>虚拟机加载中，请稍后...</span>
+                </div>
+              </div>
+            </div>
+            <iframe id="sshIframe" :src="sshUrl" frameborder="0"></iframe>
+          </template>
+          <template v-else>
+            <div class="vncloading" v-if="loading || vncLoading&&!isClose">
+              <div class="word">
+                <div class="loading">
+                  <img :src="loadingGif" alt="" srcset="" />
+                  <span>虚拟机加载中，请稍后...</span>
+                </div>
+              </div>
+            </div>
+            <div class="vm-right-wrap" id="vncDom" :class="loading ? 'is-none' : ''">
+              <vue-no-vnc
+                background="rgb(40,40,40)"
+                :options="currentOption"
+                refName="refName"
+                ref="novncEl"
+                @clipboard="clipboard"
+              />
+            </div>
+          </template>
         </div>
-        <div class="vncloading" v-else-if="loading || vncLoading">
-          <div class="word">
-            <div class="loading">
-              <img :src="loadingGif" alt="" srcset="" />
-              <span>虚拟机加载中，请稍后...</span>
+        <div class="vm-bottom" :style="{ height: bottomHeight + 'px' }">
+          <div class="vm-bottom-drag" @mousedown="mousedown" @mouseup="mouseup">
+          <span class="iconfont icon-huakuai1 move"></span></div>
+          <div class="vm-bottom-content">
+            <div class="vm-bottom-content-tit">
+              <span>测试结果</span>
+              <span class="success">
+                <span class="iconfont icon-zhengque"></span>
+                <span>成功</span>
+              </span>
+              <span class="fail">
+                <span class="iconfont icon-cuowu"></span>
+                <span>失败</span>
+              </span>
+            </div>
+            <div class="vm-bottom-content-con">
+              <pre></pre>
             </div>
           </div>
-        </div>
-        <iframe id="sshIframe" :src="sshUrl" frameborder="0"></iframe>
-      </template>
-      <template v-else>
-        <div class="vncloading" v-if="loading || vncLoading&&!isClose">
-          <div class="word">
-            <div class="loading">
-              <img :src="loadingGif" alt="" srcset="" />
-              <span>虚拟机加载中，请稍后...</span>
-            </div>
+          <div class="vm-bottom-footer">
+            <a-button type="primary" class="brightBtn" @click="test">测试</a-button>
+            <a-button type="primary" @click="confirm">提交（2/3）</a-button>
           </div>
         </div>
-        <div class="vm-right-wrap" id="vncDom" :class="loading ? 'is-none' : ''">
-          <vue-no-vnc
-            background="rgb(40,40,40)"
-            :options="currentOption"
-            refName="refName"
-            ref="novncEl"
-            @clipboard="clipboard"
-          />
-        </div>
-      </template>
+      </div>
     </template>
   </layout>
   <!--禁用modal-->
@@ -522,6 +549,40 @@ watch(
   },
   { deep: true, immediate: true }
 )
+
+// 鼠标按下事件
+let contentRef = ref()
+let mouseStart = 0
+let mouseEnd = 0
+let bottomHeight = ref(342)
+let topHeight = ref(342)
+function mousedown(e: MouseEvent) {
+  mouseStart = e.pageY;
+  document.onmousemove = (event: any) => {
+    document.body.style.pointerEvents = "none";
+    document.body.style.userSelect = "none";
+    mouseEnd = event.pageY
+    // 向上移动
+    if (mouseStart > mouseEnd) {
+      bottomHeight.value = bottomHeight.value + (mouseStart - mouseEnd);
+      topHeight.value = contentRef.value.offsetHeight - bottomHeight.value;
+    } else {
+      // 向下移动
+      bottomHeight.value = bottomHeight.value - (mouseEnd - mouseStart);
+      topHeight.value = contentRef.value.offsetHeight - bottomHeight.value;
+    }
+    mouseStart = mouseEnd;
+    console.log(contentRef.value.offsetHeight)
+  };
+}
+// 鼠标抬起事件
+function mouseup() {
+  document.onmousemove = null;
+}
+// 测试ssh服务
+function test() {}
+// 提交
+function confirm() {}
 </script>
 <style lang="less">
 .vm-layout {
@@ -581,5 +642,80 @@ watch(
 }
 .is-none {
   display: none;
+}
+.vm-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  .vm-top {
+    flex: 1;
+  }
+  .vm-bottom {
+    height: 200px;
+    background-color: var(--black-0-14);
+    position: relative;
+    .iconfont.move {
+      color: #1cb2b3;
+      position: absolute;
+      top: -12px;
+      left: 50%;
+    }
+    &-drag {
+      height: 1px;
+      background-color: rgba(28,178,179,0.50);
+      cursor: row-resize;
+      &:hover {
+        .move {
+          display: inline-block;
+        }
+      }
+    }
+    &-footer {
+      padding: 15px 0;
+      background-color: #0a1933;
+      margin-right: 24px;
+      text-align: right;
+      .brightBtn {
+        margin-right: 8px;
+      }
+    }
+    &-content {
+      height: calc(100% - 64px);
+      background-color: #172743;
+      &-tit {
+        height: 34px;
+        line-height: 34px;
+        color: var(--white);
+        padding: 0 49px;
+        border-bottom: 1px solid rgba(142,190,255,0.15);
+        .success, .fail {
+          display: inline-block;
+          height: 20px;
+          line-height: 20px;
+          padding: 0 12px;
+          border-radius: 2px;
+          font-size: var(--font-size-sm);
+          .iconfont {
+            vertical-align: middle;
+            font-size: 20px;
+          }
+          margin-left: 16px;
+        }
+        .success {
+          background-color: #ddf9f3;
+          color: #1cb2b3;
+        }
+        .fail {
+          background-color: #fff3f3;
+          color: #E22D2D;
+        }
+      }
+      &-con {
+        pre {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
 }
 </style>

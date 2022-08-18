@@ -5,13 +5,15 @@
         <img :src="loadingGif" alt="" srcset="" />
         <span>虚拟机加载中，请稍后...</span>
       </div>
-      <iframe
-        id="iframe"
-        :src="'http://' + noteUrl"
-        frameborder="0"
-        style="width: 100%; height: 100%"
-        v-show="showIframe"
-      ></iframe>
+      <div id="vncDom" class="jupyter-box">
+        <iframe
+          id="iframe"
+          :src="'http://' + noteUrl"
+          frameborder="0"
+          style="width: 100%; height: 100%"
+          v-show="showIframe"
+        ></iframe>
+      </div>
     </template>
   </layout>
   <!--禁用modal-->
@@ -56,6 +58,8 @@ const taskType: any = inject("taskType");
 const use_time: any = inject("use_time");
 const currentVm: any = inject("currentVm");
 const currentUuid: any = inject("currentUuid");
+const vmsInfo: any = inject("vmsInfo");
+const currentVmIndex: any = inject("currentVmIndex");
 const noteUrl: any = ref("");
 const store = useStore();
 
@@ -186,6 +190,8 @@ function initWs() {
       if (typeof ev.data === "string" && regex.test(ev.data)) {
         let wsJsonData = JSON.parse(ev.data);
         if (wsJsonData.type == "base_vminfo") {
+          vmsInfo.value = wsJsonData.data;
+          currentVm.value = wsJsonData.data.vms[currentVmIndex.value];
           if (JSON.parse(ev.data).data.vms && JSON.parse(ev.data).data.vms.length > 0) {
             currentVm.value = JSON.parse(ev.data).data.vms[0];
             currentUuid.value = currentVm.value.uuid;
@@ -303,5 +309,8 @@ onMounted(async () => {
   img {
     margin-right: 8px;
   }
+}
+.jupyter-box {
+  height: 100%;
 }
 </style>
