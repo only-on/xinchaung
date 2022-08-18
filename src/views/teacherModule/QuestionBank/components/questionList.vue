@@ -76,7 +76,7 @@
             </div>
             <!-- 模型题 -->
             <div class="model" v-if="v.kind === 'ai'">
-              <ModelQuestion :desc="v.question_desc?v.question_desc:''" :evaluating="''"></ModelQuestion>
+              <ModelQuestion :desc="v.question_desc?v.question_desc:''" :evaluating="v.ai_test_desc?v.ai_test_desc:''"></ModelQuestion>
             </div>
             <!-- SQL题 -->
             <div class="sql" v-if="v.kind === 'sql'">

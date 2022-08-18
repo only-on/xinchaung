@@ -505,12 +505,20 @@ onMounted(() => {
 })
 // 重置条件进行查询
 const resetSearch = () => {
-    pageInfo.page = 1
-    searchInfo.keyWord = ''
-    resetKeyword.value = !resetKeyword.value
-    searchInfo.categoryId = 0
-    searchInfo.knowledgeIds = []
-    initData();
+  Object.assign(pageInfo, {
+    page: 1,
+    pageLimit: 10
+  })
+  Object.assign(searchInfo, { 
+    keyWord: '',
+    kind: '',
+    difficulty: '',
+    usedBy: '',
+    categoryId: 0,
+    knowledgeIds: [],
+  })
+  resetKeyword.value = !resetKeyword.value
+  initData();
 }
 watch(
   () => {
@@ -553,7 +561,8 @@ watch(()=>props.inDrawer, newVal => {
 },{deep:true,immediate:true})
 // 选择题目的抽屉
 watch(()=>props.activeTab, newVal => {
-  currentTab.value = newVal
+  // 1 公开题库 2 我的题库
+  currentTab.value = newVal - 1
   initData()
 })
 </script>
