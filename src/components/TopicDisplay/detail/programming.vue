@@ -20,16 +20,16 @@
         <div class="contentLeft">
           <div class="detailsTit detailsTit2 detailsTit3 flexCenter">
             <span>输入</span>
-            <span class="copy">复制</span>
+            <span class="copy" @click="copy('input'+props.index)">复制</span>
           </div>
-          <a-textarea v-model:value="props.info.sample_input" :disabled="true" placeholder="" :autoSize="{ minRows: 4, maxRows: 6 }" />
+          <a-textarea v-model:value="props.info.sample_input" :disabled="true" placeholder="" :autoSize="{ minRows: 4, maxRows: 6 }" :id="'input'+props.index" />
         </div>
         <div class="contentRight">
           <div class="detailsTit detailsTit2 detailsTit3 flexCenter">
             <span>输入</span>
-            <span class="copy">复制</span>
+            <span class="copy" @click="copy('output'+props.index)">复制</span>
           </div>
-          <a-textarea v-model:value="props.info.sample_output" :disabled="true" placeholder="" :autoSize="{ minRows: 4, maxRows: 6 }" />
+          <a-textarea v-model:value="props.info.sample_output" :disabled="true" placeholder="" :autoSize="{ minRows: 4, maxRows: 6 }" :id="'output'+props.index" />
         </div>
       </div>
     </div>
@@ -58,6 +58,7 @@ interface Iinfo{
 interface Props {
   desc:string
   info:any
+  index:number
 }
 const props = withDefaults(defineProps<Props>(), {
   info:()=>{
@@ -67,13 +68,20 @@ const props = withDefaults(defineProps<Props>(), {
       sample_input:'',
       sample_output:'',
     }
-  }
+  },
+  index: 0
 });
 
 // const emit = defineEmits<{
 //   (e: "selectedImage", val: any): void;
 // }>();
-
+function copy(id: string) {
+  const input: any = document.getElementById(id)
+  input.disabled=false
+  input.select();
+  input.disabled=true
+  document.execCommand("Copy");
+}
 </script>
 <style scoped lang="less">
 .markdown__editor{

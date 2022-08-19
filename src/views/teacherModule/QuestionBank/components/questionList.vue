@@ -1,6 +1,6 @@
 <template>
   <div class="question-lists">
-    <div class="list" v-for="v in props.questionList" :key="v.id">
+    <div class="list" v-for="(v, i) in props.questionList" :key="v.id">
       <div class="question-type">
         <span class="type" :style="{background: getTopicType[v.kind]?.bgColor}">{{getTopicType[v.kind]?.subname}}</span>
       </div>
@@ -73,6 +73,7 @@
             <!-- 编程题 -->
             <div class="program" v-if="v.kind === 'program'">
               <Programming 
+                :index="i"
                 :desc="v.question_desc?v.question_desc:''" 
                 :info="{
                   input: v.input?v.input:'input',
