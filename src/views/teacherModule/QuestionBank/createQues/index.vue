@@ -380,8 +380,8 @@ function createSolutionQues(){
   const params={
       usedBy:formState.purpose,
       difficulty:formState.difficulty,
-      category_id:doSubmitData(formState.catalogue),
-      knowledge_ids:doSubmitData(formState.knowledgePoints),
+      categoryId:doSubmitData(formState.catalogue),
+      knowledgeIds:doSubmitData(formState.knowledgePoints),
       question:formState.stem, 
       shortAnswerReference:formState.referenceAnswer,//参考答案
       shortAnswerKeys:formState.keyword,
@@ -532,6 +532,7 @@ function editChoice(){
     if(res.code==1){
       message.success('编辑成功！')
       loading.value=false
+      router.go(-1);
     }
   }).catch((err:any)=>{
     loading.value=false
