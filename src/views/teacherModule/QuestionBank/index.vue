@@ -138,6 +138,7 @@ const pageInfo = reactive({
 const pageTotal = ref<number>(0);
 const checkedAll = ref(false)
 let questionListData = reactive<any[]>([]);
+const checkedBaseQuestionId = reactive<number[]>([])   // 选中的基本题型
 const checkedQuestionId = props.inDrawer ? JSON.parse(JSON.stringify(inject('selectIds') as number[])) :reactive<number[]>([])
 const bottomVisible = ref(false)
 const isMyQuestion = computed(() => currentTab.value==1)
@@ -219,6 +220,7 @@ const checkedAllHandle = (e: any) => {
 function cancelBottom() {
   bottomVisible.value = false
   checkedQuestionId.length = 0
+  checkedBaseQuestionId.length = 0
   questionListData.forEach((v: any) => {
     v.checked = false
   })
@@ -337,10 +339,14 @@ function publicQuestion() {
   })
 }
 function exportQuestion() {
+  if (!checkedBaseQuestionId.length) {
+    message.warn('请选择基本题型导出')
+    return
+  }
   const dev_base_url = "";
   let url = `${dev_base_url}/api/v1/xinchuang/question/multiple/questions-export`;
   const param = {
-    questionIds: isBatchOperate.value?[...checkedQuestionId]:[currentQuestionId.value]
+    questionIds: isBatchOperate.value?[...checkedBaseQuestionId]:[currentQuestionId.value]
   }
   fetch(url, {
     method: "post",
@@ -527,6 +533,7 @@ watch(
   (val) => {
     if (val == 0 || val == 1) {
       currentTab.value = Number(val);
+      cancelBottom()
       resetSearch()
     }
   }
@@ -544,11 +551,18 @@ watch(
         if (index !== -1) {
           checkedQuestionId.splice(index, 1)
         }
+        const i = checkedBaseQuestionId.indexOf(v.id)
+        if (i !== -1) {
+          checkedBaseQuestionId.splice(checkedBaseQuestionId.indexOf(v.id),1)
+        }
       } else {
         i++
         if (!checkedQuestionId.includes(v.id)) {
           checkedQuestionId.push(v.id)
           bottomVisible.value = true
+        }
+        if (!checkedBaseQuestionId.includes(v.id) && !['program','ai','sql'].includes(v.kind)) {
+          checkedBaseQuestionId.push(v.id)
         }
       }
     })

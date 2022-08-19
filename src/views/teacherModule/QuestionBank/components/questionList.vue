@@ -129,7 +129,7 @@
                     <a-menu-item>
                       <span @click="handleClick('public', v)">公开</span>
                     </a-menu-item>
-                    <a-menu-item>
+                    <a-menu-item :disabled="['program','ai','sql'].includes(v.kind)">
                       <span @click="handleClick('export', v)">导出</span>
                     </a-menu-item>
                     <a-menu-item>
