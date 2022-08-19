@@ -317,9 +317,9 @@ function createChoiceQues(){
 
     }
     http.choiceQues({param:params}).then((res:any)=>{
+      loading.value=false
       if(res.code==1){
         message.success('创建成功')
-        loading.value=false
         router.go(-1);
       }
     }).catch((err:any)=>{
@@ -339,9 +339,9 @@ function createJudgeQues(){
       questionAnalysis:formState.topicAnalysis
     }
     http.judgeQues({param:params}).then((res:any)=>{
+      loading.value=false
       if(res.code==1){
         message.success('创建成功')
-        loading.value=false
          router.go(-1);
       }
     }).catch((err:any)=>{
@@ -365,10 +365,10 @@ function createCompleQues(){
       questionAnalysis:formState.topicAnalysis
     }
   http.complateQues({param:params}).then((res:any)=>{
+     loading.value=false
      if(res.code==1){
         message.success('创建成功')
          router.go(-1);
-        loading.value=false
       }
   }).catch((err:any)=>{
     loading.value=false
@@ -388,10 +388,10 @@ function createSolutionQues(){
       questionAnalysis:formState.topicAnalysis
     }
     http.solutionQues({param:params}).then((res:any)=>{
+      loading.value=false
        if(res.code==1){
         message.success('创建成功')
-         router.go(-1);
-        loading.value=false
+        router.go(-1);
       }
     })
 }
@@ -529,9 +529,9 @@ function editChoice(){
     usedBy:formState.purpose
   }
   http.editChoice({param:params,urlParams:{questionId:editId}}).then((res:any)=>{
+    loading.value=false
     if(res.code==1){
       message.success('编辑成功！')
-      loading.value=false
       router.go(-1);
     }
   }).catch((err:any)=>{
@@ -550,9 +550,9 @@ function editJudge(){
       questionAnalysis:formState.topicAnalysis
     }
     http.editJudge({param:params,urlParams:{questionId:editId}}).then((res:any)=>{
+      loading.value=false
       if(res.code==1){
         message.success('编辑成功！')
-         loading.value=false
           router.go(-1);
       }
     }).catch((err:any)=>{
@@ -578,10 +578,10 @@ function editComple(){
       questionAnalysis:formState.topicAnalysis
     }
   http.editComplate({param:params,urlParams:{questionId:editId}}).then((res:any)=>{
+    loading.value=false
      if(res.code==1){
         message.success('编辑成功！')
          router.go(-1);
-        loading.value=false
       }
   }).catch((err:any)=>{
      loading.value=false
@@ -600,10 +600,10 @@ function editSolution(){
       questionAnalysis:formState.topicAnalysis
     }
     http.editSolution({param:params,urlParams:{questionId:editId}}).then((res:any)=>{
+      loading.value=false
        if(res.code==1){
         message.success('编辑成功！')
          router.go(-1);
-         loading.value=false
       }
     }).catch((err:any)=>{
        loading.value=false

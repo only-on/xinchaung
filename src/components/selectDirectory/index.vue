@@ -16,6 +16,7 @@
 import request from "src/api/index";
 const http = (request as any).QuestionBank;
 import type { CascaderProps } from 'ant-design-vue';
+const env:any = ref(process.env.NODE_ENV == "development" ? true : false);
 import {
   defineProps,
   reactive,

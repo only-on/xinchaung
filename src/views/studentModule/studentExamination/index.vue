@@ -17,24 +17,24 @@
                         </div>
                         <div class="status">
                             <img :src="unexam">
-                            <div class="status_word">{{item.status}}</div>
+                            <div class="status_word">{{statusState[item.status-1]}}</div>
                         </div>
                     </div>
                     <div class="card_right_content">
-                        <div class="course">{{item.course}}</div>
+                        <div class="course">{{item.name}}</div>
                         <div class="title">{{item.title}}</div>
-                        <div class="time">起止时间:{{item.time}}</div>
+                        <div class="time">起止时间:{{item.started_at}}-{{item.closed_at}}</div>
                         <div class="teacher_info">
                             <img src="">
-                            <span class="tea_name">{{item.teacher}}</span>
+                            <span class="tea_name">{{item.author_name}}</span>
                             <span>
-                                <span>提交量:</span>{{item.num}}
+                                <span>提交量:</span>{{item.is_publish}}
                             </span>
                         </div>
                     </div>
                     <div class="card_right_btn">
-                        <span v-if="item.status=='进行中'" class="answer_ques" @click="toAnswer">开始考试</span>
-                        <span v-if="item.status=='已结束'" class="lookScore" @click="lookScore">查看成绩</span>
+                        <span v-if="item.status==3" class="lookScore" @click="lookScore">查看成绩</span>
+                        <span v-else class="answer_ques" @click="toAnswer">开始考试</span>
                     </div>
                 </div>
             </div>
@@ -61,6 +61,7 @@ import searchAdd from "src/components/searchAdd/searchAdd.vue";
 import unexam from 'src/assets/images/task/unexam.png'
 import examing from 'src/assets/images/task/examing.png'
 import examed from 'src/assets/images/task/examed.png'
+const http = (request as any).studentExamination;
 const route = useRoute();
 const router = useRouter();
 var updata = inject("updataNav") as Function;
@@ -80,7 +81,14 @@ const ExperimentTypeList:any=[]
 const isShowAdd:any=ref(false)
 const resetKeyword:any=ref(false)
 var loading:any=ref(false)
-const cardlist:any=reactive([
+const params:any=reactive({
+    type:2,
+    name:'',
+    page:1,
+    limit:12,
+})
+const statusState:any=['未开始','进行中','已结束']
+const cardlist:any=ref([
     {
     status:'进行中',
     img:'',
@@ -132,7 +140,7 @@ function classifyChange(obj: any){
     typeList.value.value=obj.type
 }
 function searchFn(){
-
+    
 }
 function handleMenuClick(){
 
@@ -144,6 +152,16 @@ function toAnswer(){
 function lookScore(){
       router.push({path:'./studentAssignment/answerQues',query:{name:'考试',type:'lookScore'}})
 }
+function getExamList(){
+    http.studentExamList({param:params}).then((res:any)=>{
+        console.log(res,'哈哈哈哈哈哈嘻嘻嘻嘻休息洗洗休息休息')
+        cardlist.value=res.data.list
+    })
+}
+// studentExamList
+onMounted(()=>{
+    getExamList()
+})
 </script>
 <style lang="less" scoped>
 .main_content{

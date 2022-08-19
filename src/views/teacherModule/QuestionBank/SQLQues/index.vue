@@ -233,11 +233,13 @@ function createSqlQues(){
   }
 
   http.sqlQues({param:params}).then((res:any)=>{
+    loading.value=false
     if(res.code==1){
         message.success('创建成功')
-        loading.value=true
          router.go(-1);
       }
+  }).catch((err:any)=>{
+    loading.value=false
   })
 }
 const cascaData:any=reactive({
@@ -245,6 +247,7 @@ const cascaData:any=reactive({
     knowledge_map_details:''
 })
 function editSqlQues(){
+  loading.value=true
   const params={
     question:formState.name,
     used_by:formState.purpose,
@@ -260,10 +263,13 @@ function editSqlQues(){
     }   
   }
   http.editSql({param:params,urlParams:{ID:editId}}).then((res:any)=>{
+    loading.value=false
     if(res.code==1){
         message.success('编辑成功')
          router.go(-1);
       }
+  }).catch((err:any)=>{
+    loading.value=false
   })
 }
 function onSubmit(){

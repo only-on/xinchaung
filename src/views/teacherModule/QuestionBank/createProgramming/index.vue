@@ -31,11 +31,6 @@
         </a-col>
         <a-col :span="12">
           <a-form-item name="catalogue" label="选择目录">
-            <!-- <a-cascader
-              v-model:value="formState.catalogue"
-              :options="options"
-              placeholder="请选择"
-            /> -->
             <select-directory v-model:catalogue='formState.catalogue' @vertifyAgain='validateCataloge'></select-directory>
           </a-form-item>
         </a-col>
@@ -45,22 +40,7 @@
           </a-form-item>
         </a-col>
          <a-col :span="24">
-          <!-- <a-form-item name="knowledgePoints">
-            <template v-slot:label>
-              <div>
-                知识点<span class="tiptit">最多可选择3个</span>
-              </div>
-            </template>
-            <a-cascader
-              v-model:value="formState.knowledgePoints"
-              :style="['1','2','3','4','7'].includes(type) ? 'width:100%' : 'width:50%'"
-              :multiple="true"
-              max-tag-count="responsive"
-              :options="options1"
-              placeholder="请选择"
-            ></a-cascader>
-          </a-form-item> -->
-          <knowledge v-model:knowledgePoints="formState.knowledgePoints"></knowledge>
+          <knowledge v-model:knowledgePoints="formState.knowledgePoints" :ifEdit='editId?true:false'></knowledge>
         </a-col> 
         <!-- 编程题 模型题 -->
         <a-col :span="12">
@@ -120,7 +100,7 @@
         <a-col  :span="24">
           <a-form-item label="测试用例" name="testCase">
             <div class="spance_bet">
-              <a-radio-group v-model:value="formState.testCase" name="radioGroup">
+              <a-radio-group v-model:value="formState.testCase" name="radioGroup" @change='radioChange'>
                 <a-radio value="text">文本</a-radio>
                 <a-radio value="file">文件</a-radio>
               </a-radio-group>
@@ -498,6 +478,10 @@ function getProgressData(){
         })
       }
     })
+}
+function radioChange(){
+  formState.useCaseFile=''
+  inputAndOut.value=[{inputCon:'',outCon:'',ifShow:true}]
 }
 onMounted(()=>{
   if(editId){

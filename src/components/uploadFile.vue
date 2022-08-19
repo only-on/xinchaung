@@ -4,6 +4,7 @@
       v-model:fileList="fileList"
       name="file"
       :multiple="isMultiple"
+      :remove='removeDoc'
       @change="handleChange1"
       @drop="handleDrop"
       :before-upload="beforeUpload"
@@ -134,6 +135,33 @@ function beforeUpload(file: any) {
   fileList.value[i].upload.request();
   return false;
 }
+function removeDoc(file:any){
+  console.log('11111filefile',file)
+  // fileList.value.indexOf(file)
+  // console.log(fileList.value.indexOf(file),'indecff')
+  fileList.value=[]
+  emit("update:fileInfo",infoList.value);
+}
+ watch(
+      () => {
+        return props.fileInfo;
+      },
+      (val: any) => {
+        // type.value = val;
+        if(props.fileInfo!==''){
+          const list:any=[]
+        props.fileInfo.forEach((item:any)=>{
+        list.push({uid: '-1',
+        name:item.file_name,
+        status: 'done',
+        url:item.file_url})
+        })
+        fileList.value=list;
+        }
+      },{
+        immediate:true
+      }
+    );
 </script>
 <style lang="less" scoped>
 .icon-upload {

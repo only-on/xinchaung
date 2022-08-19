@@ -32,11 +32,6 @@
         </a-col>
         <a-col :span="12">
           <a-form-item name="catalogue" label="选择目录">
-            <!-- <a-cascader
-              v-model:value="formState.catalogue"
-              :options="options"
-              placeholder="请选择"
-            /> -->
             <select-directory v-model:catalogue='formState.catalogue' @vertifyAgain='validateCataloge'></select-directory>
           </a-form-item>
         </a-col>
@@ -46,23 +41,7 @@
           </a-form-item>
         </a-col>
         <a-col :span="12">
-          <!-- <a-form-item name="knowledgePoints">
-            <template v-slot:label>
-              <div>
-                知识点<span class="tiptit">最多可选择3个</span>
-              </div>
-            </template>
-            <a-cascader
-              v-model:value="formState.knowledgePoints"
-              :style="['1','2','3','4','7'].includes(type) ? 'width:100%' : 'width:50%'"
-              :multiple="true"
-              max-tag-count="responsive"
-              :options="options1"
-              placeholder="请选择"
-            ></a-cascader>
-          </a-form-item> -->
           <knowledge v-model:knowledgePoints="formState.knowledgePoints"></knowledge>
-
         </a-col>
         <!-- 题干 公有 -->
         <a-col v-if="type != 7" :span="24">
@@ -102,20 +81,7 @@
         </a-col>
         <a-col v-if="type == 6" :span="12">
           <a-form-item name="trainingSetPath" label="上传训练集">
-            <!-- <a-upload-dragger
-              v-model:fileList="fileList"
-              name="file"
-              :multiple="true"
-              action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-              @change="handleChange1"
-              @drop="handleDrop"
-            >
-              <p class="ant-upload-drag-icon">
-                    <i class="iconfont icon-upload"></i>
-                </p>
-                <p class="ant-upload-text">点击或将文件拖拽到这里上传</p>
-            </a-upload-dragger> -->
-            {{formState.trainingSetPath}}
+            <!-- {{formState.trainingSetPath}} -->
             <upload-file v-model:fileInfo='formState.trainingSetPath'></upload-file>
           </a-form-item>
         </a-col>
@@ -125,20 +91,7 @@
               上传验证集
               <span class="tiptit">此文件不对学生展示</span>
             </template>
-            <!-- <a-upload-dragger
-              v-model:fileList="fileList"
-              name="file"
-              :multiple="true"
-              action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-              @change="handleChange1"
-              @drop="handleDrop"
-            >
-              <p class="ant-upload-drag-icon">
-                    <i class="iconfont icon-upload"></i>
-                </p>
-                <p class="ant-upload-text">点击或将文件拖拽到这里上传</p>
-            </a-upload-dragger> -->
-            {{formState.validationSetPath}}
+            <!-- {{formState.validationSetPath}} -->
             <upload-file v-model:fileInfo='formState.validationSetPath'></upload-file>
           </a-form-item>
         </a-col>
@@ -486,6 +439,21 @@ function getModalQuesData(){
         // formState.knowledgePoints=data.knowledgeMap.knowledge_names
         formState.stem=data.questionDesc
         formState.evaluationData=data.pattern
+        //  file_name:res.data.name,
+        //   file_url:res.data.full_url,
+        //   size:res.data.size,
+        //   suffix:suffix
+        // 上传训练集 验证集文件回显
+        const practice:any=[]
+        const verify:any=[]
+        data.practice.forEach((item:any)=> {
+          practice.push({file_name:item.file_name,file_url:item.file_url,size:item.size,suffix:item.suffix})
+        });
+        data.verify.forEach((item:any)=> {
+          verify.push({file_name:item.file_name,file_url:item.file_url,size:item.size,suffix:item.suffix})
+        });
+        formState.trainingSetPath=practice
+        formState.validationSetPath=verify
         formState.catalogue=cascadeEcho(data.category_chains)
         formState.knowledgePoints=cascadeEcho(data.knowledge_map_details)
         
