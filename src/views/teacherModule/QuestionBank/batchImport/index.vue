@@ -12,7 +12,7 @@
       <a-row :gutter="24">
         <a-col :span="12">
           <a-form-item name="catalogue" label="选择目录">
-            <select-directory v-model:catalogue='formState.catalogue' @vertifyAgain='validateCataloge' ref='selectDire'></select-directory>
+            <select-directory v-model:catalogue='formState.catalogue' @vertifyAgain='validateCataloge'></select-directory>
           </a-form-item>
         </a-col>
          <a-col :span="12">
@@ -89,7 +89,7 @@ updata({
 const preview = false;
 const formRef = ref<any>();
 const formState = reactive({
-  catalogue: [],
+  catalogue:[],
   // 知识点
   knowledgePoints: [],
   // 导入的题目路径
@@ -102,7 +102,7 @@ let validateCataloge = async (_rule?: Rule, value?: any) => {
   }else{
     return Promise.resolve();
   }
-  },1000)
+  },10000)
 };
 const rules = {
   catalogue: [
@@ -198,6 +198,7 @@ const onSubmit = () => {
       http.batchImport({param:fd}).then((res:any)=>{
           if(res?.code==1){
             message.success('导入成功！')
+            router.go(-1);
           }
       }) 
     })

@@ -22,7 +22,8 @@ import {
   withDefaults,
   onMounted,
   ref,
-  nextTick
+  nextTick,
+  computed
 } from "vue";
 interface Props { 
   catalogue:any[];
@@ -37,9 +38,13 @@ const emit = defineEmits<{
 const options:any=ref([])
 function change(value:any, selectedOptions:any){
     console.log(value,selectedOptions,'value,selectedOptions')
-  emit("update:catalogue",props.catalogue);
+  // emit("update:catalogue",props.catalogue);
   emit("vertifyAgain",props.catalogue)
 }
+const catalogue=computed({
+  get:()=>props.catalogue,
+  set:(val:any)=>emit("update:catalogue",props.catalogue)
+})
 function loadData(selectedOptions:any){
       const targetOption = selectedOptions[selectedOptions.length - 1];
         targetOption.loading = true;
