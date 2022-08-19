@@ -15,7 +15,7 @@
               ref="cascaderRef"
               :disabled='(ifEdit?true:false)&&disabled'
               dropdownClassName="knowLedge"
-              v-model:value="knowledgePoints"
+              v-model:value="props.knowledgePoints"
               multiple
               :options="options1"
               :field-names="{ label: 'name', value: 'id' }"

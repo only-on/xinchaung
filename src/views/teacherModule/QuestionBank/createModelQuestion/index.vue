@@ -322,6 +322,7 @@ const selectOptions: any = ref([
   { label: 1, value: "" },
 ]);
 let validateCataloge = async (_rule?: Rule, value?: any) => {
+  // formState.catalogue=value
   setTimeout(()=>{
     if(formState.catalogue?.length==0){
     return Promise.reject('请选择目录！！');

@@ -1,7 +1,7 @@
 <template>
     <div>
         <a-cascader
-            v-model:value="catalogue"
+            v-model:value="props.catalogue"
             :options="options"
             placeholder="请选择"
             :loadData="loadData"
@@ -41,10 +41,10 @@ function change(value:any, selectedOptions:any){
   emit("update:catalogue",props.catalogue);
   emit("vertifyAgain",props.catalogue)
 }
-const catalogue=computed({
-  get:()=>props.catalogue,
-  set:(val:any)=>emit("update:catalogue",props.catalogue)
-})
+// const catalogue=computed({
+//   get:()=>props.catalogue,
+//   set:(val:any)=>emit("update:catalogue",props.catalogue)
+// })
 function loadData(selectedOptions:any){
       const targetOption = selectedOptions[selectedOptions.length - 1];
         targetOption.loading = true;
