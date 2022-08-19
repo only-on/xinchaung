@@ -484,10 +484,11 @@ function getModalQuesData(){
         // formState.catalogue=data.category_id
         // formState.catalogue=selectDire.value.processingEchoData([93,188])
         // formState.knowledgePoints=data.knowledgeMap.knowledge_names
-        formState.catalogue=cascadeEcho(data.category_chains)
-        formState.knowledgePoints=cascadeEcho(data.knowledge_map_details)
         formState.stem=data.questionDesc
         formState.evaluationData=data.pattern
+        formState.catalogue=cascadeEcho(data.category_chains)
+        formState.knowledgePoints=cascadeEcho(data.knowledge_map_details)
+        
       }
     })
 }
