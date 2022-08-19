@@ -38,7 +38,7 @@ const emit = defineEmits<{
 const options:any=ref([])
 function change(value:any, selectedOptions:any){
     console.log(value,selectedOptions,'value,selectedOptions')
-  // emit("update:catalogue",props.catalogue);
+  emit("update:catalogue",props.catalogue);
   emit("vertifyAgain",props.catalogue)
 }
 const catalogue=computed({
