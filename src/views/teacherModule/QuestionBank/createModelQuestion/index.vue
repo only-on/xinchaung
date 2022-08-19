@@ -434,15 +434,8 @@ function getModalQuesData(){
         formState.purpose=data.usedBy
         formState.difficulty=data.difficulty
         formState.evaluationDescription=data.aiTestDesc
-        // formState.catalogue=data.category_id
-        // formState.catalogue=selectDire.value.processingEchoData([93,188])
-        // formState.knowledgePoints=data.knowledgeMap.knowledge_names
         formState.stem=data.questionDesc
         formState.evaluationData=data.pattern
-        //  file_name:res.data.name,
-        //   file_url:res.data.full_url,
-        //   size:res.data.size,
-        //   suffix:suffix
         // 上传训练集 验证集文件回显
         const practice:any=[]
         const verify:any=[]

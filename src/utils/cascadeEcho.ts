@@ -28,17 +28,21 @@ function cascadeEcho(cascaData:any){
  function doSubmitData(subidsArr:any){
     let flagArr:boolean=false
     const ids:any=[]
-    subidsArr.forEach((item:any)=>{
-        if(Array.isArray(item)){
-            flagArr=true
-            ids.push(item[item.length-1])
+    if(subidsArr.length){
+        subidsArr.forEach((item:any)=>{
+            if(Array.isArray(item)){
+                flagArr=true
+                ids.push(item[item.length-1])
+            }
+    
+        })
+        if(flagArr){
+            return ids
+        }else{
+            return subidsArr[subidsArr.length-1]
         }
-
-    })
-    if(flagArr){
-        return ids
     }else{
-        return subidsArr[subidsArr.length-1]
+        return []
     }
  }
 

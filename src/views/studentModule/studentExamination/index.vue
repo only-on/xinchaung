@@ -34,9 +34,11 @@
                     </div>
                     <div class="card_right_btn">
                         <span v-if="item.status==3" class="lookScore" @click="lookScore">查看成绩</span>
-                        <span v-else class="answer_ques" @click="toAnswer">开始考试</span>
+                        <span v-else :class="item.status==2?'notAllow':'answer_ques'" @click="toAnswer">开始考试</span>
                     </div>
                 </div>
+                <a-pagination :hideOnSinglePage='true' v-model:current="params.page" :pageSize='params.limit' :total="total" />
+                <Empty v-if="!cardlist.length && loading===false"/>
             </div>
         </a-spin>
     </div>
@@ -74,73 +76,30 @@ updata({
 const typeList:any=ref([
     {
         title:'作业状态',value:0,keyName:'type',
-        data:[ { "name": "全部", "value": 0 }, { "id": 35, "name": "未开始", "value": "未开始" },{ "id": 35, "name": "进行中", "value": "进行中" },]
+        data:[ { "name": "全部", "value":0}, { "id": 35, "name": "未开始", "value":2},{ "id": 35, "name": "进行中", "value":1},{ "id": 35, "name": "已结束", "value":3}]
     }
 ])
 const ExperimentTypeList:any=[]
 const isShowAdd:any=ref(false)
 const resetKeyword:any=ref(false)
 var loading:any=ref(false)
+const total:any=ref(0)
 const params:any=reactive({
     type:2,
     name:'',
     page:1,
+    status:0,
     limit:12,
 })
-const statusState:any=['未开始','进行中','已结束']
-const cardlist:any=ref([
-    {
-    status:'进行中',
-    img:'',
-    course:'课程名称写在这里课程名称写在这里…',
-    title:'端SaaS的核心是放弃一部分个性化需求',
-    time:'2022/08/10 15:20 - 2022/08/14 15:20',
-    teacher:'空雅轩',
-    num:'0/10',
-    },
-    {
-    status:'进行中',
-    img:'',
-    course:'课程名称写在这里课程名称写在这',
-    title:'端SaaS的核心是放弃一部分个性化需求',
-    time:'2022/08/10 15:20 - 2022/08/14 15:20',
-    teacher:'空雅轩',
-    num:'0/10',
-    },
-    {
-    status:'进行中',
-    img:'',
-    course:'课程名称写在这里课程名称写在这',
-    title:'端SaaS的核心是放弃一部分个性化需求',
-    time:'2022/08/10 15:20 - 2022/08/14 15:20',
-    teacher:'空雅轩',
-    num:'0/10',
-    },
-    {
-    status:'已结束',
-    img:'',
-    course:'课程名称写在这里课程名称写在这',
-    title:'端SaaS的核心是放弃一部分个性化需求',
-    time:'2022/08/10 15:20 - 2022/08/14 15:20',
-    teacher:'空雅轩',
-    num:'0/10',
-    },
-    {
-    status:'进行中',
-    img:'',
-    course:'课程名称写在这里课程名称写在这里哈啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊',
-    title:'端SaaS的核心是放弃一部分个性化需求',
-    time:'2022/08/10 15:20 - 2022/08/14 15:20',
-    teacher:'空雅轩',
-    num:'0/10',
-    }
-])
+const statusState:any=['进行中','未开始','已结束']
+const cardlist:any=ref([])
 function classifyChange(obj: any){
-    console.log(obj,'objobj')
-    typeList.value.value=obj.type
+    params.status=obj.type
+    getExamList()
 }
-function searchFn(){
-    
+function searchFn(key:any){
+    params.name=key
+    getExamList()
 }
 function handleMenuClick(){
 
@@ -153,12 +112,14 @@ function lookScore(){
       router.push({path:'./studentAssignment/answerQues',query:{name:'考试',type:'lookScore'}})
 }
 function getExamList(){
+    loading.value=true
     http.studentExamList({param:params}).then((res:any)=>{
+        loading.value=false
         console.log(res,'哈哈哈哈哈哈嘻嘻嘻嘻休息洗洗休息休息')
         cardlist.value=res.data.list
+        total.value=res.data.page.totalCount
     })
 }
-// studentExamList
 onMounted(()=>{
     getExamList()
 })
@@ -249,6 +210,19 @@ onMounted(()=>{
             justify-content: center;
             align-items: center;
             border-radius: 12px;
+        }
+        .notAllow{
+            display: inline-block;
+            width: 73px;
+            height: 24px;
+            background:#f0f3f6;
+            color:#b4b6b8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 12px;
+            border: 1px solid #b4b6b8;
+            pointer-events:none;
         }
         .answer_ques:hover,.lookScore:hover{
             cursor: pointer;
