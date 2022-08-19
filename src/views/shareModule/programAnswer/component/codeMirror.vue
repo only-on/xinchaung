@@ -1,6 +1,5 @@
 <template>
   <div>
-    {{options.mode}}
     <codemirror
       v-model="codeVal"
       placeholder=""

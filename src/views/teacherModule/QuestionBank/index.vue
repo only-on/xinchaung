@@ -561,7 +561,7 @@ watch(()=>props.inDrawer, newVal => {
 },{deep:true,immediate:true})
 // 选择题目的抽屉
 watch(()=>props.activeTab, newVal => {
-  // 1 公开题库 2 我的题库
+  // newVal 1 公开题库 2 我的题库
   currentTab.value = newVal - 1
   initData()
 })

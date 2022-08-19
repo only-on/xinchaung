@@ -3,7 +3,7 @@
     <ul>
       <li>
         <h3>题目描述</h3>
-        <antdv-markdown v-model="data.title"  :preview-only="true" />
+        <antdv-markdown v-model="data.question_desc"  :preview-only="true" />
       </li>
       <li>
         <h3>输入</h3>
@@ -55,7 +55,7 @@ interface Props {
 }
 const props = withDefaults(defineProps<Props>(), {
   data: {
-    title: '',
+    question_desc: '',
     input: '',
     output: '',
     sample_input: '',

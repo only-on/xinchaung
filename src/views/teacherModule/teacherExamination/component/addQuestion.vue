@@ -11,8 +11,8 @@
     >
     <div class="select flexCenter">
       <div class="flexCenter type">
-        <span @click="selectType(0)" :class="{active: selectNum === 0}"> 公开题库 </span>
-        <span @click="selectType(1)" :class="{active: selectNum === 1}"> 我的题库 </span>
+        <span @click="selectType(1)" :class="{active: selectNum === 1}"> 公开题库 </span>
+        <span @click="selectType(2)" :class="{active: selectNum === 2}"> 我的题库 </span>
       </div>
       <span class="iconfont icon-guanbi" @click="closeDrawer"></span>
     </div>
@@ -34,7 +34,7 @@ const emit = defineEmits<{
   (e: "update:visible", val: any): void;
   (e: "select", val: any): void;
 }>();
-const selectNum = ref<number>(0)
+const selectNum = ref<number>(1)
 const selectType=(v:number)=>{
   selectNum.value=v
 }
@@ -45,12 +45,12 @@ const handleAddData = (data:any) => {
   emit('select',data)
   emit('update:visible', false)
 }
-console.log(props.allQuestionIds);
-watch(()=>{return props.allQuestionIds},(val:any)=>{
-  console.log(val);
-  // provide('selectIds', val)
-},{immediate:true,deep:true})
 provide('selectIds', props.allQuestionIds)
+watch(()=>props.visible, newVal => {
+  if (newVal) {
+    selectNum.value = 1
+  }
+})
 </script>
 <style lang="less" scoped>
 .addQuestion{

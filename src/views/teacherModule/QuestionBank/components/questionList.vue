@@ -190,12 +190,14 @@ function handleClick(operateType:string, val: any) {
 function trialHandle(val:any) {
   let path = {
     'program': '/programAnswer',
-    'ai': './QuestionBank/trialModel'
+    'ai': '/teacher/QuestionBank/trialModel',
+    'sql': '/programAnswer'
   }
   const {href} = router.resolve({
     path: path[val.kind],
     query: {
-      questionId: val.id
+      questionId: val.id,
+      type: val.kind
     }
   })
   window.open(href,'_blank')

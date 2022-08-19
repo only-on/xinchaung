@@ -292,6 +292,11 @@ const recheckSearch = reactive({
 const recheckResult = reactive<any>([])
 const handleRecheck = () => {
   drawerVisible.value = true
+  // 重置数据
+  recheckResult.length = 0
+  recheckSearch.name = ''
+  recheckSearch.language = ''
+  recheckSearch.sim = ''
 }
 const closeDrawer = () => {
   drawerVisible.value = false

@@ -4,7 +4,7 @@
       <template #content>
         <div class="top">
           <div class="left">
-            提交情况： <span class="submitNum">10</span> /100
+            提交情况： <span class="submitNum">{{listData.submmit_num}}</span> /{{listData.all_num}}
             <a-input-search 
               v-model:value="searchInfo.name" 
               placeholder="请输入搜索关键词"
@@ -31,7 +31,7 @@
                 </template>
                 <template v-if="column.dataIndex === 'total_score'">
                   {{record.total_score ? record.total_score : '--'}}
-                  <a-tooltip placement="right">
+                  <a-tooltip placement="right" v-if="record.is_viewed">
                     <template #title>
                       <span>教师已查阅</span>
                     </template>
@@ -184,8 +184,8 @@ const columns = [
   },
   {
     title: "班级",
-    dataIndex: "classes",
-    key: "classes",
+    dataIndex: ['classes_info', 'classname'],
+    key: "classname",
   },
   {
     title: "提交状态",
@@ -243,11 +243,16 @@ const recheckInnerColumns = [
   }
 ]
 interface IlistData {
+  all_num: number,
+  submmit_num: number,
   loading: Boolean;
   total: number,
-  data: any[]
+  data: any[],
+
 }
 const listData = reactive<IlistData>({
+  all_num: 0,
+  submmit_num: 0,
   loading: false,
   total: 0,
   data: []
@@ -278,7 +283,9 @@ const checkDetail = (id: number | string) => {
 } 
 // 导出成绩
 const handleExport = () => {
+  http.studentScoreExport({param: {exam_id: examId.value}}).then((res:IBusinessResp) => {
 
+  })
 }
 // 代码查重
 const drawerVisible = ref<boolean>(false)
@@ -292,6 +299,11 @@ const recheckSearch = reactive({
 const recheckResult = reactive<any>([])
 const handleRecheck = () => {
   drawerVisible.value = true
+  // 重置数据
+  recheckResult.length = 0
+  recheckSearch.name = ''
+  recheckSearch.language = ''
+  recheckSearch.sim = ''
 }
 const closeDrawer = () => {
   drawerVisible.value = false
@@ -319,6 +331,8 @@ const changeLanuage = (val:any) => {
 const getScoreList = () => {
   listData.loading = true
   http.studentsScores({urlParams: {exam: examId.value},param:searchInfo}).then((res:IBusinessResp) => {
+    listData.all_num = res.data.all_num
+    listData.submmit_num = res.data.submmit_num
     listData.data = res.data.list
     listData.total = res.data.page.totalCount
     listData.loading = false

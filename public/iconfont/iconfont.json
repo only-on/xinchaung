@@ -6,6 +6,20 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "2076367",
+      "name": "关闭小",
+      "font_class": "guanbixiao",
+      "unicode": "e8bb",
+      "unicode_decimal": 59579
+    },
+    {
+      "icon_id": "2076374",
+      "name": "对勾小",
+      "font_class": "duigouxiao",
+      "unicode": "e8bd",
+      "unicode_decimal": 59581
+    },
+    {
       "icon_id": "31326330",
       "name": "已评阅",
       "font_class": "yipingyue",

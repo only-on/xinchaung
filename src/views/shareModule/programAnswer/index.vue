@@ -3,7 +3,7 @@
   <div class="programAnswer">
     <div class="top">
       <div class="left">
-        {{problemData.title}}
+        {{problemData.question}}
       </div>
       <div class="right">
          内存限制: <span>{{problemData.memory_limit}}kb</span>
@@ -50,6 +50,7 @@
           <div class="resultInfo">
             <span>消耗内存：{{testData.memory}}kb</span>
             <span>代码执⾏时⻓：{{testData.time}}ms</span>
+            <i v-show="testData.result" :class="['iconfont',[4,13].includes(testData.result) ? 'icon-duigouxiao success' : 'icon-guanbixiao fail']"></i>
           </div>
         </div>
         <div class="operateBtn">
@@ -74,7 +75,8 @@ import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { lStorage } from "src/utils/extStorage";
 interface IproblemData {
-  title: string,
+  question: string,
+  question_desc: string,
   input: string,
   output: string,
   sample_input: string,
@@ -86,9 +88,11 @@ const route = useRoute()
 const http = (request as any).QuestionBank;
 const questionId = ref<any>(route.query.questionId) // 题目id
 const examId = ref<any>(route.query?.examId) // 学生考试id
+const questionType = ref<any>(route.query?.type) // 题目类型
 const userId= lStorage.get('uid')
 const problemData = reactive<IproblemData>({
-  title: '',
+  question: '',
+  question_desc: '',
   input: '',
   output: '',
   sample_input: '',
@@ -106,23 +110,14 @@ const solutionId = ref('')
 const activeKey = ref('sample')
 const timerNum = ref<number>(0) // 轮询次数
 const testData = reactive<any>({
-  sample: '测试样例内容',
+  sample: '',
   resultText: '',
+  result: '',
   time: 0,
   memory: 0,
   timer: null,
   loading: false
 })
-const lanuageList = [
-  {
-    value: 'javascript',
-    label: 'javascript'
-  },
-  {
-    value: 'html',
-    label: 'html'
-  }
-]
 // 拖动
   const dragEagle = (ev:any) => {
     var targetDiv:any = document.getElementById('customCode')
@@ -160,9 +155,14 @@ const lanuageList = [
   }
 // 题目详情
 const getQuestionDetail = () => {
-  http.programDetail({urlParams: {ID: questionId.value}}).then((res:IBusinessResp) => {
+  let request:any = {
+    'program': http.programDetail,
+    'sql': http.sqlDetail
+  }
+  request[questionType.value]({urlParams: {ID: questionId.value}}).then((res:IBusinessResp) => {
     Object.assign(problemData, res.data.problem)
-    problemData.title = res.data.question
+    problemData.question = res.data.question
+    problemData.question_desc = res.data.question_desc
     testData.sample = problemData.sample_input
   })
 }
@@ -181,6 +181,8 @@ const getResult = () => {
   }
   http.solutionSatus({urlParams:{ID: questionId.value, solution_id:solutionId.value}}).then((res:IBusinessResp) => {
     let result = res.data
+    testData.result = result.result
+    // 测试、提交运行是否成功
     if (result.result === 4 || result.result === 13) {
       testData.memory = result.memory
       testData.time = result.time
@@ -336,6 +338,15 @@ onMounted(()=>{
           >span{
             margin-left: 20px;
             color: var(--black-65);
+          }
+          .iconfont{
+            margin-left: 20px;
+            &.success{
+              color: #5AB400;
+            }
+            &.fail{
+              color: #FF0505;
+            }
           }
         }
         :deep(.ant-tabs){
