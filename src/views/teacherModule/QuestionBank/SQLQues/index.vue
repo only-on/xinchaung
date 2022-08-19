@@ -236,6 +236,7 @@ function createSqlQues(){
     if(res.code==1){
         message.success('创建成功')
         loading.value=true
+         router.go(-1);
       }
   })
 }
@@ -261,6 +262,7 @@ function editSqlQues(){
   http.editSql({param:params,urlParams:{ID:editId}}).then((res:any)=>{
     if(res.code==1){
         message.success('编辑成功')
+         router.go(-1);
       }
   })
 }

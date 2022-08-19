@@ -320,6 +320,7 @@ function createChoiceQues(){
       if(res.code==1){
         message.success('创建成功')
         loading.value=false
+        router.go(-1);
       }
     }).catch((err:any)=>{
       loading.value=false
@@ -341,6 +342,7 @@ function createJudgeQues(){
       if(res.code==1){
         message.success('创建成功')
         loading.value=false
+         router.go(-1);
       }
     }).catch((err:any)=>{
       loading.value=false
@@ -365,6 +367,7 @@ function createCompleQues(){
   http.complateQues({param:params}).then((res:any)=>{
      if(res.code==1){
         message.success('创建成功')
+         router.go(-1);
         loading.value=false
       }
   }).catch((err:any)=>{
@@ -387,6 +390,7 @@ function createSolutionQues(){
     http.solutionQues({param:params}).then((res:any)=>{
        if(res.code==1){
         message.success('创建成功')
+         router.go(-1);
         loading.value=false
       }
     })
@@ -548,6 +552,7 @@ function editJudge(){
       if(res.code==1){
         message.success('编辑成功！')
          loading.value=false
+          router.go(-1);
       }
     }).catch((err:any)=>{
        loading.value=false
@@ -574,6 +579,7 @@ function editComple(){
   http.editComplate({param:params,urlParams:{questionId:editId}}).then((res:any)=>{
      if(res.code==1){
         message.success('编辑成功！')
+         router.go(-1);
         loading.value=false
       }
   }).catch((err:any)=>{
@@ -595,6 +601,7 @@ function editSolution(){
     http.editSolution({param:params,urlParams:{questionId:editId}}).then((res:any)=>{
        if(res.code==1){
         message.success('编辑成功！')
+         router.go(-1);
          loading.value=false
       }
     }).catch((err:any)=>{

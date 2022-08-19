@@ -36,7 +36,6 @@
               :options="options"
               placeholder="请选择"
             /> -->
-             {{formState.catalogue}}
             <select-directory v-model:catalogue='formState.catalogue' @vertifyAgain='validateCataloge'></select-directory>
           </a-form-item>
         </a-col>
@@ -61,7 +60,6 @@
               placeholder="请选择"
             ></a-cascader>
           </a-form-item> -->
-          {{formState.knowledgePoints}}
           <knowledge v-model:knowledgePoints="formState.knowledgePoints"></knowledge>
         </a-col> 
         <!-- 编程题 模型题 -->
@@ -179,6 +177,7 @@ import testCase from '../components/testCase/index.vue'
 import uploadFile from 'src/components/uploadFile.vue'
 import selectDirectory from 'src/components/selectDirectory/index.vue'
 import knowledge from 'src/components/knowLedge/index.vue'
+import { cascadeEcho,doSubmitData,doEditSubmit } from 'src/utils/cascadeEcho'
 
 
 import { Modal, message } from "ant-design-vue";
@@ -392,10 +391,12 @@ function createProgramQues(){
   const params={
     question:formState.name,
     used_by:formState.purpose,
-    category_id:formState.catalogue[formState.catalogue.length-1],
+    // category_id:formState.catalogue[formState.catalogue.length-1],
+    category_id:doSubmitData(formState.catalogue),
+    knowledge_ids:doSubmitData(formState.knowledgePoints),
     difficulty:formState.difficulty,
     // knowledge_ids:formState.knowledgePoints,
-    knowledge_ids:[],
+    // knowledge_ids:[],
     memory_limit:Number(formState.memoryLimit),
     time_limit:Number(formState.timeLimit),
     question_desc:formState.stem,
@@ -412,9 +413,14 @@ function createProgramQues(){
   http.programQues({param:params}).then((res:any)=>{
     if(res.code==1){
         message.success('创建成功')
+        router.go(-1);
       }
   })
 }
+const cascaData:any=reactive({
+    category_chains:'',
+    knowledge_map_details:''
+})
 function editProgressQues(){
   const testCaseData:any=[]
   inputAndOut.value.forEach((item:any,index:any)=>{
@@ -423,10 +429,12 @@ function editProgressQues(){
   const params={
     question:formState.name,
     used_by:formState.purpose,
-    category_id:formState.catalogue[formState.catalogue.length-1],
+    // category_id:formState.catalogue[formState.catalogue.length-1],
     difficulty:formState.difficulty,
     // knowledge_ids:formState.knowledgePoints,
-    knowledge_ids:[],
+    // knowledge_ids:[],
+    category_id:doEditSubmit(formState.catalogue,cascaData.category_chains),
+    knowledge_ids:doEditSubmit(formState.knowledgePoints,cascaData.knowledge_map_details),
     memory_limit:Number(formState.memoryLimit),
     time_limit:Number(formState.timeLimit),
     question_desc:formState.stem,
@@ -443,6 +451,7 @@ function editProgressQues(){
   http.editProgram({param:params,urlParams:{ID:editId}}).then((res:any)=>{
     if(res.code==1){
         message.success('编辑成功')
+        router.go(-1);
       }
   })
 }
@@ -465,13 +474,17 @@ function getProgressData(){
    http.programDetail({urlParams:{ID:editId}}).then((res:any)=>{
       if(res.code==1){
         const data=res.data
+        cascaData.category_chains=data.category_chains
+        cascaData.knowledge_map_details=data.knowledge_map_details
         formState.name=data.question
         formState.purpose=data.used_by
         formState.difficulty=data.difficulty
 
         // formState.catalogue=data.category_id
         // formState.catalogue=selectDire.value.processingEchoData([93,188])
-        formState.knowledgePoints=data.knowledge_map_ids
+        // formState.knowledgePoints=data.knowledge_map_ids
+        formState.catalogue=cascadeEcho(data.category_chains)
+        formState.knowledgePoints=cascadeEcho(data.knowledge_map_details)
         formState.stem=data.question_desc
         formState.memoryLimit=data.problem.memory_limit
         formState.timeLimit=data.problem.time_limit

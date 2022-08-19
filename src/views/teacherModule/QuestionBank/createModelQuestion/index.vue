@@ -25,8 +25,8 @@
               v-model:value="formState.purpose"
               @focus="focus"
             >
-              <a-select-option value="jack">考试题</a-select-option>
-              <a-select-option value="lucy">作业题</a-select-option>
+              <a-select-option value="exam">考试题</a-select-option>
+              <a-select-option value="homework">作业题</a-select-option>
             </a-select>
           </a-form-item>
         </a-col>
@@ -37,7 +37,6 @@
               :options="options"
               placeholder="请选择"
             /> -->
-             {{formState.catalogue}}
             <select-directory v-model:catalogue='formState.catalogue' @vertifyAgain='validateCataloge'></select-directory>
           </a-form-item>
         </a-col>
@@ -62,7 +61,6 @@
               placeholder="请选择"
             ></a-cascader>
           </a-form-item> -->
-           {{formState.knowledgePoints}}
           <knowledge v-model:knowledgePoints="formState.knowledgePoints"></knowledge>
 
         </a-col>
@@ -182,6 +180,8 @@ const editId:any=route.query?.questionId;
 const http = (request as any).QuestionBank;
 const caseFile=http.caseFile
 import knowledge from 'src/components/knowLedge/index.vue'
+import { cascadeEcho,doSubmitData,doEditSubmit } from 'src/utils/cascadeEcho'
+
 
 var updata = inject("updataNav") as Function;
 const fileList: any = [];
@@ -408,16 +408,14 @@ const rules = {
   ]
 };
 function createModelQues(){
-  const ids:any=[]
-  formState.knowledgePoints.forEach((item:any)=>{
-    ids.push(item[item.length-1])
-  })
   const params={
     question:formState.name,
     usedBy:formState.purpose,
-    categoryId:1,
+    // categoryId:1,
     difficulty:formState.difficulty,
-    knowledgeMapIds:ids,
+    // knowledgeMapIds:ids,
+    categoryId:doSubmitData(formState.catalogue),
+    knowledgeMapIds:doSubmitData(formState.knowledgePoints),
     questionDesc:formState.stem,
     aiTestDesc:formState.evaluationDescription,
     pattern:formState.evaluationData,
@@ -427,20 +425,23 @@ function createModelQues(){
   http.modelQues({param:params}).then((res:any)=>{
     if(res.code==1){
       message.success('创建成功')
+      router.go(-1);
     }
   })
 }
+const cascaData:any=reactive({
+    category_chains:'',
+    knowledge_map_details:''
+})
 function editModalQues(){
-   const ids:any=[]
-  formState.knowledgePoints.forEach((item:any)=>{
-    ids.push(item[item.length-1])
-  })
   const params={
     question:formState.name,
     usedBy:formState.purpose,
-    categoryId:188,
+    // categoryId:188,
     difficulty:formState.difficulty,
-    knowledgeMapIds:ids,
+    // knowledgeMapIds:ids,
+    categoryId:doEditSubmit(formState.catalogue,cascaData.category_chains),
+    knowledgeMapIds:doEditSubmit(formState.knowledgePoints,cascaData.knowledge_map_details),
     questionDesc:formState.stem,
     aiTestDesc:formState.evaluationDescription,
     pattern:formState.evaluationData,
@@ -450,6 +451,7 @@ function editModalQues(){
   http.editModel({param:params,urlParams:{questionId:editId}}).then((res:any)=>{
     if(res.code==1){
       message.success('编辑成功')
+      router.go(-1);
     }
   })
 }
@@ -472,13 +474,17 @@ function getModalQuesData(){
    http.modelDeatil({urlParams:{questionId:editId}}).then((res:any)=>{
       if(res.code==1){
         const data=res.data
+        cascaData.category_chains=data.category_chains
+        cascaData.knowledge_map_details=data.knowledge_map_details
         formState.name=data.question
         formState.purpose=data.usedBy
         formState.difficulty=data.difficulty
         formState.evaluationDescription=data.aiTestDesc
         // formState.catalogue=data.category_id
         // formState.catalogue=selectDire.value.processingEchoData([93,188])
-        formState.knowledgePoints=data.knowledgeMap.knowledge_names
+        // formState.knowledgePoints=data.knowledgeMap.knowledge_names
+        formState.catalogue=cascadeEcho(data.category_chains)
+        formState.knowledgePoints=cascadeEcho(data.knowledge_map_details)
         formState.stem=data.questionDesc
         formState.evaluationData=data.pattern
       }

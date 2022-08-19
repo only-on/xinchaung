@@ -22,7 +22,7 @@
           <div>
             <span style="color:red">*</span>
                 下载导入
-                <span class='download'>题目模板</span>
+                <span class='download' @click="DownloadTemplate">题目模板</span>
                 每次最多导入100条。
               </div>
           <a-form-item >
