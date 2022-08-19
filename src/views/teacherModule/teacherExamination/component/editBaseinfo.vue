@@ -1,6 +1,7 @@
 <template>
-  <a-modal :visible="visible" :title="'编辑'+type+'基本信息'" :width="900" @cancel="handleCancel">
-    <baseInfo ref="baseInfoRef" v-model:formState="editInfo" :type="type"/>
+  <a-modal class="editModal" :visible="visible" :title="'编辑'+type+'基本信息'" :width="900" @cancel="handleCancel">
+   showCascader {{showCascader}}
+    <baseInfo ref="baseInfoRef" v-model:formState="editInfo" :type="type" :isEdit="true" :showCascader="showCascader"/>
     <template #footer>
       <Submit @submit="handleEdit" @cancel="handleCancel" :loading="loading"></Submit>
     </template>
@@ -32,6 +33,7 @@ const emit = defineEmits<{
 }>();
 const editInfo = reactive<any>({})
 const baseInfoRef = ref()
+const showCascader = ref<boolean>(true) // 是否显示关联课程组件。编辑基本信息，详情返回课程id为0则不显示
 const getDetail = (id:any) => {
   console.log(props.type)
   let request = {
@@ -41,12 +43,16 @@ const getDetail = (id:any) => {
   request[props.type]({urlParams:{ID: id}}).then((res:IBusinessResp) => {
     let result = res?.data
     if (!result) return
+    if (!result.course_id) {
+      showCascader.value = false
+    }
     Object.assign(editInfo,{
       name: result.name,
       date: [result.started_at, result.closed_at],
       note: result.note,
       course_id: result.course_id,
-      relation: result.course_id ? [1, result.course_direction.name, result.course_info.name] : [0]
+      relation: result.course_id ? [1, result.course_direction.name, result.course_info.name] : [0],
+      students_info: result.students_info,
     })
   })
 }
@@ -58,12 +64,14 @@ watch(()=>props.visible, newVal => {
 var loading:Ref<boolean> = ref(false);
 const handleEdit = async() => {
   await baseInfoRef.value.fromValidate()
+  console.log(baseInfoRef.value.studentIds)
   let params = {
     name: editInfo.name,
     course_id: editInfo.course_id,
     started_at: formatTime(editInfo.date[0]),
     closed_at: formatTime(editInfo.date[1]),
-    note: editInfo.note
+    note: editInfo.note,
+    student_ids: baseInfoRef.value.studentIds,
   }
   console.log(params)
   loading.value=true
@@ -84,3 +92,11 @@ const handleCancel = () => {
   emit('update:visible', false)
 }
 </script>
+<style lang="less" scoped>
+:deep(.editModal){
+  .ant-modal-body{
+    height:750px;
+    overflow: auto;
+  }
+}
+</style>

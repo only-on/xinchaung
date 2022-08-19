@@ -15,7 +15,7 @@
       <template #content>
         <a-row>
           <a-col :span="10">
-           knowledgesArr----- {{knowledgesArr.data}}
+           <!-- knowledgesArr----- {{knowledgesArr.data}} -->
             <div style="width:400px">
               <knowLedge v-model:knowledgePoints="knowledgesArr.data" :maxNum="6" @close="closeKnowledge"/>
             </div>

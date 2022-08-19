@@ -1,8 +1,8 @@
 <template>
   <div>
-    <common-card title="学生">
+    <common-card title="学生" :border="!isEdit" :showSymbol="true">
       <template #tip>
-        (共{{pageInfo.total}}人)
+        <span class="totalInfo">(已选{{pageInfo.total}}人)</span>
       </template>
       <template #right>
         <a-button type="primary" v-if="showBtn" @click="batchDel">移除</a-button>
@@ -49,11 +49,13 @@ import request from 'src/api/index'
 const httpExam = (request as any).teacherExamination;
 interface Props {
   courseId:any;
-  data?:any
+  data?:any,
+  isEdit?:boolean, // 编辑基本信息里面的
 }
 const props = withDefaults(defineProps<Props>(), {
   courseId: '',
-  data: []
+  data: [],
+  isEdit: false
 })
 const emit = defineEmits<{
   (e: "delete", val: any): void;
@@ -62,6 +64,7 @@ const emit = defineEmits<{
 const visable = ref<boolean>(false)
 var listData = reactive<any>([]); // 表格当前页展示的数据
 var allData = reactive<any>([]); // 所有数据
+const createChooseData = reactive<any>([]); // 创建的也就是详情返回的学生数据
 const showBtn = ref<boolean>(false); // 关联课程则不显示操作按钮，没有关联则显示
 const studentIds = reactive<any>([])
 const pageInfo = reactive<any>({
@@ -74,16 +77,19 @@ const initialColumns = [
     title: "账号",
     dataIndex: "username",
     key: "username",
+    ellipsis: true
   },
   {
     title: "姓名",
     dataIndex: "name",
     key: "name",
+    ellipsis: true
   },
   {
     title: "班级",
     dataIndex: "classname",
     key: "classname",
+    ellipsis: true
   },
   {
     title: "年级",
@@ -94,11 +100,13 @@ const initialColumns = [
     title: "专业",
     dataIndex: "major",
     key: "major",
+    ellipsis: true
   },
   {
     title: "学院",
     dataIndex: "department",
     key: "department",
+    ellipsis: true
   },
   {
     title: "操作",
@@ -178,34 +186,53 @@ const batchDel = () => {
   })
 }
 // 获取id
-const getIds = (arr:[]) => {
+const getIds = (arr:any[]) => {
   if (!arr.length) return []
   return arr.map((item:any) => item.id)
+}
+const handleData = (sourceData:any[]) => {
+  allData.length = 0
+  allData.push(...sourceData)
+  let allIds = getIds(sourceData)
+  studentIds.push(...allIds)
 }
 // 关联课程,根据课程id查出课程下的学生
 watch(()=>props.courseId, (newVal:any) => {
   columns.value = JSON.parse(JSON.stringify(initialColumns))
-  allData.length = 0
-  studentIds.length = 0
   if (newVal) {
+    if (!props.isEdit) {
+      columns.value.pop()
+    }
+    allData.length = 0
+    studentIds.length = 0
     showBtn.value = false
-    columns.value.pop()
     httpExam.examsUserList({param:{course_id:newVal}}).then((res:any) => {
-      allData.push(...res.data.list)
-      let allIds = getIds(res.data.list)
-      studentIds.push(...allIds)
+      handleData(res.data.list)
     })
   } else {
     showBtn.value = true
+    if (createChooseData.length) {
+      handleData(createChooseData)
+    }
+  }
+  // 如果是 编辑考试/作业基本信息
+  if (props.isEdit) {
+    // 课程id为0无关联课程时，显示操作按钮和表格操作列
+    if (!newVal) {
+      showBtn.value = true
+    } else {
+      columns.value.pop()
+    }
   }
 },{immediate:true})
-// 编辑传入的数据
+// 无关联课程时编辑传入的数据
 watch(()=>props.data, newVal => {
-  if (newVal) {
-    allData.length = 0
+  if (newVal && !props.courseId) {
+    createChooseData.length = 0
     studentIds.length = 0
-    Object.assign(allData,newVal)
-    studentIds.push(...getIds(allData))
+    let data = JSON.parse(JSON.stringify(newVal))
+    Object.assign(createChooseData,data)
+    handleData(data)
   }
 },{deep:true,immediate:true})
 // 监测数据处理分页
@@ -226,5 +253,13 @@ defineExpose({
 }
 .ant-pagination{
   margin-top: 20px;
+}
+.totalInfo{
+  color: var(--black-85);
+  margin-left: -10px;
+  font-size: 14px;
+  ~span{
+    font-size: 14px;
+  }
 }
 </style>
