@@ -168,7 +168,7 @@ console.log(props.type == 1)
 updata({
   tabs: [
     {
-      name: `${props.type == 1 ? '作业' : '考试'}评阅 - ${examName.value}`,
+      name: `${modelType.value == 1 ? '作业' : '考试'}评阅 - ${examName.value}`,
       componenttype: 0,
     },
   ],
@@ -282,8 +282,12 @@ const EmptyType:any=computed(()=>{
 })
 // 查看成绩详情
 const checkDetail = (id: number | string) => {
+  let pathObj = {
+    1: '/teacher/teacherAssignment/teacherAssignmentAchievement',
+    2: '/teacher/teacherExamination/teacherExaminationAchievement'
+  }
   router.push({
-    path: '/teacher/teacherExamination/teacherExaminationAchievement',
+    path: pathObj[modelType.value],
     query: {
       id: id
     }
@@ -291,9 +295,12 @@ const checkDetail = (id: number | string) => {
 } 
 // 导出成绩
 const handleExport = () => {
-  http.studentScoreExport({param: {exam_id: examId.value}}).then((res:IBusinessResp) => {
-
-  })
+  let url:string = `/api/v1/xinchuang/question/export/students/scores?exam_id=${examId.value}`
+  const a:any = document.createElement('a')
+  a.href = url
+  document.body.append(a)
+  a.click()
+  document.body.removeChild(a)
 }
 // 代码查重
 const drawerVisible = ref<boolean>(false)

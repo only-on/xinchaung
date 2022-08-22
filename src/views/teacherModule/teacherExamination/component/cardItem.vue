@@ -85,7 +85,7 @@ const handleEvent = (operateType:string, item:any) => {
   emit('operate', operateType, item)
 }
 const goPreview=()=>{
-  let path=props.type==='考试'?'/teacher/teacherExamination/teacherExaminationPreview':'/teacher/teacherAssignment/teacherAssignmentPreview'
+  let path=props.type=='2'?'/teacher/teacherExamination/teacherExaminationPreview':'/teacher/teacherAssignment/teacherAssignmentPreview'
   router.push({
     path:path,
     query:{id:item.id}
@@ -95,9 +95,8 @@ watch(()=>props.data, newVal => {
   Object.assign(item,newVal)
 },{deep:true,immediate:true})
 const leftStyle = {
-  bg: props.type == 1?'background: linear-gradient(270deg,#ffffff, #ddefff);' :'linear-gradient(270deg,#fff, #deebff)',
-  textBg: props.type == 1 ? '#3094EF' : '#5E7BE2',
-  fileName: props.type == 1 ? 'teacherAssignment' : 'teacherExamination'
+  bg: props.type == 1?'linear-gradient(270deg,#ffffff, #ddefff)' :'linear-gradient(270deg,#fff, #deebff)',
+  textBg: props.type == 1 ? '#3094EF' : '#5E7BE2'
 }
 </script>
 <style lang="less" scoped>

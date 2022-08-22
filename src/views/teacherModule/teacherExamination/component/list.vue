@@ -19,7 +19,7 @@
   <!-- 防作弊设置 -->
   <antiCheatingSetting v-model:visible="settingModal" :data="antiCheat" @save="saveSetting"/>
   <!-- 编辑基本信息 -->
-  <editBaseInfo v-model:visible="editModal" :id="currentOperateId" :type="modelType" @updateInfo="getList"/>
+  <editBaseInfo v-model:visible="editModal" :id="currentOperateId" :type="modelType == 1 ? '作业' : '考试'" @updateInfo="getList"/>
   <!-- 导出试卷 -->
   <a-modal :visible="exportVisible" title="导出试卷" :width="400" @cancel="cancelExport">
     <div>
@@ -84,12 +84,12 @@ const httpObj = {
 }
 const pathObj = {
   1: {
-    create: '/teacher/teacherExamination/createExamination',
-    review: '/teacher/teacherExamination/reviewExamination'
-  },
-  2: {
     create: '/teacher/teacherAssignment/createAssignment',
     review: '/teacher/teacherAssignment/reviewAssignment'
+  },
+  2: {
+    create: '/teacher/teacherExamination/createExamination',
+    review: '/teacher/teacherExamination/reviewExamination'
   }
 }
 const router = useRouter()

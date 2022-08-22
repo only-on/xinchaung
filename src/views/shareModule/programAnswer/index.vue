@@ -223,6 +223,10 @@ const handleSubmit =(test_run:boolean) => {
   }
   http.runQuestions({urlParams:{user:userId},param: params}).then((res:IBusinessResp) => {
     if (test_run) {
+     if (!res.data || !res.data.solution_id) {
+        message.warning('接口未返回solution_id')
+        return
+     }
      solutionId.value = res.data.solution_id
      testData.loading = true
      getResult()

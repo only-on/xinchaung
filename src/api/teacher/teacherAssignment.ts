@@ -12,7 +12,6 @@ export default {
   exportPaper: {url: `/api/v1/question/exams/{ID}/export-paper?type=${type}`, method: "GET"}, // 导出
   studentsScores: {url: `/api/v1/question/exams/{exam}/students/scores`, method: "GET"}, // 成绩列表
   simSearch: {url: ` /api/v1/question/exams/{ID}/sim`, method: "GET"}, // 代码查重
-  studentScoreExport: {url: `/api/v1/xinchuang/question/exams/student-exam-score/export`, method: "GET"}, // 成绩导出
 }
 
 export interface ITeacherAssignment {
@@ -27,5 +26,4 @@ export interface ITeacherAssignment {
   exportPaper: TFHttpSend;
   studentsScores: TFHttpSend;
   simSearch: TFHttpSend;
-  studentScoreExport: TFHttpSend;
 }
