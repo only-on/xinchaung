@@ -86,7 +86,7 @@ const save=()=>{
     return
   }
   loading.value=true
-  http.editExam({param:{question_ids:updataQuestionData} ,urlParams: { ID:id}}).then((res: any) => {
+  http.editAssignment({param:{question_ids:updataQuestionData} ,urlParams: { ID:id}}).then((res: any) => {
     loading.value=false
     message.success("保存成功");
     cancel()

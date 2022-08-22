@@ -32,7 +32,7 @@
                             </div>
                             <div class="info-right">
                                 <span v-if="item.status==3" class="lookScore pointer" @click="lookScore">查看成绩</span>
-                                <a-button v-else type="primary" size="small" @click="toAnswer" :disabled="item.status==1">开始考试</a-button>
+                                <a-button v-else type="primary" size="small" @click.stop="toAnswer(item)" :disabled="item.status==1">开始考试</a-button>
                                 <!-- <span v-else class="answer_ques" @click="toAnswer">开始考试</span> -->
                             </div>
                         </div>
@@ -99,7 +99,7 @@ const params:any=reactive({
     name:'',
     page:1,
     limit:12,
-    state: 0,
+    status: 0,
 })
 const total = ref(0)
 const statusState:any=['进行中','未开始','已结束']
@@ -115,8 +115,13 @@ function searchFn(key: string){
     params.page = 1
     getExamList()
 }
-function toAnswer(){
-    router.push({path:'./studentAssignment/answerQues',query:{name:'考试',type:'answer'}})
+function toAnswer(item:any){
+    let path='/student/studentExamination/Examinationanswerques'
+    router.push(
+        {path:path,
+        query:{name:'考试',purpose:'IsStuAnswer',id:item.id,uesr:item.user_profile.user_id}}
+        )
+    // router.push({path:'./studentAssignment/answerQues',query:{name:'考试',type:'IsStuAnswer'}})
     sessionStorage.removeItem('examRelastTime')
 }
 function lookScore(){

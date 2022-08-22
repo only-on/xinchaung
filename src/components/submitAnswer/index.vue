@@ -12,13 +12,13 @@
                         :value-style="{color:'#EF9544'}"
                     />
                 </div>
-                 <div class="ifAnswered_div" v-for="(item,index) in dataList.list" :key="index">
+                 <div class="ifAnswered_div" v-for="(item,index) in dataList" :key="index">
                      <div>
                          <div class="name">
-                         {{typeNames[item.type-1]}}
+                         {{getTopicType[item.type]['name']}}
                         </div>
                         <div class="answerDiv">
-                            <div v-for="(it,j) in item.quesList" :key="j" :class="['ifanswer',it.selectedAnswer?'answerd':'unanswer']">
+                            <div v-for="(it,j) in item.question" :key="j" :class="['ifanswer',it.answer.length?'answerd':'unanswer']">
                             {{j+1}}
                             </div>
                         </div>
@@ -32,9 +32,9 @@
                  </div>
             </div>
              <div class="submit_test">
-            <a-button type='primary' class="submit_btn">提交试卷</a-button>
-            <div class="tip_info">得分在统一提交后，在成绩详情可以查看</div>
-        </div>
+                <a-button type='primary' class="submit_btn">提交试卷</a-button>
+                <div class="tip_info">得分在统一提交后，在成绩详情可以查看</div>
+            </div>
         </div>
     </div>
 </template>
@@ -53,15 +53,16 @@ import {
   toRaw,
 } from "vue";
 import { Modal, message } from "ant-design-vue";
+import getTopicType from 'src/components/TopicDisplay/topictype'
 interface Props { 
   dataList:any;
   showCountDown:boolean;
 }
 const props = withDefaults(defineProps<Props>(),{
-  dataList: () =>{},
+  dataList: () =>[],
   showCountDown:()=>false
 });
-const typeNames=['单选题','判断题','填空题','解答题','编程题','模型题']
+// const typeNames=['单选题','判断题','填空题','解答题','编程题','模型题']
 var deadline:any=ref(Number(sessionStorage.getItem("examRelastTime"))?Number(sessionStorage.getItem("examRelastTime")):(Date.now() + 1000 * 60 * 60 * 2 + 1000 * 30))
 function onFinish(){
       console.log('finished!');
@@ -72,9 +73,9 @@ sessionStorage.setItem("examRelastTime",deadline.value.toString());
 </script>
 <style lang="less" scoped>
 .answer_list{
-        width:300px;
-        height: 300px;
-        background: white;
+        width:240px;
+        // height: 300px;
+        // background: white;
         .answer_list_top{
            background-color: white; 
            .countdown_div{
@@ -119,7 +120,7 @@ sessionStorage.setItem("examRelastTime",deadline.value.toString());
         border-radius: 4px;
     }
     .answerd{
-        background-color: var(--primary-color);
+        background-color: var(--brightBtn);
         color: white;
     }
     .identify{

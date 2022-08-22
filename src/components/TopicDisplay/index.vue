@@ -74,7 +74,7 @@
                   </div>
                   <!-- 填空题答案选项 -->
                   <div class="option option3" v-if="v.type==='blank'">
-                    <div class="tiankong flexCenter" v-for="(j,b) in element.option" :key="element">
+                    <div class="tiankong flexCenter" v-for="(j,b) in element.blank_correct" :key="element">
                       <span>{{`填空${b+1}`}}</span>
                       <a-input v-model:value="element.answer[b]" @blur="changebox(v,element)" :disabled="CanDisabled()" />
                     </div>
@@ -83,7 +83,7 @@
                   <div class="option option4" v-if="v.type==='short-answer'">
                       <div class="jianda">
                         <div class="daan">答案</div>
-                        <a-textarea v-model:value="element.answer[0]" :disabled="CanDisabled()" placeholder="" :autoSize="{ minRows: 4, maxRows: 6 }" />
+                        <a-textarea v-model:value="element.answer[0]" @blur="changebox(v,element)" :disabled="CanDisabled()" placeholder="" :autoSize="{ minRows: 4, maxRows: 6 }" />
                       </div>
                   </div>
                   <!-- 编程题 -->
@@ -223,7 +223,7 @@ const role = Number(storage.lStorage.get("role"));
 const router = useRouter();
 const route = useRoute();
 const { id } = route.query;
-const httpStu = (request as any).studentAssignment;
+const httpStu = (request as any).studentExamination;
 const httpExam= (request as any).teacherExamination
 
 type Tpurpose= 'IsPreview' | 'IsEdit' | 'IsStuAnswer' | 'achievement'  //预览// 编辑// 学生作答 //成绩查看
@@ -246,7 +246,7 @@ const emit = defineEmits<{
   // (e: "setScore", val: number[]): void;
   // (e: "setBatchScore", val: number[]): void;
   (e: "updataQuestion", val: any): void;   // 设置分数/删除后处理的数据格式    遵循后端更新接口
-  (e: "updateList"): void;            // 通知父组件更新数据
+  (e: "updateList"): void;            // 
 }>();
 const onStart=()=>{
   return true
@@ -440,7 +440,7 @@ watch(()=>{return props.list},(val:any)=>{
   
 },{immediate:true,deep:true})
 
-const DebounceUse:Function= new Debounce().use(submitAnswers,1.5) //延时
+const DebounceUse:Function= new Debounce().use(submitAnswers,0.5) //延时
 // 答题
 var curQuestionId:Ref<number> = ref(0)
 const changebox=(v:any,element:any)=>{
@@ -453,9 +453,9 @@ const changebox=(v:any,element:any)=>{
   curQuestionId.value=element.id
 }
 function submitAnswers(params:any) {
-  // console.log(params.id); 
-  
-  // httpStu.submitAnswers().then((res:any)=>{
+  console.log(params.id); 
+  console.log(params.answer);
+  // httpStu.submitAnswers({param:{exam_id:id,question_id:curQuestionId.value,answer:[]}}).then((res:any)=>{
 
   // })
 }
@@ -545,7 +545,6 @@ const Save=()=>{
     // loading.value=true
     // pro.then((res: any)=>{
     //   message.success('操作成功')
-    //   emit('updateList')
     //   formRef.value.resetFields()
     //   Visible.value=false
     //   loading.value=false
