@@ -41,8 +41,8 @@ import BasicInfo from 'src/components/TopicDisplay/BasicInfo.vue'
 const router = useRouter();
 const route = useRoute();
 const { id } = route.query;
-// const http = (request as any).teacherAssignment;
-const http = (request as any).teacherExamination;
+const http = (request as any).teacherAssignment;
+// const http = (request as any).teacherExamination;
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 updata({
@@ -104,7 +104,7 @@ const questionsList:any=reactive([])
 var listLoading:Ref<boolean> = ref(false);
 const getExamDetail = () => {
   listLoading.value=true
-  http.examDetail({urlParams:{ID: id,type:1}}).then((res:IBusinessResp) => {
+  http.assignmentDetail({urlParams:{ID: id}}).then((res:IBusinessResp) => {
     questionsList.length=0
     const {data}=res
     headerObj.name=data.name

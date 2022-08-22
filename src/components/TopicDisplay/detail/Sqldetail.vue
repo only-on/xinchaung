@@ -29,7 +29,7 @@ interface Iinfo{
   desc: string;
 }
 interface Props {
-  info:Iinfo
+  info?:Iinfo
 }
 const props = withDefaults(defineProps<Props>(), {
   info:()=>{

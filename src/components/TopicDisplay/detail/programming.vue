@@ -56,9 +56,9 @@ interface Iinfo{
   example:any;
 }
 interface Props {
-  desc:string
-  info:any
-  index:number
+  desc?:string
+  info?:any
+  index?:number
 }
 const props = withDefaults(defineProps<Props>(), {
   info:()=>{

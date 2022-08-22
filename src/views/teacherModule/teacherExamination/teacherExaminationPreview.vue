@@ -75,7 +75,7 @@ const questionsList:any=reactive([])
 var listLoading:Ref<boolean> = ref(false);
 const getExamDetail = () => {
   listLoading.value=true
-  http.examDetail({urlParams:{ID: id,type:2}}).then((res:IBusinessResp) => {
+  http.examDetail({urlParams:{ID: id}}).then((res:IBusinessResp) => {
     questionsList.length=0
     const {data}=res
     headerObj.title=data.name

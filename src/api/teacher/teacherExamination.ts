@@ -11,7 +11,7 @@ export default {
   examsUserList: {url: `/api/v1/question/exams/users`, method: "GET"}, // 选择学生列表弹框
   questionsMaxLimit: {url: ` /api/v1/question/exams/questions/max-limit`, method: "GET"}, // 随机创建-各类型题可选题目数
   addExam: {url: `/api/v1/question/exams?type=${type}`, method: "POST",dataType: 'json'}, // 添加考试
-  examDetail: {url: `/api/v1/question/exams/{ID}?type={type}`, method: "GET"}, // 详情
+  examDetail: {url: `/api/v1/question/exams/{ID}?type=${type}`, method: "GET"}, // 详情
   editExam: {url: `/api/v1/question/exams/{ID}?type=${type}`, method: "PUT",dataType: 'json'}, // 编辑
   exportPaper: {url: `/api/v1/question/exams/{ID}/export-paper?type=${type}`, method: "GET"}, // 导出
   studentsScores: {url: `/api/v1/question/exams/{exam}/students/scores`, method: "GET"}, // 成绩列表

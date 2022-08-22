@@ -31,8 +31,8 @@ interface Iinfo{
   evaluating:string;
 }
 interface Props {
-  desc: string;
-  evaluating:string;
+  desc?: string;
+  evaluating?:string;
 }
 const props = withDefaults(defineProps<Props>(), {
   desc: '',
