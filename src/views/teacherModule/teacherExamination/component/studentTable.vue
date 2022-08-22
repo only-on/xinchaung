@@ -115,6 +115,7 @@ const initialColumns = [
   }
 ];
 const columns = ref(initialColumns)
+const watchNum = ref<number>(0) // 课程id监测的次数
 var selectIds = ref<any>([]); // 批量选中的id
 // 处理分页数据
 const getListData = () => {
@@ -193,6 +194,7 @@ const getIds = (arr:any[]) => {
 const handleData = (sourceData:any[]) => {
   allData.length = 0
   allData.push(...sourceData)
+  studentIds.length = 0
   let allIds = getIds(sourceData)
   studentIds.push(...allIds)
 }
@@ -203,11 +205,15 @@ watch(()=>props.courseId, (newVal:any) => {
     if (!props.isEdit) {
       columns.value.pop()
     }
-    allData.length = 0
-    studentIds.length = 0
     showBtn.value = false
+    watchNum.value += 1
     httpExam.examsUserList({param:{course_id:newVal}}).then((res:any) => {
-      handleData(res.data.list)
+      handleData(res?.data.list)
+      if (watchNum.value === 1) {
+        createChooseData.length = 0
+        let data = JSON.parse(JSON.stringify(res.data.list))
+        Object.assign(createChooseData,data)
+      }
     })
   } else {
     showBtn.value = true
@@ -225,14 +231,10 @@ watch(()=>props.courseId, (newVal:any) => {
     }
   }
 },{immediate:true})
-// 无关联课程时编辑传入的数据
+// 打开弹框无关联课程时，编辑传入的数据
 watch(()=>props.data, newVal => {
   if (newVal && !props.courseId) {
-    createChooseData.length = 0
-    studentIds.length = 0
-    let data = JSON.parse(JSON.stringify(newVal))
-    Object.assign(createChooseData,data)
-    handleData(data)
+    handleData(newVal)
   }
 },{deep:true,immediate:true})
 // 监测数据处理分页
@@ -240,7 +242,6 @@ watch(()=>allData,newVal => {
   pageInfo.total = newVal.length
   getListData()
 },{deep:true,immediate:true})
-
 defineExpose({
   studentIds
 })

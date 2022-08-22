@@ -1,11 +1,12 @@
 <template>
-  <a-modal class="editModal" :visible="visible" :title="'编辑'+type+'基本信息'" :width="900" @cancel="handleCancel">
-   showCascader {{showCascader}}
-    <baseInfo ref="baseInfoRef" v-model:formState="editInfo" :type="type" :isEdit="true" :showCascader="showCascader"/>
-    <template #footer>
-      <Submit @submit="handleEdit" @cancel="handleCancel" :loading="loading"></Submit>
-    </template>
-  </a-modal>
+  <div ref="editModal">
+    <a-modal :visible="visible" :title="'编辑'+type+'基本信息'" :width="900" :getContainer="()=>$refs.editModal" :destroyOnClose="true" @cancel="handleCancel">
+      <baseInfo ref="baseInfoRef" v-model:formState="editInfo" :type="type" :isEdit="true" :showCascader="showCascader"/>
+      <template #footer>
+        <Submit @submit="handleEdit" @cancel="handleCancel" :loading="loading"></Submit>
+      </template>
+    </a-modal>
+  </div>
 </template>
 <script lang="ts" setup>
 import {ref,reactive, watch,Ref} from 'vue'
@@ -35,7 +36,6 @@ const editInfo = reactive<any>({})
 const baseInfoRef = ref()
 const showCascader = ref<boolean>(true) // 是否显示关联课程组件。编辑基本信息，详情返回课程id为0则不显示
 const getDetail = (id:any) => {
-  console.log(props.type)
   let request = {
     '作业': httpAssignment.assignmentDetail, // 作业
     '考试': httpExam.examDetail // 考试
@@ -45,6 +45,8 @@ const getDetail = (id:any) => {
     if (!result) return
     if (!result.course_id) {
       showCascader.value = false
+    } else {
+      showCascader.value = true
     }
     Object.assign(editInfo,{
       name: result.name,
@@ -93,10 +95,8 @@ const handleCancel = () => {
 }
 </script>
 <style lang="less" scoped>
-:deep(.editModal){
-  .ant-modal-body{
-    height:750px;
-    overflow: auto;
-  }
+:deep(.ant-modal-body){
+  height:700px;
+  overflow: auto;
 }
 </style>

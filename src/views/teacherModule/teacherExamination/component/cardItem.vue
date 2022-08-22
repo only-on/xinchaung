@@ -1,8 +1,8 @@
 <template>
   <div class="cradItem" @click.stop.stop="goPreview">
     <div class="left">
-      <span class="type">{{type}}</span>
-      <div :class="['img',item.is_publish == 0 ? 'unpublish' : item.status == 1 ? 'ongoing' :  item.status == 2 ? 'unstart' :  'end'] ">
+      <span class="type">{{type == 1 ? '作业' : '考试'}}</span>
+      <div :class="['img',{'isExam': type == 2},item.is_publish == 0 ? 'unpublish' : item.status == 1 ? 'ongoing' :  item.status == 2 ? 'unstart' :  'end'] ">
         <span>{{item.is_publish == 0 ? '未发布' :item.status == 1 ? '进行中' :   item.status == 2 ? '未开始' : '已结束'}}</span>
       </div>
     </div>
@@ -12,7 +12,7 @@
         {{item.name}}
       </div>
       <div>
-        <template v-if="type === '考试'">
+        <template v-if="type == 2">
           <span>创建时间：{{item.created_at}}</span>
           <span>开始时间：{{item.started_at}}</span>
           <span>考试时长：{{item.times}}</span>
@@ -28,7 +28,7 @@
     </div>
     <div class="right">
       <div>
-        <a-button type="link" v-if="type === '考试'" @click.stop="handleClick('setting', item)">防作弊设置</a-button>
+        <a-button type="link" v-if="type == 2" @click.stop="handleClick('setting', item)">防作弊设置</a-button>
         <a-dropdown>
           <a class="ant-dropdown-link" @click.stop.prevent>
             <i class="iconfont icon-gengduotianchong"></i>
@@ -70,7 +70,7 @@ const props =withDefaults(defineProps<{
   type: any
 }>(), {
   data: ()=>({}),
-  type: '考试',
+  type: '1',
 })
 const item = reactive<any>(props.data)
 const emit = defineEmits<{
@@ -94,6 +94,11 @@ const goPreview=()=>{
 watch(()=>props.data, newVal => {
   Object.assign(item,newVal)
 },{deep:true,immediate:true})
+const leftStyle = {
+  bg: props.type == 1?'background: linear-gradient(270deg,#ffffff, #ddefff);' :'linear-gradient(270deg,#fff, #deebff)',
+  textBg: props.type == 1 ? '#3094EF' : '#5E7BE2',
+  fileName: props.type == 1 ? 'teacherAssignment' : 'teacherExamination'
+}
 </script>
 <style lang="less" scoped>
 .cradItem {
@@ -107,7 +112,7 @@ watch(()=>props.data, newVal => {
   .left {
     width: 150px;
     height: 100%;
-    background: linear-gradient(270deg,#fff, #deebff);
+    background: v-bind('leftStyle.bg');
     border-radius: 10px 0px 0px 10px;
     position: relative;
     .type{
@@ -117,7 +122,7 @@ watch(()=>props.data, newVal => {
       border-radius: 0px 6px 6px 0px;
       writing-mode: vertical-lr;
       font-size: 12px;
-      background: #5E7BE2;
+      background: v-bind('leftStyle.textBg');
       color: var(--white-100);
       text-align: center;
       letter-spacing: 3px;
@@ -134,15 +139,27 @@ watch(()=>props.data, newVal => {
       margin-left: 30px;
       position: relative;
       &.unpublish{
-        background: url(src/assets/images/teacherExamination/unpublish.png) no-repeat center 20%;
+        background: url(src/assets/images/teacherAssignment/unpublish.png) no-repeat center 20%;
       }
       &.unstart{
-        background: url(src/assets/images/teacherExamination/unstart.png) no-repeat center 20%;
+        background: url(src/assets/images/teacherAssignment/unstart.png) no-repeat center 20%;
       }
       &.ongoing{
-        background: url(src/assets/images/teacherExamination/ongoing.png) no-repeat center 20%;
+        background: url(src/assets/images/teacherAssignment/ongoing.png) no-repeat center 20%;
       }
       &.end{
+        background: url(src/assets/images/teacherAssignment/end.png) no-repeat center 20%;
+      }
+      &.isExam.unpublish{
+        background: url(src/assets/images/teacherExamination/unpublish.png) no-repeat center 20%;
+      }
+      &.isExam.unstart{
+        background: url(src/assets/images/teacherExamination/unstart.png) no-repeat center 20%;
+      }
+      &.isExam.ongoing{
+        background: url(src/assets/images/teacherExamination/ongoing.png) no-repeat center 20%;
+      }
+      &.isExam.end{
         background: url(src/assets/images/teacherExamination/end.png) no-repeat center 20%;
       }
       span{
