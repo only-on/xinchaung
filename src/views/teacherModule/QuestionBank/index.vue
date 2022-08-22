@@ -23,12 +23,14 @@
           ></question-list>
           <Empty v-if="!questionListData.length && !loading" :type="EmptyType" />
           <a-pagination
-            v-if="pageTotal > pageInfo.pageLimit&&!loading"
             v-model:current="pageInfo.page"
             :pageSize="pageInfo.pageLimit"
             :total="pageTotal"
             @change="pageChange"
             @showSizeChange="handleSizeChange"
+            show-size-changer
+            :hideOnSinglePage="true"
+            :page-size-options="['10', '20', '30', '40', '50']"
           />
         </div>
       </a-spin>
@@ -144,7 +146,7 @@ const bottomVisible = ref(false)
 const isMyQuestion = computed(() => currentTab.value==1)
 const EmptyType: any = computed(() => {
   let str = ''
-  if(searchInfo.keyWord === ''){
+  if(searchInfo.keyWord === ''&&searchInfo.kind === ''&&searchInfo.difficulty === ''&&searchInfo.usedBy === ''&&searchInfo.categoryId === 0&&!searchInfo.knowledgeIds.length){
     str = 'empty'
   }else{
     str = 'searchEmpty'
@@ -339,7 +341,7 @@ function publicQuestion() {
   })
 }
 function exportQuestion() {
-  if (!checkedBaseQuestionId.length) {
+  if (!checkedBaseQuestionId.length&&isBatchOperate.value) {
     message.warn('请选择基本题型导出')
     return
   }
