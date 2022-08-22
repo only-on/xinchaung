@@ -54,6 +54,10 @@ import {
 } from "vue";
 import { Modal, message } from "ant-design-vue";
 import getTopicType from 'src/components/TopicDisplay/topictype'
+import { useRouter, useRoute } from "vue-router";
+const route = useRoute();
+const router = useRouter();
+const {closedAt } = route.query;
 interface Props { 
   dataList:any;
   showCountDown:boolean;
@@ -63,12 +67,21 @@ const props = withDefaults(defineProps<Props>(),{
   showCountDown:()=>false
 });
 // const typeNames=['单选题','判断题','填空题','解答题','编程题','模型题']
-var deadline:any=ref(Number(sessionStorage.getItem("examRelastTime"))?Number(sessionStorage.getItem("examRelastTime")):(Date.now() + 1000 * 60 * 60 * 2 + 1000 * 30))
+var deadline:any=ref()
+// var deadline:any=ref(Number(sessionStorage.getItem("examRelastTime"))?Number(sessionStorage.getItem("examRelastTime")):(Date.now() + 1000 * 60 * 60 * 2 + 1000 * 30))
 function onFinish(){
-      console.log('finished!');
+    console.log('finished!');
 }
+onMounted(()=>{
+    // console.log(closedAt)
+    let closed_at2=new Date((closedAt as string).replace(/-/g,'/')).getTime()
+    let curDate=Date.now()  // 
+    // let Curminute=Math.floor(dateDiff/(3600*1000))
+    deadline.value=Date.now() +(closed_at2-curDate)
+    console.log(deadline.value);
+})
 onUnmounted(()=>{
-sessionStorage.setItem("examRelastTime",deadline.value.toString());
+// sessionStorage.setItem("examRelastTime",deadline.value.toString());
 })
 </script>
 <style lang="less" scoped>

@@ -27,7 +27,7 @@
                                 <img :src="defaultAvatar">
                                 <span class="tea_name">{{item.author_name}}</span>
                                 <span>
-                                    <span>提交量：</span>{{item.is_publish}}
+                                    <span>提交数量：</span>{{item.submit_count/item.questions_count}}
                                 </span>
                             </div>
                             <div class="info-right">
@@ -119,10 +119,15 @@ function toAnswer(item:any){
     let path='/student/studentExamination/Examinationanswerques'
     router.push(
         {path:path,
-        query:{name:'考试',purpose:'IsStuAnswer',id:item.id,uesr:item.user_profile.user_id}}
+        query:{
+            name:'考试',
+            purpose:'IsStuAnswer',
+            id:item.id,
+            uesr:item.user_profile.user_id,
+            closedAt:item.closed_at   //2022-08-18 22:00:00   item.closed_at
+            }}
         )
     // router.push({path:'./studentAssignment/answerQues',query:{name:'考试',type:'IsStuAnswer'}})
-    sessionStorage.removeItem('examRelastTime')
 }
 function lookScore(){
       router.push({path:'./studentAssignment/answerQues',query:{name:'考试',type:'lookScore'}})

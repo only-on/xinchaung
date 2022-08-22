@@ -9,12 +9,12 @@
         />
         <TopicDisplay 
         :list="questionsList" 
-        :purpose="route.query.purpose == 'IsStuAnswer' ? 'IsStuAnswer' : 'achievement'" 
+        :purpose="purpose === 'IsStuAnswer' ? 'IsStuAnswer' : 'achievement'" 
         :loading="listLoading" />
       </div>
-      <div v-if="route.query.purpose == 'IsStuAnswer'" class="answer_list">
+      <div v-if="purpose === 'IsStuAnswer'" class="answer_list">
         <submit-answer
-          :showCountDown="route.query.name == '考试' ? true : false"
+          :showCountDown="name === '考试' ? true : false"
           :dataList="questionsList"
         ></submit-answer>
       </div>
@@ -48,7 +48,7 @@ import { IBusinessResp } from "src/typings/fetch.d";
 const http = (request as any).teacherExamination;
 const route = useRoute();
 const router = useRouter();
-const { id,purpose } = route.query;
+const { id,purpose,name } = route.query;
 var updata = inject("updataNav") as Function;
 updata({
   tabs: [
