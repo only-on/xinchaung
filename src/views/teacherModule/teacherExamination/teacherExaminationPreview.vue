@@ -67,7 +67,7 @@ const cancel=()=>{
 const edit=()=>{
   //     <!-- achievement IsEdit teacherExaminationAchievement     teacherExaminationEdit-->
   router.push({
-    path:'/teacher/teacherExamination/teacherExaminationAchievement',
+    path:'/teacher/teacherExamination/teacherExaminationEdit',
     query:{id:id}
   })
 }
