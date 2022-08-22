@@ -1,11 +1,9 @@
 <template>
     <div>
         <search-add
-        @searchFn="searchFn"
-        @handleMenuClick="handleMenuClick"
-        :TypeList="ExperimentTypeList"
-        :isShowAdd="isShowAdd"
-        :isReset="resetKeyword"
+            @searchFn="searchFn"
+            :isShowAdd="false"
+            :isReset="resetKeyword"
         ></search-add>
         <classify :list="typeList" @change="classifyChange"></classify>
         <a-spin :spinning="loading" size="large" tip="Loading...">
@@ -16,28 +14,30 @@
                           作业
                         </div>
                         <div class="status">
-                            <img :src="unStart">
-                            <div class="status_word">{{item.status}}</div>
+                            <img :src="statusImg[item.status - 1]">
+                            <div class="status_word">{{statusState[item.status - 1]}}</div>
                         </div>
                     </div>
                     <div class="card_right_content">
-                        <div class="course">{{item.course}}</div>
-                        <div class="title">{{item.title}}</div>
-                        <div class="time">起止时间:{{item.time}}</div>
+                        <div class="course">关联课程：{{item.course_id ? item.course_info.name : '无'}}</div>
+                        <div class="title">{{item.name}}</div>
+                        <div class="time">起止时间：{{item.started_at.replace(/-/g, '/').slice(0, 16)}} - {{item.closed_at.replace(/-/g, '/').slice(0, 16)}}</div>
                         <div class="teacher_info">
-                            <img src="">
-                            <span class="tea_name">{{item.teacher}}</span>
+                            <img :src="defaultAvatar">
+                            <span class="tea_name">{{item.author_name}}</span>
                             <span>
-                                <span>提交量:</span>{{item.num}}
+                                <span>提交量：</span>{{item.num}}
                             </span>
                         </div>
                     </div>
                     <div class="card_right_btn">
-                        <span v-if="item.status=='进行中'" class="answer_ques" @click="toAnswer">答题</span>
-                        <span v-if="item.status=='已结束'" class="lookScore" @click="lookScore">查看成绩</span>
+                        <span v-if="item.status==3" class="lookScore pointer" @click="lookScore">查看成绩</span>
+                        <a-button v-else type="primary" size="small" @click="toAnswer" :disabled="item.status==1">答题</a-button>
                     </div>
                 </div>
             </div>
+            <Pagination v-model:page="params.page" v-model:size="params.limit" :total="total" @page-change="getAssignList"/>
+            <Empty v-if="!cardlist.length && !loading" :type="EmptyType"/>
         </a-spin>
     </div>
 </template>
@@ -61,8 +61,11 @@ import searchAdd from "src/components/searchAdd/searchAdd.vue";
 import unStart from 'src/assets/images/task/unstart.png'
 import going from 'src/assets/images/task/going.png'
 import over from 'src/assets/images/task/over.png'
+import defaultAvatar from 'src/assets/images/user/admin_p.png'
+import Pagination from 'src/components/Pagination.vue'
 const route = useRoute();
 const router = useRouter();
+const http = (request as any).studentExamination;
 var updata = inject("updataNav") as Function;
 updata({
   tabs: [{ name: "作业", componenttype: 0 }],
@@ -72,71 +75,44 @@ updata({
 });
 const typeList:any=ref([
     {
-        title:'作业状态',value:0,keyName:'type',
-        data:[ { "name": "全部", "value": 0 }, { "id": 35, "name": "未开始", "value": "未开始" },{ "id": 35, "name": "进行中", "value": "进行中" },]
+        title:'作业状态',value:0,keyName:'status',
+        data:[ { "name": "全部", "value": 0 }, { "name": "未开始", "value": 2 }, {  "name": "进行中", "value": 1 }, { "name": "已结束", "value": 3 }]
     }
 ])
-const ExperimentTypeList:any=[]
-const isShowAdd:any=ref(false)
+const statusState:any=['进行中','未开始','已结束']
+const statusImg:any=[going, unStart, over]
 const resetKeyword:any=ref(false)
-var loading:any=ref(false)
-const cardlist:any=reactive([
-    {
-    status:'进行中',
-    img:'',
-    course:'课程名称写在这里课程名称写在这里…',
-    title:'端SaaS的核心是放弃一部分个性化需求',
-    time:'2022/08/10 15:20 - 2022/08/14 15:20',
-    teacher:'空雅轩',
-    num:'0/10',
-    },
-    {
-    status:'进行中',
-    img:'',
-    course:'课程名称写在这里课程名称写在这',
-    title:'端SaaS的核心是放弃一部分个性化需求',
-    time:'2022/08/10 15:20 - 2022/08/14 15:20',
-    teacher:'空雅轩',
-    num:'0/10',
-    },
-    {
-    status:'进行中',
-    img:'',
-    course:'课程名称写在这里课程名称写在这',
-    title:'端SaaS的核心是放弃一部分个性化需求',
-    time:'2022/08/10 15:20 - 2022/08/14 15:20',
-    teacher:'空雅轩',
-    num:'0/10',
-    },
-    {
-    status:'已结束',
-    img:'',
-    course:'课程名称写在这里课程名称写在这',
-    title:'端SaaS的核心是放弃一部分个性化需求',
-    time:'2022/08/10 15:20 - 2022/08/14 15:20',
-    teacher:'空雅轩',
-    num:'0/10',
-    },
-    {
-    status:'进行中',
-    img:'',
-    course:'课程名称写在这里课程名称写在这里哈啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊',
-    title:'端SaaS的核心是放弃一部分个性化需求',
-    time:'2022/08/10 15:20 - 2022/08/14 15:20',
-    teacher:'空雅轩',
-    num:'0/10',
-    }
-])
+const loading:any=ref(false)
+const EmptyType:any=computed(()=>{
+  let str=''
+  if(params.name === '' && params.status === ''){
+    str= 'empty'
+  }else{
+    str= 'searchEmpty'
+  }
+  return str
+})
+
+const params:any=reactive({
+    type:2,
+    name:'',
+    page:1,
+    limit:12,
+    state: 0,
+})
+const total = ref(0)
+const cardlist:any=ref([])
 function classifyChange(obj: any){
-    console.log(obj,'objobj')
-    typeList.value.value=obj.type
+    Object.assign(params, obj)
+    params.page = 1
+    getAssignList()
 }
-function searchFn(){
+function searchFn(key: string){
+    params.name = key
+    params.page = 1
+    getAssignList()
+}
 
-}
-function handleMenuClick(){
-
-}
 function toAnswer(){
     router.push({path:'./studentAssignment/answerQues',query:{name:'作业',type:'answer'}})
     sessionStorage.removeItem('examRelastTime')
@@ -144,6 +120,20 @@ function toAnswer(){
 function lookScore(){
       router.push({path:'./studentAssignment/answerQues',query:{name:'考试',type:'lookScore'}})
 }
+function getAssignList(){
+    loading.value = true
+    http.studentExamList({param:params}).then((res:any)=>{
+        loading.value = false
+        if (!res) return
+        const {list, page} = res.data
+        cardlist.value = list
+        total.value = page.totalCount
+    })
+}
+// studentExamList
+onMounted(()=>{
+    getAssignList()
+}) 
 </script>
 <style lang="less" scoped>
 .main_content{
@@ -213,28 +203,19 @@ function lookScore(){
             .tea_name{
                 margin-right: 20px;
             }
+            img {
+                width: 20px;
+                height: 20px;
+                margin-right: 4px;
+            }
         }
     }
     .card_right_btn{
-        width:77px;
+        // width:77px;
         padding: 10px;
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
-        .answer_ques{
-            display: inline-block;
-            width: 73px;
-            height: 24px;
-            background:var(--brightBtn);
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 12px;
-        }
-        .answer_ques:hover,.lookScore:hover{
-            cursor: pointer;
-        }
         .lookScore{
             color:var(--brightBtn);   
         }

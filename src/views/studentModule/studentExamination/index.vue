@@ -1,11 +1,9 @@
 <template>
     <div>
         <search-add
-        @searchFn="searchFn"
-        @handleMenuClick="handleMenuClick"
-        :TypeList="ExperimentTypeList"
-        :isShowAdd="isShowAdd"
-        :isReset="resetKeyword"
+            @searchFn="searchFn"
+            :isShowAdd="false"
+            :isReset="resetKeyword"
         ></search-add>
         <classify :list="typeList" @change="classifyChange"></classify>
         <a-spin :spinning="loading" size="large" tip="Loading...">
@@ -16,30 +14,33 @@
                           考试
                         </div>
                         <div class="status">
-                            <img :src="unexam">
+                            <img :src="statusImg[item.status-1]">
                             <div class="status_word">{{statusState[item.status-1]}}</div>
                         </div>
                     </div>
                     <div class="card_right_content">
-                        <div class="course">{{item.name}}</div>
-                        <div class="title">{{item.title}}</div>
-                        <div class="time">起止时间:{{item.started_at}}-{{item.closed_at}}</div>
+                        <div class="course">关联课程：{{item.course_id ? item.course_info?.name : '无'}}</div>
+                        <div class="title">{{item.name}}</div>
+                        <div class="time">起止时间：{{item.started_at.replace(/-/g, '/').slice(0, 16)}} - {{item.closed_at.replace(/-/g, '/').slice(0, 16)}}</div>
                         <div class="teacher_info">
-                            <img src="">
-                            <span class="tea_name">{{item.author_name}}</span>
-                            <span>
-                                <span>提交量:</span>{{item.is_publish}}
-                            </span>
+                            <div  class="info-left">
+                                <img :src="defaultAvatar">
+                                <span class="tea_name">{{item.author_name}}</span>
+                                <span>
+                                    <span>提交量：</span>{{item.is_publish}}
+                                </span>
+                            </div>
+                            <div class="info-right">
+                                <span v-if="item.status==3" class="lookScore pointer" @click="lookScore">查看成绩</span>
+                                <a-button v-else type="primary" size="small" @click="toAnswer" :disabled="item.status==1">开始考试</a-button>
+                                <!-- <span v-else class="answer_ques" @click="toAnswer">开始考试</span> -->
+                            </div>
                         </div>
                     </div>
-                    <div class="card_right_btn">
-                        <span v-if="item.status==3" class="lookScore" @click="lookScore">查看成绩</span>
-                        <span v-else :class="item.status==2?'notAllow':'answer_ques'" @click="toAnswer">开始考试</span>
-                    </div>
                 </div>
-                <a-pagination :hideOnSinglePage='true' v-model:current="params.page" :pageSize='params.limit' :total="total" />
-                <Empty v-if="!cardlist.length && loading===false"/>
             </div>
+            <Pagination v-model:page="params.page" v-model:size="params.limit" :total="total" @page-change="getExamList"/>
+            <Empty v-if="!cardlist.length && !loading" :type="EmptyType"/>
         </a-spin>
     </div>
 </template>
@@ -63,6 +64,8 @@ import searchAdd from "src/components/searchAdd/searchAdd.vue";
 import unexam from 'src/assets/images/task/unexam.png'
 import examing from 'src/assets/images/task/examing.png'
 import examed from 'src/assets/images/task/examed.png'
+import defaultAvatar from 'src/assets/images/user/admin_p.png'
+import Pagination from 'src/components/Pagination.vue'
 const http = (request as any).studentExamination;
 const route = useRoute();
 const router = useRouter();
@@ -73,36 +76,44 @@ updata({
   componenttype: undefined,
   showNav:false,
 });
+// 1-进行中;2-未开始;3-已结束
 const typeList:any=ref([
     {
-        title:'作业状态',value:0,keyName:'type',
-        data:[ { "name": "全部", "value":0}, { "id": 35, "name": "未开始", "value":2},{ "id": 35, "name": "进行中", "value":1},{ "id": 35, "name": "已结束", "value":3}]
+        title:'考试状态',value:0,keyName:'status',
+        data:[ { "name": "全部", "value": 0 }, { "name": "未开始", "value": 2 }, {  "name": "进行中", "value": 1 }, { "name": "已结束", "value": 3 }]
     }
 ])
-const ExperimentTypeList:any=[]
-const isShowAdd:any=ref(false)
 const resetKeyword:any=ref(false)
 var loading:any=ref(false)
-const total:any=ref(0)
+const EmptyType:any=computed(()=>{
+  let str=''
+  if(params.name === '' && params.status === ''){
+    str= 'empty'
+  }else{
+    str= 'searchEmpty'
+  }
+  return str
+})
 const params:any=reactive({
     type:2,
     name:'',
     page:1,
-    status:0,
     limit:12,
+    state: 0,
 })
+const total = ref(0)
 const statusState:any=['进行中','未开始','已结束']
+const statusImg:any=[examing, unexam, examed]
 const cardlist:any=ref([])
 function classifyChange(obj: any){
-    params.status=obj.type
+    Object.assign(params, obj)
+    params.page = 1
     getExamList()
 }
-function searchFn(key:any){
-    params.name=key
+function searchFn(key: string){
+    params.name = key
+    params.page = 1
     getExamList()
-}
-function handleMenuClick(){
-
 }
 function toAnswer(){
     router.push({path:'./studentAssignment/answerQues',query:{name:'考试',type:'answer'}})
@@ -112,15 +123,16 @@ function lookScore(){
       router.push({path:'./studentAssignment/answerQues',query:{name:'考试',type:'lookScore'}})
 }
 function getExamList(){
-    loading.value=true
+    loading.value = true
     http.studentExamList({param:params}).then((res:any)=>{
-        loading.value=false
-        console.log(res,'哈哈哈哈哈哈嘻嘻嘻嘻休息洗洗休息休息')
-        cardlist.value=res.data.list
-        total.value=res.data.page.totalCount
+        loading.value = false
+        if (!res) return
+        const {list, page} = res.data
+        cardlist.value = list
+        total.value = page.totalCount
     })
 }
-onMounted(()=>{
+onMounted(() => {
     getExamList()
 })
 </script>
@@ -163,9 +175,10 @@ onMounted(()=>{
     }
     .card_right_content{
         padding: 10px;
-        display: flex;
-        flex-direction: column;
-        justify-content:space-between;
+        // display: flex;
+        // flex-direction: column;
+        // justify-content:space-between;
+        flex:1;
         .course{
             color:#5E7BE2;
             width:300px;
@@ -189,46 +202,24 @@ onMounted(()=>{
         .teacher_info{
             font-size: 14px;
             color:var(--black-45); 
+            display: flex;
+            justify-content: space-between;
             .tea_name{
                 margin-right: 20px;
             }
-        }
-    }
-    .card_right_btn{
-        width:77px;
-        padding: 10px;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-        .answer_ques{
-            display: inline-block;
-            width: 73px;
-            height: 24px;
-            background:var(--brightBtn);
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 12px;
-        }
-        .notAllow{
-            display: inline-block;
-            width: 73px;
-            height: 24px;
-            background:#f0f3f6;
-            color:#b4b6b8;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 12px;
-            border: 1px solid #b4b6b8;
-            pointer-events:none;
-        }
-        .answer_ques:hover,.lookScore:hover{
-            cursor: pointer;
-        }
-        .lookScore{
-            color:var(--brightBtn);   
+            .info-left {
+                img {
+                    margin-right: 4px;
+                    width: 20px;
+                    height: 20px;
+                }
+            }
+
+            .info-right {
+                .lookScore{
+                    color:var(--brightBtn);   
+                }
+            }
         }
     }
 }
