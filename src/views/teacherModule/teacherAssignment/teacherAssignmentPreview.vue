@@ -1,7 +1,7 @@
 <template>
   <div class="teacherAssignmentPreview">
     <Outline :title="headerObj.title" :explain="headerObj.explain" :explainText="headerObj.explainText" />
-    <TopicDisplay :purpose="'IsStuAnswer'" />
+    <TopicDisplay :list="questionsList" :purpose="'IsPreview'" :loading="listLoading" />
   </div>
   <div class="teacherAssignmentPreviewFooter">
     <div class="flexCenter">
@@ -33,8 +33,9 @@ import Outline from 'src/components/TopicDisplay/outline.vue'
 import Submit from "src/components/submit/index.vue";
 const router = useRouter();
 const route = useRoute();
-const { editId } = route.query;
-const http = (request as any).teacherAssignment;
+const { id } = route.query;
+// const http = (request as any).teacherAssignment;
+const http = (request as any).teacherExamination;
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 updata({
@@ -56,9 +57,9 @@ updata({
 //   (e: "selectedImage", val: any): void;
 // }>();
 const headerObj:any=reactive({
-  title:'单元测验-《大学计算机基础第3版》第3、4章（一）-计算思维、数值与字符编码',
+  title:'',
   explain:'作业说明',
-  explainText:'交互设计本质上就是设计产品的使用方式的过程，账号怎么填写；表单怎么导出；数据怎么筛选；列表怎么排序等等。针对每个功能的使用方式，都可以花很长的时间去考虑其合理性。一个项目的交互，就是这个项目所有功能使用方式的总和。',
+  explainText:'',
 })
 const cancel=()=>{
   // router.go(-1)
@@ -67,9 +68,33 @@ const cancel=()=>{
 const edit=()=>{
   router.push({
     path:'/teacher/teacherAssignment/teacherAssignmentEdit',
-    query:{editId:editId}
+    query:{id:id}
   })
 }
+const questionsList:any=reactive([])
+var listLoading:Ref<boolean> = ref(false);
+const getExamDetail = () => {
+  listLoading.value=true
+  http.examDetail({urlParams:{ID: id,type:1}}).then((res:IBusinessResp) => {
+    questionsList.length=0
+    const {data}=res
+    headerObj.title=data.name
+    // headerObj.explain=data.note
+    headerObj.explainText=data.note
+    let questions_info=data.questions_info
+    Object.keys(questions_info).map((v:any)=>{
+      let obj={
+        type:v,
+        question:questions_info[v]
+      }
+      questionsList.push(obj)
+    })
+    listLoading.value=false
+  }).catch((err:any)=>{listLoading.value=false})
+}
+onMounted(()=>{
+  getExamDetail()
+})
 </script>
 <style scoped lang="less">
 .teacherAssignmentPreview{

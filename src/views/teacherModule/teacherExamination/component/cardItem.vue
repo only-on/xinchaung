@@ -85,8 +85,9 @@ const handleEvent = (operateType:string, item:any) => {
   emit('operate', operateType, item)
 }
 const goPreview=()=>{
+  let path=props.type==='考试'?'/teacher/teacherExamination/teacherExaminationPreview':'/teacher/teacherAssignment/teacherAssignmentPreview'
   router.push({
-    path:'/teacher/teacherExamination/teacherExaminationPreview',
+    path:path,
     query:{id:item.id}
   })
 }

@@ -476,7 +476,7 @@ function getDataFileList() {
     var arr:any=[]
     if(list.length){
       // external_parameters
-      var arr=list.filter((v:any)=>{return v.external_parameters==='2'})
+      var arr=list.filter((v:any)=>{return v.external_parameters==='2'}) // external_parameters勿删 勿修改 2代表文件可用状态， 未确认和未保存的文件为1 不可用
       arr.map((v:any,k:any)=>{
         v.suffix=''     //  v.suffix=v.class  //现在没有预览地址  字段置空
         v.id=v.uid

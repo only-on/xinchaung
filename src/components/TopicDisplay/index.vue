@@ -88,7 +88,7 @@
                   </div>
                   <!-- 编程题 -->
                   <div class="option option5" v-if="v.type==='program'">
-                    <Programming :info="element.problem" :desc="element.question_desc" /> 
+                    <Programming :info="element.problem" :desc="element.question_desc" :index="element.id" /> 
                     <div v-if="props.purpose==='achievement'" class="details operationResults">
                       <div class="outputTit">学生代码+运行日志</div>
                       <div class="outputContent" v-html="'最后执行的输入： 90 执行出错信息：'">

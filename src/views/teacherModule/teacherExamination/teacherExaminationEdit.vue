@@ -2,6 +2,7 @@
   <div class="teacherExaminationEdit">
     <BasicInfo @edit="EditBaseFn()" :name="headerObj.name" :time="headerObj.time" :explainText="headerObj.explainText" />
     <TopicDisplay :list="questionsList" 
+      :loading="listLoading"
       :purpose="'IsEdit'" 
       @updateList="getExamDetail"
      @updataQuestion="updataQuestion" />
@@ -12,7 +13,7 @@
     </div>
   </div>
   <!-- 编辑基本信息 -->
-  <EditBaseInfo v-model:visible="editModal" :id="id" :type="'考试'" @updateInfo="getExamDetail"/>
+  <EditBaseInfo v-model:visible="editModal" :id="id" :type="'考试'" :isEdit="true" @updateInfo="getExamDetail"/>
 </template>
 <script lang="ts" setup>
 import {
@@ -63,9 +64,9 @@ updata({
 // }>();
 const editModal = ref<boolean>(false)
 const headerObj:any=reactive({
-  name:'电子科技大学2022秋季《大学计算机基础》期末考试试卷A卷',
-  time:'2022 / 06 / 07 13:00:00 - 2022 / 07 / 07 13:00:00',
-  explainText:'一个好的选项从来都不缺乏细节，虽然看起来并不复杂，实际要考虑的因素非常多，因为这不仅关系着用户体验，还涉及一些界面交互逻辑的问题，需要结合不同的使 用场景、合理的将各选项灵活运用到界面当中，这其中的细节不容忽视。。',
+  name:'',
+  time:'',
+  explainText:'',
 })
 const EditBaseFn=()=>{
   editModal.value=true
@@ -88,7 +89,9 @@ const save=()=>{
     loading.value=false
     message.success("保存成功");
     cancel()
-  });
+  }).catch((err:any)=>{
+    loading.value=false
+  })
 }
 var loading:Ref<boolean> = ref(false);
 const updataQuestionData:any=reactive([])
@@ -100,7 +103,7 @@ const questionsList:any=reactive([])
 var listLoading:Ref<boolean> = ref(false);
 const getExamDetail = () => {
   listLoading.value=true
-  http.examDetail({urlParams:{ID: id}}).then((res:IBusinessResp) => {
+  http.examDetail({urlParams:{ID: id,type:2}}).then((res:IBusinessResp) => {
     questionsList.length=0
     const {data}=res
     headerObj.name=data.name

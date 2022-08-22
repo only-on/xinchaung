@@ -2,7 +2,7 @@
   <div class="teacherExaminationAchievement">
     <div class="achievementLeft">
         <Outline :title="headerObj.title" :explain="headerObj.explain" :explainText="headerObj.explainText" />
-        <TopicDisplay :purpose="'achievement'" />
+        <TopicDisplay :purpose="'achievement'" :list="questionsList" :loading="listLoading"  />
     </div>
     <div class="achievementRight">
         <ScoreRanking />
@@ -52,8 +52,8 @@ import Outline from 'src/components/TopicDisplay/outline.vue'
 import ScoreRanking from 'src/components/scoreRanking/index.vue'
 const router = useRouter();
 const route = useRoute();
-const { editId } = route.query;
-const http = (request as any).teacherAssignment;
+const { id } = route.query;
+const http = (request as any).teacherExamination;
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 updata({
@@ -79,6 +79,31 @@ const headerObj:any=reactive({
   explain:'作业/考试说明',
   explainText:'交互设计本质上就是设计产品的使用方式的过程，账号怎么填写；表单怎么导出；数据怎么筛选；列表怎么排序等等。针对每个功能的使用方式，都可以花很长的时间去考虑其合理性。一个项目的交互，就是这个项目所有功能使用方式的总和。',
 })
+const questionsList:any=reactive([])
+var listLoading:Ref<boolean> = ref(false);
+const getExamDetail = () => {
+  listLoading.value=true
+  http.examResult({urlParams:{examResultId: 103}}).then((res:IBusinessResp) => {  // examResult
+    questionsList.length=0
+    const {data}=res
+    headerObj.title=data.name
+    // headerObj.explain=data.note  question_list
+    headerObj.explainText=data.note
+    let question_list=data.question_list
+    Object.keys(question_list).map((v:any)=>{
+      let obj={
+        type:v,
+        question:question_list[v]
+      }
+      questionsList.push(obj)
+    })
+    console.log(questionsList);
+    listLoading.value=false
+  }).catch((err:any)=>{listLoading.value=false})
+}
+onMounted(()=>{
+  getExamDetail()
+})
 </script>
 <style scoped lang="less">
     .teacherExaminationAchievement{
@@ -87,6 +112,7 @@ const headerObj:any=reactive({
         .achievementLeft{
             // width: 914px;
             margin-right: 12px;
+            flex: 1;
         }
         .achievementRight{
             // width: 240px;
