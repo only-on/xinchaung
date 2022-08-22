@@ -132,7 +132,6 @@ const getListData = () => {
 };
 const handleSelect= () => {
   visable.value = true
-  console.log('studentIds', studentIds)
 }
 const updateSelectStuVisable = (value:any, studentids:any, studentInfo?:any) => {
   visable.value = false;

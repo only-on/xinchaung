@@ -8,7 +8,7 @@
       <div class="right">
          内存限制: <span>{{problemData.memory_limit}}kb</span>
          时间限制: <span>{{problemData.time_limit}}ms</span>
-         <lanuageSelect @change="changeLanugae"/>
+         <lanuageSelect @change="changeLanugae" :lang="languageDefault" :disabled=" languageDefault? true : false"/>
         <a-divider type="vertical" style="background:#2C3A54;height:20px"/>
         <i class="iconfont icon-guanji" @click="closeTab"></i>
       </div>
@@ -89,6 +89,7 @@ const http = (request as any).QuestionBank;
 const questionId = ref<any>(route.query.questionId) // 题目id
 const examId = ref<any>(route.query?.examId) // 学生考试id
 const questionType = ref<any>(route.query?.type) // 题目类型
+const languageDefault = ref<string>('') // 语言默认值
 const userId= lStorage.get('uid')
 const problemData = reactive<IproblemData>({
   question: '',
@@ -249,6 +250,12 @@ const closeTab = () => {
 }
 onMounted(()=>{
   getQuestionDetail()
+  if (questionType.value === 'sql') {
+    languageDefault.value = 'sql'
+    languageVal.label = 'sql'
+  } else {
+    languageVal.label = 'c'
+  }
 })
 
 </script>

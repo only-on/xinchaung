@@ -79,6 +79,7 @@ import { IBusinessResp } from "src/typings/fetch.d";
 import {randomCreatScore} from 'src/utils/common'
 import {validateNum, formatTime} from "../utils"
 import { levelTypeList } from 'src/components/TopicDisplay/configType'
+import { json } from "stream/consumers";
 interface Props {
   type: number;
 }
@@ -191,7 +192,7 @@ const rangeList = reactive([
     label: '我的题库'
   },
 ])
-const activeIndex = reactive({
+const activeIndex = reactive<any>({
   difficulty: ['easy'],
   range: [1]
 })
@@ -200,6 +201,8 @@ const changeMultiSelect = (item:any,type:any) => {
   if (subscript === -1) {
     activeIndex[type].push(item.value)
   } else {
+    let data = JSON.parse(JSON.stringify(activeIndex[type]))
+    if (data.length === 1) return
     activeIndex[type].splice(subscript, 1)
   }
   getQuestionMaxLimit()
@@ -345,7 +348,7 @@ onMounted(()=>{
       cursor: pointer;
       &.active{
         color: var(--primary-color);
-        background: var(--primary-1);
+        background: var(--primary-2);
         border: 1px solid var(--primary-color);
       }
     }

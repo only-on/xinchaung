@@ -71,11 +71,7 @@
               style="width: 120px"
               @focus="focus"
             >
-              <a-select-option value="F1">Jack</a-select-option>
-              <a-select-option value="ACC">ACC</a-select-option>
-              <a-select-option value="R^2">R^2</a-select-option>
-              <a-select-option value="AUC">AUC</a-select-option>
-              <a-select-option value="MSE">MSE</a-select-option>
+              <a-select-option v-for="(item,index) in algorithmList" :value="item.value" :key="index">{{item.label}}</a-select-option>
             </a-select>
           </a-form-item>
         </a-col>
@@ -134,6 +130,7 @@ const http = (request as any).QuestionBank;
 const caseFile=http.caseFile
 import knowledge from 'src/components/knowLedge/index.vue'
 import { cascadeEcho,doSubmitData,doEditSubmit } from 'src/utils/cascadeEcho'
+import { IBusinessResp } from "src/typings/fetch";
 
 
 var updata = inject("updataNav") as Function;
@@ -145,6 +142,7 @@ updata({
   showNav: true,
 });
 const preview = false;
+const algorithmList = reactive<any>([])
 const formRef = ref<any>();
 const formState = reactive({
   // 名称
@@ -457,6 +455,14 @@ onMounted(()=>{
   if(editId){
      getModalQuesData();
   }
+  http.modelConfig().then((res:IBusinessResp) => {
+    for(let i in res.data) {
+      algorithmList.push({
+        value: i,
+        label: res.data[i]
+      })
+    }
+  })
 })
 </script>
 <style lang="less" scoped>

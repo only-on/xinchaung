@@ -4,6 +4,8 @@
     placeholder="请选择"
     :class="{customSelect: !inDrawer}"
     :label-in-value="true"
+    :disabled="disabled"
+    @change="changeSelect"
   >
     <a-select-option
       v-for="(item, index) in lanuageList"
@@ -21,9 +23,13 @@ import { IBusinessResp } from "src/typings/fetch.d";
 const props = withDefaults(
   defineProps<{
     inDrawer?: boolean;
+    lang?: string,
+    disabled?: boolean
   }>(),
   {
-    inDrawer: false
+    inDrawer: false,
+    lang: '',
+    disabled: false
   }
 );
 const emit = defineEmits<{
@@ -51,19 +57,29 @@ const getLanuage = () => {
         name: 'ALL'
       })
     }
-    console.log(lanuageList)
     lanuageVal.value = {
       value: lanuageList[0].id,
       label: lanuageList[0].name
     }
   });
 };
-watch(()=>lanuageVal.value, newVal => {
+watch(()=>props.lang, newVal => {
+  if(newVal) {
+    setTimeout(() => {
+      let arr:any = lanuageList.filter((item:any) => item.name == newVal.toUpperCase())
+      lanuageVal.value = {
+        value: arr.length && arr[0].id,
+        label: newVal.toUpperCase()
+      }
+    }, 400);
+  }
+},{immediate:true})
+const changeSelect = () => {
   emit("change", {
-    value:newVal.value,
-    label: Array.isArray(newVal.label) ? newVal.label[0].children : newVal.label
+    value:lanuageVal.value.value,
+    label: Array.isArray(lanuageVal.value.label) ? lanuageVal.value.label[0].children : lanuageVal.value.label
   });
-})
+}
 onMounted(() => {
   getLanuage();
 });

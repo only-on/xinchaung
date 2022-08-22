@@ -49,7 +49,7 @@ const emit = defineEmits<{
 }>();
 const rules = {
   name: [
-    { required: true, message: `请输入名称`, trigger: "blur" },
+    { required: true, message: `请输入${props.type}名称`, trigger: "blur" },
     { max: 20, message: `名称最多20个字符`, trigger: "blur" },
   ],
   date: {required: true, message: `请选择起始时间`}

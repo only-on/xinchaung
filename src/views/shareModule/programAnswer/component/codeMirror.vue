@@ -37,7 +37,7 @@ const emit = defineEmits<{
   (e: "update:code", val: any): void;
 }>();
 const codeHeight = ref(props.height)
-const codeVal = ref(`console.log('Hello, world!')`);
+const codeVal = ref('');
 const options = reactive<{mode: string, extensions: any[]}>({
   mode: '',
   extensions: [html()]
@@ -69,7 +69,6 @@ const  getMime = (val:any) =>{
   }
 }
 const handleBlur = (e:any) => {
-  console.log(codeVal.value)
   emit('update:code', codeVal.value)
 }
 watch(()=>props.height, newVal => {
@@ -109,8 +108,7 @@ watch(()=>props.lang, (newVal:any) => {
       options.extensions = [cpp()]
       break;
   }
-  console.log(options.extensions)
-})
+},{immediate:true})
 </script>
 <style lang="less" scoped>
 .v-codemirror{

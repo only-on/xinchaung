@@ -191,14 +191,13 @@ onMounted(()=>{
 })
 // 选择的题目
 const questionSelect = (data:any) => {
-  console.log('选择的题目',data)
   data.forEach((item:any) => {
     let isExitType = listData.value.filter((a:any) => item.kind === a.type).length
     let questionItem:any = {
       id: item.id,
       question: item.question,
       difficulty: item.difficulty,
-      score: 5
+      score: item.score
     }
     // 已选的题目里面不存在当前选择题目的类型
     if (!isExitType) {
@@ -341,7 +340,6 @@ const setScore = () => {
   batchFormRef.value?.resetFields()
 }
 const changeCheck = (checkedValue:any) => {
-  console.log(checkedValue)
   checkArr.value = checkedValue
   batchData.forEach((item:any,index:any) => {
     if (!checkedValue.includes(item.type)) {
@@ -402,7 +400,6 @@ const allQuestionIds = reactive<any>([]) // 所有选中题目的id数组
 watch(()=>listData.value, newVal => {
   allQuestionIds.length = 0
   questions_ids.value.length = 0
-  console.log(newVal)
   newVal.forEach((item:any) => {
     item.data.forEach((dItem:any) => {
       allQuestionIds.push(dItem.id)
@@ -414,7 +411,6 @@ watch(()=>listData.value, newVal => {
       )
     })
   })
-  console.log(questions_ids.value)
   handleStatistical()
 },{ deep: true, immediate: true })
 defineExpose({

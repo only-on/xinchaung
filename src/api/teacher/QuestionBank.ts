@@ -47,6 +47,8 @@ export default {
   editProgram:{url:`/api/v1/xinchuang/question/program-questions/{ID}`,method: "PUT",dataType: "json"},
   editModel:{url:`/api/v1/xinchuang/question/model-questions/{questionId}`,method: "PUT",dataType: "json"},
   editSql:{url:` /api/v1/xinchuang/question/sql-questions/{ID}`,method: "PUT",dataType: "json"},
+  // 模型题 评估算法列表
+  modelConfig:{url:`/api/v1/xinchuang/question/model-questions/config`,method: "GET"},
 
   // 试用编程题
   ojConfig:{url:`/api/v1/oj/config`,method: "GET"},
@@ -113,6 +115,7 @@ export interface IQuestionBank {
   editProgram:TFHttpSend
   editModel:TFHttpSend
   editSql:TFHttpSend
+  modelConfig: TFHttpSend
 
   // 试用编程题
   ojConfig: TFHttpSend
