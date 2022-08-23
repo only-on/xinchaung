@@ -73,11 +73,9 @@ function onFinish(){
     console.log('finished!');
 }
 const Answered=(item:any)=>{
-    // console.log(item);
-    // let type=getTopicType[item.kind]
     let flage:boolean=false
-    if(['choice','blank'].includes(item.kind) && item.answer && item.answer.length){
-        console.log(item);
+    if(['choice','blank'].includes(item.kind) && item.answer && item.answer.length && (item.answer.filter((v:any)=>v)).length){
+        // console.log(item);
         flage=true
     }
     if(['judge'].includes(item.kind) && [true,false].includes(item.answer)){
@@ -86,7 +84,6 @@ const Answered=(item:any)=>{
     if(['short-answer'].includes(item.kind) && item.answer){
         flage=true
     }
-    // console.log(type); 'short-answer',
     return flage
 }
 onMounted(()=>{

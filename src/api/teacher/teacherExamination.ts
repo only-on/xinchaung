@@ -20,6 +20,8 @@ export default {
 
   // 考试成绩
   examResult: {url: `/api/v1/xinchuang/question/exam-result/{examResultId}`, method: "GET"},
+  //  成绩页修改题 得分
+  editScore: {url: `/api/v1/xinchuang/question/exam-result-items/{resultItemId}/score`, method: "PUT"},
   //设置题目分数
   // questionsScore:{url: `/api/v1/question/exams/{examsId}/questions/{questionsId}/score?type={type}`, method: "PUT",dataType: 'json'},
   //批量设置题目分数
@@ -41,6 +43,7 @@ export interface ITeacherExamination {
   studentsScores: TFHttpSend;
   simSearch: TFHttpSend;
   examResult: TFHttpSend;
+  editScore: TFHttpSend;
   // questionsScore: TFHttpSend;
   // questionsBatchScore: TFHttpSend;
 }

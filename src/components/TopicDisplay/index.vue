@@ -141,7 +141,7 @@
                         <div class="resultscore">
                           得<span>10</span>分
                         </div>
-                        <div v-if="v.type==='short-answer' && editScore()" class="flexCenter changeScore">
+                        <div v-if="v.type==='short-answer' && editScore()" class="flexCenter changeScore" @click="editScoreFn(element,k)">
                           <span class="iconfont icon-bianji1"></span>
                           <span>修改得分</span>
                         </div>
@@ -161,7 +161,7 @@
                       <div class="resultscore">
                         得<span>10</span>分
                       </div>
-                      <div v-if="editScore()" class="flexCenter changeScore">
+                      <div v-if="editScore()" class="flexCenter changeScore" @click="editScoreFn(element,k)">
                         <span class="iconfont icon-bianji1"></span>
                         <span>修改得分</span>
                       </div>
@@ -260,7 +260,8 @@ const CanDisabled=()=>{
   return props.purpose!=='IsStuAnswer'
 }
 const editScore=()=>{
-  return role===3
+  return true
+  // return role===3
 }
 const optionType:any=reactive(['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O'])
 const SqllObj:any=reactive({
@@ -311,6 +312,7 @@ function submitAnswers(params:any) {
   // let answer=''
   console.log(params.id); 
   console.log(params.answer);
+  return
   httpStu.submitAnswers({param:{exam_id:id,question_id:curQuestionId.value,answer:params.answer},urlParams:{user:uesr}}).then((res:any)=>{
 
   })
@@ -338,6 +340,11 @@ var setScoreKey:Ref<number> = ref(0);
 var setScoreId:Ref<number> = ref(0);
 var kind:Ref<string> = ref('');
 // var loading:Ref<boolean> = ref(false);
+// 成绩页   单个修改题得分
+const editScoreFn=(item:any,key:number)=>{
+  SetupScore(2,item,key)
+}
+// 编辑页   批量 单个修改题分数
 const SetupScore=(type:number,item:any,key:number)=>{
   setScoreType.value=type
   setScoreKey.value=key
@@ -355,7 +362,7 @@ const SetupScore=(type:number,item:any,key:number)=>{
 }
 const formRef = ref();
 var Visible: Ref<boolean> = ref(false);
-const titleArr=['批量设置分数','设置分数']
+const titleArr=['批量设置分数','设置分数','修改得分']
 var batchData:any=reactive({
   title:titleArr[0],
   label:'本题分值',
@@ -373,6 +380,17 @@ const cancel=()=>{
 }
 const Save=()=>{
   formRef.value.validate().then(()=>{ 
+    if(setScoreType.value===2){ //成绩页修改得分
+      httpExam.editScore({param:{...formState},urlParams:{resultItemId:id,questionsId:selectIds}}).then(()=>{
+        message.success('操作成功')
+        
+      }).finally(()=>{
+        formRef.value.resetFields()
+        Visible.value=false
+      })
+      return 
+    }
+    //编辑页修改分数
     props.list.map((v:any,k:number)=>{
       if(v.type===props.list[setScoreKey.value].type){
           props.list[setScoreKey.value].question.map((i:any)=>{
@@ -659,9 +677,10 @@ onMounted(()=>{
         }
         .changeScore{
           color: var(--primary-color);
+          cursor: pointer;
           .iconfont{
             padding: 0 4px;
-            cursor: pointer;
+            
           }
         }
         .Adjudicate{
