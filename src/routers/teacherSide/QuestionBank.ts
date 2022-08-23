@@ -1,4 +1,5 @@
 import Layout from "src/views/common/Layout.vue";
+import { LocationQuery, RouteParams } from 'vue-router';
 
 export default {
   path: "QuestionBank",
@@ -24,7 +25,9 @@ export default {
       component: () =>
         import("src/views/teacherModule/QuestionBank/createQues/index.vue"),
       meta: {
-        title: "创建题目",
+        title: (params?: RouteParams, query?: RouteParams) => {
+          return query!.questionId?'编辑题目':'创建题目'
+        },
         authCode: "createQues",
       },
     },
@@ -34,7 +37,7 @@ export default {
       component: () =>
         import("src/views/teacherModule/QuestionBank/batchImport/index.vue"),
       meta: {
-        title: "创建题目",
+        title: "批量导入",
         authCode: "batchImport",
       },
     },
@@ -46,7 +49,9 @@ export default {
           "src/views/teacherModule/QuestionBank/createProgramming/index.vue"
         ),
       meta: {
-        title: "创建题目",
+        title: (params?: RouteParams, query?: RouteParams) => {
+          return query!.questionId?'编辑题目':'创建题目'
+        },
         authCode: "createProgramming",
       },
     },
@@ -58,7 +63,9 @@ export default {
           "src/views/teacherModule/QuestionBank/createModelQuestion/index.vue"
         ),
       meta: {
-        title: "创建题目",
+        title: (params?: RouteParams, query?: RouteParams) => {
+          return query!.questionId?'编辑题目':'创建题目'
+        },
         authCode: "createModelQuestion",
       },
     },
@@ -70,7 +77,9 @@ export default {
           "src/views/teacherModule/QuestionBank/SQLQues/index.vue"
         ),
       meta: {
-        title: "创建题目",
+        title: (params?: RouteParams, query?: RouteParams) => {
+          return query!.questionId?'编辑题目':'创建题目'
+        },
         authCode: "createSQLQues",
       },
     },

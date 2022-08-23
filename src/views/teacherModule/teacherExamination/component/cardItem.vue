@@ -19,7 +19,7 @@
         </template>
         <template v-else>
           <span>创建时间：{{item.created_at}}</span>
-          <span>起止时间：{{item.started_at}} - {{item.created_at}}</span>
+          <span>起止时间：{{item.started_at}} - {{item.closed_at}}</span>
         </template>
         
         <!-- 已发布 并且状态是 进行中或已结束 -->
@@ -36,10 +36,10 @@
           <template #overlay>
             <a-menu>
               <a-menu-item>
-                <a-button type="link" @click.stop="handleClick('edit', item)" :disabled="item.is_publish && item.status !== 3  ? true : false">编辑</a-button>
+                <a-button type="link" @click.stop="handleClick('edit', item)" :disabled="!item.can_edit">编辑</a-button>
               </a-menu-item>
               <a-menu-item>
-                <a-button type="link" @click.stop="handleClick('delete', item)" :disabled="item.is_publish && item.status !== 3  ? true : false">删除</a-button>
+                <a-button type="link" @click.stop="handleClick('delete', item)" :disabled="!item.can_delete">删除</a-button>
               </a-menu-item>
               <a-menu-item>
                 <a-button type="link" @click.stop="handleClick('copy', item)">复用</a-button>
