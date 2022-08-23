@@ -8,7 +8,7 @@
       <div class="right">
          内存限制: <span>{{problemData.memory_limit}}kb</span>
          时间限制: <span>{{problemData.time_limit}}ms</span>
-         <lanuageSelect @change="changeLanugae" :lang="languageDefault" :disabled=" languageDefault? true : false"/>
+         <lanuageSelect @change="changeLanugae" :lang="languageDefault" :disabled=" languageDefault == 'sql' ? true : false"/>
         <a-divider type="vertical" style="background:#2C3A54;height:20px"/>
         <i class="iconfont icon-guanji" @click="closeTab"></i>
       </div>
@@ -255,6 +255,7 @@ onMounted(()=>{
     languageVal.label = 'sql'
   } else {
     languageVal.label = 'c'
+    languageDefault.value = 'c'
   }
 })
 

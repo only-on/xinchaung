@@ -67,10 +67,12 @@ watch(()=>props.lang, newVal => {
   if(newVal) {
     setTimeout(() => {
       let arr:any = lanuageList.filter((item:any) => item.name == newVal.toUpperCase())
+      console.log(arr)
       lanuageVal.value = {
         value: arr.length && arr[0].id,
         label: newVal.toUpperCase()
       }
+      emit("change", lanuageVal.value);
     }, 400);
   }
 },{immediate:true})
