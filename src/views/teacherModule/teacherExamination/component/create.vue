@@ -79,7 +79,6 @@ import { IBusinessResp } from "src/typings/fetch.d";
 import {randomCreatScore} from 'src/utils/common'
 import {validateNum, formatTime} from "../utils"
 import { levelTypeList } from 'src/components/TopicDisplay/configType'
-import { json } from "stream/consumers";
 interface Props {
   type: number;
 }

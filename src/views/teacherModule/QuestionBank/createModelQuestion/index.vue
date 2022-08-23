@@ -23,7 +23,6 @@
             <a-select
               ref="select"
               v-model:value="formState.purpose"
-              @focus="focus"
             >
               <a-select-option value="exam">考试题</a-select-option>
               <a-select-option value="homework">作业题</a-select-option>
@@ -69,7 +68,6 @@
               ref="select"
               v-model:value="formState.evaluationData"
               style="width: 120px"
-              @focus="focus"
             >
               <a-select-option v-for="(item,index) in algorithmList" :value="item.value" :key="index">{{item.label}}</a-select-option>
             </a-select>

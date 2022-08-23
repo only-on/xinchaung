@@ -44,7 +44,7 @@
         </a-col> 
         <!-- 编程题 模型题 -->
         <a-col :span="12">
-          <a-form-item label="内存限制" name="memoryLimit">
+          <a-form-item label="内存限制(MB)" name="memoryLimit">
             <a-input
               v-model:value="formState.memoryLimit"
               placeholder="请输入内存限制大小"
@@ -52,7 +52,7 @@
           </a-form-item>
         </a-col>
         <a-col :span="12">
-          <a-form-item label="时间限制" name="timeLimit">
+          <a-form-item label="时间限制(MS)" name="timeLimit">
             <a-input
               v-model:value="formState.timeLimit"
               placeholder="请输入时间限制"
@@ -81,13 +81,6 @@
         </a-col>
       </a-row>
     </a-form>
-    <!-- <div class="bottom_btn">
-      <a-button style="margin-right: 10px" @click="reset">取消</a-button>
-      <a-button type="primary" @click="onSubmit">保存</a-button>
-    </div> -->
-      <!-- loading: false,
-  okText:'确定',
-  cancelText:'取消' -->
     <Submit @submit="onSubmit" @cancel="reset" okText="保存" :loading='loading'></Submit>
   </div>
 </template>
@@ -117,7 +110,7 @@ import Submit from "src/components/submit/index.vue";
 
 import { Modal, message } from "ant-design-vue";
 import type { Rule } from 'ant-design-vue/es/form';
-import { cascadeEcho,doSubmitData,doEditSubmit } from 'src/utils/cascadeEcho'
+import { cascadeEcho,doSubmitData,doEditSubmit,validateNum } from 'src/utils/cascadeEcho'
 const route = useRoute();
 const router = useRouter();
 const type: any = ref(route.query.value);
@@ -135,7 +128,7 @@ updata({
 const loading:any=ref(false)
 const preview = false;
 const formRef = ref<any>();
-const formState = reactive({
+const formState = reactive<any>({
   // 名称
   name: "",
   // 用途
@@ -194,13 +187,15 @@ const rules = {
     {
       required: true,
       message: "请输入内存",
-    }
+    },
+    validateNum
   ],
   timeLimit:[
     {
       required: true,
       message: "请输入时间",
-    }
+    },
+    validateNum
   ],
   difficulty: [
     {
@@ -299,9 +294,9 @@ function getSqlData(){
         formState.knowledgePoints=cascadeEcho(data.knowledge_map_details)
         formState.stem=data.question_desc
         formState.memoryLimit=data.problem.memory_limit
-        formState.timeLimit=data.problem.time_limit
-        formState.sampleInput=data.test_case[0].in
-        formState.sampleOutput=data.test_case[0].out
+        formState.timeLimit=Number(data.problem.time_limit)
+        formState.sampleInput=data.test_case.data[0].in
+        formState.sampleOutput=data.test_case.data[0].out
       }
     })
 }

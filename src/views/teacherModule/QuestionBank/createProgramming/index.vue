@@ -129,10 +129,7 @@
         </a-col>
       </a-row>
     </a-form>
-    <div class="bottom_btn">
-      <a-button style="margin-right: 10px" @click="reset">取消</a-button>
-      <a-button type="primary" @click="onSubmit">保存</a-button>
-    </div>
+    <Submit @submit="onSubmit" @cancel="reset" okText="保存" :loading='loading'></Submit>
   </div>
 </template>
 <script lang="ts" setup>
@@ -157,7 +154,8 @@ import testCase from '../components/testCase/index.vue'
 import uploadFile from 'src/components/uploadFile.vue'
 import selectDirectory from 'src/components/selectDirectory/index.vue'
 import knowledge from 'src/components/knowLedge/index.vue'
-import { cascadeEcho,doSubmitData,doEditSubmit } from 'src/utils/cascadeEcho'
+import Submit from "src/components/submit/index.vue";
+import { cascadeEcho,doSubmitData,doEditSubmit,validateNum } from 'src/utils/cascadeEcho'
 
 
 import { Modal, message } from "ant-design-vue";
@@ -168,6 +166,7 @@ const type: any = ref(route.query.value);
 const name: any = route.query.name;
 const http = (request as any).QuestionBank;
 const editId:any=route.query?.questionId;
+const loading = ref<boolean>(false)
 const caseFile=http.caseFile
 var updata = inject("updataNav") as Function;
 const fileList: any = [];
@@ -183,7 +182,7 @@ const inputAndOut=ref([{inputCon:'',outCon:'',ifShow:true}])
 function addTestCase(){
   inputAndOut.value.push({inputCon:'',outCon:'',ifShow:true})
 }
-const formState = reactive({
+const formState = reactive<any>({
   // 名称
   name: "",
   // 用途
@@ -312,13 +311,15 @@ const rules = {
     {
       required: true,
       message: "请输入内存",
-    }
+    },
+    validateNum
   ],
   timeLimit:[
     {
       required: true,
       message: "请输入时间",
-    }
+    },
+    validateNum
   ],
   difficulty: [
     {
@@ -389,12 +390,15 @@ function createProgramQues(){
         data:formState.testCase=='text'?testCaseData:formState.useCaseFile,
     }   
   }
-
+  loading.value = true
   http.programQues({param:params}).then((res:any)=>{
+    loading.value = false
     if(res.code==1){
         message.success('创建成功')
         router.go(-1);
       }
+  }).catch(()=>{
+    loading.value = false
   })
 }
 const cascaData:any=reactive({
@@ -427,12 +431,15 @@ function editProgressQues(){
         data:formState.testCase=='text'?testCaseData:formState.useCaseFile,
     }   
   }
-
+  loading.value = true
   http.editProgram({param:params,urlParams:{ID:editId}}).then((res:any)=>{
+    loading.value = false
     if(res.code==1){
         message.success('编辑成功')
         router.go(-1);
       }
+  }).catch(()=>{
+    loading.value = false
   })
 }
 function onSubmit(){
@@ -467,13 +474,13 @@ function getProgressData(){
         formState.knowledgePoints=cascadeEcho(data.knowledge_map_details)
         formState.stem=data.question_desc
         formState.memoryLimit=data.problem.memory_limit
-        formState.timeLimit=data.problem.time_limit
+        formState.timeLimit=Number(data.problem.time_limit)
         formState.inputFormat=data.problem.input
         formState.outputFormat=data.problem.output
         formState.sampleInput=data.problem.sample_input
         formState.sampleOutput=data.problem.sample_output
         inputAndOut.value=[]
-        data.test_case.forEach((item:any)=>{
+        data.test_case.data.forEach((item:any)=>{
           inputAndOut.value.push({inputCon:item.in,outCon:item.out,ifShow:true})
         })
       }
