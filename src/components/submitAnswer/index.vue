@@ -77,14 +77,13 @@ const Answered=(item:any)=>{
     // let type=getTopicType[item.kind]
     let flage:boolean=false
     if(['choice','blank'].includes(item.kind) && item.answer && item.answer.length){
+        console.log(item);
         flage=true
     }
     if(['judge'].includes(item.kind) && [true,false].includes(item.answer)){
         flage=true
     }
     if(['short-answer'].includes(item.kind) && item.answer){
-        console.log(item);
-        
         flage=true
     }
     // console.log(type); 'short-answer',
