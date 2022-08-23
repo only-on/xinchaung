@@ -64,7 +64,7 @@ updata({
   ],
   showContent: true,
   componenttype: undefined,
-  showNav: false,
+  showNav: true,
 });
 const typeNames = ["单选题", "判断题", "填空题", "解答题", "编程题", "模型题"];
 const deadline = Date.now() + 1000 * 60 * 60 * 2 + 1000 * 30;

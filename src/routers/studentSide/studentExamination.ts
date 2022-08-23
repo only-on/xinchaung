@@ -5,7 +5,7 @@ export default {
   component: Layout,
   name: "studentExamination",
   meta: {
-    title: "考试列表",
+    title: "考试",
     authCode: "studentExamination",
   },
   children: [
@@ -48,6 +48,14 @@ export default {
         },
       ]
     },
-    
+    {
+      path: "ExaminationViewResults",
+      name: "ExaminationViewResults",
+      component: () => import("src/views/studentModule/studentAssignment/answerQues/index.vue"),
+      meta: {
+        title: "查看成绩",
+        authCode: "viewResults",
+      },
+    },
   ],
 };
