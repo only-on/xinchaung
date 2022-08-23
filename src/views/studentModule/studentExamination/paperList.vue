@@ -31,7 +31,7 @@
                 </span>
               </div>
               <div class="info-right">
-                <span v-if="item.status==3" class="lookScore pointer" @click="lookScore">查看成绩</span>
+                <span v-if="item.status==3" class="lookScore pointer" @click="lookScore(item)">查看成绩</span>
                 <a-button v-else-if="isAssign" type="primary" size="small" @click="toAnswer(item)" :disabled="item.status==1">答题</a-button>
                 <a-button v-else type="primary" size="small" @click="toAnswer(item)" :disabled="item.status==1">开始考试</a-button>
               </div>
@@ -141,22 +141,32 @@ function searchFn(key: string){
   getExamList()
 }
 function toAnswer(item:any){
-  let path='/student/studentExamination/Examinationanswerques'
+  let path = isAssign.value ? '/student/studentAssignment/AssignmentAnswerques':'/student/studentExamination/Examinationanswerques'
   router.push({
-    path:path,
-    query:{
-      name:typeInfo[props.type].text,
-      purpose:'IsStuAnswer',
-      id:item.id,
-      uesr:item.user_profile.user_id,
-      closedAt:item.closed_at   //2022-08-18 22:00:00   item.closed_at
+    path: path,
+    query: {
+      name: typeInfo[props.type].text,
+      purpose: 'IsStuAnswer',
+      id: item.id,
+      uesr: item.user_profile.user_id,
+      closedAt: item.closed_at   //2022-08-18 22:00:00   item.closed_at
     }
   })
   // router.push({path:'./studentAssignment/answerQues',query:{name:typeInfo[props.type].text,type:'answer'}})
   // sessionStorage.removeItem('examRelastTime')
 }
-function lookScore(){
-  router.push({path:'./studentAssignment/answerQues',query:{name:typeInfo[props.type].text,type:'lookScore'}})
+function lookScore(item:any){
+  const path = isAssign.value ? '/student/studentAssignment/AssignmentViewResults':'/student/studentExamination/ExaminationViewResults'
+  router.push({
+    path: path,
+    query: {
+      name:typeInfo[props.type].text,
+      purpose:'achievement',
+      id:item.id,
+      uesr:item.user_profile.user_id,
+      closedAt:item.closed_at   //2022-08-18 22:00:00   item.closed_at
+    }
+  })
 }
 function getExamList(){
   loading.value = true

@@ -64,7 +64,7 @@ updata({
   ],
   showContent: true,
   componenttype: undefined,
-  showNav: false,
+  showNav: true,
 });
 const headerObj: any = reactive({
   title: "",
