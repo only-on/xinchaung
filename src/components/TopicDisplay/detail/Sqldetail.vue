@@ -27,9 +27,10 @@ import {
 import MarkedEditor from "src/components/editor/markedEditor.vue";
 interface Props {
   info?:any,
-  desc:string
+  desc?:string
 }
 const props = withDefaults(defineProps<Props>(), {
+  desc:'',
   info:()=>{
     return {
      

@@ -309,9 +309,12 @@ const changebox=(v:any,element:any)=>{
   }
 }
 function submitAnswers(params:any) {
-  // let answer=''
+  let answer=params.answer
   console.log(params.id); 
   console.log(params.answer);
+  if(['choice','blank'].includes(params.kind) && answer && answer.length && (answer.filter((v:any)=>v)).length){
+        
+  }
   // return
   httpStu.submitAnswers({param:{exam_id:id,question_id:curQuestionId.value,answer:params.answer},urlParams:{user:uesr}}).then((res:any)=>{
 
