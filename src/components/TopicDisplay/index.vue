@@ -66,10 +66,10 @@
                   <div class="option option2" v-if="v.type==='judge'">
                     <a-radio-group v-model:value="element.answer" :disabled="CanDisabled()" @change="changebox(v,element)">
                       <a-row>
-                        <a-radio :value="true">正确</a-radio>
+                        <a-radio :value="'right'">正确</a-radio>
                       </a-row>
                       <a-row>
-                        <a-radio :value="false">错误</a-radio>
+                        <a-radio :value="'wrong'">错误</a-radio>
                       </a-row>
                     </a-radio-group>
                   </div>
@@ -95,7 +95,7 @@
                       <div class="outputContent" v-html="'最后执行的输入： 90 执行出错信息：'">
                       </div>
                     </div>
-                    <div @click="programAnswer(element.id)" v-if="props.purpose==='IsStuAnswer'" class="reply"> 答 题 </div>
+                    <div @click="programAnswer(element.id,'program')" v-if="props.purpose==='IsStuAnswer'" class="reply"> 答 题 </div>
                   </div>
                   <!-- 模型题 -->
                   <div class="option option6" v-if="v.type==='ai'">
@@ -122,7 +122,7 @@
                   <!-- SQL题 -->
                   <div class="option option7" v-if="v.type==='sql'">
                     <Sqldetail :info="SqllObj" />
-                    <div v-if="props.purpose==='IsStuAnswer'" class="reply"> 答 题 </div>
+                    <div @click="programAnswer(element.id,'sql')" v-if="props.purpose==='IsStuAnswer'" class="reply"> 答 题 </div>
                   </div>
                 </div>
                 <!-- 题目结果 -->
@@ -381,7 +381,7 @@ const cancel=()=>{
 const Save=()=>{
   formRef.value.validate().then(()=>{ 
     if(setScoreType.value===2){ //成绩页修改得分
-      httpExam.editScore({param:{...formState},urlParams:{resultItemId:id,questionsId:selectIds}}).then(()=>{
+      httpExam.editScore({param:{...formState},urlParams:{resultItemId:selectIds}}).then(()=>{
         message.success('操作成功')
         
       }).finally(()=>{
@@ -470,17 +470,14 @@ function getQuestionAnswers(){
       message.success("获取成功");
   })
 }
-//编程题作答 
-const programAnswer=(val:number)=>{
-  // router.push({
-  //   path:'/programAnswer',
-  //   query:{id:id}
-  // })
+//编程 sql  题作答 
+const programAnswer=(val:number,type:string)=>{
   const {href} = router.resolve({
     path: '/programAnswer',
     query:{
       examId:id,
       questionId:val,
+      type:type
     }
   })
   window.open(href,'_blank')

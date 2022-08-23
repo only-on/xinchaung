@@ -92,8 +92,33 @@ const getExamDetail = () => {
     listLoading.value=false
   }).catch((err:any)=>{listLoading.value=false})
 }
+const getExamResult = () => {
+  listLoading.value=true
+  http.examResult({urlParams:{examResultId: id}}).then((res:IBusinessResp) => {  // examResult
+    questionsList.length=0
+    const {data}=res
+    headerObj.title=data.name
+    // headerObj.explain=data.note  question_list
+    headerObj.explainText=data.note
+    let question_list=data.question_list
+    Object.keys(question_list).map((v:any)=>{
+      let obj={
+        type:v,
+        question:question_list[v]
+      }
+      questionsList.push(obj)
+    })
+    console.log(questionsList);
+    listLoading.value=false
+  }).catch((err:any)=>{listLoading.value=false})
+}
 onMounted(()=>{
-  getExamDetail()
+  if(purpose==="achievement"){
+    getExamResult()
+  }else{
+    getExamDetail()
+  }
+  
 })
 </script>
 <style lang="less" scoped>

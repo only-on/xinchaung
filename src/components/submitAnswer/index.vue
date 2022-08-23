@@ -78,12 +78,12 @@ const Answered=(item:any)=>{
         // console.log(item);
         flage=true
     }
-    if(['judge'].includes(item.kind) && [true,false].includes(item.answer)){
+    if(['short-answer','judge'].includes(item.kind) && item.answer){
         flage=true
     }
-    if(['short-answer'].includes(item.kind) && item.answer){
-        flage=true
-    }
+    // if(['judge'].includes(item.kind) && [true,false].includes(item.answer)){
+    //     flage=true
+    // }
     return flage
 }
 onMounted(()=>{
