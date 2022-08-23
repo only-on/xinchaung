@@ -121,7 +121,7 @@
                   </div>
                   <!-- SQL题 -->
                   <div class="option option7" v-if="v.type==='sql'">
-                    <Sqldetail :info="SqllObj" />
+                    <Sqldetail :info="SqllObj" :desc="element.question_desc" />
                     <div @click="programAnswer(element.id,'sql')" v-if="props.purpose==='IsStuAnswer'" class="reply"> 答 题 </div>
                   </div>
                 </div>
@@ -312,7 +312,7 @@ function submitAnswers(params:any) {
   // let answer=''
   console.log(params.id); 
   console.log(params.answer);
-  return
+  // return
   httpStu.submitAnswers({param:{exam_id:id,question_id:curQuestionId.value,answer:params.answer},urlParams:{user:uesr}}).then((res:any)=>{
 
   })

@@ -32,7 +32,7 @@
                  </div>
             </div>
              <div class="submit_test">
-                <a-button type='primary' class="submit_btn">提交试卷</a-button>
+                <a-button type='primary' class="submit_btn" @click="submit()">提交{{typeName}}</a-button>
                 <div class="tip_info">得分在统一提交后，在成绩详情可以查看</div>
             </div>
         </div>
@@ -55,18 +55,24 @@ import {
 import { Modal, message } from "ant-design-vue";
 import getTopicType from 'src/components/TopicDisplay/topictype'
 import { useRouter, useRoute } from "vue-router";
+import request from "src/api/index";
+const httpStu = (request as any).studentExamination;
 const route = useRoute();
 const router = useRouter();
-const {closedAt } = route.query;
+const {closedAt,id ,uesr } = route.query;
 interface Props { 
+  typeName:string
   dataList:any;
   showCountDown:boolean;
 }
 const props = withDefaults(defineProps<Props>(),{
+  typeName:'作业',
   dataList: () =>[],
   showCountDown:()=>false
 });
-// const typeNames=['单选题','判断题','填空题','解答题','编程题','模型题']
+const emit = defineEmits<{
+  (e: "submitComplete"): void;            // 
+}>();
 var deadline:any=ref()
 // var deadline:any=ref(Number(sessionStorage.getItem("examRelastTime"))?Number(sessionStorage.getItem("examRelastTime")):(Date.now() + 1000 * 60 * 60 * 2 + 1000 * 30))
 function onFinish(){
@@ -85,6 +91,11 @@ const Answered=(item:any)=>{
     //     flage=true
     // }
     return flage
+}
+const submit=()=>{
+    httpStu.submitExam({param:{},urlParams:{exam:id,user:uesr}}).then((res:any)=>{
+        emit('submitComplete')
+  })
 }
 onMounted(()=>{
     // console.log(closedAt)

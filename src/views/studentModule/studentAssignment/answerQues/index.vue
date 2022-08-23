@@ -16,6 +16,8 @@
         <submit-answer
           :showCountDown="name === '考试' ? true : false"
           :dataList="questionsList"
+          :typeName="name === '考试' ? '试卷' : '作业'"
+          @submitComplete="submitComplete"
         ></submit-answer>
       </div>
       <div v-else>
@@ -111,6 +113,10 @@ const getExamResult = () => {
     console.log(questionsList);
     listLoading.value=false
   }).catch((err:any)=>{listLoading.value=false})
+}
+const submitComplete=()=>{
+  message.success("提交成功");
+  router.go(-1)
 }
 onMounted(()=>{
   if(purpose==="achievement"){

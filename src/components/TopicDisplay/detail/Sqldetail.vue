@@ -2,7 +2,7 @@
   <div class="ModelDetail">
     <div class="details details1">
       <div class="detailsTit">题目描述</div>
-      <MarkedEditor v-model="props.info.desc" class="markdown__editor" :preview="true"/>
+      <MarkedEditor v-model="props.desc" class="markdown__editor" :preview="true"/>
     </div>
     <div class="details details1">
       <div class="detailsTit">数据表结构</div>
@@ -25,16 +25,14 @@ import {
   withDefaults,
 } from "vue";
 import MarkedEditor from "src/components/editor/markedEditor.vue";
-interface Iinfo{
-  desc: string;
-}
 interface Props {
-  info?:Iinfo
+  info?:any,
+  desc:string
 }
 const props = withDefaults(defineProps<Props>(), {
   info:()=>{
     return {
-      desc:'',
+     
     }
   }
 });
