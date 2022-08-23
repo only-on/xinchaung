@@ -61,7 +61,7 @@ function doEditSubmit(modelData:any,detailData:any){
    })
    if(!flagArr){
        if(JSON.stringify(modelData)==JSON.stringify(cascadeEcho(detailData))){
-         return  detailData[detailData.length-1].id
+         return  detailData.length ? detailData[detailData.length-1].id : []
        }else{
         return doSubmitData(modelData)
        }

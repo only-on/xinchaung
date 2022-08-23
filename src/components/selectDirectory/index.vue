@@ -1,7 +1,7 @@
 <template>
     <div>
         <a-cascader
-            v-model:value="props.catalogue"
+            v-model:value="props.formState.catalogue"
             :options="options"
             placeholder="请选择"
             :loadData="loadData"
@@ -9,6 +9,7 @@
             :fieldNames="{
                 label: 'name', value: 'id'
             }"
+            :allow-clear="false"
         />
     </div>
 </template>
@@ -29,8 +30,13 @@ import {
 interface Props { 
   catalogue:any[];
 }
-const props = withDefaults(defineProps<Props>(),{
-  catalogue:()=>[]
+interface IformState {
+  formState: any
+}
+const props = withDefaults(defineProps<IformState>(),{
+  formState:{
+    catalogue: ''
+  }
 });
 const emit = defineEmits<{
   (e: "update:catalogue", val: any): void;
@@ -39,8 +45,8 @@ const emit = defineEmits<{
 const options:any=ref([])
 function change(value:any, selectedOptions:any){
     console.log(value,selectedOptions,'value,selectedOptions')
-  emit("update:catalogue",props.catalogue);
-  emit("vertifyAgain",props.catalogue)
+  // emit("update:catalogue",props.formState.catalogue);
+  emit("vertifyAgain",props.formState.catalogue)
 }
 // const catalogue=computed({
 //   get:()=>props.catalogue,

@@ -32,7 +32,7 @@
         </a-col>
         <a-col :span="12">
           <a-form-item name="catalogue" label="选择目录">
-            <select-directory v-model:catalogue='formState.catalogue' @vertifyAgain='validateCataloge'></select-directory>
+            <select-directory :formState='formState' @vertifyAgain='validateCataloge'></select-directory>
           </a-form-item>
         </a-col>
         <a-col v-if="['5', '6'].includes(type)" :span="12">

@@ -28,7 +28,7 @@
         </a-col>
         <a-col :span="12">
           <a-form-item name="catalogue" label="选择目录">
-            <select-directory v-model:catalogue='formState.catalogue' @vertifyAgain='validateCataloge' ref='selectDire'></select-directory>
+            <select-directory :formState='formState' @vertifyAgain='validateCataloge' ref='selectDire'></select-directory>
           </a-form-item>
         </a-col>
         <a-col :span="['1','2','3','4','7'].includes(type)? 12 : 24">
@@ -309,7 +309,8 @@ function createChoiceQues(){
       question:formState.stem,
       difficulty:formState.difficulty,
       categoryId:doSubmitData(formState.catalogue),
-      knowledgeIds:doSubmitData(formState.knowledgePoints),
+      // knowledgeIds:doSubmitData(formState.knowledgePoints),
+      knowledgeMapIds:doSubmitData(formState.knowledgePoints),
       questionAnalysis:formState.topicAnalysis,
       choiceOptions:choiceOptions,
       choiceCorrectOptions:choiceCorrectOptions,
@@ -381,7 +382,8 @@ function createSolutionQues(){
       usedBy:formState.purpose,
       difficulty:formState.difficulty,
       categoryId:doSubmitData(formState.catalogue),
-      knowledgeIds:doSubmitData(formState.knowledgePoints),
+      // knowledgeIds:doSubmitData(formState.knowledgePoints),
+      knowledgeMapIds:doSubmitData(formState.knowledgePoints),
       question:formState.stem, 
       shortAnswerReference:formState.referenceAnswer,//参考答案
       shortAnswerKeys:formState.keyword,
@@ -520,7 +522,8 @@ function editChoice(){
     question:formState.stem,
     difficulty:formState.difficulty,
     categoryId:doEditSubmit(formState.catalogue,cascaData.category_chains),
-    knowledgeIds:doEditSubmit(formState.knowledgePoints,cascaData.knowledge_map_details),
+    // knowledgeIds:doEditSubmit(formState.knowledgePoints,cascaData.knowledge_map_details),
+    knowledgeMapIds:doEditSubmit(formState.knowledgePoints,cascaData.knowledge_map_details),
     // // categoryId:215,
     // knowledgeIds:[1],
     questionAnalysis:formState.topicAnalysis,
