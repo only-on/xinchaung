@@ -18,7 +18,7 @@
                          {{getTopicType[item.type]['name']}}
                         </div>
                         <div class="answerDiv">
-                            <div v-for="(it,j) in item.question" :key="j" :class="['ifanswer',it.answer.length?'answerd':'unanswer']">
+                            <div v-for="(it,j) in item.question" :key="j" :class="['ifanswer',Answered(it)?'answerd':'unanswer']">
                             {{j+1}}
                             </div>
                         </div>
@@ -72,13 +72,31 @@ var deadline:any=ref()
 function onFinish(){
     console.log('finished!');
 }
+const Answered=(item:any)=>{
+    // console.log(item);
+    // let type=getTopicType[item.kind]
+    let flage:boolean=false
+    if(['choice','blank'].includes(item.kind) && item.answer && item.answer.length){
+        flage=true
+    }
+    if(['judge'].includes(item.kind) && [true,false].includes(item.answer)){
+        flage=true
+    }
+    if(['short-answer'].includes(item.kind) && item.answer){
+        console.log(item);
+        
+        flage=true
+    }
+    // console.log(type); 'short-answer',
+    return flage
+}
 onMounted(()=>{
     // console.log(closedAt)
     let closed_at2=new Date((closedAt as string).replace(/-/g,'/')).getTime()
     let curDate=Date.now()  // 
     // let Curminute=Math.floor(dateDiff/(3600*1000))
     deadline.value=Date.now() +(closed_at2-curDate)
-    console.log(deadline.value);
+    // console.log(deadline.value);
 })
 onUnmounted(()=>{
 // sessionStorage.setItem("examRelastTime",deadline.value.toString());

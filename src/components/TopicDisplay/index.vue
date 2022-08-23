@@ -56,19 +56,20 @@
                   <div class="option option1" v-if="v.type==='choice'">
                     <a-checkbox-group v-model:value="element.answer" style="width: 100%" @change="changebox(v,element)" :disabled="CanDisabled()">
                       <a-row v-for="(j,b) in element.choice_options" :key="j">
-                        <a-checkbox :value="optionType[b]">{{`${optionType[b]}、`}}</a-checkbox>
+                        <!-- <a-checkbox :value="optionType[b]">{{`${optionType[b]}、`}}</a-checkbox> -->
+                        <a-checkbox :value="j.content">{{`${j.origin_option}、`}}</a-checkbox>
                         <div> {{j.content}}</div>
                       </a-row>
                     </a-checkbox-group>
                   </div>
                   <!-- 判断题答案选项 -->
                   <div class="option option2" v-if="v.type==='judge'">
-                    <a-radio-group v-model:value="element.answer[0]" :disabled="CanDisabled()" @change="changebox(v,element)">
+                    <a-radio-group v-model:value="element.answer" :disabled="CanDisabled()" @change="changebox(v,element)">
                       <a-row>
-                        <a-radio :value="1">正确</a-radio>
+                        <a-radio :value="true">正确</a-radio>
                       </a-row>
                       <a-row>
-                        <a-radio :value="2">错误</a-radio>
+                        <a-radio :value="false">错误</a-radio>
                       </a-row>
                     </a-radio-group>
                   </div>
@@ -83,7 +84,7 @@
                   <div class="option option4" v-if="v.type==='short-answer'">
                       <div class="jianda">
                         <div class="daan">答案</div>
-                        <a-textarea v-model:value="element.answer[0]" @blur="changebox(v,element)" :disabled="CanDisabled()" placeholder="" :autoSize="{ minRows: 4, maxRows: 6 }" />
+                        <a-textarea v-model:value="element.answer" @blur="changebox(v,element)" :disabled="CanDisabled()" placeholder="" :autoSize="{ minRows: 4, maxRows: 6 }" />
                       </div>
                   </div>
                   <!-- 编程题 -->
@@ -222,7 +223,7 @@ import getTopicType from './topictype'
 const role = Number(storage.lStorage.get("role"));
 const router = useRouter();
 const route = useRoute();
-const { id } = route.query;
+const { id ,uesr} = route.query;
 const httpStu = (request as any).studentExamination;
 const httpExam= (request as any).teacherExamination
 
@@ -261,157 +262,7 @@ const CanDisabled=()=>{
 const editScore=()=>{
   return role===3
 }
-const optionType:any=reactive(['A','B','C','D','E','F','G'])
-var list2:any=reactive([
-  {
-    type:'choice',
-    question:[
-      {
-        question_desc:'在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱，设计规范性差，设计 沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向进行京东国际频道的品牌视觉全新升级， 实现加强正品心智，提升频',
-        option:[
-          {
-            text:'旧版底部导航图标均为直角处理，会显得生硬，且部分图标的语义并不符合'
-          },
-          {
-            text:'新版图标采取断点式风格，在转角处做圆润倒角处理'
-          },
-          {
-            text:'与主站首页风格保持统一的前提下也延续了频道的整体调性。'
-          },
-          {
-            text:'configurations.xh'
-          },
-        ],
-        score:10,
-        answer:[],
-        id:1001
-      },
-      {
-        question_desc:'在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱，设计规范性差，设计 沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向进行京东国际频道的品牌视觉全新升级， 实现加强正品心智，提升频',
-        option:[
-          {
-            text:'旧版底部导航图标均为直角处理，会显得生硬，且部分图标的语义并不符合'
-          },
-          {
-            text:'新版图标采取断点式风格，在转角处做圆润倒角处理'
-          },
-          {
-            text:'与主站首页风格保持统一的前提下也延续了频道的整体调性。'
-          },
-          {
-            text:'configurations.xh'
-          },
-        ], 
-        score:14,
-        answer:['B','D'],
-        id:1002
-        //   选择 answer:['B','D']  判断answer:[true],  填空answer:['填空答案1','填空答案2']   简答answer:['简答题答案'] 
-      },
-      {
-        question_desc:'在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱，设计规范性差，设计 沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向进行京东国际频道的品牌视觉全新升级， 实现加强正品心智，提升频',
-        option:[
-          {
-            text:'旧版底部导航图标均为直角处理，会显得生硬，且部分图标的语义并不符合'
-          },
-          {
-            text:'新版图标采取断点式风格，在转角处做圆润倒角处理'
-          },
-          {
-            text:'与主站首页风格保持统一的前提下也延续了频道的整体调性。'
-          },
-          {
-            text:'configurations.xh'
-          },
-        ], 
-        score:16,
-        answer:['A'],
-        id:1003
-        //   选择 answer:['B','D']  判断answer:[true],  填空answer:['填空答案1','填空答案2']   简答answer:['简答题答案'] 
-      }
-    ]
-  },
-  {
-    type:'judge',
-    question:[
-      {
-        question_desc:'在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱，设计规范性差，设计 沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向进行京东国际频道的品牌视觉全新升级， 实现加强正品心智，提升频',
-        score:15,
-        answer:[],
-      },
-      {
-        question_desc:'在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱，设计规范性差，设计 沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向进行京东国际频道的品牌视觉全新升级， 实现加强正品心智，提升频',
-        score:15,
-        answer:[],
-      },
-    ]
-  },
-  {
-    type:'blank',
-    question:[
-      {
-        question_desc:'Python关键字elif表示( ▁▁▁▁▁▁ )和( ▁▁▁▁▁▁ )两个单词的缩写。',
-        option:[1,2],
-        score:10,
-        answer:['',45],
-      },
-      {
-        question_desc:'222Python关键字elif表示( ▁▁▁▁▁▁ )和( ▁▁▁▁▁▁ )两个单词的缩写。',
-        option:[1,2,3],
-        score:16,
-        answer:['','','dfg'],
-      }
-    ]
-  },
-  {
-    type:'short-answer',
-    question:[
-      {
-        question_desc:'在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱，设计规范性差，设计沟通维护成本高。结合前期对用户及竞',
-        option:'',
-        score:10,
-        answer:['设计规范性差，设计沟通维护成本高。'],
-      },
-      {
-        question_desc:'在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱，设计规范性差，设计沟通维护成本高。结合前期对用户及竞',
-        option:'',
-        score:19,
-        answer:['答案2'],
-      }
-    ]
-  },
-  {
-    type:'program',
-    question:[
-      {
-        score:22,
-        question_desc:'题目名称题目名称题目名称题目名称题目名称题目名称题目名称题目名称题目名称',
-        requirement:'根据提示，在代码文件中Begin-End区间补充代码1',
-        testExplain:'平台会对你编写的代码进行测试：输入数据以空格分开测试输入：536841113249预期输出：奇数列表：[5,3,11,13,9]',
-        answer:{},
-      }
-    ]
-  },
-  {
-    type:'ai',
-    question:[
-      {
-        score:15,
-        question_desc:'在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱，设计规范性差，设计沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向进行京东国际频道的品牌视觉全新升级，实现加强正品心智，提升频道访问量，品牌强化的业务目标。 在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；',
-        answer:{},
-      }
-    ]
-  },
-  {
-    type:'sql',
-    question:[
-      {
-        score:28,
-        question_desc:'SQL题目',
-        answer:{},
-      }
-    ]
-  }
-])
+const optionType:any=reactive(['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O'])
 const SqllObj:any=reactive({
   desc:'在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱，设计规范性差，设计沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向进行京东国际频道的品牌视觉全新升级，实现加强正品心智，提升频道访问量，品牌强化的业务目标。在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱，设计规范性差，设计沟通维护成本高。结合前期对用户及竞品的分析，以及一系列设计的探索，因此我们确定将从「品牌强化」及「体验升级」两个方向进行京东国际频道的品牌视觉全新升级，实现加强正品心智，提升频道访问量，品牌强化的业务目标。'
 })
@@ -429,7 +280,11 @@ watch(()=>{return props.list},(val:any)=>{
   val.map((v:any)=>{
     v.question.map((i:any)=>{
       allQuestionIds.push(i.id)
-      i.answer=i.answer?i.answer:[]
+      // i.answer=i.answer?i.answer:{}
+      // console.log();
+      if(!i.answer){
+        i.answer=getTopicType[i.kind]['answerformat']
+      }
     })
     obj.selectNum+=v.question && v.question.length 
     obj.selectScore+=TotalScore(v.question,'score')
@@ -444,20 +299,21 @@ const DebounceUse:Function= new Debounce().use(submitAnswers,0.5) //延时
 // 答题
 var curQuestionId:Ref<number> = ref(0)
 const changebox=(v:any,element:any)=>{
-  // console.log(element.answer)
+  console.log(element)
   if(curQuestionId.value === element.id){
     DebounceUse(element)
   }else{
+    curQuestionId.value=element.id
     submitAnswers(element)
   }
-  curQuestionId.value=element.id
 }
 function submitAnswers(params:any) {
+  // let answer=''
   console.log(params.id); 
   console.log(params.answer);
-  // httpStu.submitAnswers({param:{exam_id:id,question_id:curQuestionId.value,answer:[]}}).then((res:any)=>{
+  httpStu.submitAnswers({param:{exam_id:id,question_id:curQuestionId.value,answer:params.answer},urlParams:{user:uesr}}).then((res:any)=>{
 
-  // })
+  })
 }
 /**
  * 批量设置分数

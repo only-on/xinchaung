@@ -1,5 +1,6 @@
 <template>
   <trialModel/>
+  <!-- 模型题作答 -->
 </template>
 <script lang="ts" setup>
 import { ref, reactive, watch, provide, inject, onMounted } from "vue";
