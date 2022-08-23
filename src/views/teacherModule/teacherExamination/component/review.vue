@@ -39,7 +39,7 @@
                       <i class="iconfont icon-yipingyue"></i>
                     </span>
                   </a-tooltip>
-                  <a-tooltip placement="right">
+                  <a-tooltip placement="right" v-if="record.is_modify">
                     <template #title>
                       <span>教师已调整得分</span>
                     </template>

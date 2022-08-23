@@ -15,7 +15,7 @@
     </div>
     <div class="content">
       <div class="left setScrollbar">
-        <question :data="problemData"/>
+        <question :data="problemData" :type="questionType"/>
       </div>
       <div class="right">
         <div class="codeArea">

@@ -66,7 +66,6 @@ watch(()=>props.visible, newVal => {
 var loading:Ref<boolean> = ref(false);
 const handleEdit = async() => {
   await baseInfoRef.value.fromValidate()
-  console.log(baseInfoRef.value.studentIds)
   let params = {
     name: editInfo.name,
     course_id: editInfo.course_id,
@@ -75,7 +74,6 @@ const handleEdit = async() => {
     note: editInfo.note,
     student_ids: baseInfoRef.value.studentIds,
   }
-  console.log(params)
   loading.value=true
   let request = {
     '作业': httpAssignment.editAssignment, // 作业

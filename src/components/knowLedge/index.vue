@@ -15,7 +15,7 @@
               ref="cascaderRef"
               :disabled='(ifEdit?true:false)&&disabled'
               dropdownClassName="knowLedge"
-              v-model:value="props.knowledgePoints"
+              v-model:value="knowledgePoints"
               multiple
               :options="options1"
               :field-names="{ label: 'name', value: 'id' }"
@@ -23,8 +23,7 @@
               :load-data="loadData"
               @change='changeData'
               @dropdownVisibleChange="dropdownVisibleChange"
-            >
-            </a-cascader>
+            ></a-cascader>
             <a-button v-if="ifEdit" type="primary" @click="againSelect">重新选择</a-button>
             </div>
           </a-form-item>
@@ -39,7 +38,7 @@ import {NoToCh} from 'src/utils/common'
 const http = (request as any).QuestionBank;
 interface Props { 
 knowledgePoints:any[];
-maxNum: number;
+maxNum?: number;
 ifEdit?:boolean
 }
 const props = withDefaults(defineProps<Props>(),{
@@ -55,12 +54,28 @@ const arr = ref<any>([])
 const disabled:any=ref(true)
 function changeData(value:any, selectedOptions:any){
   arr.value = value
-  if(selectedOptions.length <= props.maxNum){
-    emit("update:knowledgePoints",props.knowledgePoints)
-  } else {
+  let a:any= []
+  selectedOptions.forEach((item:any,index:any) => {
+    // 第三级全选中
+    if (item.length === 2) {
+      item[1].children.forEach((cItem:any) => {
+        a.push([item[0].id, item[1].id, cItem.id])
+      } )
+      arr.value.splice(index,1,...a)
+    }
+    // 第二级只有一个且第三级全选中
+    if (item.length === 1) {
+      item[0].children[0].children.forEach((cItem:any) => {
+        a.push([item[0].id, item[0].children[0].id, cItem.id])
+      })
+      arr.value.splice(index,1,...a)
+    }
+  })
+  console.log(arr.value)
+  if(arr.value.length > props.maxNum){
     arr.value.splice(arr.value.length - 2, 1)
-    emit("update:knowledgePoints",arr.value)
   }
+  emit("update:knowledgePoints",arr.value)
 }
 function dropdownVisibleChange(value:any) {
   if (!value) {

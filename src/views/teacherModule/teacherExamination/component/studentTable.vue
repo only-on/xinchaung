@@ -65,7 +65,7 @@ const visable = ref<boolean>(false)
 var listData = reactive<any>([]); // 表格当前页展示的数据
 var allData = reactive<any>([]); // 所有数据
 const createChooseData = reactive<any>([]); // 创建的也就是详情返回的学生数据
-const showBtn = ref<boolean>(false); // 关联课程则不显示操作按钮，没有关联则显示
+const showBtn = ref<boolean>(true); // 关联课程则不显示操作按钮，没有关联则显示
 const studentIds = reactive<any>([])
 const pageInfo = reactive<any>({
   page: 1,
@@ -191,6 +191,7 @@ const getIds = (arr:any[]) => {
   return arr.map((item:any) => item.id)
 }
 const handleData = (sourceData:any[]) => {
+  if (!sourceData) return
   allData.length = 0
   allData.push(...sourceData)
   studentIds.length = 0
@@ -229,7 +230,7 @@ watch(()=>props.courseId, (newVal:any) => {
       columns.value.pop()
     }
   }
-},{immediate:true})
+},{deep:true})
 // 打开弹框无关联课程时，编辑传入的数据
 watch(()=>props.data, newVal => {
   if (newVal && !props.courseId) {
