@@ -27,13 +27,13 @@
                 <img :src="item.author.avatar?item.author.avatar:defaultAvatar">
                 <span class="tea_name">{{item.user_profile?.name}}</span>
                 <span>
-                  <span>提交量：</span>{{ item.submit_count }}/{{ item.questions_count }}
+                  <span>提交数量：</span>{{ item.submit_count }}/{{ item.questions_count }}
                 </span>
               </div>
               <div class="info-right">
                 <span v-if="item.status==3" class="lookScore pointer" @click="lookScore">查看成绩</span>
-                <a-button v-else-if="isAssign" type="primary" size="small" @click="toAnswer" :disabled="item.status==1">答题</a-button>
-                <a-button v-else type="primary" size="small" @click="toAnswer" :disabled="item.status==1">开始考试</a-button>
+                <a-button v-else-if="isAssign" type="primary" size="small" @click="toAnswer(item)" :disabled="item.status==1">答题</a-button>
+                <a-button v-else type="primary" size="small" @click="toAnswer(item)" :disabled="item.status==1">开始考试</a-button>
               </div>
             </div>
           </div>
@@ -140,9 +140,20 @@ function searchFn(key: string){
   params.page = 1
   getExamList()
 }
-function toAnswer(){
-  router.push({path:'./studentAssignment/answerQues',query:{name:typeInfo[props.type].text,type:'answer'}})
-  sessionStorage.removeItem('examRelastTime')
+function toAnswer(item:any){
+  let path='/student/studentExamination/Examinationanswerques'
+  router.push({
+    path:path,
+    query:{
+      name:typeInfo[props.type].text,
+      purpose:'IsStuAnswer',
+      id:item.id,
+      uesr:item.user_profile.user_id,
+      closedAt:item.closed_at   //2022-08-18 22:00:00   item.closed_at
+    }
+  })
+  // router.push({path:'./studentAssignment/answerQues',query:{name:typeInfo[props.type].text,type:'answer'}})
+  // sessionStorage.removeItem('examRelastTime')
 }
 function lookScore(){
   router.push({path:'./studentAssignment/answerQues',query:{name:typeInfo[props.type].text,type:'lookScore'}})
