@@ -18,7 +18,7 @@
               v-model:value="knowledgePoints"
               multiple
               :options="options1"
-              :field-names="{ label: 'name', value: 'id' }"
+              :field-names="{ label: 'knowledge_map_name', value: 'id' }"
               placeholder="请选择"
               :load-data="loadData"
               @change='changeData'
@@ -85,7 +85,7 @@ function dropdownVisibleChange(value:any) {
 const options1:any =ref([]);
 function getKnowledgeFirst(){
   options1.value.length = 0
-  http.allCourseDir().then((res:any) => {
+  http.getKnowledgeFirst().then((res:any) => {
       options1.value=res.data
       options1.value.forEach((item:any)=>{
         item.isLeaf=false
@@ -93,9 +93,18 @@ function getKnowledgeFirst(){
   })
 }
 function loadData(selectedOptions:any){
-      const targetOption = selectedOptions[selectedOptions.length - 1];
-        targetOption.loading = true;
-        console.log(selectedOptions.length,'selectedOptions.length')
+  const targetOption = selectedOptions[selectedOptions.length - 1];
+  targetOption.loading = true;
+  console.log(selectedOptions.length,'selectedOptions.length')
+  http.getKnowledgeSub({urlParams:{id:selectedOptions[selectedOptions.length - 1]?.id}}).then((res:any) => {
+    console.log(res.data,'res.data')
+    targetOption.loading = false
+    targetOption.children = res.data
+    targetOption.children.forEach((item:any)=>{
+      item.isLeaf = item.level === 4
+    })
+  })
+  return
         if(selectedOptions.length==2){
            http.allknowledges({urlParams:{ID:selectedOptions[selectedOptions.length - 1]?.id}}).then((res:any) => {
           console.log(res.data,'res.data')

@@ -61,7 +61,7 @@
               <!-- 简答题关键字 -->
               <div class="keyword" v-if="v.kind==='short-answer'">
                 <div class="keyword-tit">关键字：</div>
-                <div class="keyword-content">{{v.short_answer_keys}}</div>
+                <div class="keyword-content">{{v.short_answer_keys.split(' ').join(',')}}</div>
               </div>
               <div class="topic-analysis">
                 <div class="tit">题目解析：</div>
