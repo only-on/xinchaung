@@ -93,7 +93,7 @@ const Answered=(item:any)=>{
     return flage
 }
 const submit=()=>{
-    httpStu.submitExam({param:{},urlParams:{exam:id,user:uesr}}).then((res:any)=>{
+    httpStu.submitExam({urlParams:{exam:id}}).then((res:any)=>{
         emit('submitComplete')
   })
 }

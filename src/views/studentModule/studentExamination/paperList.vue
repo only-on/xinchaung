@@ -32,7 +32,7 @@
               </div>
               <div class="info-right">
                 <!-- <span v-if="item.status==3" class="lookScore pointer" @click="lookScore(item)">查看成绩</span> -->
-                <a-button v-if="item.status==3" @click="lookScore(item)" class="lookScore" type="link" :disabled="item.can_view_result">查看成绩</a-button>
+                <a-button v-if="item.status==3" @click="lookScore(item)" class="lookScore" type="link" :disabled="!item.can_view_result">查看成绩</a-button>
                 <a-button v-else-if="isAssign" type="primary" size="small" @click="toAnswer(item)" :disabled="item.status !==1">答题</a-button>
                 <!-- :disabled="item.status==1" -->
                 <a-button v-else type="primary" size="small" @click="toAnswer(item)" :disabled="item.status !==1">开始考试</a-button>
@@ -151,7 +151,7 @@ function toAnswer(item:any){
       name: typeInfo[props.type].text,
       purpose: 'IsStuAnswer',
       id: item.id,
-      uesr: item.user_profile.user_id,
+      // uesr: item.user_profile.user_id,
       closedAt: item.closed_at   //2022-08-18 22:00:00   item.closed_at
     }
   })

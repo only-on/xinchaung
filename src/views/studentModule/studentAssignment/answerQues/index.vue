@@ -76,9 +76,9 @@ const headerObj: any = reactive({
 });
 const questionsList:any=reactive([])
 var listLoading:Ref<boolean> = ref(false);
-const getExamDetail = () => {
+const getExamDetail = () => {  // http  httpStu resultId:id    ID: id
   listLoading.value=true
-  httpStu.examDetail({urlParams:{resultId: id}}).then((res:IBusinessResp) => {
+  httpStu.examDetail({urlParams:{ID: id}}).then((res:IBusinessResp) => {
     questionsList.length=0
     const {data}=res
     headerObj.title=data.name
@@ -91,6 +91,16 @@ const getExamDetail = () => {
         question:questions_info[v]
       }
       questionsList.push(obj)
+    })
+    // questionsList.map(()=>{
+
+    // })
+    questionsList.map((v:any)=>{
+      v.question.map((i:any)=>{
+        if(i.submit_answer){ // i.submit_answer getTopicType[i.kind]['answerformat']
+          i.answer=i.submit_answer
+        }
+      })
     })
     listLoading.value=false
   }).catch((err:any)=>{listLoading.value=false})

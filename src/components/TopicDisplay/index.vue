@@ -312,11 +312,18 @@ function submitAnswers(params:any) {
   let answer=params.answer
   console.log(params.id); 
   console.log(params.answer);
-  if(['choice','blank'].includes(params.kind) && answer && answer.length && (answer.filter((v:any)=>v)).length){
-        
+  /// 需过滤空答案  && (answer.filter((v:any)=>v)).length
+  if(['choice','blank'].includes(params.kind) && answer && answer.length){
+      answer=answer.filter((v:any)=>v)
   }
-  // return
-  httpStu.submitAnswers({param:{exam_id:id,question_id:curQuestionId.value,answer:params.answer},urlParams:{user:uesr}}).then((res:any)=>{
+  console.log(answer);
+  if(['choice','blank'].includes(params.kind) && !answer.length){
+    return
+  }
+  if(['judge','short-answer'].includes(params.kind) && !answer){
+    return
+  }
+  httpStu.submitAnswers({param:{exam_id:id,question_id:curQuestionId.value,answer:params.answer}}).then((res:any)=>{
 
   })
 }
