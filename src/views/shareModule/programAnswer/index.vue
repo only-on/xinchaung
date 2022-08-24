@@ -90,7 +90,6 @@ const questionId = ref<any>(route.query.questionId) // 题目id
 const examId = ref<any>(route.query?.examId) // 学生考试id
 const questionType = ref<any>(route.query?.type ? route.query.type : 'program') // 题目类型
 const languageDefault = ref<string>('') // 语言默认值
-const userId= lStorage.get('uid')
 const problemData = reactive<IproblemData>({
   question: '',
   question_desc: '',
@@ -177,16 +176,27 @@ const resetContent = () => {
 // 查询测试结果
 const getResult = () => {
   timerNum.value += 1
-  if (timerNum.value > 20) {
-    resetContent()
-  }
   http.solutionSatus({urlParams:{ID: questionId.value, solution_id:solutionId.value}}).then((res:IBusinessResp) => {
     let result = res.data
     testData.result = result.result
-    // 测试、提交运行是否成功
+    // 测试、提交运行成功
     if (result.result === 4 || result.result === 13) {
       testData.memory = result.memory
       testData.time = result.time
+      testData.loading = false
+      clearInterval(testData.timer)
+      testData.timer = null
+      if (result.compile_info) {
+        testData.resultText = result.compile_info.error
+        return
+      }
+      if (result.runtime_info) {
+        testData.resultText = result.runtime_info.error
+      }
+      return
+    }
+    // 一分钟之后停止定时器
+    if (timerNum.value > 20) {
       testData.loading = false
       clearInterval(testData.timer)
       testData.timer = null
@@ -204,6 +214,7 @@ const getResult = () => {
 }
 // 提交
 const handleSubmit =(test_run:boolean) => {
+  testData.resultText = ''
   if (!code.value.trim().length){
     message.warning('请输入代码')
     return
@@ -222,7 +233,7 @@ const handleSubmit =(test_run:boolean) => {
   if (examId.value) {
     params.exam_id = examId.value
   }
-  http.runQuestions({urlParams:{user:userId},param: params}).then((res:IBusinessResp) => {
+  http.runQuestions({param: params}).then((res:IBusinessResp) => {
     if (test_run) {
      if (!res.data || !res.data.solution_id) {
         message.warning('接口未返回solution_id')

@@ -120,7 +120,6 @@ const downLoad = (item:any) => {
 }
 const downLoading = ref<boolean>(false)
 const downLoadAll = () => {
-  console.log(questionId.value)
   downLoading.value = true
   http.batchDownLoad({urlParams:{questionId: questionId.value}}).then((res:IBusinessResp) => {
     downloadUrl(res.data.path, res.data.file_name)
@@ -128,19 +127,6 @@ const downLoadAll = () => {
   }).catch(()=>{
     downLoading.value = false
   })
-}
-const fileList = reactive([])
-const resultSuccess = (data:any) => {
-  submitData.result = [data]
-}
-const resultDel = (id: number) => {
-  submitData.result = []
-}
-const processSuccess = (data:any) => {
-  submitData.process = [data]
-}
-const processDel = (id: number) => {
-  submitData.process = []
 }
 const saveLoading = ref<boolean>(false)
 const formRef = ref()
@@ -152,7 +138,6 @@ const handleSave = () => {
   if (examId.value) {
     submitData.exam_id = examId.value
   }
-  console.log(submitData)
   formRef.value.validate().then(()=>{
     saveLoading.value = true
     http.runQuestions({urlParams:{user: userId},param: submitData}).then((res:IBusinessResp) => {

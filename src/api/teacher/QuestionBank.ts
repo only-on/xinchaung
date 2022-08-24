@@ -54,7 +54,7 @@ export default {
   ojConfig:{url:`/api/v1/oj/config`,method: "GET"},
   solutionSatus:{url:` /api/v1/xinchuang/question/program-questions/{ID}/solution/{solution_id}/status`,method: "GET"},
   // 试用模型题、编程题共用 测试/提交接口
-  runQuestions:{url:`/api/v1/question/students/{user}/answer`,method: "POST", dataType: "json"},
+  runQuestions:{url:`/api/v1/question/students/answer`,method: "POST", dataType: "json"},
   batchDownLoad:{url:`/api/v1/xinchuang/question/model-questions/download/{questionId}`,method: "GET"},
 
 

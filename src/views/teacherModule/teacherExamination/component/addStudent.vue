@@ -169,7 +169,6 @@ const EmptyType: any = computed(() => {
   return str;
 });
 function onSearch(value: any) {
-  console.log(value);
   params.page = 1;
   getallstudent();
 }
@@ -216,11 +215,6 @@ function getallstudent() {
     data.value = res.data.list;
     tableData.total = res.data.page.totalCount;
     tableData.selectedRowKeys = JSON.parse(JSON.stringify(alreadySelect.value));
-    // res.data.list.forEach((item:any) => {
-    //   if(item.selected){
-    //     tableData.selectedRowKeys.push(item.id)
-    //   }
-    // })
   });
 }
 watch(
@@ -237,7 +231,6 @@ watch(
   () => props.studentIds,
   (newVal) => {
     alreadySelect.value = JSON.parse(JSON.stringify(newVal));
-    // tableData.selectedRowKeys = JSON.parse(JSON.stringify(newVal))
   },
   { deep: true, immediate: true }
 );
