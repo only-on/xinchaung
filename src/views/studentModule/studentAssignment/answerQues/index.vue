@@ -48,9 +48,10 @@ import scoreRanking from "src/components/scoreRanking/index.vue";
 import submitAnswer from "src/components/submitAnswer/index.vue";
 import { IBusinessResp } from "src/typings/fetch.d";
 const http = (request as any).teacherExamination;
+const httpStu = (request as any).studentExamination;
 const route = useRoute();
 const router = useRouter();
-const { id,purpose,name } = route.query;
+const { id,purpose,name,examResultId } = route.query;
 var updata = inject("updataNav") as Function;
 updata({
   tabs: [
@@ -77,7 +78,7 @@ const questionsList:any=reactive([])
 var listLoading:Ref<boolean> = ref(false);
 const getExamDetail = () => {
   listLoading.value=true
-  http.examDetail({urlParams:{ID: id}}).then((res:IBusinessResp) => {
+  httpStu.examDetail({urlParams:{resultId: id}}).then((res:IBusinessResp) => {
     questionsList.length=0
     const {data}=res
     headerObj.title=data.name
@@ -96,7 +97,7 @@ const getExamDetail = () => {
 }
 const getExamResult = () => {
   listLoading.value=true
-  http.examResult({urlParams:{examResultId: id}}).then((res:IBusinessResp) => {  // examResult
+  http.examResult({urlParams:{examResultId: examResultId}}).then((res:IBusinessResp) => {  // examResult
     questionsList.length=0
     const {data}=res
     headerObj.title=data.name
