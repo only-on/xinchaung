@@ -31,12 +31,14 @@
                 </span>
               </div>
               <div class="info-right">
-                <!-- <span v-if="item.status==3" class="lookScore pointer" @click="lookScore(item)">查看成绩</span> -->
                 <a-button v-if="item.status==3" @click="lookScore(item)" class="lookScore" type="link" :disabled="!item.can_view_result">查看成绩</a-button>
                 <a-button v-else-if="isAssign" type="primary" size="small" @click="toAnswer(item)" :disabled="item.status !==1">答题</a-button>
-                <!-- :disabled="item.status==1" -->
-                <a-button v-else type="primary" size="small" @click="toAnswer(item)" :disabled="item.status !==1">开始考试</a-button>
-                <!-- :disabled="item.status==1" -->
+                <a-button v-else type="primary" size="small" 
+                  @click="toAnswer(item)" 
+                  :disabled="(item.status !==1 || item.is_submit)"
+                  >
+                  {{item.is_submit?'已提交':'开始考试'}}
+                </a-button>
               </div>
             </div>
           </div>
