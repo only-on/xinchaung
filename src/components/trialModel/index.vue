@@ -123,7 +123,7 @@ const downLoadAll = () => {
   console.log(questionId.value)
   downLoading.value = true
   http.batchDownLoad({urlParams:{questionId: questionId.value}}).then((res:IBusinessResp) => {
-    downloadUrl(res.data)
+    downloadUrl(res.data.path, res.data.file_name)
     downLoading.value = false
   }).catch(()=>{
     downLoading.value = false

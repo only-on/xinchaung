@@ -4,7 +4,7 @@
       v-model:fileList="fileList"
       name="file"
       :multiple="isMultiple"
-      :remove='removeDoc'
+      @remove='removeDoc'
       @change="handleChange1"
       @drop="handleDrop"
       :before-upload="beforeUpload"
@@ -136,10 +136,11 @@ function beforeUpload(file: any) {
   return false;
 }
 function removeDoc(file:any){
-  console.log('11111filefile',file)
-  // fileList.value.indexOf(file)
-  // console.log(fileList.value.indexOf(file),'indecff')
-  fileList.value=[]
+  infoList.value.forEach((item:any,index:any) => {
+    if (file.url == item.file_url) {
+      infoList.value.splice(index,1)
+    }
+  })
   emit("update:fileInfo",infoList.value);
 }
  watch(

@@ -410,6 +410,14 @@ function onSubmit(){
   formRef.value
     .validate()
     .then((res: any) => {
+      if (!formState.trainingSetPath.length) {
+        message.warning('请上传训练集')
+        return
+      }
+      if (!formState.validationSetPath.length) {
+        message.warning('请上传验证集')
+        return
+      }
       editId?editModalQues():createModelQues()  
     })
     .catch((err: any) => {
