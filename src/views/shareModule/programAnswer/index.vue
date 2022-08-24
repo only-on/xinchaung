@@ -86,8 +86,8 @@ interface IproblemData {
 }
 const route = useRoute()
 const http = (request as any).QuestionBank;
-const questionId = ref<any>(route.query.questionId) // 题目id
-const examId = ref<any>(route.query?.examId) // 学生考试id
+const questionId = ref<any>(Number(route.query.questionId)) // 题目id
+const examId = ref<any>(Number(route.query?.examId)) // 学生考试id
 const questionType = ref<any>(route.query?.type ? route.query.type : 'program') // 题目类型
 const languageDefault = ref<string>('') // 语言默认值
 const problemData = reactive<IproblemData>({
