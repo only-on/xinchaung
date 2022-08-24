@@ -26,8 +26,8 @@
               :pagination="false"
             >
               <template v-slot:bodyCell="{ column, record }">
-                <template v-if="column.dataIndex === 'is_submmit'">
-                  {{record.is_submmit ? '已提交' : '未提交'}}
+                <template v-if="column.dataIndex === 'is_submit'">
+                  {{record.is_submit ? '已提交' : '未提交'}}
                 </template>
                 <template v-if="column.dataIndex === 'total_score'">
                   {{record.total_score ? record.total_score : '--'}}
@@ -49,7 +49,7 @@
                   </a-tooltip>
                 </template>
                 <template v-if="column.dataIndex === 'operation'">
-                  <a-button type="link" @click="checkDetail(record.id)" :disabled="!record.is_submmit">查看</a-button>
+                  <a-button type="link" @click="checkDetail(record.id)" :disabled="!record.is_submit">查看</a-button>
                 </template>
               </template>
             </a-table>
@@ -130,8 +130,8 @@
             </template>
             </a-table>
           </div>
-      
         </div>
+        <Empty v-if="showEmpty" type="searchEmpty"/>
       </div>
       <template #footer>
         <Submit @submit="handleSearch" @cancel="closeDrawer" :loading="searchLoading" :okText="searchLoading ? '查询中' : '重新查询'"></Submit>
@@ -164,7 +164,6 @@ const examId = ref<any>(route.query.id)
 const modelType = ref<any>(props.type)
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
-console.log(props.type == 1)
 updata({
   tabs: [
     {
@@ -197,8 +196,8 @@ const columns = [
   },
   {
     title: "提交状态",
-    dataIndex: "is_submmit",
-    key: "is_submmit",
+    dataIndex: "is_submit",
+    key: "is_submit",
   },
   {
     title: "提交时间",
@@ -311,6 +310,7 @@ const recheckSearch = reactive({
   language: '',
   sim: ''
 })
+const showEmpty = ref<boolean>(false)
 const recheckResult = reactive<any>([])
 const handleRecheck = () => {
   drawerVisible.value = true
@@ -323,6 +323,7 @@ const handleRecheck = () => {
 const closeDrawer = () => {
   drawerVisible.value = false
   searchLoading.value = false
+  showEmpty.value = false
 }
 const handleSearch = () => {
   searchLoading.value = true
@@ -334,6 +335,9 @@ const handleSearch = () => {
         innerItem.studentNum = innerItem.sims.length
       })
     })
+    if (!recheckResult.length) {
+      showEmpty.value = true
+    }
     searchLoading.value = false
   }).catch(()=>{
     searchLoading.value = false
