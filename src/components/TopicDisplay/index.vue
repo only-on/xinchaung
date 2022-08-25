@@ -538,15 +538,26 @@ const questionSelect=(data:any)=>{
 }
 //处理正确答案
 const standardAnswer=(element:any)=>{
-  console.log(element)
+      // console.log(element)
   let str=''
   if(element.kind==='blank'){
+    let arr:string[]=[]
     element.blank_correct.map((v:any,k:number)=>{
-      v.text=`填空${k+1}（${v}）`
+      let text=`填空${k+1}（${v}）`
+      arr.push(text)
     })
-    str=element.blank_correct.split('/')
+    str=arr.join(' / ')
   }
-  console.log(str)
+  if(element.kind==='choice'){
+    str=element.choice_correct.join('')
+  }
+  if(element.kind==='judge'){
+    str='判断正确答案'
+  }
+  if(element.kind==='short-answer'){
+    str='简答正确答案'
+  }
+  // console.log(str);
   return str
 }
 onMounted(()=>{
