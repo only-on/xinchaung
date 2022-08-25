@@ -538,6 +538,7 @@ const questionSelect=(data:any)=>{
 }
 //处理正确答案
 const standardAnswer=(element:any)=>{
+  console.log(element)
   let str=''
   if(element.kind==='blank'){
     element.blank_correct.map((v:any,k:number)=>{

@@ -153,7 +153,7 @@ function toAnswer(item:any){
       name: typeInfo[props.type].text,
       purpose: 'IsStuAnswer',
       id: item.id,
-      // uesr: item.user_profile.user_id,
+      examResultId:item.exam_result_id,
       closedAt: item.closed_at   //2022-08-18 22:00:00   item.closed_at
     }
   })

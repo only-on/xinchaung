@@ -10,6 +10,9 @@ export default {
 
     // 学生获取考试作业题目
     examDetail:{url:`/api/v1/xinchuang/question/student/exam/{ID}`, method: "GET"},
+
+    // 学生开始考试
+    startExam:{url:`/api/v1/xinchuang/question/student/exam/prepare/{examResultId}`, method: "POST"},
 }
 
 export interface IStudentExamination {
@@ -17,4 +20,5 @@ export interface IStudentExamination {
     submitAnswers:TFHttpSend
     submitExam:TFHttpSend
     examDetail:TFHttpSend
+    startExam:TFHttpSend
 }

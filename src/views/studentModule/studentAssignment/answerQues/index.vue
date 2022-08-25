@@ -136,11 +136,18 @@ const submitComplete=()=>{
   message.success("提交成功");
   router.go(-1)
 }
+const startExam = () => {
+  // 考试作业前调用
+  httpStu.startExam({urlParams:{examResultId:examResultId}}).then((res:IBusinessResp)=>{
+
+  })
+}
 onMounted(()=>{
   console.log(purpose)
   if(purpose==="achievement"){
     getExamResult()
   }else{
+    startExam()
     getExamDetail()
   }
   
