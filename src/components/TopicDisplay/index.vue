@@ -245,7 +245,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<{
   // (e: "setScore", val: number[]): void;
   // (e: "setBatchScore", val: number[]): void;
-  (e: "updataQuestion", val: any): void;   // 设置分数/删除后处理的数据格式    遵循后端更新接口
+  (e: "updataQuestion", val: any): void;   // 设置分数/删除后处理的数据格式    反馈给父组件
   (e: "updateList"): void;            // 
 }>();
 const onStart=()=>{
@@ -390,9 +390,9 @@ const cancel=()=>{
 const Save=()=>{
   formRef.value.validate().then(()=>{ 
     if(setScoreType.value===2){ //成绩页修改得分
-      httpExam.editScore({param:{...formState},urlParams:{resultItemId:selectIds}}).then(()=>{
+      httpExam.editScore({param:{...formState,resultItemId:setScoreId.value},urlParams:{resultItemId:setScoreId.value}}).then(()=>{
         message.success('操作成功')
-        
+        emit('updateList')
       }).finally(()=>{
         formRef.value.resetFields()
         Visible.value=false

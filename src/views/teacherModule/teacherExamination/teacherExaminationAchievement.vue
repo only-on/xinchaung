@@ -2,7 +2,7 @@
   <div class="teacherExaminationAchievement">
     <div class="achievementLeft">
         <Outline :title="headerObj.title" :explain="headerObj.explain" :explainText="headerObj.explainText" />
-        <TopicDisplay :purpose="'achievement'" :list="questionsList" :loading="listLoading"  />
+        <TopicDisplay :purpose="'achievement'" :list="questionsList" :loading="listLoading" @updateList="getExamDetail()" />
     </div>
     <div class="achievementRight">
         <ScoreRanking />
@@ -83,7 +83,7 @@ const questionsList:any=reactive([])
 var listLoading:Ref<boolean> = ref(false);
 const getExamDetail = () => {
   listLoading.value=true
-  http.examResult({urlParams:{examResultId: 103}}).then((res:IBusinessResp) => {  // examResult
+  http.examResult({urlParams:{examResultId: id}}).then((res:IBusinessResp) => {  // examResult
     questionsList.length=0
     const {data}=res
     headerObj.title=data.name

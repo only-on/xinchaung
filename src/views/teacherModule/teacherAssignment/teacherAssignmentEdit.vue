@@ -4,7 +4,6 @@
     <TopicDisplay :list="questionsList" 
       :loading="listLoading"
       :purpose="'IsEdit'" 
-      @updateList="getExamDetail"
      @updataQuestion="updataQuestion" />
   </div>
   <div class="teacherAssignmentEditFooter">
