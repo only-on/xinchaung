@@ -131,7 +131,7 @@ const params:any=reactive({
   name:'',
   page:1,
   limit:12,
-  state: 0,
+  status: 0
 })
 const total = ref(0)
 const cardlist:any=ref([])
@@ -175,6 +175,9 @@ function lookScore(item:any){
   })
 }
 function getExamList(){
+  if (params.status === 0){
+    params.status = ''
+  }
   loading.value = true
   http.studentExamList({param:params}).then((res:any)=>{
     loading.value = false

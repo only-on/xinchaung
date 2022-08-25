@@ -107,14 +107,17 @@
         </a-row>
         <div class="searchResult">
           <div v-for="(item,index) in recheckResult" :key="index">
-            <span>{{item.question}}</span>
+            <div class="questiuon-title">
+              编程题 第{{NoToCh(index+1)}}题 
+              <span class="single_ellipsis" :title="item.question">{{item.question}}</span>
+            </div>
             <a-table
               :columns="recheckColumns"
               :data-source="item.items"
               row-key="user_id"
               :pagination="false"
             >
-            <template #expandedRowRender="{record1}">
+            <template #expandedRowRender="{record:record1}">
               <a-table
                 :columns="recheckInnerColumns"
                 :data-source="record1.sims"
@@ -150,6 +153,7 @@ import {simList} from '../utils'
 import {downloadUrl} from 'src/utils/download'
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
+import {NoToCh} from 'src/utils/common'
 interface Props {
   type: number;
 }
@@ -441,9 +445,14 @@ onMounted(()=>{
       &>div{
         margin-bottom: 20px;
       }
-      >span{
-        display: inline-block;
-        margin-bottom: 5px;
+      .questiuon-title{
+        margin-bottom: 10px;
+        display: flex;
+        >span{
+          flex: 1;
+          margin-left: 10px;
+          display: inline-block;
+        }
       }
       .sim{
         padding: 5px 15px;

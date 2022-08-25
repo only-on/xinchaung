@@ -23,7 +23,7 @@
         </template>
         
         <!-- 已发布 并且状态是 进行中或已结束 -->
-        <span v-if="item.is_publish && [1,3].includes(item.status)">提交人数：{{item.closed_students_count}}/{{item.students_count}}</span>
+        <span v-if="item.is_publish && [1,3].includes(item.status)">提交人数：{{item.submit_num}}/{{item.students_count}}</span>
       </div>
     </div>
     <div class="right">

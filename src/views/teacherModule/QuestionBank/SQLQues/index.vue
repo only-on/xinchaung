@@ -70,19 +70,40 @@
           </a-form-item>
         </a-col>
         <a-col  :span="12">
-          <a-form-item label="用例输入" name="sampleInput">
+          <div class="sampleHead">
+            <span>用例输入</span>
+            <span @click="checkSample('in')">示例</span>
+          </div>
             <a-textarea v-model:value="formState.sampleInput" :rows="4" />
-          </a-form-item>
         </a-col>
         <a-col  :span="12">
-          <a-form-item label="用例输出" name="sampleOutput">
+          <div class="sampleHead">
+            <span>用例输出</span>
+            <span @click="checkSample('out')">示例</span>
+          </div>
             <a-textarea v-model:value="formState.sampleOutput" :rows="4" />
-          </a-form-item>
         </a-col>
       </a-row>
     </a-form>
     <Submit @submit="onSubmit" @cancel="reset" okText="保存" :loading='loading'></Submit>
   </div>
+  <!-- 用例示例 -->
+  <a-modal :visible="sampleData.visible" :title="(sampleData.isIn?'输入':'输出') + '示例'" :width="sampleData.isIn ? 700: 400" :destroyOnClose="true" @cancel="handleCancel">
+    <div>
+      <a-textarea
+      :bordered="false"
+        resize="none"
+        autoSize
+        :readonly="true"
+        placeholder="请输入内容"
+        v-model:value="sampleData.data"
+      >
+      </a-textarea>
+    </div>
+    <template #footer>
+      <a-button @click="handleCancel">关闭</a-button>
+    </template>
+  </a-modal>
 </template>
 <script lang="ts" setup>
 import {
@@ -111,6 +132,7 @@ import Submit from "src/components/submit/index.vue";
 import { Modal, message } from "ant-design-vue";
 import type { Rule } from 'ant-design-vue/es/form';
 import { cascadeEcho,doSubmitData,doEditSubmit,validateNum } from 'src/utils/cascadeEcho'
+import {inputValue,outputValue} from './sample'
 const route = useRoute();
 const router = useRouter();
 const type: any = ref(route.query.value);
@@ -210,6 +232,24 @@ const rules = {
     },
   ]
 };
+const sampleData = reactive<any>({
+  visible: false,
+  isIn: false,
+  data: ''
+})
+const checkSample = (type:string) => {
+  if (type === 'in') {
+    sampleData.isIn = true
+    sampleData.data = inputValue
+  } else {
+    sampleData.isIn = false
+    sampleData.data = outputValue
+  }
+  sampleData.visible = true
+}
+const handleCancel = () => {
+  sampleData.visible = false
+}
 function createSqlQues(){
   loading.value=true
   const params={
@@ -361,5 +401,17 @@ onMounted(()=>{
 .spance_bet{
   display: flex;
   justify-content: space-between;
+}
+.sampleHead{
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  >span:last-child{
+    color: var(--primary-color);
+    cursor: pointer;
+  }
+}
+.ant-form{
+  margin-bottom: 20px;
 }
 </style>
