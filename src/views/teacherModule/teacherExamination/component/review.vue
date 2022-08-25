@@ -191,8 +191,8 @@ const columns = [
   },
   {
     title: "班级",
-    dataIndex: ['classes_info', 'classname'],
-    key: "classname",
+    dataIndex: "classes_name",
+    key: "classes_name",
   },
   {
     title: "提交状态",

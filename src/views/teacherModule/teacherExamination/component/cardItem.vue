@@ -1,5 +1,5 @@
 <template>
-  <div class="cradItem" @click.stop.stop="goPreview">
+  <div class="cradItem" @click.stop="goPreview">
     <div class="left">
       <span class="type">{{type == 1 ? '作业' : '考试'}}</span>
       <div :class="['img',{'isExam': type == 2},item.is_publish == 0 ? 'unpublish' : item.status == 1 ? 'ongoing' :  item.status == 2 ? 'unstart' :  'end'] ">
@@ -70,7 +70,7 @@ const props =withDefaults(defineProps<{
   type: any
 }>(), {
   data: ()=>({}),
-  type: '1',
+  type: '1', // 作业；1，考试：2
 })
 const item = reactive<any>(props.data)
 const emit = defineEmits<{

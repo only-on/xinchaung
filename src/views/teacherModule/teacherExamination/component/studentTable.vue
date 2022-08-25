@@ -217,8 +217,11 @@ watch(()=>props.courseId, (newVal:any) => {
     })
   } else {
     showBtn.value = true
-    if (createChooseData.length) {
+    if (props.isEdit && createChooseData.length) {
       handleData(createChooseData)
+    } else {
+      // 新增时选择不关联课程，清空之前选择关联课程的学生
+      handleData([])
     }
   }
   // 如果是 编辑考试/作业基本信息
