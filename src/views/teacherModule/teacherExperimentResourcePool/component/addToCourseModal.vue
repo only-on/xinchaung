@@ -4,6 +4,7 @@
     title="添加到"
     @ok="handleOk"
     @cancel="handleCancel"
+    class="add-to-course"
   >
     <a-tree
       :show-line="true"
@@ -126,7 +127,7 @@ onMounted(() => {
 }
 </style>
 <style lang="less">
-  .ant-tree-treenode .ant-tree-switcher-noop{
+  .add-to-course .ant-tree-treenode .ant-tree-switcher-noop{
     display: none;
   }
 </style>

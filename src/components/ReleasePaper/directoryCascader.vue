@@ -47,14 +47,14 @@ const loadData = (selectedOptions: any) => {
   if (targetOption.id==0) {
     http.getDirectoryFirst().then((res: IBusinessResp) => {
       targetOption.loading = false;
-      console.log(res)
+      // console.log(res)
       if (res.data?.length) {
         res.data.forEach((v: any) => {
           v.isLeaf = !v.has_children
           v.level = 1
         })
         targetOption.children = res.data
-        console.log(targetOption)
+        // console.log(targetOption)
         // options.value = [...targetOption];
       }
     })
@@ -63,12 +63,12 @@ const loadData = (selectedOptions: any) => {
       targetOption.loading = false;
       if (res.data?.length) {
         res.data.forEach((v: any) => {
-          v.isLeaf = targetOption.level==props.levelNum-1
-          v.level = targetOption.level==props.levelNum-1?props.levelNum:targetOption.level+1
+          v.isLeaf = !v.has_children
+          v.level = targetOption.level+1
         })
-        targetOption.children = res.data
-        options.value = [...targetOption];
       }
+      targetOption.children = res.data
+      options.value = [...targetOption];
     }).catch(() => {
       targetOption.loading = false;
       // targetOption.children = [
@@ -80,8 +80,8 @@ const loadData = (selectedOptions: any) => {
   }
 };
 const changeHandle = (value: any, selectedOptions: any) => {
-  console.log(value)
-  console.log(selectedOptions)
+  // console.log(value)
+  // console.log(selectedOptions)
   emit('selectedHandle')
 }
 </script>
