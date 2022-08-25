@@ -1,12 +1,12 @@
 <template>
     <div class="score_ranking">
-        <div class="stu_score">
+        <div class="stu_score" v-if="info.id">
             <img src="/src/assets/images/task/person_img.png">
-            <div class="name">邵平川</div>
-            <div class="stu_number">428676352506205</div>
+            <div class="name">{{info.user_profile.name}}</div>
+            <div class="stu_number">{{info.user_profile.sno}}</div>
             <div class="rank">
-                <div>NO.24</div>
-                <div>96</div>
+                <div>NO.{{info.rank}}</div>
+                <div>{{info.total_score}}</div>
             </div>
             <div class="score_rank">
                 <span>成绩排名</span>
@@ -22,7 +22,7 @@
         </div>
         <div class="submit_time">
             <div>提交时间</div>
-            <div>2022/10/22 14:30:00</div>
+            <div>{{info.sumbmit_time}}</div>
         </div>
     </div>
 </template>
@@ -38,10 +38,12 @@ interface optionType{
 interface Props { 
   options?:optionType[];
   difficulty?:any;
+  info:any
 }
 const props = withDefaults(defineProps<Props>(),{
   options: () =>[],
-  difficulty:()=>1
+  difficulty:()=>1,
+  info:() =>{},
 });
 const columns = [
   {

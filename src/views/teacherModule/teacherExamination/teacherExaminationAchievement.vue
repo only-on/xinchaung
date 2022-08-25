@@ -5,10 +5,11 @@
         <TopicDisplay :purpose="'achievement'" :list="questionsList" :loading="listLoading" @updateList="getExamDetail()" />
     </div>
     <div class="achievementRight">
-        <ScoreRanking />
-        <div class="caozuo flexCenter">
-          <a-button  type="primary"> 上一人 </a-button>
-          <a-button  type="primary"> 下一人 </a-button>
+        <ScoreRanking :info="ExamResultData" />
+        <div class="caozuo flexCenter" v-if="ExamResultData.pre_next">
+          <!-- {{ExamResultData.pre_next}} -->
+          <a-button  type="primary" @click="Replacement(ExamResultData.pre_next[0])" :disabled="ExamResultData.pre_next[0]?false:true"> 上一人 </a-button>
+          <a-button  type="primary" @click="Replacement(ExamResultData.pre_next[1])" :disabled="ExamResultData.pre_next[1]?false:true"> 下一人 </a-button>
         </div>
         <div class="ViolationRecord">
           <div class="title">违规记录</div>
@@ -75,12 +76,13 @@ updata({
 //   (e: "selectedImage", val: any): void;
 // }>();
 const headerObj:any=reactive({
-  title:'单元测验-《大学计算机基础第3版》第3、4章（一）-计算思维、数值与字符编码',
-  explain:'作业/考试说明',
-  explainText:'交互设计本质上就是设计产品的使用方式的过程，账号怎么填写；表单怎么导出；数据怎么筛选；列表怎么排序等等。针对每个功能的使用方式，都可以花很长的时间去考虑其合理性。一个项目的交互，就是这个项目所有功能使用方式的总和。',
+  title:'',
+  explain:'考试说明',
+  explainText:'',
 })
 const questionsList:any=reactive([])
 var listLoading:Ref<boolean> = ref(false);
+const ExamResultData:any=reactive({})
 const getExamDetail = () => {
   listLoading.value=true
   http.examResult({urlParams:{examResultId: id}}).then((res:IBusinessResp) => {  // examResult
@@ -97,9 +99,18 @@ const getExamDetail = () => {
       }
       questionsList.push(obj)
     })
-    console.log(questionsList);
+    Object.assign(ExamResultData,data)
+    // console.log(ExamResultData.pre_next);
     listLoading.value=false
   }).catch((err:any)=>{listLoading.value=false})
+}
+const Replacement=(id:number)=>{
+  router.replace({
+    path:'/teacher/teacherExamination/teacherExaminationAchievement',
+    query:{
+      id:id,
+    }
+  })
 }
 onMounted(()=>{
   getExamDetail()

@@ -21,7 +21,7 @@
         ></submit-answer>
       </div>
       <div v-else>
-        <score-ranking></score-ranking>
+        <ScoreRanking :info="ExamResultData" />
       </div>
     </div>
   </div>
@@ -44,7 +44,7 @@ import { Modal, message } from "ant-design-vue";
 import answerQuesCom from "../answerQuesCom/index.vue";
 import TopicDisplay from "src/components/TopicDisplay/index.vue";
 import Outline from "src/components/TopicDisplay/outline.vue";
-import scoreRanking from "src/components/scoreRanking/index.vue";
+import ScoreRanking from "src/components/scoreRanking/index.vue";
 import submitAnswer from "src/components/submitAnswer/index.vue";
 import { IBusinessResp } from "src/typings/fetch.d";
 const http = (request as any).teacherExamination;
