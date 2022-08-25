@@ -89,7 +89,7 @@
             </div>
             <!-- SQL题 -->
             <div class="sql" v-if="v.kind === 'sql'">
-              <Sqldetail :info="{desc: v.question_desc?v.question_desc:''}"></Sqldetail>
+              <Sqldetail :desc="v.question_desc?v.question_desc:''"></Sqldetail>
             </div>
             <!-- 后面三种题型的试用 -->
             <div class="shiyong" v-if="['program','ai','sql'].includes(v.kind) && !inDrawer">
@@ -127,7 +127,7 @@
                       <span @click="handleClick('delete', v)">删除</span>
                     </a-menu-item>
                     <a-menu-item>
-                      <span @click="handleClick('public', v)">公开</span>
+                      <span @click="handleClick('public', v)">{{!v.is_public?'公开':'取消公开'}}</span>
                     </a-menu-item>
                     <a-menu-item :disabled="['program','ai','sql'].includes(v.kind)">
                       <span @click="handleClick('export', v)">导出</span>

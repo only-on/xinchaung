@@ -266,7 +266,7 @@ function menuClick(type:string, val: any) {
       deleteQuestion()
       break;
     case 'public':
-      publicQuestion()
+      !val.is_public?publicQuestion():''
       break;
     case 'export':
       exportQuestion()
