@@ -48,7 +48,8 @@
                 </div>
                 <!-- 题干 -->
                 <div class="stem">
-                  {{element.question}}
+                  <!-- {{element.question}} -->
+                  <MarkedEditor v-model="element.question" class="markdown__editor" :preview="true"/>
                 </div>
                 <!-- 答案可选项 -->
                 <div class="optionBox">

@@ -130,6 +130,7 @@ const submitComplete=()=>{
   router.go(-1)
 }
 onMounted(()=>{
+  console.log(purpose)
   if(purpose==="achievement"){
     getExamResult()
   }else{
