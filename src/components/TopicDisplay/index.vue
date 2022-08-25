@@ -130,17 +130,15 @@
                 <div v-if="props.purpose==='achievement'" class="achievement" >
                   <template v-if="['choice','judge','blank','short-answer'].includes(v.type)">
                     <div class="achievement1 Adjudicate flexCenter">
-                      <div class="left flexCenter" :class="k%2===0?'left1':'left2'">
-                        <!-- icon-cuowu -->
-                        <!-- <span class="iconfont" :class="k%2===0?'icon-cuowu':'icon-zhengque'"></span> -->
-                        <!-- <img :src="`../../assets/images/TopicDisplay/${k%2===0?'cuo':'dui'}.png`" alt=""/> -->
-                        <img v-if="k%2===0" src="../../assets/images/TopicDisplay/cuo.png" alt=""/>
+                      <div class="left flexCenter" :class="element.is_right===0?'left1':'left2'">
+                        <!-- <img :src="`../../assets/images/TopicDisplay/${element.is_right===0?'cuo':'dui'}.png`" alt=""/> -->
+                        <img v-if="element.is_right===0" src="../../assets/images/TopicDisplay/cuo.png" alt=""/>
                         <img v-else src="../../assets/images/TopicDisplay/dui.png" alt=""/>
-                        <span>答{{`${k%2===0?'错':'对'}`}}了</span>
+                        <span>答{{`${element.is_right===0?'错':'对'}`}}了</span>
                       </div>
                       <div class="flexCenter">
                         <div class="resultscore">
-                          得<span>10</span>分
+                          得<span>{{element.score}}</span>分
                         </div>
                         <div v-if="v.type==='short-answer' && editScore()" class="flexCenter changeScore" @click="editScoreFn(element,k)">
                           <span class="iconfont icon-bianji1"></span>
@@ -149,8 +147,8 @@
                       </div>
                     </div>
                     <div class="achievement1 rightkey">
-                      <div class="tip">{{`${v.type==='judge'?'参考':'正确'}`}}答案：</div>
-                      <div class="text">填空1（答案1） / 填空2（答案2）频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的 品牌认知；并且视觉信息层级混乱，设计规范性差，设计沟通维护成本高</div>
+                      <div class="tip">{{`${v.type==='short-answer'?'参考':'正确'}`}}答案：</div>
+                      <div class="text">{{standardAnswer(element)}}</div>
                     </div>
                     <div class="achievement2 analysis">
                       <div class="tip">题目解析：</div>
@@ -261,8 +259,8 @@ const CanDisabled=()=>{
   return props.purpose!=='IsStuAnswer'
 }
 const editScore=()=>{
-  return true
-  // return role===3
+  // return true
+  return role===3
 }
 const optionType:any=reactive(['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O'])
 const SqllObj:any=reactive({
@@ -495,13 +493,21 @@ const programAnswer=(val:number,type:string)=>{
 }
 //模型题作答
 const AiAnswer=(val:any)=>{
-  router.push({
+  // router.push({
+  //   path:'/student/studentExamination/Examinationanswerques/studentModelAnswer',
+  //   query:{
+  //     examId:id,
+  //     questionId:val,
+  //   }
+  // })
+  const {href} = router.resolve({
     path:'/student/studentExamination/Examinationanswerques/studentModelAnswer',
     query:{
       examId:id,
       questionId:val,
     }
   })
+  window.open(href,'_blank')
 }
 // 继续选择题目
 const addVisible = ref<boolean>(false)
@@ -529,6 +535,18 @@ const questionSelect=(data:any)=>{
     }
   })
   emit('updataQuestion',getQuestionIdsAndScore(props.list))
+}
+//处理正确答案
+const standardAnswer=(element:any)=>{
+  let str=''
+  if(element.kind==='blank'){
+    element.blank_correct.map((v:any,k:number)=>{
+      v.text=`填空${k+1}（${v}）`
+    })
+    str=element.blank_correct.split('/')
+  }
+  console.log(str)
+  return str
 }
 onMounted(()=>{
   // const selectSorce =randomCreateSorce

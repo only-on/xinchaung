@@ -92,9 +92,6 @@ const getExamDetail = () => {  // http  httpStu resultId:id    ID: id
       }
       questionsList.push(obj)
     })
-    // questionsList.map(()=>{
-
-    // })
     questionsList.map((v:any)=>{
       v.question.map((i:any)=>{
         if(i.submit_answer){ // i.submit_answer getTopicType[i.kind]['answerformat']
@@ -105,6 +102,7 @@ const getExamDetail = () => {  // http  httpStu resultId:id    ID: id
     listLoading.value=false
   }).catch((err:any)=>{listLoading.value=false})
 }
+const ExamResultData:any=reactive({})
 const getExamResult = () => {
   listLoading.value=true
   http.examResult({urlParams:{examResultId: examResultId}}).then((res:IBusinessResp) => {  // examResult
@@ -121,7 +119,16 @@ const getExamResult = () => {
       }
       questionsList.push(obj)
     })
+    questionsList.map((v:any)=>{
+      v.question.map((i:any)=>{
+        if(i.submit_answer){ // i.submit_answer getTopicType[i.kind]['answerformat']
+          i.answer=i.submit_answer
+        }
+      })
+    })
+    Object.assign(ExamResultData,data)
     console.log(questionsList);
+    console.log(ExamResultData);
     listLoading.value=false
   }).catch((err:any)=>{listLoading.value=false})
 }
