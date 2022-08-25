@@ -12,11 +12,11 @@
                 <span>成绩排名</span>
                 <span>作业总分</span>
             </div>
-             <a-table :columns="columns" :data-source="data" :pagination='false'>
+             <a-table :columns="columns" :data-source="data2" :pagination='false'>
                 <template #bodyCell="{ column, text }">
-                <template v-if="column.dataIndex === 'name'">
+                <!-- <template v-if="column.dataIndex === 'name'">
                     <a>{{ text }}</a>
-                </template>
+                </template> -->
                 </template>
             </a-table>
         </div>
@@ -28,9 +28,21 @@
 </template>
 <script lang="ts" setup>
 import {
+  onMounted,
+  reactive,
+  Ref,
+  inject,
+  computed,
+  toRefs,
+  watch,
+  defineExpose,
   defineProps,
   withDefaults,
+  PropType,
+  createVNode
 } from "vue";
+import getTopicType from 'src/components/TopicDisplay/topictype'
+import {NoToCh,TotalScore,Debounce} from 'src/utils/common'
 interface optionType{
     name:string,
     value:any,
@@ -53,18 +65,18 @@ const columns = [
   },
   {
     title: '得分',
-    dataIndex: 'age',
+    dataIndex: 'score',
     key: 'age'
   },
   {
     title: '答对',
-    dataIndex: 'address',
+    dataIndex: 'correct_cnt',
     key: 'address 1',
     ellipsis: true,
   },
   {
     title: '答错',
-    dataIndex: 'address',
+    dataIndex: 'wrong_cnt',
     key: 'address 2',
     ellipsis: true,
   }]
@@ -73,49 +85,79 @@ const data = [
   {
     key: '1',
     name: '选择',
-    age: 32,
-    address: '8',
+    score: 32,
+    correct_cnt: '8',
+    wrong_cnt: '8',
     tags: ['nice', 'developer'],
   },
   {
     key: '2',
     name: '判断',
-    age: 42,
-    address: '9',
+    score: 42,
+    correct_cnt: '8',
+    wrong_cnt: '8',
     tags: ['loser'],
   },
   {
     key: '2',
     name: '填空',
-    age: 42,
-    address: '9',
+    score: 42,
+    correct_cnt: '8',
+    wrong_cnt: '8',
     tags: ['loser'],
   },
   {
     key: '2',
     name: '解答',
-    age: 42,
-    address: '9',
+    score: 42,
+    correct_cnt: '8',
+    wrong_cnt: '8',
     tags: ['loser'],
   },{
     key: '2',
     name: '编程',
-    age: 42,
-    address: '9',
+    score: 42,
+    correct_cnt: '8',
+    wrong_cnt: '8',
     tags: ['loser'],
   },{
     key: '2',
     name: '模型',
-    age: 42,
-    address: '9',
+    score: 12,
+    correct_cnt: '18',
+    wrong_cnt: '85',
     tags: ['loser'],
   },{
     key: '2',
     name: '全部',
-    age: 42,
-    address: '9',
+    score: 42,
+    correct_cnt: '8',
+    wrong_cnt: '8',
     tags: ['loser'],
   }]
+const data2:any=reactive([])  
+watch(()=>{return props.info.exam_statistic},(val:any)=>{
+  console.log(val)
+  if(val && Object.keys(val).length){
+    Object.keys(val).map((v:any)=>{
+      let obj={
+        name:getTopicType[v].subname,
+        score:val[v].score,
+        correct_cnt:val[v].correct_cnt,
+        wrong_cnt:val[v].wrong_cnt,
+      }
+      data2.push(obj)
+    })
+    let obj2={
+      name:'全部',
+      score:TotalScore(data2,'score'),
+      correct_cnt:TotalScore(data2,'correct_cnt'),
+      wrong_cnt:TotalScore(data2,'wrong_cnt'),
+    }
+    data2.push(obj2)
+  }
+  console.log(data2)
+},{immediate:true,deep:true})  
 </script> 
 <style lang="less" scoped>
 .score_ranking{

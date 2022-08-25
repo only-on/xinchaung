@@ -143,7 +143,7 @@ const startExam = () => {
   })
 }
 onMounted(()=>{
-  console.log(purpose)
+  // console.log(purpose)
   if(purpose==="achievement"){
     getExamResult()
   }else{
