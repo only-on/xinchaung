@@ -25,7 +25,7 @@
                 <span class='download' @click="DownloadTemplate">题目模板</span>
                 每次最多导入100条。
               </div>
-          <a-form-item >
+          <a-form-item name="topicTemplatePath">
              <!-- @change="handleChange1"
               @drop="handleDrop" -->
             <a-upload-dragger
@@ -96,13 +96,11 @@ const formState = reactive({
   topicTemplatePath:'',
 });
 let validateCataloge = async (_rule?: Rule, value?: any) => {
-  setTimeout(()=>{
-    if(formState.catalogue?.length==0){
-    return Promise.reject('请选择目录！！');
+  if(value?.length==0){
+    return Promise.reject('请选择目录');
   }else{
     return Promise.resolve();
   }
-  },10000)
 };
 const rules = {
   catalogue: [
@@ -110,21 +108,32 @@ const rules = {
       required: true,
       validator:validateCataloge, 
       // message: "请选择目录",
+      trigger: "blur"
     },
   ],
   topicTemplatePath:[
     {
       required: true,
       message: "请上传题目",
+      trigger: "blur",
+      validator
     }
   ]
 };
+function validator(rule?: Rule, value?: any) {
+  if (fileList.value.length) {
+    return Promise.resolve();
+  } else {
+    return Promise.reject('请上传题目');
+  }
+}
 // 上传前
 function beforeUpload(file: any) {
   if (file.size / 1024 / 1024 >= 500) {
     message.warn("上传文件不能超过500MB");
     return false;
   }
+  fileList.value = []
   fileList.value.push(file);
   fileInfo.value=file
   // let i = fileList.value.findIndex((item: any) => {
@@ -231,6 +240,8 @@ function DownloadTemplate() {
 .create_ques {
   background-color: var(--white-100);
   padding: 20px 40px;
+  box-shadow: 0px 2px 4px 0px rgb(0 0 0 / 16%);
+  min-height: 700px;
 }
 .bottom_btn {
   display: flex;
