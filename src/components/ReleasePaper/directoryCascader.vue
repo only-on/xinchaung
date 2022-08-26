@@ -63,8 +63,8 @@ const loadData = (selectedOptions: any) => {
       targetOption.loading = false;
       if (res.data?.length) {
         res.data.forEach((v: any) => {
-          v.isLeaf = !v.has_children
-          v.level = targetOption.level+1
+          v.isLeaf = targetOption.level==props.levelNum-1
+          v.level = targetOption.level==props.levelNum-1?props.levelNum:targetOption.level+1
         })
       }
       targetOption.children = res.data
