@@ -32,7 +32,7 @@
               </div>
               <div class="info-right">
                 <a-button v-if="item.status==3" @click="lookScore(item)" class="lookScore" type="link" :disabled="!item.can_view_result">查看成绩</a-button>
-                <a-button v-else-if="isAssign" type="primary" size="small" @click="toAnswer(item)" :disabled="item.status !==1">答题</a-button>
+                <a-button v-else-if="isAssign" type="primary" size="small" @click="toAnswer(item)" :disabled="(item.status !==1 || item.is_submit)">{{item.is_submit?'已提交':'答题'}}</a-button>
                 <a-button v-else type="primary" size="small" 
                   @click="toAnswer(item)" 
                   :disabled="(item.status !==1 || item.is_submit)"

@@ -5,7 +5,7 @@
   </div>
   <div class="teacherAssignmentPreviewFooter">
     <div class="flexCenter">
-      <Submit :okText="'编辑作业'" :cancelText="'返回'" @submit="edit" @cancel="cancel"></Submit>
+      <Submit :okText="'编辑作业'" :cancelText="'返回'" @submit="edit" @cancel="cancel" :okDisabled="canEdit==='false'?true:false"></Submit>
     </div>
   </div>
 </template>
@@ -33,7 +33,7 @@ import Outline from 'src/components/TopicDisplay/outline.vue'
 import Submit from "src/components/submit/index.vue";
 const router = useRouter();
 const route = useRoute();
-const { id } = route.query;
+const { id,canEdit } = route.query;
 const http = (request as any).teacherAssignment;
 // const http = (request as any).teacherExamination;
 var configuration: any = inject("configuration");

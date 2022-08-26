@@ -83,9 +83,10 @@ const headerObj:any=reactive({
 const questionsList:any=reactive([])
 var listLoading:Ref<boolean> = ref(false);
 const ExamResultData:any=reactive({})
+const curId:Ref<number> = ref(0);
 const getExamDetail = () => {
   listLoading.value=true
-  http.examResult({urlParams:{examResultId: id}}).then((res:IBusinessResp) => {  // examResult
+  http.examResult({urlParams:{examResultId: curId.value}}).then((res:IBusinessResp) => {  // examResult
     questionsList.length=0
     const {data}=res
     headerObj.title=data.name
@@ -99,20 +100,30 @@ const getExamDetail = () => {
       }
       questionsList.push(obj)
     })
+    questionsList.map((v:any)=>{
+      v.question.map((i:any)=>{
+        if(i.submit_answer){ // i.submit_answer getTopicType[i.kind]['answerformat']
+          i.answer=i.submit_answer
+        }
+      })
+    })
     Object.assign(ExamResultData,data)
     // console.log(ExamResultData.pre_next);
     listLoading.value=false
   }).catch((err:any)=>{listLoading.value=false})
 }
-const Replacement=(id:number)=>{
+const Replacement= (id:number)=>{
   router.replace({
     path:'/teacher/teacherExamination/teacherExaminationAchievement',
     query:{
       id:id,
     }
   })
+  curId.value=id
+  getExamDetail()
 }
 onMounted(()=>{
+  curId.value=Number(id)
   getExamDetail()
 })
 </script>

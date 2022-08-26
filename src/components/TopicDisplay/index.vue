@@ -152,7 +152,8 @@
                     </div>
                     <div class="achievement2 analysis">
                       <div class="tip">题目解析：</div>
-                      <div>在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的 品牌认知；并且视觉信息层级混乱，设计规范性差，设计沟通维护成本高。</div>
+                      <!-- <div>{{element.question_analysis}}</div> -->
+                      <MarkedEditor v-model="element.question_analysis" class="markdown__editor" :preview="true"/>
                     </div>
                   </template>
                   <template v-if="['program','ai','sql'].includes(v.type)">
@@ -540,6 +541,7 @@ const questionSelect=(data:any)=>{
 const standardAnswer=(element:any)=>{
       // console.log(element)
   let str=''
+  // return str
   if(element.kind==='blank'){
     let arr:string[]=[]
     element.blank_correct.map((v:any,k:number)=>{

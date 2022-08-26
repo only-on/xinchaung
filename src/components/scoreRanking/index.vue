@@ -138,6 +138,7 @@ const data = [
 const data2:any=reactive([])  
 watch(()=>{return props.info.exam_statistic},(val:any)=>{
   console.log(val)
+  data2.length=0
   if(val && Object.keys(val).length){
     Object.keys(val).map((v:any)=>{
       let obj={

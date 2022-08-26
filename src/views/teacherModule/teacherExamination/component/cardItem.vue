@@ -88,7 +88,7 @@ const goPreview=()=>{
   let path=props.type=='2'?'/teacher/teacherExamination/teacherExaminationPreview':'/teacher/teacherAssignment/teacherAssignmentPreview'
   router.push({
     path:path,
-    query:{id:item.id}
+    query:{id:item.id,canEdit:item.can_edit}
   })
 }
 watch(()=>props.data, newVal => {
