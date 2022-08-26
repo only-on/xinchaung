@@ -188,8 +188,7 @@ const onSubmit = () => {
   emit('searchFn')
 }
 const cancel = () => {
-  currentDirective.value = 0
-  selectKnowledgeVisible.value = false
+  deleteKnowledge()
 }
 const changeType = () => {
   emit('searchFn')
