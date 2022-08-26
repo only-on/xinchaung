@@ -58,6 +58,15 @@ export default {
   courseknowledge:{ url: `/api/course/courses/{courseId}/knowledge-points`, method: "GET"},
   // 学习进度排行榜
   courseRankList:{ url: `/api/course/courses/{courseId}/study/leaderboard`, method: "GET"},
+
+  //课程总成绩列表
+  ViewResultsList:{ url: `/api/operate/teacherEvaluates/course/score/{courseId}`, method: "GET"},
+  //获取课程成绩权重
+  getWeight:{ url: `/api/operate/teacherEvaluates/course/proportion/{courseId}`, method: "GET"},
+  //编辑课程成绩权重
+  editWeight:{ url: `/api/operate/teacherEvaluates/course/setting/{courseId}`, method: "POST"},
+  //导出课程成绩
+  exportCourseResult:{ url: `/api/operate/teacherExports/exportCourse/{courseId}`, method: "GET"},
   
   // 课程复用  
   multiplexing:{ url: `/api/course/courses/{courseId}/replicate`, method: "put"},
@@ -138,6 +147,10 @@ export interface ITeacherCourseApis {
   getAllCourseStudent:TFHttpSend
   saveCourseStudentt:TFHttpSend
   getKnowledgeList:TFHttpSend
+  ViewResultsList:TFHttpSend
+  getWeight:TFHttpSend
+  editWeight:TFHttpSend
+  exportCourseResult:TFHttpSend
 
   hotCourseRecommend:TFHttpSend
   getTeacherEvaluatesApi:TFHttpSend

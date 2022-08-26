@@ -31,15 +31,15 @@
         <div class="left flexCenter">
           <div class="item">
             <span>姓名：</span>
-            <a-input v-model:value="searchInfo.courseName" placeholder="请输入关键字搜索" @keyup.enter="searchList" />
+            <a-input v-model:value="searchInfo.user" placeholder="请输入关键字搜索" @keyup.enter="searchList" />
           </div>
           <div class="item">
             <span>班级：</span>
-            <a-input v-model:value="searchInfo.courseName" placeholder="请输入关键字搜索" @keyup.enter="searchList" />
+            <a-input v-model:value="searchInfo.class" placeholder="请输入关键字搜索" @keyup.enter="searchList" />
           </div>
           <div class="item">
             <span>学号：</span>
-            <a-input v-model:value="searchInfo.courseName" placeholder="请输入关键字搜索" @keyup.enter="searchList" />
+            <a-input v-model:value="searchInfo.name" placeholder="请输入关键字搜索" @keyup.enter="searchList" />
           </div>
         </div>
         <div class="right">
@@ -78,14 +78,14 @@
   </div>
   <a-modal v-model:visible="Visible"  title="修改成绩占比" class="setupVisible" :width="700">
     <a-form  :rules="rules" :model="formState" ref="formRef">
-      <a-form-item label="实验成绩" name="ExperimentalResults">
-        <a-input v-model:value="formState.ExperimentalResults" suffix="%"/>
+      <a-form-item label="实验成绩" name="content_score">
+        <a-input v-model:value="formState.content_score" suffix="%"/>
       </a-form-item>+
-      <a-form-item label="作业成绩" name="taskResults">
-        <a-input v-model:value="formState.taskResults" suffix="%"/>
+      <a-form-item label="作业成绩" name="task_score">
+        <a-input v-model:value="formState.task_score" suffix="%"/>
       </a-form-item>+
-      <a-form-item label="考试成绩" name="examResults">
-        <a-input v-model:value="formState.examResults" suffix="%"/>
+      <a-form-item label="考试成绩" name="exam_score">
+        <a-input v-model:value="formState.exam_score" suffix="%"/>
       </a-form-item>
     </a-form>
     <template #footer>
@@ -117,7 +117,7 @@ import { Modal, message } from "ant-design-vue";
 import { downloadUrl } from "src/utils/download";
 const router = useRouter();
 const route = useRoute();
-const { editId } = route.query;
+const { courseId } = route.query;
 const http = (request as any).teachCourse;
 const SetupScore=()=>{
   Visible.value=true
@@ -126,20 +126,20 @@ const SetupScore=()=>{
 const formRef = ref();
 var Visible: Ref<boolean> = ref(false);
 const formState=reactive<any>({
-  ExperimentalResults:'',
-  taskResults:'',
-  examResults:''
+  content_score:'',
+  task_score:'',
+  exam_score:''
 })
 const rules = {
-  ExperimentalResults: [
+  content_score: [
     { required: true, message: `请输入实验成绩比例`, trigger: "blur" },
     {validator: validateNum.validator}
   ],
-  taskResults: [
+  task_score: [
     { required: true, message: `请输入作业成绩比例`, trigger: "blur" },
     {validator: validateNum.validator}
   ],
-  examResults: [
+  exam_score: [
     { required: true, message: `请输入考试成绩比例`, trigger: "blur" },
     {validator: validateNum.validator}
   ],
@@ -149,7 +149,7 @@ const cancel=()=>{
   Visible.value=false
 }
 const Save=()=>{
-  let num=Number(formState.ExperimentalResults)+Number(formState.taskResults)+Number(formState.examResults)
+  let num=Number(formState.content_score)+Number(formState.task_score)+Number(formState.exam_score)
   if(num!==100){
     message.warning('权重总和需为100%')
     return
@@ -179,9 +179,9 @@ const Save=()=>{
 //   (e: "selectedImage", val: any): void;
 // }>();
 var searchInfo:any=reactive({
-  courseName:'',
-  courseAttribute:'',
-  courseState:'',
+  user:'',
+  class:'',
+  name:'',
   page:1,
   limit:10,
   selectedRowKeys:[]
@@ -192,7 +192,7 @@ var totalCount: Ref<number> = ref(0);
 var analysisObj:any=reactive({})
 const EmptyType:any=computed(()=>{
   let str=''
-  if(searchInfo.courseName == '' && searchInfo.courseAttribute =='' && searchInfo.courseState == ''){
+  if(searchInfo.user == '' && searchInfo.class =='' && searchInfo.name == ''){
     str= 'tableEmpty'
   }else{
     str= 'tableSearchEmpty'
@@ -229,19 +229,21 @@ const onSelectChange=(selectedRowKeys: any[], selectedRows: any[])=> {
   
   // state.selectedRows = selectedRows; // 弹窗当前页已选 list
 }
+const scoreData:any=reactive({})
 const initData = () => {
-  return
+  // return
   const param:any={
-    // 'search[courseName]':searchInfo.courseName,
-    // 'search[courseAttribute]':searchInfo.courseAttribute,
-    // 'search[courseState]':searchInfo.courseState,
+    user:searchInfo.user,
+    class:searchInfo.class,
+    name:searchInfo.name,
     page:searchInfo.page,
     limit:searchInfo.limit
+    // ...searchInfo
   }
   loading.value = true;
   courseList.length = 0
   totalCount.value=0
-  http.courselist({param:{...param}}).then((res: IBusinessResp) => {
+  http.ViewResultsList({param:{...param},urlParams:{courseId:courseId}}).then((res: IBusinessResp) => {
     loading.value = false
     if (!res) return
     const { list, page,analysis }  = res.data
@@ -256,8 +258,21 @@ const initData = () => {
   })
 };
 
+const getWeight=()=>{
+  http.getWeight({urlParams:{courseId:courseId}}).then((res: IBusinessResp) => {
+    const {data}=res
+    // Object.assign(formState,data)  //formState
+  }).catch((err:any)=>{
+     
+  })
+}
+
 onMounted(() => {
   initData()
+  getWeight()
+  // getWeight:TFHttpSend
+  // editWeight:TFHttpSend
+  // exportCourseResult:TFHttpSend
 });
 const columns= [
     {
