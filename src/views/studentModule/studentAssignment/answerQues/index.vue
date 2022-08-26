@@ -10,7 +10,9 @@
         <TopicDisplay 
         :list="questionsList" 
         :purpose="purpose === 'IsStuAnswer' ? 'IsStuAnswer' : 'achievement'" 
-        :loading="listLoading" />
+        :loading="listLoading"
+        @EndOfAnswer="EndOfAnswer"
+         />
       </div>
       <div v-if="purpose === 'IsStuAnswer'" class="answer_list">
         <submit-answer
@@ -18,6 +20,7 @@
           :dataList="questionsList"
           :typeName="name === '考试' ? '试卷' : '作业'"
           @submitComplete="submitComplete"
+          @EndOfAnswer="EndOfAnswer"
         ></submit-answer>
       </div>
       <div v-else>
@@ -134,8 +137,17 @@ const getExamResult = () => {
 }
 const submitComplete=()=>{
   message.success("提交成功");
-  router.go(-1)
+  // setTimeout(()=>{
+  //   router.go(-1)
+  // },0.5)
+  EndOfAnswer()
 }
+const EndOfAnswer=()=>{
+  setTimeout(()=>{
+    router.go(-1)
+  },0.5)
+}
+
 const startExam = () => {
   // 考试作业前调用
   httpStu.startExam({urlParams:{examResultId:examResultId}}).then((res:IBusinessResp)=>{

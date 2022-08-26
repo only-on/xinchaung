@@ -247,7 +247,8 @@ const emit = defineEmits<{
   // (e: "setScore", val: number[]): void;
   // (e: "setBatchScore", val: number[]): void;
   (e: "updataQuestion", val: any): void;   // 设置分数/删除后处理的数据格式    反馈给父组件
-  (e: "updateList"): void;            // 
+  (e: "updateList"): void;            // 更新列表 
+  (e: "EndOfAnswer"): void;            // 答题时间已结束
 }>();
 const onStart=()=>{
   return true
@@ -324,7 +325,9 @@ function submitAnswers(params:any) {
     return
   }
   httpStu.submitAnswers({param:{exam_id:id,question_id:curQuestionId.value,answer:params.answer}}).then((res:any)=>{
-
+    if(res.data.EndOfAnswer){
+      emit('EndOfAnswer')  // 考试时间已结束
+    }
   })
 }
 /**

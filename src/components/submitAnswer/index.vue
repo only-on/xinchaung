@@ -72,6 +72,7 @@ const props = withDefaults(defineProps<Props>(),{
 });
 const emit = defineEmits<{
   (e: "submitComplete"): void;            // 
+  (e: "EndOfAnswer"): void;
 }>();
 var deadline:any=ref()
 // var deadline:any=ref(Number(sessionStorage.getItem("examRelastTime"))?Number(sessionStorage.getItem("examRelastTime")):(Date.now() + 1000 * 60 * 60 * 2 + 1000 * 30))
@@ -94,7 +95,11 @@ const Answered=(item:any)=>{
 }
 const submit=()=>{
     httpStu.submitExam({urlParams:{exam:id}}).then((res:any)=>{
-        emit('submitComplete')
+        if(res.data.EndOfAnswer){
+            emit('EndOfAnswer')
+        }else{
+            emit('submitComplete')
+        }
   })
 }
 onMounted(()=>{
