@@ -55,23 +55,36 @@
     </common-card>
     <Submit @submit="handleSave" @cancel="cancelSave" :loading="saveLoading" ok-text="提交"></Submit>
   </div>
+  <!-- 结果反馈 -->
+  <a-modal :visible="resultVisible" title="试用结果反馈" :width="700" @cancel="handleCancel" :footer="null">
+    <div>
+      <span>得10分</span>
+      <resultShow :border="true" :resultInfo="resultInfo"/>
+    </div>
+  </a-modal>
 </template>
 <script lang="ts" setup>
-import { ref, reactive, watch, provide, inject, onMounted } from "vue";
+import { ref, reactive, watch, provide, inject, onMounted, WritableComputedRef,computed,onUnmounted } from "vue";
+import {IWmc} from "src/typings/wmc";
 import { useRoute, useRouter } from "vue-router";
 import { message } from "ant-design-vue";
 import CommonCard from "src/components/common/CommonCard.vue";
 import uploadFile from 'src/components/uploadFile.vue'
 import Submit from "src/components/submit/index.vue";
+import resultShow from "./resultShow.vue"
 import {downloadUrl} from 'src/utils/download'
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { lStorage } from "src/utils/extStorage";
+import { wsConnect } from "src/request/websocket";
+import { useStore } from "vuex";
 const http = (request as any).QuestionBank;
 const route = useRoute()
+const store = useStore()
 const questionId = ref<any>(route.query.questionId) // 题目id
 const examId = ref<any>(route.query?.examId) // 学生端考试id
 const userId= lStorage.get('uid')
+const resultVisible = ref<boolean>(true)
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 const formData = reactive<any>({
@@ -128,6 +141,49 @@ const downLoadAll = () => {
     downLoading.value = false
   })
 }
+// 结果反馈弹框
+const resultInfo = reactive<any>({
+  resultUrl: '',
+  processUrl: '',
+  remark: '说明'
+})
+const ws_config = lStorage.get("ws_config")
+let ws: WritableComputedRef<IWmc> = computed({
+  get: () => {
+    return store.state.longWs
+  },
+  set: val => {
+    store.commit("setLongWs",val)
+  }
+})
+// const initWs = () => {
+//   if (ws.value) {
+//         ws.value.refresh();
+//         ws.value.close();
+//         ws.value = null as any
+//       }
+//   ws.value = wsConnect({
+//     url: `://${ws_config.host}:${ws_config.port}/?uid=${userId}_0`,
+//     // close: (ev: CloseEvent) => {
+//     //   if (ev.type === "close") {
+//     //     if (ws.value && ws.value.isReset()) {
+//     //       message.destroy();
+//     //       // message.warn(resetMsgNode, 0);
+//     //     }
+//     //   }
+//     // },
+//     message: (ev: MessageEvent) => {
+//       let regex = /\{.*?\}/g;
+//       if (typeof ev.data === "string" && regex.test(ev.data)) {
+//         let data = JSON.parse(ev.data);
+//         console.log(data)
+//       }
+//     }
+// })
+// }
+const handleCancel = () => {
+  resultVisible.value = false
+}
 const saveLoading = ref<boolean>(false)
 const formRef = ref()
 const handleSave = () => {
@@ -143,6 +199,7 @@ const handleSave = () => {
     http.runQuestions({urlParams:{user: userId},param: submitData}).then((res:IBusinessResp) => {
       saveLoading.value = false
       message.success('提交成功')
+      // initWs()
     }).catch(()=>{
       saveLoading.value = false
     })
@@ -154,6 +211,10 @@ const cancelSave = () => {
 onMounted(()=>{
   getDetail()
 })
+// 关闭ws
+// onUnmounted(() => {
+//   (ws.value as any)?.close();
+// });
 </script>
 <style lang="less" scoped>
 .trialModel{

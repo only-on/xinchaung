@@ -125,7 +125,7 @@ watch(()=>props.lang, (newVal:any) => {
     }
     &::-webkit-scrollbar-thumb {
       border-radius: 3px;
-      background: var(--primary-2);
+      background: var(--primary-1);
     }
     &::-webkit-scrollbar {
       width: 8px;

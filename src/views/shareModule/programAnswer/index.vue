@@ -90,6 +90,8 @@ const questionId = ref<any>(Number(route.query.questionId)) // 题目id
 const examId = ref<any>(Number(route.query?.examId)) // 学生考试id
 const questionType = ref<any>(route.query?.type ? route.query.type : 'program') // 题目类型
 const languageDefault = ref<string>('') // 语言默认值
+const isTeacher = lStorage.get('role') === 3 ? true: false
+const questionScroe = ref<any>(route.query?.score) // 题目分值
 const problemData = reactive<IproblemData>({
   question: '',
   question_desc: '',
@@ -173,40 +175,39 @@ const resetContent = () => {
   testData.resultText = ''
   message.warning('测试失败')
 }
+const setResultValue = (result:any) => {
+  testData.result = result.result
+  testData.memory = result.memory
+  testData.time = result.time
+  testData.loading = false
+  clearInterval(testData.timer)
+  testData.timer = null
+  activeKey.value = 'result'
+  if (result.compile_info) {
+    testData.resultText = result.compile_info.error
+    return
+  }
+  if (result.runtime_info) {
+    testData.resultText = result.runtime_info.error
+  }
+}
 // 查询测试结果
-const getResult = () => {
+const getResult = (test_run:boolean) => {
   timerNum.value += 1
   http.solutionSatus({urlParams:{ID: questionId.value, solution_id:solutionId.value}}).then((res:IBusinessResp) => {
     let result = res.data
-    testData.result = result.result
     // 测试、提交运行成功
     if (result.result === 4 || result.result === 13) {
-      testData.memory = result.memory
-      testData.time = result.time
-      testData.loading = false
-      clearInterval(testData.timer)
-      testData.timer = null
-      if (result.compile_info) {
-        testData.resultText = result.compile_info.error
-        return
+      // 教师端点击提交按钮，显示分数
+      if (!test_run && isTeacher) {
+        message.success(`得${questionScroe.value}分`,5)
       }
-      if (result.runtime_info) {
-        testData.resultText = result.runtime_info.error
-      }
+      setResultValue(result)
       return
     }
     // 一分钟之后停止定时器
     if (timerNum.value > 20) {
-      testData.loading = false
-      clearInterval(testData.timer)
-      testData.timer = null
-      if (result.compile_info) {
-        testData.resultText = result.compile_info.error
-        return
-      }
-      if (result.runtime_info) {
-        testData.resultText = result.runtime_info.error
-      }
+      setResultValue(result)
     }
   }).catch(()=>{
     resetContent()
@@ -215,6 +216,10 @@ const getResult = () => {
 // 提交
 const handleSubmit =(test_run:boolean) => {
   testData.resultText = ''
+  testData.result = ''
+  testData.memory = 0
+  testData.time = 0
+  timerNum.value = 0
   if (!code.value.trim().length){
     message.warning('请输入代码')
     return
@@ -234,18 +239,14 @@ const handleSubmit =(test_run:boolean) => {
     params.exam_id = examId.value
   }
   http.runQuestions({param: params}).then((res:IBusinessResp) => {
-    if (test_run) {
      if (!res.data || !res.data.solution_id) {
         message.warning('接口未返回solution_id')
         return
      }
      solutionId.value = res.data.solution_id
      testData.loading = true
-     getResult()
-     testData.timer = setInterval(getResult, 3000);
-    } else {
-      message.success('提交成功')
-    }
+     getResult(test_run)
+     testData.timer = setInterval(getResult, 3000, test_run);
   })
 }
 // 关闭标签页
@@ -274,8 +275,14 @@ onMounted(()=>{
 <style lang="less" scoped>
 .programAnswerSpin{
   height: 100%;
+  &>div{
+    height: 100%;
+  }
   :deep(.ant-spin-container){
     height: 100%;
+  }
+  :deep(.ant-spin){
+    max-height: none;
   }
 }
 .programAnswer{
@@ -350,6 +357,7 @@ onMounted(()=>{
       .resultArea{
         margin-bottom: 10px;
         flex: 1;
+        overflow: auto;
         background: var(--white-100);
         border-radius: 10px;
         box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.07);
@@ -373,8 +381,26 @@ onMounted(()=>{
           }
         }
         :deep(.ant-tabs){
+          height:100%;
+          display: flex;
+          flex-direction: column;
           .ant-tabs-nav-list, .ant-tabs-content{
             padding: 0 20px;
+          }
+          .ant-tabs-content-holder{
+            flex:1;
+            overflow: auto;
+            &::-webkit-scrollbar {
+              width: 0px;
+              height: 8px;
+            }
+            &::-webkit-scrollbar-thumb {
+              border-radius: 3px;
+              background: var(--primary-1);
+            }
+            &::-webkit-scrollbar {
+              width: 8px;
+            }
           }
         }
       }

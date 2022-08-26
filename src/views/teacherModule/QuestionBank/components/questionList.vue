@@ -197,7 +197,8 @@ function trialHandle(val:any) {
     path: path[val.kind],
     query: {
       questionId: val.id,
-      type: val.kind
+      type: val.kind,
+      score: val.score
     }
   })
   window.open(href,'_blank')
