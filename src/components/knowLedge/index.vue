@@ -23,6 +23,7 @@
               :load-data="loadData"
               @change='changeData'
               @dropdownVisibleChange="dropdownVisibleChange"
+              :allow-clear="false"
             ></a-cascader>
             <a-button v-if="ifEdit" type="primary" @click="againSelect">重新选择</a-button>
             </div>

@@ -266,7 +266,7 @@ function menuClick(type:string, val: any) {
       deleteQuestion()
       break;
     case 'public':
-      !val.is_public?publicQuestion():''
+      publicQuestion(val.is_public)
       break;
     case 'export':
       exportQuestion()
@@ -330,11 +330,13 @@ function deleteQuestion() {
     }
   })
 }
-function publicQuestion() {
-  console.log('public')
+function publicQuestion(val: number) {
+  // console.log('public', val+1, val-1)
   const param = {
-    questionIds: isBatchOperate.value?[...checkedQuestionId]:[currentQuestionId.value]
+    questionIds: isBatchOperate.value?[...checkedQuestionId]:[currentQuestionId.value],
+    is_public: !val ? val+1 : val-1
   }
+  // console.log('param', param)
   http.batchPublicQuestion({param}).then((res: IBusinessResp) => {
     message.success('公开成功')
     successAfterHandle()

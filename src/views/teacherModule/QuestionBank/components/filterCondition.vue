@@ -129,9 +129,13 @@ const currentCourse = ref({
 const currentKnowledge = ref<IKnowledge[]>([])
 const currentKnowledgeId = ref<number[]>([])
 const selectDirective = (id: number) => {
-  console.log(id)
+  // console.log(id)
+  if (!id) {
+    deleteKnowledge()
+    return
+  }
   currentDirective.value = id
-  id ? selectKnowledgeVisible.value = true : selectKnowledgeVisible.value = false
+  selectKnowledgeVisible.value = true
   // visible.value = false
   getKnowledgeSub(id, 'course')
 }
