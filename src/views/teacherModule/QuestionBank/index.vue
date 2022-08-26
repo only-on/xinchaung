@@ -330,11 +330,11 @@ function deleteQuestion() {
     }
   })
 }
-function publicQuestion(val: number) {
+function publicQuestion(val?: number) {
   // console.log('public', val+1, val-1)
   const param = {
     questionIds: isBatchOperate.value?[...checkedQuestionId]:[currentQuestionId.value],
-    is_public: !val ? val+1 : val-1
+    is_public: !val ? 1 : 0
   }
   // console.log('param', param)
   http.batchPublicQuestion({param}).then((res: IBusinessResp) => {
