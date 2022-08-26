@@ -53,7 +53,7 @@ const props = withDefaults(defineProps<Props>(),{
  labelName: () =>'',
  multipleQuesSelection:()=>[]
 });
-var selectLabels: any = ref(["A", "B", "C", "D", "E", "F"]);
+var selectLabels: any = ref(["A", "B", "C", "D", "E", "F", "G"]);
 const emit = defineEmits<{
   (e: "addItem", index: any): void;
   (e: "deleteItem",index: any): void;

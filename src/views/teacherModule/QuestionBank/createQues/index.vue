@@ -279,8 +279,8 @@ const rules = {
 };
 // 添加选项
 function addItem(index: any) {
-  if (index == 5) {
-    message.warning("最多六个选项！");
+  if (index == 6) {
+    message.warning("最多七个答案选项！");
     return;
   }
   formState.multipleQuesSelection.push({value: "" ,ifAnswer:false});
