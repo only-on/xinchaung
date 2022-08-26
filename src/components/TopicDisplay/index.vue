@@ -100,7 +100,7 @@
                   </div>
                   <!-- 模型题 -->
                   <div class="option option6" v-if="v.type==='ai'">
-                    <ModelQuestion :desc="element.question_desc" :evaluating="element.question_desc" />
+                    <ModelQuestion :desc="element.question_desc" :evaluating="element.model.ai_test_desc" />
                     <div v-if="props.purpose==='achievement'" class="details operationResults">
                       <div class="outputTit">学生答案</div>
                       <div class="outputContent">
@@ -159,7 +159,7 @@
                   <template v-if="['program','ai','sql'].includes(v.type)">
                     <div class="achievement1 modifyscore flexCenter">
                       <div class="resultscore">
-                        得<span>10</span>分
+                        得<span>{{element.score}}</span>分
                       </div>
                       <div v-if="editScore()" class="flexCenter changeScore" @click="editScoreFn(element,k)">
                         <span class="iconfont icon-bianji1"></span>
