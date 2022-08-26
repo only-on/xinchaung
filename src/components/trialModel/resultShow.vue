@@ -12,11 +12,11 @@
   </div>
 </template>
 <script lang="ts" setup>
+import { AnySoaRecord } from "dns";
+
 interface Props {
   border?:boolean,
-  resultInfo: {
-    remark: string
-  }
+  resultInfo: any
 }
 const props = withDefaults(defineProps<Props>(), {
   border: false,
