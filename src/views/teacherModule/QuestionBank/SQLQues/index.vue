@@ -133,6 +133,8 @@ import { Modal, message } from "ant-design-vue";
 import type { Rule } from 'ant-design-vue/es/form';
 import { cascadeEcho,doSubmitData,doEditSubmit,validateNum } from 'src/utils/cascadeEcho'
 import {inputValue,outputValue} from './sample'
+// @ts-ignore 类型声明需要完善，此处先用注解压制错误
+import {renderMarkdown} from  '@xianfe/antdv-markdown';
 const route = useRoute();
 const router = useRouter();
 const type: any = ref(route.query.value);
@@ -264,7 +266,9 @@ function createSqlQues(){
     test_case: { // 测试用例
         type:'text',
         data:[{in:formState.sampleInput,out:formState.sampleOutput}]
-    }   
+    },
+    // @ts-ignore
+    question_desc_html: renderMarkdown(true, formState.stem), // 题目描述对应的html
   }
 
   http.sqlQues({param:params}).then((res:any)=>{
@@ -295,7 +299,9 @@ function editSqlQues(){
     test_case: { // 测试用例
         type:'text',
         data:[{in:formState.sampleInput,out:formState.sampleOutput}]
-    }   
+    },
+    // @ts-ignore
+    question_desc_html: renderMarkdown(true, formState.stem), // 题目描述对应的html
   }
   http.editSql({param:params,urlParams:{ID:editId}}).then((res:any)=>{
     loading.value=false
@@ -335,8 +341,8 @@ function getSqlData(){
         formState.stem=data.question_desc
         formState.memoryLimit=data.problem.memory_limit
         formState.timeLimit=Number(data.problem.time_limit)
-        formState.sampleInput=data.test_case.data[0].in
-        formState.sampleOutput=data.test_case.data[0].out
+        formState.sampleInput=data.test_case.data[0]?.in
+        formState.sampleOutput=data.test_case.data[0]?.out
       }
     })
 }

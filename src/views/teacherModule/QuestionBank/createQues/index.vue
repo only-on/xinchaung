@@ -122,6 +122,8 @@ import { Modal, message } from "ant-design-vue";
 import knowledge from 'src/components/knowLedge/index.vue'
 import selectDirectory from 'src/components/selectDirectory/index.vue'
 import Submit from "src/components/submit/index.vue";
+// @ts-ignore 类型声明需要完善，此处先用注解压制错误
+import {renderMarkdown} from  '@xianfe/antdv-markdown';
 
 const route = useRoute();
 const router = useRouter();
@@ -314,7 +316,9 @@ function createChoiceQues(){
       questionAnalysis:formState.topicAnalysis,
       choiceOptions:choiceOptions,
       choiceCorrectOptions:choiceCorrectOptions,
-      usedBy:formState.purpose
+      usedBy:formState.purpose,
+      // @ts-ignore
+      question_html: renderMarkdown(true, formState.stem), // 题干对应的html
 
     }
     http.choiceQues({param:params}).then((res:any)=>{
@@ -337,7 +341,9 @@ function createJudgeQues(){
       knowledgeMapIds:doSubmitData(formState.knowledgePoints),
       question:formState.stem, 
       judgeCorrect:formState.judgeAnswer,
-      questionAnalysis:formState.topicAnalysis
+      questionAnalysis:formState.topicAnalysis,
+      // @ts-ignore
+      question_html: renderMarkdown(true, formState.stem), // 题干对应的html
     }
     http.judgeQues({param:params}).then((res:any)=>{
       loading.value=false
@@ -363,7 +369,9 @@ function createCompleQues(){
       knowledgeMapIds:doSubmitData(formState.knowledgePoints),
       question:formState.stem, 
       blankCorrect:blankCorrect,
-      questionAnalysis:formState.topicAnalysis
+      questionAnalysis:formState.topicAnalysis,
+      // @ts-ignore
+      question_html: renderMarkdown(true, formState.stem), // 题干对应的html
     }
   http.complateQues({param:params}).then((res:any)=>{
      loading.value=false
@@ -387,7 +395,9 @@ function createSolutionQues(){
       question:formState.stem, 
       shortAnswerReference:formState.referenceAnswer,//参考答案
       shortAnswerKeys:formState.keyword,
-      questionAnalysis:formState.topicAnalysis
+      questionAnalysis:formState.topicAnalysis,
+      // @ts-ignore
+      question_html: renderMarkdown(true, formState.stem), // 题干对应的html
     }
     http.solutionQues({param:params}).then((res:any)=>{
       loading.value=false
@@ -529,7 +539,9 @@ function editChoice(){
     questionAnalysis:formState.topicAnalysis,
     choiceOptions:choiceOptions,
     choiceCorrectOptions:choiceCorrectOptions,
-    usedBy:formState.purpose
+    usedBy:formState.purpose,
+    // @ts-ignore
+    question_html: renderMarkdown(true, formState.stem), // 题干对应的html
   }
   http.editChoice({param:params,urlParams:{questionId:editId}}).then((res:any)=>{
     loading.value=false
@@ -550,7 +562,9 @@ function editJudge(){
       knowledgeMapIds:doEditSubmit(formState.knowledgePoints,cascaData.knowledge_map_details),
       question:formState.stem, 
       judgeCorrect:formState.judgeAnswer,
-      questionAnalysis:formState.topicAnalysis
+      questionAnalysis:formState.topicAnalysis,
+      // @ts-ignore
+      question_html: renderMarkdown(true, formState.stem), // 题干对应的html
     }
     http.editJudge({param:params,urlParams:{questionId:editId}}).then((res:any)=>{
       loading.value=false
@@ -578,7 +592,9 @@ function editComple(){
       knowledgeMapIds:doEditSubmit(formState.knowledgePoints,cascaData.knowledge_map_details),
       question:formState.stem, 
       blankCorrect:blankCorrect,
-      questionAnalysis:formState.topicAnalysis
+      questionAnalysis:formState.topicAnalysis,
+      // @ts-ignore
+      question_html: renderMarkdown(true, formState.stem), // 题干对应的html
     }
   http.editComplate({param:params,urlParams:{questionId:editId}}).then((res:any)=>{
     loading.value=false
@@ -600,7 +616,9 @@ function editSolution(){
       question:formState.stem, 
       shortAnswerReference:formState.referenceAnswer,//参考答案
       shortAnswerKeys:formState.keyword,
-      questionAnalysis:formState.topicAnalysis
+      questionAnalysis:formState.topicAnalysis,
+      // @ts-ignore
+      question_html: renderMarkdown(true, formState.stem), // 题干对应的html
     }
     http.editSolution({param:params,urlParams:{questionId:editId}}).then((res:any)=>{
       loading.value=false

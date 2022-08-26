@@ -160,6 +160,8 @@ import { cascadeEcho,doSubmitData,doEditSubmit,validateNum } from 'src/utils/cas
 
 import { Modal, message } from "ant-design-vue";
 import type { Rule } from 'ant-design-vue/es/form';
+// @ts-ignore 类型声明需要完善，此处先用注解压制错误
+import {renderMarkdown} from  '@xianfe/antdv-markdown';
 const route = useRoute();
 const router = useRouter();
 const type: any = ref(route.query.value);
@@ -388,7 +390,9 @@ function createProgramQues(){
     test_case: { // 测试用例
         type: formState.testCase,
         data:formState.testCase=='text'?testCaseData:formState.useCaseFile,
-    }   
+    },
+    // @ts-ignore
+    question_desc_html: renderMarkdown(true, formState.stem), // 题目描述对应的html
   }
   loading.value = true
   http.programQues({param:params}).then((res:any)=>{
@@ -429,7 +433,9 @@ function editProgressQues(){
     test_case: { // 测试用例
         type: formState.testCase,
         data:formState.testCase=='text'?testCaseData:formState.useCaseFile,
-    }   
+    },
+    // @ts-ignore
+    question_desc_html: renderMarkdown(true, formState.stem), // 题目描述对应的html
   }
   loading.value = true
   http.editProgram({param:params,urlParams:{ID:editId}}).then((res:any)=>{

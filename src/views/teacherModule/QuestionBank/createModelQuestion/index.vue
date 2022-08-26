@@ -119,6 +119,8 @@ import uploadFile from 'src/components/uploadFile.vue'
 import selectDirectory from 'src/components/selectDirectory/index.vue'
 import { Modal, message } from "ant-design-vue";
 import type { Rule } from 'ant-design-vue/es/form';
+// @ts-ignore 类型声明需要完善，此处先用注解压制错误
+import {renderMarkdown} from  '@xianfe/antdv-markdown';
 const route = useRoute();
 const router = useRouter();
 const type: any = ref(route.query.value);
@@ -370,7 +372,9 @@ function createModelQues(){
     aiTestDesc:formState.evaluationDescription,
     pattern:formState.evaluationData,
     practice:formState.trainingSetPath,
-    verify:formState.validationSetPath
+    verify:formState.validationSetPath,
+    // @ts-ignore
+    question_desc_html: renderMarkdown(true, formState.stem), // 题目描述对应的html
   }
   http.modelQues({param:params}).then((res:any)=>{
     if(res.code==1){
@@ -396,7 +400,9 @@ function editModalQues(){
     aiTestDesc:formState.evaluationDescription,
     pattern:formState.evaluationData,
     practice:formState.trainingSetPath,
-    verify:formState.validationSetPath
+    verify:formState.validationSetPath,
+    // @ts-ignore
+    question_desc_html: renderMarkdown(true, formState.stem), // 题目描述对应的html
   }
   http.editModel({param:params,urlParams:{questionId:editId}}).then((res:any)=>{
     if(res.code==1){
