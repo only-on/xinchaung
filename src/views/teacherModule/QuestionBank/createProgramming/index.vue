@@ -505,6 +505,8 @@ onMounted(()=>{
 <style lang="less" scoped>
 .create_ques {
   background-color: var(--white-100);
+  padding: 20px 150px;
+  box-shadow: 0px 2px 4px 0px rgb(0 0 0 / 16%);
 }
 .bottom_btn {
   display: flex;
@@ -534,9 +536,6 @@ onMounted(()=>{
   color:var(--black-45);
 }
 
-.create_ques{
-  padding: 20px 40px;
-}
 .icon-upload{
   color: var(--primary-color);
   font-size: 24px;

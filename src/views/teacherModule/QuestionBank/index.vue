@@ -369,7 +369,7 @@ function exportQuestion() {
     successAfterHandle()
     console.log(content)
     let blobUrl = window.URL.createObjectURL(content);
-    const fileName = "习题export.xlsx";
+    const fileName = isBatchOperate.value?"习题批量导出.xlsx":"习题导出.xlsx";
     const link = document.createElement("a"); // 创建a标签
     link.download = fileName; // a标签添加属性
     link.style.display = "none";

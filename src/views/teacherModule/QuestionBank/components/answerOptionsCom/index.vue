@@ -1,5 +1,6 @@
 <template>
 <a-form-item
+    class="answer-option"
     :label="index == 0 ? '答案选项' : ''"
     v-for="(item, index) in multipleQuesSelection"
     :key="index"
@@ -15,7 +16,7 @@
         <a-input v-model:value="item.value" />
         <div class="answer_item">
         <span
-            v-if="Number(index) > 1"
+            v-if="Number(index) > (type == 1?1:0)"
             class="icon iconfont icon-yichu1"
             @click="deleteItem(index)"
         ></span>
@@ -66,6 +67,14 @@ function deleteItem(index: any) {
 }
 </script>
 <style lang="less" scoped>
+.answer-option {
+  .ant-input {
+    width: 740px;
+  }
+  .answer_item {
+    margin-left: 14px;
+  }
+}
 .select_answer {
   width: 34px;
   height: 34px;

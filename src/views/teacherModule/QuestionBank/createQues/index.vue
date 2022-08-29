@@ -124,6 +124,8 @@ import selectDirectory from 'src/components/selectDirectory/index.vue'
 import Submit from "src/components/submit/index.vue";
 // @ts-ignore 类型声明需要完善，此处先用注解压制错误
 import {renderMarkdown} from  '@xianfe/antdv-markdown';
+import type { Rule } from 'ant-design-vue/es/form';
+import { cascadeEcho,doSubmitData,doEditSubmit } from 'src/utils/cascadeEcho'
 
 const route = useRoute();
 const router = useRouter();
@@ -133,9 +135,6 @@ const editId:any=route.query?.questionId;
 const http = (request as any).QuestionBank;
 const caseFile=http.caseFile
 var updata = inject("updataNav") as Function;
-import type { Rule } from 'ant-design-vue/es/form';
-import { edit } from "ace-builds";
-import { cascadeEcho,doSubmitData,doEditSubmit } from 'src/utils/cascadeEcho'
 
 const catalogue1:any=ref([])
 const fileList: any = [];
@@ -203,6 +202,10 @@ const formState = reactive({
   // 答案
   judgeAnswer: "right",
 });
+
+// 填空题最少是一个空 
+type.value == 3 ? formState.multipleQuesSelection = [{value:'',ifAnswer:false}] : ''
+
 var selectLabels: any = ref(["A", "B", "C", "D", "E", "F"]);
 const selectOptions: any = ref([
   { label: 0, value: "" },
@@ -287,8 +290,14 @@ function addItem(index: any) {
 }
 // 删除选项
 function deleteItem(index: any) {
-  if (formState.multipleQuesSelection.length == 2) {
+  // 选择题最少两个选项
+  if (formState.multipleQuesSelection.length == 2 && type.value == 1) {
     message.warning("最少两个选项！");
+    return;
+  }
+  // 填空题最少一个选项
+  if (formState.multipleQuesSelection.length == 1 && type.value == 3) {
+    message.warning("最少一个选项！");
     return;
   }
   formState.multipleQuesSelection.splice(index, 1);
@@ -306,6 +315,7 @@ function createChoiceQues(){
     })
     if(choiceCorrectOptions.length==0){
       message.warning('答案不能为空！')
+      return
     }
     const params={
       question:formState.stem,
@@ -528,6 +538,10 @@ function editChoice(){
       choiceCorrectOptions.push(selectLabels.value[index])
     }
   })
+  if(choiceCorrectOptions.length==0){
+    message.warning('答案不能为空！')
+    return
+  }
   const params={
     question:formState.stem,
     difficulty:formState.difficulty,
@@ -652,7 +666,9 @@ onMounted(()=>{
 <style lang="less" scoped>
 .create_ques {
   background-color: var(--white-100);
-  padding: 20px 40px;
+  padding: 20px 150px;
+  box-shadow: 0px 2px 4px 0px rgb(0 0 0 / 16%);
+  min-height: 750px;
 }
 .bottom_btn {
   display: flex;

@@ -284,6 +284,8 @@ function deletDirectory(val: any) {
         successHandle(val)
         selectedKeys.value = [0]
         emit("selectedTree", 0)
+        formState.directoryId = [0]
+        formState.parentId = 0
       })
     }
   })
