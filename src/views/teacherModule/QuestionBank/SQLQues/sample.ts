@@ -1,20 +1,27 @@
-export const inputValue = `drop table if exists user_ profile;
-CREATE TABLE user_ profile’ ( 
-‘id’ int NOT NULL, 
-‘device_ id’ int NOT NULL,
-‘gender’ varchar(14) NOT NULL, 
-‘age’ int , 
-‘university’ varchar(32) NOT NULL, 
-‘province’ varchar(32) NOT NULL); 
-INSERT INTO user_ _profile VALUES(1, 2138, ’male’, 21, ’LFX#’, ’BeiJing’); 
-INSERT INTO user_ _profile VALUES(2, 3214, ’male’, null, ’ã gt#’, ’Shanghai’); 
-INSERT INTO user_ _profile VALUES(3, 6543, ’female’, 20, ’dFX#’, ’BeiJing’);
-INSERT INTO user_ _profile VALUES(4, 2315, ’female’, 23, ’ñIt#’, ’ZheJiang’); 
-INSERT INTO user_ _profile VALUES(5, 5432, ’male’, 25, ’Ш#’, ’Shandong’);
-`;
-export const outputValue = `1|2138|male|21|北京大学|BeiJing 
-2|3214|male|None|复旦大学|Shanghai 
-3|6543|female|20|北京大学|BeiJing 
-4|2315|female|23|浙江大学|ZheJiang 
-5|5432|male|25|山东大学|Shandong
+export const inputValue = `drop table if exists  'employees' ; 
+CREATE TABLE 'employees' (
+'emp_no' int(11) NOT NULL,
+'birth_date' date NOT NULL,
+'first_name' varchar(14) NOT NULL,
+'last_name' varchar(16) NOT NULL,
+'gender' char(1) NOT NULL,
+'hire_date' date NOT NULL,
+PRIMARY KEY ('emp_no'));
+INSERT INTO employees VALUES(10001,'1953-09-02','Georgi','Facello','M','1986-06-26');
+INSERT INTO employees VALUES(10002,'1964-06-02','Bezalel','Simmel','F','1985-11-21');
+INSERT INTO employees VALUES(10003,'1959-12-03','Parto','Bamford','M','1986-08-28');
+INSERT INTO employees VALUES(10004,'1954-05-01','Chirstian','Koblick','M','1986-12-01');
+INSERT INTO employees VALUES(10005,'1955-01-21','Kyoichi','Maliniak','M','1989-09-12');
+INSERT INTO employees VALUES(10006,'1953-04-20','Anneke','Preusig','F','1989-06-02');
+INSERT INTO employees VALUES(10007,'1957-05-23','Tzvetan','Zielinski','F','1989-02-10');
+INSERT INTO employees VALUES(10008,'1958-02-19','Saniya','Kalloufi','M','1994-09-15');
+INSERT INTO employees VALUES(10009,'1952-04-19','Sumant','Peac','F','1985-02-18');
+INSERT INTO employees VALUES(10010,'1963-06-01','Duangkaew','Piveteau','F','1989-08-24');
+INSERT INTO employees VALUES(10011,'1953-11-07','Mary','Sluis','F','1990-01-22');`
+;
+export const outputValue = `10008|1958-02-19|Saniya|Kalloufi|M|1994-09-15
+10011|1953-11-07|Mary|Sluis|F|1990-01-22
+10005|1955-01-21|Kyoichi|Maliniak|M|1989-09-12
+10010|1963-06-01|Duangkaew|Piveteau|F|1989-08-24
+10006|1953-04-20|Anneke|Preusig|F|1989-06-02
 `;

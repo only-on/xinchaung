@@ -8,11 +8,10 @@
     </div>
     <span>作品说明</span>
     <p>{{resultInfo.remark}}</p>
-    <!-- <p>在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱。</p> -->
   </div>
 </template>
 <script lang="ts" setup>
-import { AnySoaRecord } from "dns";
+import {ref} from 'vue'
 
 interface Props {
   border?:boolean,

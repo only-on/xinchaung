@@ -88,7 +88,7 @@
     <Submit @submit="onSubmit" @cancel="reset" okText="保存" :loading='loading'></Submit>
   </div>
   <!-- 用例示例 -->
-  <a-modal :visible="sampleData.visible" :title="(sampleData.isIn?'输入':'输出') + '示例'" :width="sampleData.isIn ? 700: 400" :destroyOnClose="true" @cancel="handleCancel">
+  <a-modal :visible="sampleData.visible" :title="(sampleData.isIn?'输入':'输出') + '示例'" :width="sampleData.isIn ? 700: 450" :destroyOnClose="true" @cancel="handleCancel">
     <div>
       <a-textarea
       :bordered="false"
@@ -191,7 +191,7 @@ const rules = {
       required: true,
       trigger: "blur",
       message: "请输入名称",
-    },
+    }
   ],
   purpose: [
     {

@@ -389,27 +389,9 @@ export default defineComponent({
     }
     // 监测学生端课程详情连接ws,其他页面断开ws
     watch(() => router.currentRoute.value.path, newVal => {
-      // 根据当前路由高亮对应的菜单 // menuBar  组件菜单点击时有此功能 function select(level: string, val: MenuItem)
-      // console.log(newVal);
-      // menus.forEach((item:any) => {
-      //   if(item.url && item.url.includes(newVal)){
-      //     lStorage.set("menuActiveName", item.name);
-      //   }
-      //   if (item.children.length) {
-      //     item.children.forEach((childItem:any) => {
-      //       if(childItem.url && childItem.url.includes(newVal)){
-      //         lStorage.set("menuActiveName", item.name);
-      //       }
-      //     })
-      //   }
-      // })
       if (role === 4) {
         closeWs()
-        if (newVal === '/student/studentCourse/Detail') {
-          setWs()
-          return
-        }
-        if (newVal === '/teacher/teacherExperimentResourcePool/experimentDetail') {
+        if (newVal === '/student/studentCourse/Detail' || newVal === '/teacher/teacherExperimentResourcePool/experimentDetail') {
           setWs()
           return
         }

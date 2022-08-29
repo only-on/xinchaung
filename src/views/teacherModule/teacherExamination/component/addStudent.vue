@@ -222,6 +222,10 @@ watch(
   (newVal) => {
     if (newVal) {
       params.page = 1;
+      params.nick = ''
+      params.grade = ''
+      params.direct = ''
+      params.class = ''
       getallstudent();
     }
   },

@@ -96,5 +96,10 @@ const handleCopy = (refsName: string) => {
       border-radius: 0;
     }
   }
+  :deep(.mark__container){
+    .mark__body .mark__preview{
+      min-width: 0;
+    }
+  }
 }
 </style>

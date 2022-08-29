@@ -251,8 +251,11 @@ const customRow = (record:any,index:any) => {
       // 阻止冒泡
       ev.stopPropagation();
       targetIndex = index;
+      if (!sourceIndex) return
       [listData.value[sourceIndex], listData.value[targetIndex]] = [listData.value[targetIndex], listData.value[sourceIndex]]
       emit("update:data", listData.value);
+      // console.log('外层target', targetIndex)
+      // console.log('外层sourceIndex', sourceIndex)
     },
   };
 }
@@ -277,6 +280,9 @@ const innerCustomRow = (record:any,index:any) => {
       ev.stopPropagation();
       innerSourceIndex = index
       outerIndex = ev.target.parentNode.parentNode.parentNode.parentNode.parentNode.getAttribute('data-index')
+      // 外层index初始化
+      sourceIndex = null
+      targetIndex = null
       console.log('开始', outerIndex)
     },
     // 拖动元素经过的元素
@@ -301,6 +307,7 @@ const innerCustomRow = (record:any,index:any) => {
       var source = listData.value[outerIndex].data[innerSourceIndex]
       temp.splice(innerSourceIndex,1)
       temp.splice(innerTargetIndex,0,source)
+      emit("update:data", listData.value);
     },
   };
 }

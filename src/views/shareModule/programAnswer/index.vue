@@ -2,13 +2,13 @@
 <a-spin :spinning="testData.loading" size="large" tip="Loading..." wrapperClassName="programAnswerSpin">
   <div class="programAnswer">
     <div class="top">
-      <div class="left">
+      <div class="left single_ellipsis">
         {{problemData.question}}
       </div>
       <div class="right">
-         内存限制： <span>{{problemData.memory_limit}}kb</span>
-         时间限制：<span>{{Number(problemData.time_limit)}}ms</span>
-         <lanuageSelect @change="changeLanugae" :lang="languageDefault" :disabled=" languageDefault == 'sql' ? true : false"/>
+         内存限制： <span>{{problemData.memory_limit}}MB</span>
+         时间限制：<span>{{Number(problemData.time_limit)}}MS</span>
+         <lanuageSelect ref="lanuageSelectRef" @change="changeLanugae" :lang="languageDefault" :disabled=" languageDefault == 'sql' ? true : false"/>
         <a-divider type="vertical" style="background:#2C3A54;height:20px"/>
         <i class="iconfont icon-guanji" @click="closeTab"></i>
       </div>
@@ -48,8 +48,8 @@
             </a-tab-pane>
           </a-tabs>
           <div class="resultInfo">
-            <span>消耗内存：{{testData.memory}}kb</span>
-            <span>代码执⾏时⻓：{{testData.time}}ms</span>
+            <span>消耗内存：{{testData.memory}}MB</span>
+            <span>代码执⾏时⻓：{{testData.time}}MS</span>
             <i v-show="testData.result" :class="['iconfont',[4,13].includes(testData.result) ? 'icon-duigouxiao success' : 'icon-guanbixiao fail']"></i>
           </div>
         </div>
@@ -88,10 +88,11 @@ const route = useRoute()
 const http = (request as any).QuestionBank;
 const questionId = ref<any>(Number(route.query.questionId)) // 题目id
 const examId = ref<any>(Number(route.query?.examId)) // 学生考试id
-const questionType = ref<any>(route.query?.type ? route.query.type : 'program') // 题目类型
+const questionType = ref<any>(route.query?.type ? route.query.type : 'program') // 题目类型(program、sql)
 const languageDefault = ref<string>('') // 语言默认值
 const isTeacher = lStorage.get('role') === 3 ? true: false
 const questionScroe = ref<any>(route.query?.score) // 题目分值
+const lanuageSelectRef = ref<any>()
 const problemData = reactive<IproblemData>({
   question: '',
   question_desc: '',
@@ -183,12 +184,18 @@ const setResultValue = (result:any) => {
   clearInterval(testData.timer)
   testData.timer = null
   activeKey.value = 'result'
+  testData.resultText = ''
+  let judge = lanuageSelectRef.value.judgeResult.filter((item:any) => item.id === result.result)
+  if (judge.length) {
+    console.log(judge[0].cn_name)
+    testData.resultText = judge[0].cn_name + '\n'
+  }
   if (result.compile_info) {
-    testData.resultText = result.compile_info.error
+    testData.resultText += result.compile_info.error
     return
   }
   if (result.runtime_info) {
-    testData.resultText = result.runtime_info.error
+    testData.resultText += result.runtime_info.error
   }
 }
 // 查询测试结果
@@ -200,13 +207,16 @@ const getResult = (test_run:boolean) => {
     if (result.result === 4 || result.result === 13) {
       // 教师端点击提交按钮，显示分数
       if (!test_run && isTeacher) {
-        message.success(`得${questionScroe.value}分`,5)
+        message.success(`得 ${questionScroe.value} 分`,5)
       }
       setResultValue(result)
       return
     }
-    // 一分钟之后停止定时器
-    if (timerNum.value > 20) {
+    // 状态大于4或者一分钟之后停止定时器;状态小于4的需要轮询
+    if (result.result > 4 || timerNum.value > 20) {// 教师端点击提交按钮，显示分数
+      if (!test_run && isTeacher) {
+        message.warning(`得 0 分`,5)
+      }
       setResultValue(result)
     }
   }).catch(()=>{
@@ -299,9 +309,13 @@ onMounted(()=>{
     justify-content: space-between;
     align-items: center;
     padding: 0 75px;
+    >.left{
+      flex:1;
+    }
     >.right{
       display: flex;
       align-items: center;
+      margin-left:40px;
       >span{
         color: var(--primary-color);
         margin-right: 20px;

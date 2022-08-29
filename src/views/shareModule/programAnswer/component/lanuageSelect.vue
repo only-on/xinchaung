@@ -45,11 +45,12 @@ const lanuageVal = ref<any>({
   label: ''
 });
 const lanuageList = reactive<Ilist[]>([]);
-
+const judgeResult = reactive<any>([])
 // 获取语言配置
 const getLanuage = () => {
   http.ojConfig().then((res: IBusinessResp) => {
     Object.assign(lanuageList, res.data.language);
+    Object.assign(judgeResult, res.data.judge_result)
     if (!lanuageList.length) return
     if (props.inDrawer) {
       lanuageList.unshift({
@@ -84,6 +85,9 @@ const changeSelect = () => {
 onMounted(() => {
   getLanuage();
 });
+defineExpose({
+  judgeResult
+})
 </script>
 <style lang="less" scoped>
 .customSelect {

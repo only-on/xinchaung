@@ -2,8 +2,8 @@
   <div class="cradItem" @click.stop="goPreview">
     <div class="left">
       <span class="type">{{type == 1 ? '作业' : '考试'}}</span>
-      <div :class="['img',{'isExam': type == 2},item.is_publish == 0 ? 'unpublish' : item.status == 1 ? 'ongoing' :  item.status == 2 ? 'unstart' :  'end'] ">
-        <span>{{item.is_publish == 0 ? '未发布' :item.status == 1 ? '进行中' :   item.status == 2 ? '未开始' : '已结束'}}</span>
+      <div :class="['img',{'isExam': type == 2},getClass(item)] ">
+        <span>{{getStatus(item)}}</span>
       </div>
     </div>
     <div class="middle">
@@ -90,6 +90,14 @@ const goPreview=()=>{
     path:path,
     query:{id:item.id,canEdit:item.can_edit}
   })
+}
+const getClass = (item:any) => {
+  let isEnd = new Date(item.closed_at).valueOf() < new Date().valueOf()
+  return item.is_publish == 0 && isEnd ?'end':item.is_publish == 0 ? 'unpublish' : item.status == 1 ? 'ongoing' :  item.status == 2 ? 'unstart' :  'end'
+}
+const getStatus = (item:any) => {
+  let isEnd = new Date(item.closed_at).valueOf() < new Date().valueOf()
+  return item.is_publish == 0 && isEnd  ? '已结束' : item.is_publish == 0 ? '未发布' :item.status == 1 ? '进行中' :   item.status == 2 ? '未开始' : '已结束'
 }
 watch(()=>props.data, newVal => {
   Object.assign(item,newVal)

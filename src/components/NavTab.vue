@@ -6,7 +6,7 @@
     <div class="navList" :class="configuration.tabs.length > 1?'navListTab':''">
       <div :class="['tab', themeClass]">
         <div
-          v-for="(v, i) in configuration.tabs" :key="v.name" :class=" ActiveName === v.name || (!ActiveName && i == 0)? configuration.tabs.length > 1 ? 'active activeBor' : 'active' : '' "
+          v-for="(v, i) in configuration.tabs" :key="v.name" :class=" ActiveName === v.name || (!ActiveName && i == 0)? configuration.tabs.length > 1 ? 'active activeBor' : 'active single_ellipsis' : '' "
           @click="ActiveName !== v.name ? tabChange(v) : ''"
         >
           {{ v.name }}
@@ -198,6 +198,7 @@ export default defineComponent({
   }
   .tab {
     display: flex;
+    width: 100%;
     div {
       border-top-left-radius: 5px;
       border-top-right-radius: 5px;
@@ -208,7 +209,7 @@ export default defineComponent({
       border-bottom: 3px solid transparent;
       // padding:0 8px;
       letter-spacing: 0.79px;
-      text-align: center;
+      text-align: left;
       cursor: pointer;
       &:hover {
         color: var(--glod-4);

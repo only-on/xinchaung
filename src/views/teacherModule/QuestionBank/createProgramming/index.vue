@@ -44,7 +44,7 @@
         </a-col> 
         <!-- 编程题 模型题 -->
         <a-col :span="12">
-          <a-form-item label="内存限制" name="memoryLimit">
+          <a-form-item label="内存限制(MB)" name="memoryLimit">
             <a-input
               v-model:value="formState.memoryLimit"
               placeholder="请输入内存限制大小"
@@ -52,7 +52,7 @@
           </a-form-item>
         </a-col>
         <a-col :span="12">
-          <a-form-item label="时间限制" name="timeLimit">
+          <a-form-item label="时间限制(MS)" name="timeLimit">
             <a-input
               v-model:value="formState.timeLimit"
               placeholder="请输入时间限制"
