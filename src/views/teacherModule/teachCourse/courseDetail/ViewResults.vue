@@ -202,20 +202,10 @@ const EmptyType:any=computed(()=>{
 })
 const exportResults=()=>{
   let aLink=document.createElement('a')
-  aLink.href=`/api/operate/teacherExports/exportCourse/${courseId}`
+  aLink.href=`/api/operate/teacherExports/exportCourse/${courseId}?user=${searchInfo.user}&class=${searchInfo.class}&name=${searchInfo.name}`
   aLink.download=""
   aLink.click()
-  // const param:any={
-  //   user:searchInfo.user,
-  //   class:searchInfo.class,
-  //   name:searchInfo.name,
-  // }
-  // http.exportCourseResult({param:{...param},urlParams:{courseId:courseId}}).then((res: any) => {
-  //   // message.success("清除成功"); //
-  //   // searchInfo.selectedRowKeys=[]
-  //   // initData();
-  // });
-  // downloadUrl(url,activeCourse.name)
+  // console.log(aLink.href);
 }
 const searchList=()=> {
   searchInfo.page=1
