@@ -458,6 +458,9 @@ const deleteTopic=(type:number,data:any,key:number)=>{
           props.list[k].question.splice(idx,1)
         }
       })
+      if(!props.list[key].question || props.list[key].question.length===0){
+        props.list.splice(key,1)
+      }
     }
   })
   // message.success('操作成功')
