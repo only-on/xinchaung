@@ -96,7 +96,7 @@
                       <div class="outputContent" v-html="'最后执行的输入： 90 执行出错信息：'">
                       </div>
                     </div>
-                    <div @click="programAnswer(element.id,'program')" v-if="props.purpose==='IsStuAnswer'" class="reply"> 答 题 </div>
+                    <div @click="programAnswer(element.question_id,'program')" v-if="props.purpose==='IsStuAnswer'" class="reply"> 答 题 </div>
                   </div>
                   <!-- 模型题 -->
                   <div class="option option6" v-if="v.type==='ai'">
@@ -124,7 +124,7 @@
                   <!-- SQL题 -->
                   <div class="option option7" v-if="v.type==='sql'">
                     <Sqldetail :info="SqllObj" :desc="element.question_desc" />
-                    <div @click="programAnswer(element.id,'sql')" v-if="props.purpose==='IsStuAnswer'" class="reply"> 答 题 </div>
+                    <div @click="programAnswer(element.question_id,'sql')" v-if="props.purpose==='IsStuAnswer'" class="reply"> 答 题 </div>
                   </div>
                 </div>
                 <!-- 题目结果 -->
