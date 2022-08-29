@@ -39,7 +39,7 @@
   <!-- 创建目录弹框 -->
   <a-modal v-model:visible="visible"  :title="(formState.id?'编辑':'新建')+`文件夹`" class="create-directory" :width="400" @cancel="cancel()">
     <a-form :layout="'vertical'" :rules="rules" :model="formState" ref="formRef">
-      <a-form-item name="catalogue" label="选择创建路径" v-if="!formState.id">
+      <a-form-item name="catalogue" label="选择创建路径" v-if="!formState.id && visible">
         <directory-cascader :formState="formState" :levelNum="2" @selectedHandle="selectedHandle"></directory-cascader>
       </a-form-item>
       <a-form-item label="文件夹名称" name="name">
@@ -78,7 +78,7 @@ const fieldNames = {
 const treeData = ref<ITreeList[]>([
   {
     id: 0,
-    name: "目录",
+    name: "根目录",
     has_children: 0,
     children: [],
     pid: 0,  // 父级目录id
@@ -92,6 +92,20 @@ const onSelect = (selectedKeys: number[], info: any) => {
   console.log("selected", selectedKeys, info);
   // selectNode.value = info.selectedNodes.length ? info.selectedNodes[0] : {}
   emit("selectedTree", selectedKeys[0])
+  if (!info.node.id || info.node.pPid) {   // 根目录和第三级文件夹
+    formState.parentId = 0
+    formState.directoryId = [0]
+    return
+  }
+  formState.parentId = info.node.pPid ? 0 : selectedKeys[0]
+  console.log(info.node.directoryName)
+  if (!info.node.pid) {  // 第一级文件夹
+    formState.directoryId = info.node.directoryName.length === 2 ? info.node.directoryName : [...info.node.directoryName, info.node.name]
+    return
+  }
+  if (info.node.pid && !info.node.pPid) {  // 第二级文件夹
+    formState.directoryId = info.node.directoryName.length === 3 ? info.node.directoryName : [...info.node.directoryName, info.node.name]
+  }
 };
 const onLoadData = (treeNode: any) => {
   return new Promise(async(resolve: any) => {
@@ -168,7 +182,7 @@ const rules = {
 const formState = reactive<IFormState>({
   id: 0,
   name: '',
-  directoryId: ['目录'],
+  directoryId: ['根目录'],
   parentId: 0
 })
 function selectedHandle() {
@@ -214,7 +228,9 @@ function editDirectorySubmit() {
 function cancel() {
   visible.value = false
   loading.value = false
-  Object.assign(formState, {id: 0, name: '', directoryId: [0], parentId: 0})
+  Object.assign(formState, {id: 0, name: '', directoryId: [0], parentId: 0, pid: 0, pindex: 0, pPid: 0, pPindex: 0,})
+  selectedKeys.value = [0]
+  emit("selectedTree", 0)
 }
 function upDirectory(val: any) {
   if (val.index === 0) {
@@ -259,6 +275,8 @@ function deletDirectory(val: any) {
     onOk() {
       http.deleteDirectory({urlParams: {directory_id: val.id}}).then(async(res: IBusinessResp) => {
         successHandle(val)
+        selectedKeys.value = [0]
+        emit("selectedTree", 0)
       })
     }
   })

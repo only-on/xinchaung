@@ -33,7 +33,7 @@ const emit = defineEmits<{
 const options = ref([
   {
     id: 0,
-    name: "目录",
+    name: "根目录",
     is_public: 1,
     has_children: 0,
     isLeaf: false,
