@@ -342,7 +342,7 @@ function publicQuestion(val?: number) {
   }
   // console.log('param', param)
   http.batchPublicQuestion({param}).then((res: IBusinessResp) => {
-    message.success('公开成功')
+    message.success(!val?'公开成功':'取消公开成功')
     successAfterHandle()
   })
 }
