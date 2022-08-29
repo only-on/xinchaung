@@ -213,17 +213,24 @@ function submit() {
       // } else {
         getDirectoryFirst()
       // }
+    }).catch(() => {
+      loading.value = false
     })
   })
 }
 function editDirectorySubmit() {
-  http.updateDirectory({
-    param: {name: formState.name}, 
-    urlParams: {directory_id: formState.id}})
-  .then((res: IBusinessResp) => {
-    cancel()
-    successHandle(formState)
-  })
+   formRef.value.validate().then(() => {
+    loading.value = true
+    http.updateDirectory({
+      param: {name: formState.name}, 
+      urlParams: {directory_id: formState.id}})
+    .then((res: IBusinessResp) => {
+      cancel()
+      successHandle(formState)
+    }).catch(() => {
+      loading.value = false
+    })
+   })
 }
 function cancel() {
   visible.value = false
