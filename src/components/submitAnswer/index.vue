@@ -95,7 +95,7 @@ const Answered=(item:any)=>{
 }
 const submit=()=>{
     httpStu.submitExam({urlParams:{exam:id}}).then((res:any)=>{
-        if(res.data.EndOfAnswer){
+        if(res.data && res.data.EndOfAnswer){
             emit('EndOfAnswer')
         }else{
             emit('submitComplete')

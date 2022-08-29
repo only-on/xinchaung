@@ -104,7 +104,8 @@
                     <div v-if="props.purpose==='achievement'" class="details operationResults">
                       <div class="outputTit">学生答案</div>
                       <div class="outputContent">
-                        <div class="flexCenter">
+                        <ResultShow :resultInfo="{}" />
+                        <!-- <div class="flexCenter">
                           <div>
                             <span>结果文件</span>
                             <span>查看</span>
@@ -115,7 +116,7 @@
                           </div>
                         </div>
                         <div>作品说明</div>
-                        <div>在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱。</div>
+                        <div>在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱。</div> -->
                       </div>
                     </div>
                     <div @click="AiAnswer(element.id)" v-if="props.purpose==='IsStuAnswer'" class="reply"> 答 题 </div>
@@ -213,6 +214,7 @@ import Programming from './detail/programming.vue'
 import ModelQuestion from './detail/ModelQuestion.vue'
 import Sqldetail from './detail/Sqldetail.vue'
 import MarkedEditor from "src/components/editor/markedEditor.vue";
+import ResultShow from 'src/components/trialModel/resultShow.vue' //
 import { useRouter, useRoute } from "vue-router";
 import storage from "src/utils/extStorage";
 import request from "src/api/index";
@@ -302,10 +304,10 @@ const DebounceUse:Function= new Debounce().use(submitAnswers,0.5) //延时
 var curQuestionId:Ref<number> = ref(0)
 const changebox=(v:any,element:any)=>{
   console.log(element)
-  if(curQuestionId.value === element.id){
+  if(curQuestionId.value === element.question_id){
     DebounceUse(element)
   }else{
-    curQuestionId.value=element.id
+    curQuestionId.value=element.question_id
     submitAnswers(element)
   }
 }
