@@ -119,7 +119,7 @@
                         <div>在旧版分析中也提到，频道的整体设计风格缺乏品牌调性，缺少可以让用户记忆的品牌元素，无法建立对京东国际的品牌认知；并且视觉信息层级混乱。</div> -->
                       </div>
                     </div>
-                    <div @click="AiAnswer(element.id)" v-if="props.purpose==='IsStuAnswer'" class="reply"> 答 题 </div>
+                    <div @click="AiAnswer(element.question_id)" v-if="props.purpose==='IsStuAnswer'" class="reply"> 答 题 </div>
                   </div>
                   <!-- SQL题 -->
                   <div class="option option7" v-if="v.type==='sql'">
