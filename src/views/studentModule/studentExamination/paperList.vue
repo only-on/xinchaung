@@ -154,13 +154,15 @@ function toAnswer(item:any){
       purpose: 'IsStuAnswer',
       id: item.id,
       examResultId:item.exam_result_id,
-      closedAt: item.closed_at   //2022-08-18 22:00:00   item.closed_at
+      closedAt: item.closed_at   //2022-08-18 22:00:00   item.closed_at  
     }
   })
   // router.push({path:'./studentAssignment/answerQues',query:{name:typeInfo[props.type].text,type:'answer'}})
   // sessionStorage.removeItem('examRelastTime')
 }
 function lookScore(item:any){
+  // toAnswer(item)
+  // return
   const path = isAssign.value ? '/student/studentAssignment/AssignmentViewResults':'/student/studentExamination/ExaminationViewResults'
   router.push({
     path: path,

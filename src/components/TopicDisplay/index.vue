@@ -324,7 +324,7 @@ function submitAnswers(params:any) {
   if(['judge','short-answer'].includes(params.kind) && !answer){
     return
   }
-  httpStu.submitAnswers({param:{exam_id:id,question_id:curQuestionId.value,answer:params.answer}}).then((res:any)=>{
+  httpStu.submitAnswers({param:{exam_id:Number(id),question_id:curQuestionId.value,answer:params.answer}}).then((res:any)=>{
     console.log(res)
     if(res.data.EndOfAnswer){
       emit('EndOfAnswer')  // 考试时间已结束

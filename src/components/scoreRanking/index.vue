@@ -1,9 +1,9 @@
 <template>
     <div class="score_ranking">
-        <div class="stu_score" v-if="info.id">
+        <div class="stu_score">
             <img src="/src/assets/images/task/person_img.png">
-            <div class="name">{{info.user_profile.name}}</div>
-            <div class="stu_number">{{info.user_profile.sno}}</div>
+            <div class="name">{{info.user_profile?.name}}</div>
+            <div class="stu_number">{{info.user_profile?.sno}}</div>
             <div class="rank">
                 <div>NO.{{info.rank}}</div>
                 <div>{{info.total_score}}</div>

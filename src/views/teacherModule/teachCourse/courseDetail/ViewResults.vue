@@ -4,20 +4,20 @@
       <div class="left flexCenter">
         <div class="item flexCenter">
           <img src="../../../../assets/images/teacherCourse/5.png" alt=""/>
-          <span>最高分：{{10}}</span>
+          <span>最高分：{{rankObj.max}}</span>
         </div>
         <div class="item flexCenter">
           <img src="../../../../assets/images/teacherCourse/6.png" alt=""/>
-          <span>最低分：{{20}}</span>
+          <span>最低分：{{rankObj.min}}</span>
         </div>
         <div class="item flexCenter">
           <img src="../../../../assets/images/teacherCourse/7.png" alt=""/>
-          <span>平均分：{{30}}</span>
+          <span>平均分：{{rankObj.avg}}</span>
         </div>
       </div>
       <div class="right flexCenter">
         <div class="item1">
-          <div class="text1">总成绩 = 实验成绩80% + 作业成绩10% + 考试成绩10%</div>
+          <div class="text1">{{`总成绩 = 实验成绩${scoreData.content_score}% + 作业成绩${scoreData.task_score}% + 考试成绩${scoreData.exam_score}%`}}</div>
           <div class="text2 flexCenter">
             <span>实验成绩、作业成绩和考试成绩为平均成绩</span>
             <a-button @click.stop="SetupScore()" type="link" class="del" size="small">修改成绩占比</a-button>
@@ -31,7 +31,7 @@
         <div class="left flexCenter">
           <div class="item">
             <span>姓名：</span>
-            <a-input v-model:value="searchInfo.user" placeholder="请输入关键字搜索" @keyup.enter="searchList" />
+            <a-input v-model:value="searchInfo.name" placeholder="请输入关键字搜索" @keyup.enter="searchList" />
           </div>
           <div class="item">
             <span>班级：</span>
@@ -39,7 +39,7 @@
           </div>
           <div class="item">
             <span>学号：</span>
-            <a-input v-model:value="searchInfo.name" placeholder="请输入关键字搜索" @keyup.enter="searchList" />
+            <a-input v-model:value="searchInfo.user" placeholder="请输入关键字搜索" @keyup.enter="searchList" />
           </div>
         </div>
         <div class="right">
@@ -121,7 +121,7 @@ const { courseId } = route.query;
 const http = (request as any).teachCourse;
 const SetupScore=()=>{
   Visible.value=true
-  
+  Object.assign(formState,scoreData)
 }
 const formRef = ref();
 var Visible: Ref<boolean> = ref(false);
@@ -155,11 +155,12 @@ const Save=()=>{
     return
   }
   formRef.value.validate().then(()=>{ 
-    return
+    // return
     // selectIds
-    http.SetupScore({param:{chapter_name:formState.name},urlParams:{courseId:''}}).then((res: any)=>{
+    http.editWeight({param:{...formState},urlParams:{courseId:courseId}}).then((res: any)=>{
       message.success('操作成功')
-      formState.name=''
+      // formState.name=''
+      getWeight()
       cancel()
     }).catch((err:any)=>{
       cancel()
@@ -189,7 +190,7 @@ var searchInfo:any=reactive({
 var loading: Ref<boolean> = ref(false);
 var courseList: any[] = reactive([{order:1,id:1},{order:2,id:2}]);
 var totalCount: Ref<number> = ref(0);
-var analysisObj:any=reactive({})
+var rankObj:any=reactive({})
 const EmptyType:any=computed(()=>{
   let str=''
   if(searchInfo.user == '' && searchInfo.class =='' && searchInfo.name == ''){
@@ -200,10 +201,19 @@ const EmptyType:any=computed(()=>{
   return str
 })
 const exportResults=()=>{
-  // http.CourseBatchClearScreen({param: {course_ids:searchInfo.selectedRowKeys}}).then((res: any) => {
-  //   message.success("清除成功"); //
-  //   searchInfo.selectedRowKeys=[]
-  //   initData();
+  let aLink=document.createElement('a')
+  aLink.href=`/api/operate/teacherExports/exportCourse/${courseId}`
+  aLink.download=""
+  aLink.click()
+  // const param:any={
+  //   user:searchInfo.user,
+  //   class:searchInfo.class,
+  //   name:searchInfo.name,
+  // }
+  // http.exportCourseResult({param:{...param},urlParams:{courseId:courseId}}).then((res: any) => {
+  //   // message.success("清除成功"); //
+  //   // searchInfo.selectedRowKeys=[]
+  //   // initData();
   // });
   // downloadUrl(url,activeCourse.name)
 }
@@ -229,7 +239,6 @@ const onSelectChange=(selectedRowKeys: any[], selectedRows: any[])=> {
   
   // state.selectedRows = selectedRows; // 弹窗当前页已选 list
 }
-const scoreData:any=reactive({})
 const initData = () => {
   // return
   const param:any={
@@ -246,22 +255,23 @@ const initData = () => {
   http.ViewResultsList({param:{...param},urlParams:{courseId:courseId}}).then((res: IBusinessResp) => {
     loading.value = false
     if (!res) return
-    const { list, page,analysis }  = res.data
-    list.forEach((v: any) => {
+    const { list, page,rank }  = res.data
+    list.map((v: any,k:number) => {
+      v.order=`${k+1}`
       // v.type_obj = Object.assign({}, getTypeList('90deg')[v.task_type]);
     });
-    Object.assign(analysisObj,analysis)
+    Object.assign(rankObj,rank)
     courseList.push(...list)
     totalCount.value = page.totalCount
   }).catch((err:any)=>{
       loading.value = false
   })
 };
-
+const scoreData:any=reactive({})
 const getWeight=()=>{
   http.getWeight({urlParams:{courseId:courseId}}).then((res: IBusinessResp) => {
     const {data}=res
-    // Object.assign(formState,data)  //formState
+    Object.assign(scoreData,data)  //formState
   }).catch((err:any)=>{
      
   })
@@ -284,34 +294,39 @@ const columns= [
     },
     {
       title: "学号",
-      dataIndex: "courseAttribute",
+      dataIndex: "username",
+      align: "center"
+    },
+    {
+      title: "姓名",
+      dataIndex: "pname",
       align: "center"
     },
     {
       title: "班级",
-      dataIndex: "courseGroup",
+      dataIndex: "classname",
       align: "center",
       width:160,
       ellipsis: true,
     },
     {
       title: "实验成绩",
-      dataIndex: "courseState",
+      dataIndex: "content_score",
       align: "center"
     },
     {
       title: "作业成绩",
-      dataIndex: "contentsCount",
+      dataIndex: "task_score",
       align: "center",
     },
     {
       title: "考试成绩",
-      dataIndex: "classesCount",
+      dataIndex: "exam_score",
       align: "center",
     },
     {
       title: "总成绩",
-      dataIndex: "recordSize",
+      dataIndex: "score",
       align: "center",
       ellipsis: true,
     },

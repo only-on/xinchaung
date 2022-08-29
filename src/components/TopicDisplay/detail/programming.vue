@@ -51,6 +51,7 @@ import {
   withDefaults,
 } from "vue";
 import MarkedEditor from "src/components/editor/markedEditor.vue";
+import { Modal, message } from "ant-design-vue";
 interface Iinfo{
   access:any;
   example:any;
@@ -81,6 +82,7 @@ function copy(id: string) {
   input.select();
   input.disabled=true
   document.execCommand("Copy");
+  message.success('复制成功')
 }
 </script>
 <style scoped lang="less">

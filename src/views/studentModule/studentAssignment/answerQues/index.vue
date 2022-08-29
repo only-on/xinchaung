@@ -81,17 +81,17 @@ const questionsList:any=reactive([])
 var listLoading:Ref<boolean> = ref(false);
 const getExamDetail = () => {  // http  httpStu resultId:id    ID: id
   listLoading.value=true
-  httpStu.examDetail({urlParams:{ID: id}}).then((res:IBusinessResp) => {
+  httpStu.examDetail({urlParams:{ID: examResultId}}).then((res:IBusinessResp) => {
     questionsList.length=0
     const {data}=res
     headerObj.title=data.name
     // headerObj.explain=data.note
     headerObj.explainText=data.note
-    let questions_info=data.questions_info
-    Object.keys(questions_info).map((v:any)=>{
+    let question_list=data.question_list
+    Object.keys(question_list).map((v:any)=>{
       let obj={
         type:v,
-        question:questions_info[v]
+        question:question_list[v]
       }
       questionsList.push(obj)
     })
