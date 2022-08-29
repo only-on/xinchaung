@@ -9,13 +9,15 @@
           <div class="left">
             <div class="desc">
               <div class="simple single_ellipsis" :title="v.question" v-if="['program','ai','sql'].includes(v.kind)">{{v.question}}</div>
+              <div class="simple single_ellipsis" :title="v.question_html_content" v-else-if="!v.visible">{{v.question_html_content}}</div>
               <marked-editor v-else v-model="v.question" :preview="true" />
             </div>
             <template v-if="v.visible">
             <!-- 选择题 --> 
             <!-- choice,judge,blank,short-answer,program,ai -->
             <div class="option" v-if="v.kind==='choice'">
-              <a-checkbox-group v-model:value="v.choice_correct_options" style="width: 100%" :disabled="true">
+              <!--  v-model:value="v.choice_correct_options" -->
+              <a-checkbox-group style="width: 100%" :disabled="true">
                 <a-row v-for="(option, o) in v.choice_options" :key="o">
                   <a-checkbox :value="optionType[o]">{{`${optionType[o]}、`}}</a-checkbox>
                   <div> {{option.content}}</div>

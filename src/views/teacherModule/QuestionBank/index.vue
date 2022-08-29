@@ -100,6 +100,9 @@ import { createQuestionTypeList, IQuestionList } from "./questionConfig"
 import Submit from "src/components/submit/index.vue";
 import baseInfo from "src/components/ReleasePaper/baseInfo.vue"
 import studentTable from "src/views/teacherModule/teacherExamination/component/studentTable.vue"
+// @ts-ignore 类型声明需要完善，此处先用注解压制错误
+import {renderMarkdown} from  '@xianfe/antdv-markdown';
+import { removeHtmlAllTag } from 'src/utils/htmlLabel'
 const props =withDefaults(defineProps<{
   inDrawer?: boolean
   activeTab?:number
@@ -239,10 +242,11 @@ const initData = () => {
     questionListData.push(...list)
     pageTotal.value = page.totalCount
     questionListData.forEach((v: any) => {
-      // v.kind = v.kind ? v.kind : 'choice'
-      // v.difficulty = v.difficulty ? v.difficulty : 'easy'
-      // v.used_by = v.used_by ? v.used_by : 'exam'
       checkedQuestionId.includes(v.id) ? v.checked = true : ''
+      if(['choice','judge','blank','short-answer'].includes(v.kind)) {
+        // @ts-ignore
+        v.question_html_content = removeHtmlAllTag(renderMarkdown(true, v.question))
+      }
     })
     // questionListData.shift()
     console.log(questionListData)

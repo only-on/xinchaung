@@ -54,7 +54,34 @@ function fixHtml(html: string) {
   return html;
 }
 
+/**
+ * 获取html的文字
+ * html html代码
+ */
+function removeHtmlAllTag(html: string) {
+  // 图片  
+  const imgTag = /<(img)[^>]*?>/g;
+  // 视频
+  const videoTag = /<(video)[^>]*?>[\s\S]*?<\/\1>/g;
+  // 语音
+  const audioTag = /<(audio)[^>]*?>[\s\S]*?<\/\1>/g;
+  // 起始标签 除了img video audio
+  const patternStartTag = /<(?!(img|video|audio))\w+[^>]*?>/g;
+  // 结束标签
+  const patternEndTag = /<\/(?!(img|video|audio))\w+>/g;
+  // 去掉换行
+  const brTag = /[.\n]*/g;
+  html = html
+    .replace(patternStartTag, "")
+    .replace(patternEndTag, "")
+    .replace(imgTag, "【图片】")
+    .replace(videoTag, "【视频】")
+    .replace(audioTag, "【语音】")
+    .replace(brTag, "");
+  return html;
+}
 export {
   fixHtml,
   removeHtmlTag,
+  removeHtmlAllTag,
 }
