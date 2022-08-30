@@ -62,9 +62,11 @@ import directoryCascader from 'src/components/ReleasePaper/directoryCascader.vue
 const http = (request as any).QuestionBank;
 interface Props {
   isOperateTree: boolean
+  type?: string
 }
 const props = withDefaults(defineProps<Props>(), {
-  isOperateTree: true,
+  isOperateTree: true,    // 是否可以操作 创建、编辑、删除、上下移动
+  type: ''                // 类型用途  move是移动到
 });
 const emit = defineEmits<{
   (e: "selectedTree", id: number): void;
@@ -88,8 +90,11 @@ const treeData = ref<ITreeList[]>([
     directoryName: [],  // 当前目录路径
   }
 ])
+if (props.type === 'move') {
+  treeData.value = []
+}
 const onSelect = (selectedKeys: number[], info: any) => {
-  console.log("selected", selectedKeys, info);
+  // console.log("selected", selectedKeys, info);
   // selectNode.value = info.selectedNodes.length ? info.selectedNodes[0] : {}
   emit("selectedTree", selectedKeys[0])
   if (!info.node.id || info.node.pPid) {   // 根目录和第三级文件夹
@@ -98,7 +103,7 @@ const onSelect = (selectedKeys: number[], info: any) => {
     return
   }
   formState.parentId = info.node.pPid ? 0 : selectedKeys[0]
-  console.log(info.node.directoryName)
+  // console.log(info.node.directoryName)
   if (!info.node.pid) {  // 第一级文件夹
     formState.directoryId = info.node.directoryName.length === 2 ? info.node.directoryName : [...info.node.directoryName, info.node.name]
     return
@@ -116,7 +121,7 @@ const onLoadData = (treeNode: any) => {
     const data = await getDirectorySub(treeNode.dataRef)
     treeNode.dataRef.children = data
     treeData.value = [...treeData.value];
-    console.log(treeData.value)
+    // console.log(treeData.value)
     resolve();
   });
 
@@ -129,13 +134,21 @@ function getDirectoryFirst() {
   // treeData.value[0].children = []
   expandedKeys.value = [0]
   http.getDirectoryFirst().then((res: IBusinessResp) => {
-    console.log(res)
+    firstLoading.value = false
+    if (props.type === 'move') {
+      res.data.forEach((v: any, k: number) => {
+        v.pid = 0
+        v.index = k
+        v.directoryName = [v.name]
+      })
+      treeData.value = res.data
+      return
+    }
     res.data.forEach((v: any, k: number) => {
       v.pid = 0
       v.index = k
       v.directoryName = [treeData.value[0].name]
     })
-    firstLoading.value = false
     if (res.data?.length) {
       treeData.value[0].has_children = 1
       treeData.value[0].children = res.data
@@ -160,7 +173,7 @@ function getDirectorySub(val: any) {
         v.index = k
         v.directoryName = [...val.directoryName]
       })
-      console.log(res.data)
+      // console.log(res.data)
       resolve(res.data)
     })
   })
@@ -191,7 +204,7 @@ function selectedHandle() {
 function submit() {
   formRef.value.validate().then(() => {
     loading.value = true
-    console.log(formState)
+    // console.log(formState)
     const param = {
       name: formState.name,
       // parent_id: formState.directoryId[formState.directoryId.length-1]
@@ -257,7 +270,7 @@ function downDirectory(val: any) {
     message.warn('已经是最后一个了~')
     return
   }
-  console.log(val)
+  // console.log(val)
   const params = {
     original_directory_id: val.id,
     destination_directory_id: getLevelInfo(val, 'upper').children[val.index+1].id

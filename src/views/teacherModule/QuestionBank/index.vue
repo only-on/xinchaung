@@ -64,7 +64,7 @@
     title="移动到"
     @cancel="moveCancel()"
   >
-    <directory-tree :isOperateTree="false" @selectedTree="moveSelectedTree"></directory-tree>
+    <directory-tree :isOperateTree="false" @selectedTree="moveSelectedTree" :type="'move'"></directory-tree>
     <template #footer>
       <Submit @submit="moveSubmit()" @cancel="moveCancel()" :loading="moveLoading" :okText="'移动到此'"></Submit>
     </template>
@@ -168,7 +168,7 @@ const searchInfo = reactive({
 })
 const resetKeyword = ref<boolean>(false)  // 重置keyword
 const searchFn = (key?: string) => {
-  console.log(searchInfo)
+  // console.log(searchInfo)
   searchInfo.keyWord = key ? key : ''
   pageInfo.page = 1
   initData();
@@ -216,7 +216,7 @@ const handleMenuClick = ({ key }: { key: number|string }) => {  // 创建
 };
 // 全选
 const checkedAllHandle = (e: any) => {
-  console.log(e)
+  // console.log(e)
   questionListData.forEach((v: any) => {
     e.target.checked ? v.checked = true :v.checked = false
   })
@@ -249,7 +249,7 @@ const initData = () => {
       }
     })
     // questionListData.shift()
-    console.log(questionListData)
+    // console.log(questionListData)
     loading.value = false
   }).catch(() => {
     loading.value = false
@@ -259,7 +259,7 @@ const initData = () => {
 const isBatchOperate = ref(false)  // 是否批量操作
 const currentQuestionId = ref(0)
 function menuClick(type:string, val: any) {
-   console.log(type,val,'val')
+  //  console.log(type,val,'val')
   isBatchOperate.value = false
   currentQuestionId.value = val.id
   switch (type) {
@@ -281,7 +281,7 @@ function menuClick(type:string, val: any) {
   }
 }
 function editQuestion(key: number,id:any) {
-  console.log(key,'key')
+  // console.log(key,'key')
   let name = ''
   let path=''
   let questionId:any=id
@@ -298,14 +298,14 @@ function editQuestion(key: number,id:any) {
   let typeNum:any=''
   kind.forEach((item:any,index:any)=> {
     if(item.key==key){
-      console.log('hahhahahhah',item)
+      // console.log('hahhahahhah',item)
       typeNum=item.value
       return
     }
   });
   createQuestionTypeList.forEach((v => {
     if (v.key ==typeNum){
-      console.log('hhhh ',v)
+      // console.log('hhhh ',v)
       name = v.name
       path=v.path
     }
@@ -316,7 +316,6 @@ function editQuestion(key: number,id:any) {
   })
 }
 function deleteQuestion() {
-  console.log('delete')
   Modal.confirm({
     title: `确定要删除${isBatchOperate.value?'选中':'这个'}题目吗？`,
     icon: createVNode(ExclamationCircleOutlined),
@@ -367,7 +366,6 @@ function exportQuestion() {
     return res.blob();
   }).then((content: any) => {
     successAfterHandle()
-    console.log(content)
     let blobUrl = window.URL.createObjectURL(content);
     const fileName = isBatchOperate.value?"习题批量导出.xlsx":"习题导出.xlsx";
     const link = document.createElement("a"); // 创建a标签
@@ -382,14 +380,12 @@ function exportQuestion() {
 }
 // 移动到
 function moveQuestion() {
-  console.log('move')
   moveVisible.value = true
 }
 const moveVisible = ref(false)
 const moveLoading = ref(false)
 const moveCategoryId = ref(0)
 function moveSelectedTree(id: number) {
-  console.log(id)
   moveCategoryId.value = id
 }
 function moveSubmit() {
@@ -452,8 +448,8 @@ const formState = reactive({
 const releaseVisible = ref(false)
 const releaseLoading = ref(false)
 async function releaseSubmit() {
-  console.log(formState)
-  console.log(checkedQuestionId)
+  // console.log(formState)
+  // console.log(checkedQuestionId)
   await formRef.value.fromValidate()
   let params:any = {
     is_publish: true,  // 快捷发布考试
@@ -478,7 +474,7 @@ async function releaseSubmit() {
     })
   })
   Object.assign(params, {question_ids: obj} )
-  console.log(params)
+  // console.log(params)
   if (releaseType.value === 1) {
     httpAssign.addAssignment({param: params}).then((res:IBusinessResp) => {
       releaseCancel()
@@ -551,7 +547,7 @@ watch(
     return questionListData;
   },
   (val) => {
-    console.log(val)
+    // console.log(val)
     let i = 0
     val.forEach((v: any, k: number) => {
       if (!v.checked) {
