@@ -282,8 +282,12 @@ const rules = {
 };
 // 添加选项
 function addItem(index: any) {
-  if (index == 6) {
-    message.warning("最多七个答案选项！");
+  if (index == 6 && type.value == 1) {
+    message.warning("最多七个答案选项！");  // 选择题最多7个选项
+    return;
+  }
+  if (index == 4 && type.value == 3) {  // 填空题做多5个空
+    message.warning("最多五个答案选项！");
     return;
   }
   formState.multipleQuesSelection.push({value: "" ,ifAnswer:false});

@@ -40,7 +40,7 @@
           </a-form-item>
         </a-col>
         <a-col :span="12">
-          <knowledge v-model:knowledgePoints="formState.knowledgePoints"></knowledge>
+         <knowledge v-model:knowledgePoints="formState.knowledgePoints" :ifEdit='editId?true:false'></knowledge>
         </a-col>
         <!-- 题干 公有 -->
         <a-col v-if="type != 7" :span="24">
