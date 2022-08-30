@@ -43,7 +43,7 @@
                     {{record.id}}
                   </template>
                   <template v-if="column.dataIndex === 'question'">
-                    <span class="a-link" @click="checkDetail(record.id)">{{record.question}}</span>
+                    <span class="a-link">{{record.question}}</span>
                   </template>
                   <template v-if="column.dataIndex === 'difficulty'">
                     <span class="level" :style="{background: levelTypeList[record.difficulty].bgColor,color: levelTypeList[record.difficulty].color}">
@@ -183,7 +183,7 @@ var innerTargetIndex:any = null
 var outerIndex:any = null
 const checkArr = ref<string[]>([])
 const checkDetail = () => {
-  
+
 }
 // 批量设置分数表单验证
 const batchFormRef = ref<any>()
