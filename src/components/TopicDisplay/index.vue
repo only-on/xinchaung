@@ -76,7 +76,7 @@
                   </div>
                   <!-- 填空题答案选项 -->
                   <div class="option option3" v-if="v.type==='blank'">
-                    <div class="tiankong flexCenter" v-for="(j,b) in element.blank_correct" :key="element">
+                    <div class="tiankong flexCenter" v-for="(j,b) in element.blank_correct" :key="element.id">
                       <span>{{`填空${b+1}`}}</span>
                       <a-input v-model:value="element.answer[b]" @blur="changebox(v,element)" :disabled="CanDisabled()" />
                     </div>
@@ -303,7 +303,7 @@ const DebounceUse:Function= new Debounce().use(submitAnswers,0.5) //延时
 // 答题
 var curQuestionId:Ref<number> = ref(0)
 const changebox=(v:any,element:any)=>{
-  console.log(element)
+  console.log(v)
   if(curQuestionId.value === element.question_id){
     DebounceUse(element)
   }else{
@@ -315,19 +315,19 @@ function submitAnswers(params:any) {
   let answer=params.answer
   console.log(params.id); 
   console.log(params.answer);
-  /// 需过滤空答案  && (answer.filter((v:any)=>v)).length
-  if(['choice','blank'].includes(params.kind) && answer && answer.length){
-      answer=answer.filter((v:any)=>v)
-  }
-  console.log(answer);
-  if(['choice','blank'].includes(params.kind) && !answer.length){
-    return
-  }
-  if(['judge','short-answer'].includes(params.kind) && !answer){
-    return
-  }
+  /// 需过滤空答案 
+  // if(['choice','blank'].includes(params.kind) && answer && answer.length){
+  //     answer=answer.filter((v:any)=>v)
+  // }
+  // console.log(answer);
+  // if(['choice','blank'].includes(params.kind) && !answer.length){
+  //   return
+  // }
+  // if(['judge','short-answer'].includes(params.kind) && !answer){
+  //   return
+  // }
   httpStu.submitAnswers({param:{exam_id:Number(id),question_id:curQuestionId.value,answer:params.answer}}).then((res:any)=>{
-    console.log(res)
+    // console.log(res)
     if(res.data.EndOfAnswer){
       emit('EndOfAnswer')  // 考试时间已结束
     }
