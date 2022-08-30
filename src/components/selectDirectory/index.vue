@@ -10,6 +10,7 @@
                 label: 'name', value: 'id'
             }"
             :allow-clear="false"
+            change-on-select
         />
     </div>
 </template>

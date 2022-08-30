@@ -304,7 +304,6 @@ function deleteItem(index: any) {
 }
 // 创建选择题
 function createChoiceQues(){
-  loading.value=true
   const choiceOptions:any=[];
   const choiceCorrectOptions:any=[]
     formState.multipleQuesSelection.forEach((item:any,index:any)=>{
@@ -331,6 +330,7 @@ function createChoiceQues(){
       question_html: renderMarkdown(true, formState.stem), // 题干对应的html
 
     }
+    loading.value=true
     http.choiceQues({param:params}).then((res:any)=>{
       loading.value=false
       if(res.code==1){
@@ -343,7 +343,6 @@ function createChoiceQues(){
 }
 // 创建判断题
 function createJudgeQues(){
-  loading.value=true
   const params={
       usedBy:formState.purpose,
       difficulty:formState.difficulty,
@@ -355,6 +354,7 @@ function createJudgeQues(){
       // @ts-ignore
       question_html: renderMarkdown(true, formState.stem), // 题干对应的html
     }
+    loading.value=true
     http.judgeQues({param:params}).then((res:any)=>{
       loading.value=false
       if(res.code==1){
@@ -367,7 +367,6 @@ function createJudgeQues(){
 }
 // 创建填空题
 function createCompleQues(){
-  loading.value=true
   const blankCorrect:any=[]
    formState.multipleQuesSelection.forEach((item:any,index:any)=>{
     blankCorrect.push(item.value)
@@ -383,6 +382,7 @@ function createCompleQues(){
       // @ts-ignore
       question_html: renderMarkdown(true, formState.stem), // 题干对应的html
     }
+  loading.value=true
   http.complateQues({param:params}).then((res:any)=>{
      loading.value=false
      if(res.code==1){
@@ -395,7 +395,6 @@ function createCompleQues(){
 }
 // 创建解答题
 function createSolutionQues(){
-  loading.value=true
   const params={
       usedBy:formState.purpose,
       difficulty:formState.difficulty,
@@ -409,6 +408,7 @@ function createSolutionQues(){
       // @ts-ignore
       question_html: renderMarkdown(true, formState.stem), // 题干对应的html
     }
+    loading.value=true
     http.solutionQues({param:params}).then((res:any)=>{
       loading.value=false
        if(res.code==1){
@@ -529,7 +529,6 @@ function getSolutionData(){
 }
 // 编辑选择
 function editChoice(){
-  loading.value=true
   const choiceOptions:any=[];
   const choiceCorrectOptions:any=[]
   formState.multipleQuesSelection.forEach((item:any,index:any)=>{
@@ -557,6 +556,7 @@ function editChoice(){
     // @ts-ignore
     question_html: renderMarkdown(true, formState.stem), // 题干对应的html
   }
+  loading.value=true
   http.editChoice({param:params,urlParams:{questionId:editId}}).then((res:any)=>{
     loading.value=false
     if(res.code==1){
@@ -568,7 +568,6 @@ function editChoice(){
   })
 }
 function editJudge(){
-    loading.value=true
    const params={
       usedBy:formState.purpose,
       difficulty:formState.difficulty,
@@ -580,6 +579,7 @@ function editJudge(){
       // @ts-ignore
       question_html: renderMarkdown(true, formState.stem), // 题干对应的html
     }
+    loading.value=true
     http.editJudge({param:params,urlParams:{questionId:editId}}).then((res:any)=>{
       loading.value=false
       if(res.code==1){
@@ -591,7 +591,6 @@ function editJudge(){
     })
 }
 function editComple(){
-   loading.value=true
    let blankCorrect:any=[]
    console.log(formState.multipleQuesSelection,'formState.multipleQuesSelection')
    formState.multipleQuesSelection.forEach((item:any,index:any)=>{
@@ -610,6 +609,7 @@ function editComple(){
       // @ts-ignore
       question_html: renderMarkdown(true, formState.stem), // 题干对应的html
     }
+  loading.value=true
   http.editComplate({param:params,urlParams:{questionId:editId}}).then((res:any)=>{
     loading.value=false
      if(res.code==1){
@@ -621,7 +621,6 @@ function editComple(){
   })
 }
 function editSolution(){
-   loading.value=true
    const params={
       usedBy:formState.purpose,
       difficulty:formState.difficulty,
@@ -634,6 +633,7 @@ function editSolution(){
       // @ts-ignore
       question_html: renderMarkdown(true, formState.stem), // 题干对应的html
     }
+    loading.value=true
     http.editSolution({param:params,urlParams:{questionId:editId}}).then((res:any)=>{
       loading.value=false
        if(res.code==1){
