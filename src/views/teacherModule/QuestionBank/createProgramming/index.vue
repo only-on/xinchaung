@@ -113,8 +113,7 @@
         </a-col>
         <a-col v-if="formState.testCase=='file'" :span="12">
           <a-form-item label="批量上传用例文件" name="useCaseFile">
-            {{formState.useCaseFile}}00
-            <upload-file v-model:fileInfo='formState.useCaseFile'>
+            <upload-file v-model:fileInfo='formState.useCaseFile' :fileType="['.in', '.out']" :fileSize="100">
             </upload-file>
           </a-form-item>
         </a-col>
@@ -240,52 +239,13 @@ const formState = reactive<any>({
   // 答案
   judgeAnswer: "1",
 });
-const options1: any = [
-  {
-    label: "Light",
-    value: "light",
-    children: new Array(20)
-      .fill(null)
-      .map((_, index) => ({ label: `Number ${index}`, value: index })),
-  },
-  {
-    label: "Bamboo",
-    value: "bamboo",
-    children: [
-      {
-        label: "Little",
-        value: "little",
-        children: [
-          {
-            label: "Toy Fish",
-            value: "fish",
-          },
-          {
-            label: "Toy Cards",
-            value: "cards",
-          },
-          {
-            label: "Toy Bird",
-            value: "bird",
-          },
-        ],
-      },
-    ],
-  },
-];
-var selectLabels: any = ref(["A", "B", "C", "D", "E", "F"]);
-const selectOptions: any = ref([
-  { label: 0, value: "" },
-  { label: 1, value: "" },
-]);
+
 let validateCataloge = async (_rule?: Rule, value?: any) => {
-  setTimeout(()=>{
-    if(formState.catalogue?.length==0){
+  if(formState.catalogue?.length==0){
     return Promise.reject('请选择目录！！');
   }else{
     return Promise.resolve();
   }
-  },1000)
 };
 const rules = {
   name: [
@@ -329,42 +289,24 @@ const rules = {
       message: "请选择类别",
     },
   ],
-  referenceAnswer:[
-    {
-      required: true,
-      message: "请输入参考答案",
-    },
-  ],
-  keyword:[
-    {
-      required: true,
-      message: "请输入关键词",
-    }
-  ],
   stem: [
     {
       required: true,
-      message: "请输入题干",
+      message: "请输入题目描述",
     },
   ],
-  evaluationDescription:[
-     {
-      required: true,
-      message: "请输入评测说明",
-    },
+  inputFormat: [
+    { required: true, message: "请输入输出格式", }
   ],
-  evaluationData:[
-     {
-      required: true,
-      message: "请选择评测数据",
-    },
+  outputFormat: [
+    { required: true, message: "请输入输出格式", }
   ],
-  topicTemplatePath:[
-    {
-      required: true,
-      message: "请上传题目",
-    }
-  ]
+  sampleInput: [
+    { required: true, message: "请输入样例输入", }
+  ],
+  sampleOutput: [
+    { required: true, message: "请输入样例输出", }
+  ],
 };
 function createProgramQues(){
   const testCaseData:any=[]
@@ -393,6 +335,24 @@ function createProgramQues(){
     },
     // @ts-ignore
     question_desc_html: renderMarkdown(true, formState.stem), // 题目描述对应的html
+
+  }
+  // 测试用例的输入和输出必须要有值
+  if (!params.test_case?.data?.length) {
+    message.warn(params.test_case?.type=='text'?'请添加测试用例' : '请选择测试用例文件')
+    return
+  }
+  if (params.test_case?.type=='text') {
+    let isNone = false
+    params.test_case?.data.forEach((v: any) => {
+      if (!v.in || !v.out) {
+        isNone = true
+      }
+    })
+    if (isNone) {
+      message.warn('测试用例的输入和输出不能为空')
+      return
+    }
   }
   loading.value = true
   http.programQues({param:params}).then((res:any)=>{
@@ -436,6 +396,23 @@ function editProgressQues(){
     },
     // @ts-ignore
     question_desc_html: renderMarkdown(true, formState.stem), // 题目描述对应的html
+  }
+  // 测试用例的输入和输出必须要有值
+  if (!params.test_case?.data?.length) {
+    message.warn(params.test_case?.type=='text'?'请添加测试用例' : '请选择测试用例')
+    return
+  }
+  if (params.test_case?.type=='text') {
+    let isNone = false
+    params.test_case?.data.forEach((v: any) => {
+      if (!v.in || !v.out) {
+        isNone = true
+      }
+    })
+    if (isNone) {
+      message.warn('测试用例的输入和输出不能为空')
+      return
+    }
   }
   loading.value = true
   http.editProgram({param:params,urlParams:{ID:editId}}).then((res:any)=>{

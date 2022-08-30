@@ -28,18 +28,22 @@ import {
   watch,
   toRaw,
 } from "vue";
-import { Modal, message } from "ant-design-vue";
+import { Modal, message, Upload } from "ant-design-vue";
 import uploadFile from "src/request/uploadFile";
 const env = process.env.NODE_ENV == "development" ? true : false;
 interface Props {
   fileInfo: any;
   isMultiple?: boolean;
-  uploadPath?:string
+  uploadPath?:string;
+  fileType?: string[];
+  fileSize?: number
 }
 const props = withDefaults(defineProps<Props>(), {
   fileInfo: () => {},
   isMultiple: true,
-  uploadPath: 'createQues'
+  uploadPath: 'createQues',
+  fileType: () => [],   // 上传文件的类型限制  默认没有类型限制
+  fileSize: 500,  // 上传文件的大小限制  默认上传上限是500M
 });
 const isMultiple = ref<boolean>(props.isMultiple)
 const fileList: any = ref([]);
@@ -66,9 +70,13 @@ watch(()=>props.isMultiple, newVal => {
 },{immediate:true})
 // 上传前
 function beforeUpload(file: any) {
-  if (file.size / 1024 / 1024 >= 500) {
-    message.warn("上传文件不能超过500MB");
-    return false;
+  if (file.size / 1024 / 1024 >= props.fileSize) {
+    message.warn(`上传文件不能超过${props.fileSize}MB`);
+    return Upload.LIST_IGNORE;
+  }
+  if (props.fileType.length && !props.fileType.includes(file.name.split('.').at(-1))) {
+    message.warn(`请上传${props.fileType.join('、')}类型的文件`);
+    return Upload.LIST_IGNORE
   }
   if(isMultiple.value) {
     fileList.value.push(file);

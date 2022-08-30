@@ -36,6 +36,7 @@ import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { defineComponent, ref, reactive, toRefs } from 'vue'
 import {NoToCh} from 'src/utils/common'
+import { Modal, message } from "ant-design-vue";
 const http = (request as any).QuestionBank;
 interface Props { 
 knowledgePoints:any[];
@@ -74,7 +75,8 @@ function changeData(value:any, selectedOptions:any){
   })
   console.log(arr.value)
   if(arr.value.length > props.maxNum){
-    arr.value.splice(arr.value.length - 2, 1)
+    arr.value.splice(arr.value.length - 1, 1)
+    message.warn(`最多可选择${props.maxNum}个知识点`)
   }
   emit("update:knowledgePoints",arr.value)
 }
