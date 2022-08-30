@@ -1,14 +1,20 @@
 <template>
   <div :class="['resultShow','setScrollbar',{'border': border}]">
     <div>
-      结果文件
-      <a-button type="link" @click="downLoad(resultInfo.result)">下载</a-button>
+      评估结果
+      <a-button type="link" @click="checkResult()">查看</a-button>
       过程文件
       <a-button type="link" @click="downLoad(resultInfo.process)">下载</a-button>
     </div>
     <span>作品说明</span>
     <p>{{resultInfo.detail}}</p>
   </div>
+  <!-- 查看评估结果 -->
+  <a-modal :visible="checkVisible" title="评估结果" :width="700" @cancel="handleCancel" :footer="null">
+    <div>
+      评估结果
+    </div>
+  </a-modal>
 </template>
 <script lang="ts" setup>
 import {ref} from 'vue'
@@ -27,6 +33,13 @@ const props = withDefaults(defineProps<Props>(), {
     remark: ''
   }
 });
+const checkVisible = ref<boolean>(false)
+const checkResult = () => {
+  checkVisible.value = true
+}
+const handleCancel = () => {
+  checkVisible.value = false
+}
 const downLoad = (obj:Idownload) => {
   downloadUrl(obj.path, obj.file_name)
 }
@@ -39,7 +52,7 @@ const downLoad = (obj:Idownload) => {
     background: rgba(0,0,0,0.04);
     border: 1px solid rgba(0,0,0,0.15);
     border-radius: 7px; 
-    padding: 20px 0;
+    padding: 20px;
   }
   >div{
     .ant-btn{

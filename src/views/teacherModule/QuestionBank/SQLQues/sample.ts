@@ -19,7 +19,8 @@ INSERT INTO employees VALUES(10009,'1952-04-19','Sumant','Peac','F','1985-02-18'
 INSERT INTO employees VALUES(10010,'1963-06-01','Duangkaew','Piveteau','F','1989-08-24');
 INSERT INTO employees VALUES(10011,'1953-11-07','Mary','Sluis','F','1990-01-22');`
 ;
-export const outputValue = `10008|1958-02-19|Saniya|Kalloufi|M|1994-09-15
+export const outputValue = `emp_no|birth_date|first_name|last_name|gender|hire_date
+10008|1958-02-19|Saniya|Kalloufi|M|1994-09-15
 10011|1953-11-07|Mary|Sluis|F|1990-01-22
 10005|1955-01-21|Kyoichi|Maliniak|M|1989-09-12
 10010|1963-06-01|Duangkaew|Piveteau|F|1989-08-24

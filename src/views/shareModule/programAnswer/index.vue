@@ -27,31 +27,73 @@
           </div>
         </div>
         <div class="resultArea">
-          <a-tabs v-model:activeKey="activeKey">
-            <a-tab-pane key="sample" tab="测试样例">
-              <a-textarea
-              :bordered="false"
-                resize="none"
-                autoSize
-                placeholder="请输入内容"
-                v-model:value="testData.sample">
-              </a-textarea>
-            </a-tab-pane>
-            <a-tab-pane key="result" tab="测试结果" force-render>
-              <a-textarea
-              :bordered="false"
-                resize="none"
-                autoSize
-                :readonly="true"
-                v-model:value="testData.resultText">
-              </a-textarea>
-            </a-tab-pane>
-          </a-tabs>
-          <div class="resultInfo">
-            <span>消耗内存：{{testData.memory}}MB</span>
-            <span>代码执⾏时⻓：{{testData.time}}MS</span>
-            <i v-show="testData.result" :class="['iconfont',[4,13].includes(testData.result) ? 'icon-duigouxiao success' : 'icon-guanbixiao fail']"></i>
-          </div>
+          <template v-if="questionType === 'program'">
+            <a-tabs v-model:activeKey="activeKey">
+              <a-tab-pane key="sample" tab="测试样例">
+                <a-textarea
+                :bordered="false"
+                  resize="none"
+                  autoSize
+                  placeholder="请输入内容"
+                  v-model:value="testData.sample">
+                </a-textarea>
+              </a-tab-pane>
+              <a-tab-pane key="result" tab="测试结果" force-render>
+                <a-textarea
+                :bordered="false"
+                  resize="none"
+                  autoSize
+                  :readonly="true"
+                  v-model:value="testData.resultText">
+                </a-textarea>
+              </a-tab-pane>
+            </a-tabs>
+            <div class="resultInfo">
+              <span>消耗内存：{{testData.memory}}MB</span>
+              <span>代码执⾏时⻓：{{testData.time}}MS</span>
+              <i v-show="testData.result" :class="['iconfont',[4,13].includes(testData.result) ? 'icon-duigouxiao success' : 'icon-guanbixiao fail']"></i>
+            </div>
+          </template>
+          <template v-else>
+            <div class="sqlResult setScrollbar">
+              <div class="tableTitile">
+                <span>预期输出</span>
+                <i class="iconfont icon-duigouxiao success"></i>
+              </div>
+              <table class="customTable" border>
+                <tr>
+                  <th>姓名</th>
+                  <th>性别</th>
+                  <th>手机号</th>
+                </tr>
+                <tr>
+                  <td>IT</td>
+                  <td>IT</td>
+                  <td>IT</td>
+                </tr>
+              </table>
+              <div class="tableTitile">
+                <span>实际输出</span>
+                <div>
+                  <span>消耗内存：{{testData.memory}}MB</span>
+                  <span>代码执⾏时⻓：{{testData.time}}MS</span>
+                  <i v-show="testData.result" :class="['iconfont',[4,13].includes(testData.result) ? 'icon-duigouxiao success' : 'icon-guanbixiao fail']"></i>
+                </div>
+              </div>
+              <table class="customTable" border>
+                <tr>
+                  <th>姓名</th>
+                  <th>性别</th>
+                  <th>手机号</th>
+                </tr>
+                <tr>
+                  <td>IT</td>
+                  <td>IT</td>
+                  <td>IT</td>
+                </tr>
+              </table>
+            </div>
+          </template>
         </div>
         <div class="operateBtn">
           <a-button @click="closeTab">取消</a-button>
@@ -376,14 +418,34 @@ onMounted(()=>{
         border-radius: 10px;
         box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.07);
         position: relative;
-        .resultInfo{
-          position: absolute;
-          right: 20px;
-          top: 13px;
-          >span{
-            margin-left: 20px;
+        .sqlResult{
+          height: 100%;
+          overflow: auto;
+          padding: 10px 24px; 
+          .tableTitile{
+            display: flex;
+            justify-content: space-between;
+            font-size: 16px;
             color: var(--black-65);
+            padding-bottom: 3px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--gray-5);
+            &>div>span{
+              font-size: 14px;
+              margin-left: 20px;
+              color: var(--black-65);
+            }
           }
+          .customTable{
+            width: 100%;
+            border-color: #ccc;
+            margin-bottom: 20px;
+            td,th{
+              padding: 5px 20px;
+              text-align: center;
+            }
+          }
+        }
           .iconfont{
             margin-left: 20px;
             &.success{
@@ -392,6 +454,14 @@ onMounted(()=>{
             &.fail{
               color: #FF0505;
             }
+          }
+        .resultInfo{
+          position: absolute;
+          right: 20px;
+          top: 13px;
+          >span{
+            margin-left: 20px;
+            color: var(--black-65);
           }
         }
         :deep(.ant-tabs){

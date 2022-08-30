@@ -112,6 +112,7 @@ const classifyList = reactive([
     keyName: "status",
     data: [
       { name: "全部", value: 0 },
+      { name: "未发布", value: 4 },
       { name: "未开始", value: 2 },
       { name: "进行中", value: 1 },
       { name: "已结束", value: 3 },

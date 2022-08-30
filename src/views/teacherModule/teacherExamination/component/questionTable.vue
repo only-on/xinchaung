@@ -42,9 +42,6 @@
                     <i class="iconfont icon-tuozhuai"></i>
                     {{record.id}}
                   </template>
-                  <template v-if="column.dataIndex === 'question'">
-                    <span class="a-link">{{record.question}}</span>
-                  </template>
                   <template v-if="column.dataIndex === 'difficulty'">
                     <span class="level" :style="{background: levelTypeList[record.difficulty].bgColor,color: levelTypeList[record.difficulty].color}">
                       {{levelTypeList[record.difficulty].name}}
@@ -182,9 +179,6 @@ var innerSourceIndex:any = null
 var innerTargetIndex:any = null
 var outerIndex:any = null
 const checkArr = ref<string[]>([])
-const checkDetail = () => {
-
-}
 // 批量设置分数表单验证
 const batchFormRef = ref<any>()
 const batchData = reactive<any>([])

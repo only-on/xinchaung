@@ -13,13 +13,13 @@
       </div>
       <div>
         <template v-if="type == 2">
-          <span>创建时间：{{item.created_at}}</span>
-          <span>开始时间：{{item.started_at}}</span>
+          <span>创建时间：{{item.created_at.substr(0,16)}}</span>
+          <span>开始时间：{{item.started_at.substr(0,16)}}</span>
           <span>考试时长：{{item.times}}</span>
         </template>
         <template v-else>
-          <span>创建时间：{{item.created_at}}</span>
-          <span>起止时间：{{item.started_at}} - {{item.closed_at}}</span>
+          <span>创建时间：{{item.created_at.substr(0,16)}}</span>
+          <span>起止时间：{{item.started_at.substr(0,16)}} - {{item.closed_at.substr(0,16)}}</span>
         </template>
         
         <!-- 已发布 并且状态是 进行中或已结束 -->
@@ -93,7 +93,7 @@ watch(()=>props.data, newVal => {
   Object.assign(item,newVal)
 },{deep:true,immediate:true})
 const leftStyle = {
-  bg: props.type == 1?'linear-gradient(270deg,#ffffff, #ddefff)' :'linear-gradient(270deg,#fff, #deebff)',
+  bg: props.type == 1?'linear-gradient(270deg,#fff, #ddefff)' :'linear-gradient(270deg,#fff, #deebff)',
   textBg: props.type == 1 ? '#3094EF' : '#5E7BE2'
 }
 </script>
@@ -166,7 +166,7 @@ const leftStyle = {
         margin-left: auto;
         margin-right: auto;
         bottom: 0;
-        color: #5e7be2;
+        color: v-bind('leftStyle.textBg');
         font-size: 12px;
         text-align: center;
       }
@@ -176,7 +176,7 @@ const leftStyle = {
     flex: 1;
     padding: 17px 23px;
     > span {
-      color: #5e7be2;
+      color: v-bind('leftStyle.textBg');
       font-size: 12px;
     }
     > div:first-of-type {
