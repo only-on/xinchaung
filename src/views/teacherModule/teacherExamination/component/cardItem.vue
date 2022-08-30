@@ -51,13 +51,11 @@
           </template>
         </a-dropdown>
       </div>
-      <!-- 1-进行中;2-未开始;3-已结束-->
-      <!-- 未发布 -->
-      <a-button type="primary" v-if="!item.is_publish" @click.stop="handleEvent('publish', item)">发布</a-button>
-      <!-- 已发布且未开始 -->
-      <a-button type="primary" v-if="item.is_publish && item.status == 2" @click.stop="handleEvent('unpublish', item)">撤销发布</a-button>
-      <!-- 已发布且进行中,已结束 -->
-      <a-button type="primary" v-if="item.is_publish && [1,3].includes(item.status)" @click.stop="handleEvent('review', item)">评阅</a-button>
+      <!-- status:1-进行中;2-未开始;3-已结束-->
+      <!-- button:1-显示发布按钮;2-显示评阅按钮; 3-显示撤销发布 -->
+      <a-button type="primary" v-if="item.button === 1" @click.stop="handleEvent('publish', item)">发布</a-button>
+      <a-button type="primary" v-if="item.button === 3" @click.stop="handleEvent('unpublish', item)">撤销发布</a-button>
+      <a-button type="primary" v-if="item.button === 2" @click.stop="handleEvent('review', item)">评阅</a-button>
     </div>
   </div>
 </template>

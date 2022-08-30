@@ -35,13 +35,15 @@
                 row-key="id"
                 :pagination="false"
                 :customRow="innerCustomRow"
-                :scroll="{ y: 600 }"
                 :data-index="index2"
               >
                 <template v-slot:bodyCell="{ column, record, index }">
                   <template v-if="column.dataIndex === 'id'">
                     <i class="iconfont icon-tuozhuai"></i>
                     {{record.id}}
+                  </template>
+                  <template v-if="column.dataIndex === 'question'">
+                    <span class="a-link" @click="checkDetail(record.id)">{{record.question}}</span>
                   </template>
                   <template v-if="column.dataIndex === 'difficulty'">
                     <span class="level" :style="{background: levelTypeList[record.difficulty].bgColor,color: levelTypeList[record.difficulty].color}">
@@ -95,11 +97,15 @@ import { ref, reactive, watch, onMounted, provide } from "vue";
 import CommonCard from "src/components/common/CommonCard.vue";
 import Submit from "src/components/submit/index.vue";
 import addQuestion from './addQuestion.vue'
+import markedEditor from "src/components/editor/markedEditor.vue";
 import { message } from "ant-design-vue";
 import getTopicType from "src/components/TopicDisplay/topictype"
 import {TotalScore} from "src/utils/common"
 import {validateNum} from "../utils"
 import { levelTypeList } from 'src/components/TopicDisplay/configType'
+// @ts-ignore 类型声明需要完善，此处先用注解压制错误
+import {renderMarkdown} from  '@xianfe/antdv-markdown';
+import { removeHtmlAllTag } from 'src/utils/htmlLabel'
 
 const props = defineProps({
   data: Array,
@@ -176,6 +182,9 @@ var innerSourceIndex:any = null
 var innerTargetIndex:any = null
 var outerIndex:any = null
 const checkArr = ref<string[]>([])
+const checkDetail = () => {
+  
+}
 // 批量设置分数表单验证
 const batchFormRef = ref<any>()
 const batchData = reactive<any>([])
@@ -409,6 +418,11 @@ watch(()=>listData.value, newVal => {
   questions_ids.value.length = 0
   newVal.forEach((item:any) => {
     item.data.forEach((dItem:any) => {
+      // 处理makrdown显示问题
+      if(['choice','judge','blank','short-answer'].includes(item.type)) {
+        // @ts-ignore
+        dItem.question = removeHtmlAllTag(renderMarkdown(true, dItem.question))
+      }
       allQuestionIds.push(dItem.id)
       questions_ids.value.push(
         {
@@ -418,6 +432,7 @@ watch(()=>listData.value, newVal => {
       )
     })
   })
+  console.log(listData.value)
   handleStatistical()
 },{ deep: true, immediate: true })
 defineExpose({

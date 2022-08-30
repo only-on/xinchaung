@@ -8,6 +8,7 @@
         <div
           v-for="(v, i) in configuration.tabs" :key="v.name" :class=" ActiveName === v.name || (!ActiveName && i == 0)? configuration.tabs.length > 1 ? 'active activeBor' : 'active single_ellipsis' : '' "
           @click="ActiveName !== v.name ? tabChange(v) : ''"
+          :title="v.name"
         >
           {{ v.name }}
         </div>

@@ -2,17 +2,21 @@
   <div :class="['resultShow','setScrollbar',{'border': border}]">
     <div>
       结果文件
-      <a-button type="link">下载</a-button>
+      <a-button type="link" @click="downLoad(resultInfo.result)">下载</a-button>
       过程文件
-      <a-button type="link">下载</a-button>
+      <a-button type="link" @click="downLoad(resultInfo.process)">下载</a-button>
     </div>
     <span>作品说明</span>
-    <p>{{resultInfo.remark}}</p>
+    <p>{{resultInfo.detail}}</p>
   </div>
 </template>
 <script lang="ts" setup>
 import {ref} from 'vue'
-
+import {downloadUrl} from 'src/utils/download'
+interface Idownload{
+  path: string,
+  file_name: string
+}
 interface Props {
   border?:boolean,
   resultInfo: any
@@ -23,6 +27,9 @@ const props = withDefaults(defineProps<Props>(), {
     remark: ''
   }
 });
+const downLoad = (obj:Idownload) => {
+  downloadUrl(obj.path, obj.file_name)
+}
 </script>
 <style lang="less" scoped>
 .resultShow{

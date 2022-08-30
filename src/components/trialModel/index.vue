@@ -58,7 +58,7 @@
   <!-- 结果反馈 -->
   <a-modal :visible="resultVisible" title="试用结果反馈" :width="700" @cancel="handleCancel" :footer="null">
     <div>
-      <span>得10分</span>
+      <span class="score">得 {{resultInfo.score}} 分</span>
       <resultShow :border="true" :resultInfo="resultInfo"/>
     </div>
   </a-modal>
@@ -83,6 +83,7 @@ const questionId = ref<any>(route.query.questionId) // 题目id
 const examId = ref<any>(route.query?.examId) // 学生端考试id
 const userId= lStorage.get('uid')
 const isTeacher = lStorage.get('role') === 3 ? true: false
+const isCommit = ref<boolean>(false)
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 const formData = reactive<any>({
@@ -142,6 +143,7 @@ const downLoadAll = () => {
 // 结果反馈弹框
 const resultVisible = ref<boolean>(false)
 const resultInfo = reactive<any>({
+  score: 0,
   resultUrl: '',
   processUrl: '',
   remark: '说明'
@@ -174,7 +176,14 @@ const handleSave = () => {
 const cancelSave = () => {
   window.close()
 }
-// watch()
+watch(()=>store.state.modelResultInfo, newVal => {
+  console.log(newVal)
+  // 教师端试用弹出结果反馈
+ if (newVal && isTeacher) {
+    Object.assign(resultInfo, newVal)
+    resultVisible.value = true
+ }
+},{deep: true,immediate:true})
 onMounted(()=>{
   getDetail()
 })
@@ -228,5 +237,11 @@ onMounted(()=>{
         font-size: 13px;
        }
      }
+}
+.score{
+  display: inline-block;
+  color: #51B048;
+  margin-bottom: 10px;
+  font-weight: 700;
 }
 </style>

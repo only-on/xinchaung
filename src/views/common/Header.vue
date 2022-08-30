@@ -306,6 +306,9 @@ export default defineComponent({
               kickingOut = true;
               store.commit('kickOut', true);
               loginOut();
+            } else if (data.type === 'model_success') {
+              // 模型题结果
+              store.commit('setModelResult', data.data);
             }
           }
         }

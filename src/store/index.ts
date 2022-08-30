@@ -34,7 +34,8 @@ const clearStore = (keys:any) =>
      longWs: null,
      systemInfo: sStorage.get('systemInfo') ? sStorage.get('systemInfo') : defaultTheme,
      menuActiveName:lStorage.get("menuActiveName") || '首页',
-     kickedOut: false
+     kickedOut: false,
+     modelResultInfo: null // 模型题目试用结果
   },
   getters: {
     isLogged() {
@@ -88,6 +89,9 @@ const clearStore = (keys:any) =>
     },
     kickOutReset(state) {
       state.kickedOut = false
+    },
+    setModelResult (state, val) {
+      state.modelResultInfo = val
     }
   },
   actions: {
