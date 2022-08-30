@@ -7,43 +7,50 @@ const getTopicType={
       name: "选择题",
       subname: '选择',
       bgColor: '#51B048',//
-      answerformat:[]
+      answerformat:[],
+      order:1,
     },
     'judge': {
       name: "判断题",
       subname: '判断',
       bgColor: '#CCCC33',
-      answerformat:''
+      answerformat:'',
+      order:2,
     },
     'blank': {
       name: "填空题",
       subname: '填空',
       bgColor: '#FAAD14',
-      answerformat:[]
+      answerformat:[],
+      order:3,
     },
     'short-answer': {
       name: "简答题",
       subname: '简答',
       bgColor: '#00C8FF',
-      answerformat:''
+      answerformat:'',
+      order:4,
     },
     'program': {
       name: "编程题",
       subname: '编程',
       bgColor: '#3094EF',
-      answerformat:{}
+      answerformat:{},
+      order:5,
     },
     'ai': {
       name: "模型题",
       subname: '模型',
       bgColor: '#4B6CF5',
-      answerformat:{}
+      answerformat:{},
+      order:6,
     },
     'sql': {
       name: "SQL题",
       subname: 'SQL',
       bgColor: '#2dc3c4',
-      answerformat:{}
+      answerformat:{},
+      order:7,
     },
 }
 export  default getTopicType

@@ -282,6 +282,7 @@ watch(()=>{return props.list},(val:any)=>{
   }
   allQuestionIds.length=0
   val.map((v:any)=>{
+    v.order=getTopicType[v.type]['order']
     v.question.map((i:any)=>{
       allQuestionIds.push(i.id)
       // i.answer=i.answer?i.answer:{}
@@ -293,9 +294,10 @@ watch(()=>{return props.list},(val:any)=>{
     obj.selectNum+=v.question && v.question.length 
     obj.selectScore+=TotalScore(v.question,'score')
   })
+  val.sort((a:any,b:any)=>{return a.order-b.order})
   statisticsInfo.selectNum= obj.selectNum
   statisticsInfo.selectScore= obj.selectScore
-  // console.log(allQuestionIds);
+  console.log(val);
   
 },{immediate:true,deep:true})
 
