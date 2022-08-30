@@ -206,7 +206,7 @@ const formState = reactive({
 // 填空题最少是一个空 
 type.value == 3 ? formState.multipleQuesSelection = [{value:'',ifAnswer:false}] : ''
 
-var selectLabels: any = ref(["A", "B", "C", "D", "E", "F"]);
+var selectLabels: any = ref(["A", "B", "C", "D", "E", "F", "G"]);
 const selectOptions: any = ref([
   { label: 0, value: "" },
   { label: 1, value: "" },
