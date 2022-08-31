@@ -24,9 +24,8 @@ import { java } from "@codemirror/lang-java";
 import { php } from "@codemirror/lang-php";
 import { xml } from "@codemirror/lang-xml";
 import { cpp } from "@codemirror/lang-cpp";
-import {StreamLanguage} from "@codemirror/language"
+import {sql} from "@codemirror/lang-sql";
 import {go} from "@codemirror/legacy-modes/mode/go"
-import {sql} from "@codemirror/legacy-modes/mode/sql"
 import {ruby} from "@codemirror/legacy-modes/mode/ruby"
 const props = defineProps({
   height: Number,
@@ -80,8 +79,8 @@ watch(()=>props.code, (newVal:any) => {
   codeVal.value = newVal
 },{immediate:true})
 watch(()=>props.lang, (newVal:any) => {
-  options.mode = getMime(newVal)
   if(!newVal) return
+  options.mode = getMime(newVal)
   let str = newVal.toLowerCase()
   switch (str) {
     case 'html':
@@ -96,16 +95,17 @@ watch(()=>props.lang, (newVal:any) => {
     case 'java':
       options.extensions = [java()]
       break;
-      
     case 'php':
       options.extensions = [php()]
       break;
-      
     case 'xml':
       options.extensions = [xml()]
       break;
     case 'c++':
       options.extensions = [cpp()]
+      break;
+    case 'sql':
+      options.extensions = [sql()]
       break;
   }
 },{immediate:true})

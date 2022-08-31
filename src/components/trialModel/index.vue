@@ -40,11 +40,11 @@
           <a-row :gutter="24">
             <a-col :span="12">
               <div class="formLabel import">结果文件<span>必传项，成绩评测必备文件</span></div>
-              <uploadFile v-model:fileInfo='submitData.result' :isMultiple="false" uploadPath="models"/>
+              <uploadFile ref="uploadRef" v-model:fileInfo='submitData.result' :isMultiple="false" uploadPath="models" :uploadData="uploadData"/>
             </a-col>
             <a-col :span="12">
               <div class="formLabel">过程文件<span>非必传项，分享建模思路</span></div>
-              <uploadFile v-model:fileInfo='submitData.process' :isMultiple="true" uploadPath="models"/>
+              <uploadFile ref="uploadRef" v-model:fileInfo='submitData.process' :isMultiple="true" uploadPath="models" :uploadData="uploadData"/>
             </a-col>
           </a-row>
           <a-form-item label="作品提交说明" name="remark">
@@ -53,7 +53,7 @@
         </a-form>
       </template>
     </common-card>
-    <Submit @submit="handleSave" @cancel="cancelSave" :loading="saveLoading" ok-text="提交"></Submit>
+    <Submit @submit="handleSave" @cancel="cancelSave" :loading="saveLoading || uploadData.loading" ok-text="提交"></Submit>
   </div>
   <!-- 结果反馈 -->
   <a-modal :visible="resultVisible" title="试用结果反馈" :width="700" @cancel="handleCancel" :footer="null">
@@ -83,7 +83,7 @@ const questionId = ref<any>(route.query.questionId) // 题目id
 const examId = ref<any>(route.query?.examId) // 学生端考试id
 const userId= lStorage.get('uid')
 const isTeacher = lStorage.get('role') === 3 ? true: false
-const isCommit = ref<boolean>(false)
+const uploadRef = ref<any>()
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 const formData = reactive<any>({
@@ -103,6 +103,9 @@ const submitData = reactive<any>({
   result: [],
   process: [],
   remark: ''
+})
+const uploadData = reactive({
+  loading: false
 })
 // 获取模型题详情
 const getDetail = () => {
@@ -144,9 +147,9 @@ const downLoadAll = () => {
 const resultVisible = ref<boolean>(false)
 const resultInfo = reactive<any>({
   score: 0,
-  resultUrl: '',
-  processUrl: '',
-  remark: '说明'
+  result: '',
+  process: '',
+  detail: ''
 })
 
 const handleCancel = () => {
@@ -174,6 +177,7 @@ const handleSave = () => {
   })
 }
 const cancelSave = () => {
+  uploadRef.value.cancelUpload()
   window.close()
 }
 watch(()=>store.state.modelResultInfo, newVal => {

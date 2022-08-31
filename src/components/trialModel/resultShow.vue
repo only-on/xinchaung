@@ -1,20 +1,14 @@
 <template>
   <div :class="['resultShow','setScrollbar',{'border': border}]">
     <div>
-      评估结果
-      <a-button type="link" @click="checkResult()">查看</a-button>
+      模型评估结果：
+      <span class="resultScore">{{resultInfo.result}}</span>
       过程文件
-      <a-button type="link" @click="downLoad(resultInfo.process)">下载</a-button>
+      <a-button type="link" @click="downLoad(resultInfo.process)" :disabled="!resultInfo.process.path">下载</a-button>
     </div>
     <span>作品说明</span>
     <p>{{resultInfo.detail}}</p>
   </div>
-  <!-- 查看评估结果 -->
-  <a-modal :visible="checkVisible" title="评估结果" :width="700" @cancel="handleCancel" :footer="null">
-    <div>
-      评估结果
-    </div>
-  </a-modal>
 </template>
 <script lang="ts" setup>
 import {ref} from 'vue'
@@ -30,16 +24,14 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   border: false,
   resultInfo: {
-    remark: ''
+    result: '',
+    detail: '',
+    process: {
+      path: '',
+      file_name: ''
+    }
   }
 });
-const checkVisible = ref<boolean>(false)
-const checkResult = () => {
-  checkVisible.value = true
-}
-const handleCancel = () => {
-  checkVisible.value = false
-}
 const downLoad = (obj:Idownload) => {
   downloadUrl(obj.path, obj.file_name)
 }
@@ -58,7 +50,8 @@ const downLoad = (obj:Idownload) => {
     .ant-btn{
       padding: 0;
     }
-    .ant-btn:first-child{
+    .resultScore{
+      color: var(--primary-color);
       margin-right: 100px;
     }
   }

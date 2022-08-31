@@ -8,6 +8,7 @@
       @change="handleChange1"
       @drop="handleDrop"
       :before-upload="beforeUpload"
+      :customRequest="handleUpload"
     >
       <p class="ant-upload-drag-icon">
         <i class="iconfont icon-upload"></i>
@@ -93,53 +94,47 @@ function beforeUpload(file: any) {
     infoList.value = []
     fileList.value = [file];
   }
+}
+const handleUpload= (file:any) => {
+  console.log(fileList.value)
+  console.log(file)
   let i = fileList.value.findIndex((item: any) => {
-    return item.uid === file.uid;
+    return item.uid === file.file.uid;
   });
-
-  fileList.value[i].progress = 0;
-  fileList.value[i].status = "loading";
   const body = {
-    file: file,
+    file: file.file,
     upload_path: props.uploadPath,
-    default_name:1,
+    default_name: 1,
   };
   fileList.value[i].upload = new uploadFile({
-    url: env ? '/proxyPrefix/api/instance/uploads/file':'/api/instance/uploads/file',
+    url: env
+      ? "/proxyPrefix/api/instance/uploads/file"
+      : "/api/instance/uploads/file",
     body,
     success: (res: any) => {
       if (res.code == 1) {
-        fileList.value[i].status = "finish";
-        fileList.value [i].progress = "100%";
-        console.log(res.data.pdf_path, "res.data.props.path");
-        let suffix = res.data.name.slice(res.data.name.indexOf('.')+1)
-        const info={
-          file_name:res.data.name,
-          file_url:res.data.full_url,
-          size:res.data.size,
-          suffix:suffix
-        }
-        infoList.value.push(info)
-        emit("update:fileInfo",infoList.value);
+        file.onSuccess(res, file.file)
+        let suffix = res.data.name.slice(res.data.name.indexOf(".") + 1);
+        const info = {
+          file_name: res.data.name,
+          file_url: res.data.url,
+          size: res.data.size,
+          suffix: suffix,
+        };
+        infoList.value.push(info);
+        emit("update:fileInfo", infoList.value);
       } else {
-        fileList.value[i].progress = 0;
         message.warn(res.msg);
       }
-      fileList.value[i].upload = "";
-      fileList.value.push({});
-      fileList.value.pop();
+      // fileList.value.push({});
+      // fileList.value.pop();
     },
     progress: (e: ProgressEvent) => {
       if (e.total > 0) {
         let prog: any = Number(
           Number((e.loaded / e.total) * 100).toFixed(2)
         ) as any;
-        fileList.value[i].progress = prog == 100 ? 99 : prog;
-        fileList.value[i] = Object.assign(fileList.value[i], {
-          progress:fileList.value[i].progress,
-        });
-        fileList.value.push({});
-        fileList.value.pop();
+        file.onProgress({percent: prog})
       }
     },
     abort: (xhr: XMLHttpRequest) => {
@@ -150,7 +145,6 @@ function beforeUpload(file: any) {
     },
   });
   fileList.value[i].upload.request();
-  return false;
 }
 function removeDoc(file:any){
   if (file.upload) {

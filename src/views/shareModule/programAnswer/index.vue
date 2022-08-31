@@ -27,6 +27,7 @@
           </div>
         </div>
         <div class="resultArea">
+          <!-- 编程题 -->
           <template v-if="questionType === 'program'">
             <a-tabs v-model:activeKey="activeKey">
               <a-tab-pane key="sample" tab="测试样例">
@@ -54,6 +55,7 @@
               <i v-show="testData.result" :class="['iconfont',[4,13].includes(testData.result) ? 'icon-duigouxiao success' : 'icon-guanbixiao fail']"></i>
             </div>
           </template>
+          <!-- SQL题 -->
           <template v-else>
             <div class="sqlResult setScrollbar">
               <div class="tableTitile">
@@ -62,14 +64,10 @@
               </div>
               <table class="customTable" border>
                 <tr>
-                  <th>姓名</th>
-                  <th>性别</th>
-                  <th>手机号</th>
+                  <th v-for="(col,index) in sqlData.expected_output?.col" :key="index">{{col}}</th>
                 </tr>
-                <tr>
-                  <td>IT</td>
-                  <td>IT</td>
-                  <td>IT</td>
+                <tr v-for="(item,itemIndex) in sqlData.expected_output?.data" :key="itemIndex">
+                  <td v-for="(td, tdIndex) in item" :key="tdIndex">{{td}}</td>
                 </tr>
               </table>
               <div class="tableTitile">
@@ -80,18 +78,22 @@
                   <i v-show="testData.result" :class="['iconfont',[4,13].includes(testData.result) ? 'icon-duigouxiao success' : 'icon-guanbixiao fail']"></i>
                 </div>
               </div>
-              <table class="customTable" border>
+              <table class="customTable" border v-if="[4,13].includes(testData.result)">
                 <tr>
-                  <th>姓名</th>
-                  <th>性别</th>
-                  <th>手机号</th>
+                  <th v-for="(col,index) in sqlData.actual_output?.col" :key="index">{{col}}</th>
                 </tr>
-                <tr>
-                  <td>IT</td>
-                  <td>IT</td>
-                  <td>IT</td>
+                <tr v-for="(item,itemIndex) in sqlData.actual_output?.data" :key="itemIndex">
+                  <td v-for="(td, tdIndex) in item" :key="tdIndex">{{td}}</td>
                 </tr>
               </table>
+              <a-textarea
+                v-else
+                :bordered="false"
+                  resize="none"
+                  autoSize
+                  :readonly="true"
+                  v-model:value="testData.resultText">
+                </a-textarea>
             </div>
           </template>
         </div>
@@ -163,6 +165,10 @@ const testData = reactive<any>({
   timer: null,
   loading: false
 })
+const sqlData = reactive<any>({
+  expected_output: {}, // 预期输出
+  actual_output: {} // 实际输出
+})
 // 拖动
   const dragEagle = (ev:any) => {
     var targetDiv:any = document.getElementById('customCode')
@@ -209,6 +215,10 @@ const getQuestionDetail = () => {
     problemData.question = res.data.question
     problemData.question_desc = res.data.question_desc
     testData.sample = problemData.sample_input
+    // sql题目的预期输出
+    if (questionType.value === 'sql') {
+      sqlData.expected_output = res.data.expected_output
+    }
   })
 }
 const resetContent = () => {
@@ -229,8 +239,12 @@ const setResultValue = (result:any) => {
   testData.resultText = ''
   let judge = lanuageSelectRef.value.judgeResult.filter((item:any) => item.id === result.result)
   if (judge.length) {
-    console.log(judge[0].cn_name)
     testData.resultText = judge[0].cn_name + '\n'
+  }
+  // sql题目答对，就输出表格
+  if (questionType.value === 'sql' && [4,13].includes(result.result)) { 
+    sqlData.actual_output = result.actual_output
+    return
   }
   if (result.compile_info) {
     testData.resultText += result.compile_info.error
@@ -248,7 +262,7 @@ const getResult = (test_run:boolean) => {
     // 测试、提交运行成功
     if (result.result === 4 || result.result === 13) {
       // 教师端点击提交按钮，显示分数
-      if (!test_run && isTeacher) {
+      if (!test_run) {
         message.success(`得 ${questionScroe.value} 分`,5)
       }
       setResultValue(result)
@@ -256,7 +270,7 @@ const getResult = (test_run:boolean) => {
     }
     // 状态大于4或者一分钟之后停止定时器;状态小于4的需要轮询
     if (result.result > 4 || timerNum.value > 20) {// 教师端点击提交按钮，显示分数
-      if (!test_run && isTeacher) {
+      if (!test_run) {
         message.warning(`得 0 分`,5)
       }
       setResultValue(result)
@@ -276,7 +290,7 @@ const handleSubmit =(test_run:boolean) => {
     message.warning('请输入代码')
     return
   }
-  if (test_run && !testData.sample.trim().length) {
+  if (test_run && questionType.value === 'program' && !testData.sample.trim().length) {
     message.warning('请输入测试样例')
     return
   }
