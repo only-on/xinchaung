@@ -75,10 +75,10 @@
                 <div>
                   <span>消耗内存：{{testData.memory}}MB</span>
                   <span>代码执⾏时⻓：{{testData.time}}MS</span>
-                  <i v-show="testData.result" :class="['iconfont',[4,13].includes(testData.result) ? 'icon-duigouxiao success' : 'icon-guanbixiao fail']"></i>
+                  <i v-show="testData.result" :class="['iconfont',Object.keys(sqlData.actual_output).length ? 'icon-duigouxiao success' : 'icon-guanbixiao fail']"></i>
                 </div>
               </div>
-              <table class="customTable" border v-if="[4,13].includes(testData.result)">
+              <table class="customTable" border v-if="Object.keys(sqlData.actual_output).length">
                 <tr>
                   <th v-for="(col,index) in sqlData.actual_output?.col" :key="index">{{col}}</th>
                 </tr>
@@ -241,8 +241,8 @@ const setResultValue = (result:any) => {
   if (judge.length) {
     testData.resultText = judge[0].cn_name + '\n'
   }
-  // sql题目答对，就输出表格
-  if (questionType.value === 'sql' && [4,13].includes(result.result)) { 
+  // sql题目  actual_output有值，就输出表格
+  if (questionType.value === 'sql' && result.actual_output && Object.keys(result.actual_output).length) { 
     sqlData.actual_output = result.actual_output
     return
   }
@@ -276,6 +276,7 @@ const getResult = (test_run:boolean) => {
       setResultValue(result)
     }
   }).catch(()=>{
+    console.log('这里')
     resetContent()
   })
 }
@@ -286,6 +287,7 @@ const handleSubmit =(test_run:boolean) => {
   testData.memory = 0
   testData.time = 0
   timerNum.value = 0
+  sqlData.actual_output = {}
   if (!code.value.trim().length){
     message.warning('请输入代码')
     return

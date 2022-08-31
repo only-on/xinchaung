@@ -18,7 +18,7 @@
           <span :style="file.status === 'error' ? 'color: red' : ''">{{ file.name }}</span>
           <span class="iconfont icon-shanchu pointer" @click="actions.remove"></span>
         </div>
-        <a-progress :percent="file.progress" size="small" v-if="file.status==='uploading'" />
+        <a-progress :percent="file.percent" size="small" v-if="file.status==='uploading'" />
       </template>
     </a-upload-dragger>
   </div>
@@ -123,6 +123,7 @@ const handleUpload= (file:any) => {
         let prog: any = Number(
           Number((e.loaded / e.total) * 100).toFixed(2)
         ) as any;
+        console.log(prog)
         file.onProgress({percent: prog})
       }
     },
