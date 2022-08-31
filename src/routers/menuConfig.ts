@@ -349,7 +349,7 @@ export default function menusFn(){
     2:[adminHome,systemMaintenance,TeachingResourceManagement,adminUserManagement,coursePlan,forum],
     3:[teacherHome,center,material,teacherCourse,ExamAssignment,forum],
     4:[statistics,forum,studentCourse,studentAssignment,studentExamination],
-    5:[center,material,teacherCourse,ExamAssignment]
+    5:[center,material,teacherCourse]
   }
   // console.log(role)
   return menus[role]

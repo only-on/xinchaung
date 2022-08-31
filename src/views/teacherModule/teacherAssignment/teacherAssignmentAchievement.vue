@@ -105,6 +105,8 @@ const getExamDetail = () => {
         if(i.submit_answer){ // i.submit_answer getTopicType[i.kind]['answerformat']
           i.answer=i.submit_answer
         }
+        i.submitScore=i.score
+        i.score=i.question_score
       })
     })
     Object.assign(ExamResultData,data)

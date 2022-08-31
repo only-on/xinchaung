@@ -115,6 +115,7 @@ import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
 import { downloadUrl } from "src/utils/download";
+
 const router = useRouter();
 const route = useRoute();
 const { courseId } = route.query;

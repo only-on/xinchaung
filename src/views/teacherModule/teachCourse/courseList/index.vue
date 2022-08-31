@@ -75,7 +75,7 @@
             <div class="createDate flexCenter" v-if="currentTab === 0 && v.start_time && v.end_time">
               <span>{{ v.start_time.split(" ")[0] }} -
                 {{ v.end_time.split(" ")[0] }}</span>
-              <a-button @click.stop="ViewResults(v)" v-if="v.state!==2" type="link" class="del" size="small">总成绩</a-button>  
+              <a-button @click.stop="ViewResults(v)" v-if="v.state!==2 && role===3" type="link" class="del" size="small">总成绩</a-button>  
             </div>
           </div>
           <!-- 遮罩 -->
@@ -234,6 +234,8 @@ import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
 import { useRouter, useRoute } from "vue-router";
 import { downloadUrl } from "src/utils/download";
+import storage from "src/utils/extStorage";
+const role = Number(storage.lStorage.get("role"));
 const router = useRouter();
 const env = process.env.NODE_ENV == "development" ? true : false;
 const route = useRoute();

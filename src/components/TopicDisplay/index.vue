@@ -139,7 +139,7 @@
                       </div>
                       <div class="flexCenter">
                         <div class="resultscore">
-                          得<span>{{element.score}}</span>分
+                          得<span>{{element.submitScore}}</span>分
                         </div>
                         <div v-if="v.type==='short-answer' && editScore()" class="flexCenter changeScore" @click="editScoreFn(element,k)">
                           <span class="iconfont icon-bianji1"></span>
@@ -160,7 +160,7 @@
                   <template v-if="['program','ai','sql'].includes(v.type)">
                     <div class="achievement1 modifyscore flexCenter">
                       <div class="resultscore">
-                        得<span>{{element.score}}</span>分
+                        得<span>{{element.submitScore}}</span>分
                       </div>
                       <div v-if="editScore()" class="flexCenter changeScore" @click="editScoreFn(element,k)">
                         <span class="iconfont icon-bianji1"></span>
@@ -298,7 +298,6 @@ watch(()=>{return props.list},(val:any)=>{
   statisticsInfo.selectNum= obj.selectNum
   statisticsInfo.selectScore= obj.selectScore
   console.log(val);
-  
 },{immediate:true,deep:true})
 
 const DebounceUse:Function= new Debounce().use(submitAnswers,0.5) //延时

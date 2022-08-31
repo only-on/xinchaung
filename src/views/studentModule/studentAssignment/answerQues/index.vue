@@ -127,6 +127,8 @@ const getExamResult = () => {
         if(i.submit_answer){ // i.submit_answer getTopicType[i.kind]['answerformat']
           i.answer=i.submit_answer
         }
+        i.submitScore=i.score
+        i.score=i.question_score
       })
     })
     Object.assign(ExamResultData,data)
@@ -159,7 +161,6 @@ onMounted(()=>{
   if(purpose==="achievement"){
     getExamResult()
   }else{
-    startExam()
     getExamDetail()
   }
   

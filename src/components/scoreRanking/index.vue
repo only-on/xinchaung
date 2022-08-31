@@ -1,7 +1,8 @@
 <template>
     <div class="score_ranking">
         <div class="stu_score">
-            <img src="/src/assets/images/task/person_img.png">
+            <!-- <img src="/src/assets/images/task/person_img.png"> -->
+            <img :src="info.user_profile?.profilephoto" />
             <div class="name">{{info.user_profile?.name}}</div>
             <div class="stu_number">{{info.user_profile?.sno}}</div>
             <div class="rank">
