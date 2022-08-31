@@ -18,7 +18,7 @@
           <span :style="file.status === 'error' ? 'color: red' : ''">{{ file.name }}</span>
           <span class="iconfont icon-shanchu pointer" @click="actions.remove"></span>
         </div>
-        <a-progress :percent="file.progress" size="small" v-if="file.status==='loading'" />
+        <a-progress :percent="file.progress" size="small" v-if="file.status==='uploading'" />
       </template>
     </a-upload-dragger>
   </div>
@@ -150,7 +150,7 @@ function removeDoc(file:any){
 function cancelUpload() {
   let sign = false
   fileList.value.forEach((v: any) => {
-    if (v.status === 'loading') {
+    if (v.status === 'uploading') {
       sign = true
     }
     if (v.upload) {
@@ -170,7 +170,7 @@ watch(
     }
     let sign = false
     fileList.value.forEach((v: any) => {
-      if (v.status === 'loading') {
+      if (v.status === 'uploading') {
         sign = true
       }
     })
@@ -181,7 +181,7 @@ watch(
   }
 );
 watch(()=>props.uploadData.fileAllList, newVal => {
-  if (newVal.length) {
+  if (newVal && newVal.length) {
     infoList.value.length = 0
     newVal.forEach((item:any) => {
       infoList.value.push({
