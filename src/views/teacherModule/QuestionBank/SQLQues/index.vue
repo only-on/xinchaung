@@ -74,14 +74,18 @@
             <span>用例输入</span>
             <span @click="checkSample('in')">示例</span>
           </div>
+          <a-form-item name="sampleInput" label="">
             <a-textarea v-model:value="formState.sampleInput" :rows="4" />
+          </a-form-item>
         </a-col>
         <a-col  :span="12">
           <div class="sampleHead">
             <span>用例输出</span>
             <span @click="checkSample('out')">示例</span>
           </div>
+          <a-form-item name="sampleOutput" label="">
             <a-textarea v-model:value="formState.sampleOutput" :rows="4" />
+          </a-form-item>
         </a-col>
       </a-row>
     </a-form>
@@ -203,8 +207,8 @@ const rules = {
   catalogue: [
     {
       required: true,
-      validator:validateCataloge,
-      // message: "请选择目录",
+      // validator:validateCataloge,
+      message: "请选择目录",
     },
   ],
   memoryLimit:[
@@ -232,7 +236,13 @@ const rules = {
       required: true,
       message: "请输入题干",
     },
-  ]
+  ],
+  sampleInput: [
+    { required: true, message: "请输入用例输入", }
+  ],
+  sampleOutput: [
+    { required: true, message: "请输入用例输出", }
+  ],
 };
 const sampleData = reactive<any>({
   visible: false,

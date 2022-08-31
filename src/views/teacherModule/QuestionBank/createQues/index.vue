@@ -238,8 +238,8 @@ const rules = {
   catalogue: [
     {
       required: true,
-      // message: "请选择目录",
-      validator:validateCataloge, 
+      message: "请选择目录",
+      // validator:validateCataloge, 
       // trigger: 'change'
     },
   ],
@@ -507,6 +507,10 @@ function getCompleData(){
         formState.stem=data.question
         formState.topicAnalysis=data.question_analysis
         formState.multipleQuesSelection=[]
+        if (!data.blank_correct?.length) {
+          formState.multipleQuesSelection.push({value:'',ifAnswer:false})
+          return
+        }
         data.blank_correct.forEach((item:any,index:any)=> {
           formState.multipleQuesSelection.push({value:item,ifAnswer:false})
         });

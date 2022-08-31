@@ -299,9 +299,9 @@ const rules = {
   ],
   catalogue: [
     {
-      // required: true,
-      // message: "请选择目录",
-      validator:validateCataloge,
+      required: true,
+      message: "请选择目录",
+      // validator:validateCataloge,
     },
   ],
   memoryLimit:[

@@ -281,8 +281,8 @@ const rules = {
   catalogue: [
     {
       required: true,
-      validator:validateCataloge,
-      // message: "请选择目录",
+      // validator:validateCataloge,
+      message: "请选择目录",
     },
   ],
   memoryLimit:[
