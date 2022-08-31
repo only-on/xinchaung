@@ -47,7 +47,10 @@ interface Props {
   fileSize?: number
 }
 const props = withDefaults(defineProps<Props>(), {
-  uploadData: () => {},   // loading 
+  uploadData: () => {
+    loading: false
+    fileAllList: []
+  },   // loading 
   fileInfo: () => {},
   isMultiple: true,
   uploadPath: 'createQues',
@@ -55,7 +58,7 @@ const props = withDefaults(defineProps<Props>(), {
   fileSize: 500,  // 上传文件的大小限制  默认上传上限是500M
 });
 const isMultiple = ref<boolean>(props.isMultiple)
-const fileList: any = props.uploadData.fileAllList?.length ? ref(props.uploadData.fileAllList) : ref([]);
+const fileList: any = props.uploadData?.fileAllList?.length ? ref(props.uploadData.fileAllList) : ref([]);
 const infoList:any= ref([])
 function handleChange1(info: any) {
   fileList.value = info.fileList

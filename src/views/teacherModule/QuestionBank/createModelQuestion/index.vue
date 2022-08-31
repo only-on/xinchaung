@@ -44,7 +44,7 @@
         </a-col>
         <!-- 题干 公有 -->
         <a-col v-if="type != 7" :span="24">
-          <a-form-item name="stem" label="题干">
+          <a-form-item name="stem" label="题目描述">
             <marked-editor
               v-model="formState.stem"
               :preview="preview"
@@ -76,7 +76,7 @@
         <a-col v-if="type == 6" :span="12">
           <a-form-item name="trainingSetPath" label="上传训练集">
             <!-- {{formState.trainingSetPath}} -->
-            <upload-file v-model:fileInfo='formState.trainingSetPath'></upload-file>
+            <upload-file v-model:fileInfo='formState.trainingSetPath' :uploadData='uploadData' ></upload-file>
           </a-form-item>
         </a-col>
         <a-col v-if="type == 6" :span="12">
@@ -86,7 +86,7 @@
               <span class="tiptit">此文件不对学生展示</span>
             </template>
             <!-- {{formState.validationSetPath}} -->
-            <upload-file v-model:fileInfo='formState.validationSetPath'></upload-file>
+            <upload-file v-model:fileInfo='formState.validationSetPath'  :uploadData='uploadData' ></upload-file>
           </a-form-item>
         </a-col>
       </a-row>
@@ -200,6 +200,11 @@ const formState = reactive({
   // 答案
   judgeAnswer: "1",
 });
+// 所有正在上传的文件列表
+const uploadData = reactive({
+  fileAllList: [],
+  loading: false
+})
 var options: any[] = [
   {
     value: "zhejiang",
@@ -337,7 +342,7 @@ const rules = {
   stem: [
     {
       required: true,
-      message: "请输入题干",
+      message: "请输入题目描述",
     },
   ],
   evaluationDescription:[

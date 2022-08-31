@@ -214,14 +214,14 @@ const rules = {
   memoryLimit:[
     {
       required: true,
-      message: "请输入内存",
+      message: "请输入内存限制",
     },
     validateNum
   ],
   timeLimit:[
     {
       required: true,
-      message: "请输入时间",
+      message: "请输入时间限制",
     },
     validateNum
   ],
@@ -234,7 +234,7 @@ const rules = {
   stem: [
     {
       required: true,
-      message: "请输入题干",
+      message: "请输入题目描述",
     },
   ],
   sampleInput: [
