@@ -13,6 +13,13 @@
         <i class="iconfont icon-upload"></i>
       </p>
       <p class="ant-upload-text">点击或将文件拖拽到这里上传</p>
+      <template #itemRender="{ file, actions }">
+        <div class="file-info">
+          <span :style="file.status === 'error' ? 'color: red' : ''">{{ file.name }}</span>
+          <span class="iconfont icon-shanchu pointer" @click="actions.remove"></span>
+        </div>
+        <a-progress :percent="file.progress" size="small" v-if="file.status==='loading'" />
+      </template>
     </a-upload-dragger>
   </div>
 </template>
@@ -32,13 +39,15 @@ import { Modal, message, Upload } from "ant-design-vue";
 import uploadFile from "src/request/uploadFile";
 const env = process.env.NODE_ENV == "development" ? true : false;
 interface Props {
-  fileInfo: any;
+  uploadData?: any;
+  fileInfo: any
   isMultiple?: boolean;
   uploadPath?:string;
   fileType?: string[];
   fileSize?: number
 }
 const props = withDefaults(defineProps<Props>(), {
+  uploadData: () => {},   // loading 
   fileInfo: () => {},
   isMultiple: true,
   uploadPath: 'createQues',
@@ -46,7 +55,7 @@ const props = withDefaults(defineProps<Props>(), {
   fileSize: 500,  // 上传文件的大小限制  默认上传上限是500M
 });
 const isMultiple = ref<boolean>(props.isMultiple)
-const fileList: any = ref([]);
+const fileList: any = props.uploadData.fileAllList?.length ? ref(props.uploadData.fileAllList) : ref([]);
 const infoList:any=ref([])
 function handleChange1(info: any) {
   const status = info.file.status;
@@ -74,7 +83,7 @@ function beforeUpload(file: any) {
     message.warn(`上传文件不能超过${props.fileSize}MB`);
     return Upload.LIST_IGNORE;
   }
-  if (props.fileType.length && !props.fileType.includes(file.name.split('.').at(-1))) {
+  if (props.fileType.length && !props.fileType.includes('.'+file.name.split('.').at(-1))) {
     message.warn(`请上传${props.fileType.join('、')}类型的文件`);
     return Upload.LIST_IGNORE
   }
@@ -144,6 +153,9 @@ function beforeUpload(file: any) {
   return false;
 }
 function removeDoc(file:any){
+  if (file.upload) {
+    file.upload.abortUpload();
+  }
   infoList.value.forEach((item:any,index:any) => {
     if (file.url == item.file_url) {
       infoList.value.splice(index,1)
@@ -151,26 +163,65 @@ function removeDoc(file:any){
   })
   emit("update:fileInfo",infoList.value);
 }
- watch(
-      () => {
-        return props.fileInfo;
-      },
-      (val: any) => {
-        // type.value = val;
-        if(props.fileInfo!==''){
-          const list:any=[]
-        props.fileInfo.forEach((item:any)=>{
-        list.push({uid: '-1',
-        name:item.file_name,
-        status: 'done',
-        url:item.file_url})
-        })
-        fileList.value=list;
-        }
-      },{
-        immediate:true
+// 终止所有上传
+function cancelUpload() {
+  let sign = false
+  fileList.value.forEach((v: any) => {
+    if (v.status === 'loading') {
+      sign = true
+    }
+    if (v.upload) {
+      v.upload.abortUpload();
+    }
+  })
+  props.uploadData.loading = sign
+}
+// watch(
+//   () => {
+//     return props.fileInfo;
+//   },
+//   (val: any) => {
+//     // type.value = val;
+//     if(props.fileInfo!=='' && val){
+//       const list:any=[]
+//       props.fileInfo.forEach((item:any)=>{
+//         list.push({
+//           uid: '-1',
+//           name:item.file_name,
+//           status: 'done',
+//           url:item.file_url
+//         })
+//       })
+//     fileList.value=list;
+//     }
+//   },{
+//     immediate:true
+//   }
+// );
+watch(
+  () => {
+    return fileList.value;
+  },
+  (val: any) => {
+    if (!val) {
+      props.uploadData.loading = false
+      return
+    }
+    let sign = false
+    fileList.value.forEach((v: any) => {
+      if (v.status === 'loading') {
+        sign = true
       }
-    );
+    })
+    props.uploadData.loading = sign
+  },{
+    immediate:true,
+    deep: true
+  }
+);
+defineExpose({
+  cancelUpload
+})
 </script>
 <style lang="less" scoped>
 .icon-upload {
@@ -180,5 +231,15 @@ function removeDoc(file:any){
 .ant-upload.ant-upload-drag p.ant-upload-text {
   font-size: 16px;
   color: #bebebe;
+}
+.file-info {
+  display: flex;
+  justify-content: space-between;
+  .iconfont{
+    margin-right: 8px;
+    &:hover {
+      color: var(--primary-color);
+    }
+  }
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div class="testCase">
-    <div class="testCaseIndex" v-for="(item,index) in inputAndOut" :key="index">
+    <div class="testCaseIndex" v-for="(item,index) in textTest" :key="index">
       <div class="exhand">
         <span>测试用例{{index+1}}</span>
         <div>
@@ -20,12 +20,26 @@
       <div class="exhand_content">
         <a-row v-if="item.ifShow" :gutter="24">
           <a-col :span="12">
-            <a-form-item label="输入" name="inputCon" >
+            <a-form-item
+              label="输入"
+              :name="['textTest', index, 'inputCon']"
+              :rules="{
+                  required: true,
+                  message:'输入不能为空',
+              }"
+            >
               <a-textarea v-model:value="item.inputCon" :rows="4" />
             </a-form-item>
           </a-col>
           <a-col :span="12">
-            <a-form-item label="输出" name="inputCon" >
+            <a-form-item 
+              label="输出" 
+              :name="['textTest', index, 'inputCon']"
+              :rules="{
+                required: true,
+                message:'输出不能为空',
+              }"
+            >
               <a-textarea v-model:value="item.outCon" :rows="4" />
             </a-form-item>
           </a-col>
@@ -52,11 +66,11 @@ interface inputAndOutType{
     ifShow:any;
 }
 interface Props {
-  inputAndOut: inputAndOutType[];
+  textTest: inputAndOutType[];
 }
 const props = withDefaults(defineProps<Props>(), {});
 function deleteTest(index: number) {
-  props.inputAndOut.splice(index, 1)
+  props.textTest.splice(index, 1)
 }
 </script>
 <style lang="less" scoped>

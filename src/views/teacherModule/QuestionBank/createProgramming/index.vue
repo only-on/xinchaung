@@ -109,12 +109,18 @@
           </a-form-item>
         </a-col>
         <a-col v-if="formState.testCase=='text'" :span="24">
-          <test-case v-model:inputAndOut='inputAndOut'></test-case>
+          <test-case v-model:textTest='formState.textTest'></test-case>
         </a-col>
         <a-col v-if="formState.testCase=='file'" :span="12">
           <a-form-item label="批量上传用例文件" name="useCaseFile">
-            <upload-file v-model:fileInfo='formState.useCaseFile' :fileType="['.in', '.out']" :fileSize="100">
-            </upload-file>
+            <!--  :fileType="['.in', '.out']" -->
+            <upload-file 
+              ref="uploadRef" 
+              v-model:fileInfo='formState.useCaseFile' 
+              :uploadData='uploadData' 
+              :fileSize="100"
+              :fileType="['.in', '.out']"
+            ></upload-file>
           </a-form-item>
         </a-col>
         <a-col v-if="formState.testCase=='file'" :span="12">
@@ -128,7 +134,7 @@
         </a-col>
       </a-row>
     </a-form>
-    <Submit @submit="onSubmit" @cancel="reset" okText="保存" :loading='loading'></Submit>
+    <Submit @submit="onSubmit" @cancel="reset" okText="保存" :loading='loading||uploadData.loading'></Submit>
   </div>
 </template>
 <script lang="ts" setup>
@@ -179,10 +185,6 @@ updata({
 });
 const preview = false;
 const formRef = ref<any>();
-const inputAndOut=ref([{inputCon:'',outCon:'',ifShow:true}])
-function addTestCase(){
-  inputAndOut.value.push({inputCon:'',outCon:'',ifShow:true})
-}
 const formState = reactive<any>({
   // 名称
   name: "",
@@ -238,7 +240,21 @@ const formState = reactive<any>({
   ],
   // 答案
   judgeAnswer: "1",
+  // 文本 测试用例
+  textTest: [
+    {inputCon:'',outCon:'',ifShow:true}
+  ]
 });
+
+function addTestCase(){
+  formState.textTest.push({inputCon:'',outCon:'',ifShow:true})
+}
+
+// 所有正在上传的文件列表
+const uploadData = reactive({
+  fileAllList: [],
+  loading: false
+})
 
 let validateCataloge = async (_rule?: Rule, value?: any) => {
   if(formState.catalogue?.length==0){
@@ -307,10 +323,13 @@ const rules = {
   sampleOutput: [
     { required: true, message: "请输入样例输出", }
   ],
+  useCaseFile: [
+    { required: true, message: "请选择测试用例", }
+  ]
 };
 function createProgramQues(){
   const testCaseData:any=[]
-  inputAndOut.value.forEach((item:any,index:any)=>{
+  formState.textTest.forEach((item:any,index:any)=>{
     testCaseData.push({in:item.inputCon,out:item.outCon})
   })
   const params={
@@ -337,23 +356,6 @@ function createProgramQues(){
     question_desc_html: renderMarkdown(true, formState.stem), // 题目描述对应的html
 
   }
-  // 测试用例的输入和输出必须要有值
-  if (!params.test_case?.data?.length) {
-    message.warn(params.test_case?.type=='text'?'请添加测试用例' : '请选择测试用例文件')
-    return
-  }
-  if (params.test_case?.type=='text') {
-    let isNone = false
-    params.test_case?.data.forEach((v: any) => {
-      if (!v.in || !v.out) {
-        isNone = true
-      }
-    })
-    if (isNone) {
-      message.warn('测试用例的输入和输出不能为空')
-      return
-    }
-  }
   loading.value = true
   http.programQues({param:params}).then((res:any)=>{
     loading.value = false
@@ -371,7 +373,7 @@ const cascaData:any=reactive({
 })
 function editProgressQues(){
   const testCaseData:any=[]
-  inputAndOut.value.forEach((item:any,index:any)=>{
+  formState.textTest.forEach((item:any,index:any)=>{
     testCaseData.push({in:item.inputCon,out:item.outCon})
   })
   const params={
@@ -397,23 +399,6 @@ function editProgressQues(){
     // @ts-ignore
     question_desc_html: renderMarkdown(true, formState.stem), // 题目描述对应的html
   }
-  // 测试用例的输入和输出必须要有值
-  if (!params.test_case?.data?.length) {
-    message.warn(params.test_case?.type=='text'?'请添加测试用例' : '请选择测试用例')
-    return
-  }
-  if (params.test_case?.type=='text') {
-    let isNone = false
-    params.test_case?.data.forEach((v: any) => {
-      if (!v.in || !v.out) {
-        isNone = true
-      }
-    })
-    if (isNone) {
-      message.warn('测试用例的输入和输出不能为空')
-      return
-    }
-  }
   loading.value = true
   http.editProgram({param:params,urlParams:{ID:editId}}).then((res:any)=>{
     loading.value = false
@@ -426,7 +411,6 @@ function editProgressQues(){
   })
 }
 function onSubmit(){
-  console.log(formState.multipleQuesSelection,'哈哈哈哈西西休息')
   formRef.value
     .validate()
     .then((res:any) => {
@@ -436,9 +420,11 @@ function onSubmit(){
       console.log("error", err);
     });
 };
+let uploadRef = ref()
 function reset(){
   // formRef.value.resetFields();
   router.go(-1);
+  uploadRef.value.cancelUpload()
 };
 function getProgressData(){
    http.programDetail({urlParams:{ID:editId}}).then((res:any)=>{
@@ -462,16 +448,26 @@ function getProgressData(){
         formState.outputFormat=data.problem.output
         formState.sampleInput=data.problem.sample_input
         formState.sampleOutput=data.problem.sample_output
-        inputAndOut.value=[]
-        data.test_case.data.forEach((item:any)=>{
-          inputAndOut.value.push({inputCon:item.in,outCon:item.out,ifShow:true})
-        })
+        formState.testCase = data.test_case.type
+        if (formState.testCase === 'text') {
+          formState.textTest=[]
+          data.test_case.data.forEach((item:any)=>{
+            formState.textTest.push({inputCon:item.in,outCon:item.out,ifShow:true})
+          })
+        } else {
+          uploadData.fileAllList = data.test_case.data.map((item:any)=>{
+            return {
+              ...item,
+              name: item.file_name
+            }
+          })
+        }
       }
     })
 }
 function radioChange(){
-  formState.useCaseFile=''
-  inputAndOut.value=[{inputCon:'',outCon:'',ifShow:true}]
+  // formState.useCaseFile=''
+  // formState.textTest=[{inputCon:'',outCon:'',ifShow:true}]
 }
 onMounted(()=>{
   if(editId){
