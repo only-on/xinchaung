@@ -250,11 +250,6 @@ function DownloadTemplate() {
 :deep(.ant-col-21) {
   max-width: 100%;
 }
-.tiptit{
-  font-size: 12px;
-  margin-left: 10px;
-  color:var(--black-45);
-}
 .download{
   color: var(--primary-color);
   text-decoration-line: underline;

@@ -138,11 +138,6 @@ onMounted(()=>{
 })
 </script> 
 <style lang="less" scoped>
-.tiptit{
-  font-size: 12px;
-  margin-left: 10px;
-  color:var(--black-45);
-}
 :deep(.ant-form-item){
   display: flex;
   flex-direction: column;

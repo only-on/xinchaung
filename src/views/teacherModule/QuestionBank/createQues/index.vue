@@ -50,7 +50,11 @@
         </a-col>
         <!-- 判断题 -->
         <a-col v-if="type == 2" :span="24">
-          <a-form-item label="答案选项" name="analysis">
+          <a-form-item name="judgeAnswer">
+            <template #label>
+              答案选项
+              <span class="tiptit">点击选项可以设置正确答案</span>
+            </template>
             <div class="select_difficult">
               <span
                 @click="formState.judgeAnswer = 'right'"
@@ -76,7 +80,11 @@
           </a-form-item>
         </a-col>
         <a-col v-if="type == 4" :span="24">
-          <a-form-item label="关键词" name="keyword">
+          <a-form-item name="keyword">
+            <template #label>
+              关键词
+              <span class="tiptit">关键词至少一个，多个关键字用空格隔开</span>
+            </template>
             <a-textarea v-model:value="formState.keyword" />
           </a-form-item>
         </a-col>
@@ -200,7 +208,7 @@ const formState = reactive({
     {value:'',ifAnswer:false}
   ],
   // 答案
-  judgeAnswer: "right",
+  judgeAnswer: "",
 });
 
 // 填空题最少是一个空 
@@ -227,6 +235,12 @@ const rules = {
       trigger: "blur",
       message: "请输入名称",
     },
+  ],
+  judgeAnswer: [
+    {
+      required: true,
+      message: "请选择答案",
+    }
   ],
   purpose: [
     {
@@ -684,11 +698,6 @@ onMounted(()=>{
 }
 :deep(.ant-col-21) {
   max-width: 100%;
-}
-.tiptit{
-  font-size: 12px;
-  margin-left: 10px;
-  color:var(--black-45);
 }
 :deep(.mark__container){
   border:1px solid var(--gray-5) !important;

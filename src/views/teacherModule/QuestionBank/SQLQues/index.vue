@@ -71,7 +71,7 @@
         </a-col>
         <a-col  :span="12">
           <div class="sampleHead">
-            <span>用例输入</span>
+            <span><span class="require">*</span>用例输入</span>
             <span @click="checkSample('in')">示例</span>
           </div>
           <a-form-item name="sampleInput" label="">
@@ -80,7 +80,7 @@
         </a-col>
         <a-col  :span="12">
           <div class="sampleHead">
-            <span>用例输出</span>
+            <span><span class="require">*</span>用例输出</span>
             <span @click="checkSample('out')">示例</span>
           </div>
           <a-form-item name="sampleOutput" label="">
@@ -390,11 +390,6 @@ onMounted(()=>{
   margin-top: 30px;
   width: 100%;
 }
-.tiptit{
-  font-size: 12px;
-  margin-left: 10px;
-  color:var(--black-45);
-}
 
 .icon-upload{
   color: var(--primary-color);
@@ -424,6 +419,10 @@ onMounted(()=>{
   >span:last-child{
     color: var(--primary-color);
     cursor: pointer;
+  }
+  .require {
+    margin-right: 4px;
+    color: #ff4d4f;
   }
 }
 .ant-form{

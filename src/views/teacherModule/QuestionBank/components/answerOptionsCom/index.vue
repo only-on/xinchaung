@@ -1,7 +1,6 @@
 <template>
 <a-form-item
     class="answer-option"
-    :label="index == 0 ? '答案选项' : ''"
     v-for="(item, index) in multipleQuesSelection"
     :key="index"
     :name="['multipleQuesSelection', index, 'value']"
@@ -10,7 +9,11 @@
         message:type == 1?selectLabels[index]+'选项不能为空':'填空' + (index + 1)+'不能为空',
     }"
     >
-    <div style="display: flex; margin-bottom:10px">
+      <template #label v-if="index == 0">
+        {{index == 0 ? '答案选项' : ''}}
+        <span class="tiptit" v-if="index == 0 && type == 1">点击选项可以设置正确答案</span>
+      </template>
+    <div style="display: flex; margin-bottom:0px">
         <span v-if="type == 1" :class="item.ifAnswer?'selected_answer':'select_answer'" @click="item.ifAnswer=!item.ifAnswer">{{ selectLabels[index] }}</span>
         <span v-else class="blankLabel">{{ "填空" + (index + 1) }}</span>
         <a-input v-model:value="item.value" />
@@ -73,6 +76,10 @@ function deleteItem(index: any) {
   }
   .answer_item {
     margin-left: 14px;
+  }
+  margin-bottom: 16px;
+  &:last-child {
+    margin-bottom: 24px;
   }
 }
 .select_answer {

@@ -496,11 +496,6 @@ onMounted(()=>{
   margin-top: 30px;
   width: 100%;
 }
-.tiptit{
-  font-size: 12px;
-  margin-left: 10px;
-  color:var(--black-45);
-}
 .icon-upload{
   color: var(--primary-color);
   font-size: 24px;

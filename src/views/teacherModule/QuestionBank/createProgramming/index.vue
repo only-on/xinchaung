@@ -311,18 +311,18 @@ const rules = {
       message: "请输入题目描述",
     },
   ],
-  inputFormat: [
-    { required: true, message: "请输入输出格式", }
-  ],
-  outputFormat: [
-    { required: true, message: "请输入输出格式", }
-  ],
-  sampleInput: [
-    { required: true, message: "请输入样例输入", }
-  ],
-  sampleOutput: [
-    { required: true, message: "请输入样例输出", }
-  ],
+  // inputFormat: [
+  //   { required: true, message: "请输入输出格式", }
+  // ],
+  // outputFormat: [
+  //   { required: true, message: "请输入输出格式", }
+  // ],
+  // sampleInput: [
+  //   { required: true, message: "请输入样例输入", }
+  // ],
+  // sampleOutput: [
+  //   { required: true, message: "请输入样例输出", }
+  // ],
   useCaseFile: [
     { required: true, message: "请选择测试用例", }
   ]
@@ -502,11 +502,6 @@ onMounted(()=>{
   padding: 20px;
   margin-top: 30px;
   width: 100%;
-}
-.tiptit{
-  font-size: 12px;
-  margin-left: 10px;
-  color:var(--black-45);
 }
 
 .icon-upload{
