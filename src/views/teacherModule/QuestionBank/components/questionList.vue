@@ -62,7 +62,7 @@
               </div>
               <!-- 简答题关键字 -->
               <div class="keyword" v-if="v.kind==='short-answer'">
-                <div class="keyword-tit">关键字：</div>
+                <div class="keyword-tit">关键词：</div>
                 <div class="keyword-content">{{v.short_answer_keys.split(' ').join(',')}}</div>
               </div>
               <div class="topic-analysis">
@@ -270,18 +270,19 @@ const judgeOption = {
           .topic-analysis {
             // padding: 16px 20px 0;
             // margin-bottom: 16px;
-            background-color: var(--lightgray-2);
+            // background-color: var(--lightgray-2);
             border-bottom: 1px dashed var(--black-15);
             .tit {
               margin-bottom: 8px;
+              font-weight: 700;
             }
             .analysis-content {
               .demo__container {
                 :deep(.mark__container) {
-                  background: var(--lightgray-2);
+                  // background: var(--lightgray-2);
                   .markdown-body {
                     font-size: var(--base-font-size);
-                    background-color: var(--lightgray-2);
+                    // background-color: var(--lightgray-2);
                     padding: 0;
                   }
                 }
@@ -292,6 +293,7 @@ const judgeOption = {
             display: flex;
             color: #3094EF;
             padding-bottom: 16px;
+            font-weight: 700;
             // margin-top: 16px;
             // border-bottom: 1px solid var(--black-15);
             .keyword-tit {
