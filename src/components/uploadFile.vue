@@ -59,13 +59,6 @@ const fileList: any = props.uploadData.fileAllList?.length ? ref(props.uploadDat
 const infoList:any= ref([])
 function handleChange1(info: any) {
   fileList.value = info.fileList
-  console.log(fileList.value)
-  // info.fileList.forEach((item:any) => {
-  //   if (item.status === 'done') {
-  //     fileList.value.push(item)
-  //   }
-  // })
-  // console.log(';info.fileList',fileList.value)
 }
 const emit = defineEmits<{
   (e: "update:fileInfo", val: any): void;
@@ -115,8 +108,6 @@ const handleUpload= (file:any) => {
           suffix: suffix,
         };
         infoList.value.push(info);
-        console.log('infoList.value',info)
-        console.log('infoList.value',infoList.value)
         emit("update:fileInfo", infoList.value);
       } else {
         message.warn(res.msg);
@@ -146,7 +137,7 @@ function removeDoc(file:any){
     file.upload.abortUpload();
   }
   infoList.value.forEach((item:any,index:any) => {
-    if (file.url == item.file_url || file?.response?.data.url === item.file_url) {
+    if (file.file_url == item.file_url || file?.response?.data.full_url === item.file_url) {
       infoList.value.splice(index,1)
     }
   })
@@ -189,7 +180,6 @@ watch(
 watch(()=>props.uploadData.fileAllList, newVal => {
   if (newVal.length) {
     infoList.value.length = 0
-    console.log(newVal)
     newVal.forEach((item:any) => {
       infoList.value.push({
         file_name: item.file_name,
@@ -198,9 +188,7 @@ watch(()=>props.uploadData.fileAllList, newVal => {
         suffix: item.suffix,
       })
     })
-    console.log(infoList.value)
   }
-    
 },{immediate:true})
 defineExpose({
   cancelUpload
