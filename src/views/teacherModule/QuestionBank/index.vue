@@ -600,7 +600,7 @@ watch(()=>props.activeTab, newVal => {
   margin-top: 24px;
   .left {
     width: 240px;
-    height: 692px;
+    height: 600px;
     background: var(--white);
     border-radius: 10px;
     box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.07); 

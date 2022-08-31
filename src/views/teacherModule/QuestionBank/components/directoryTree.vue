@@ -3,8 +3,9 @@
     <div class="title">文件夹目录</div>
     <div class="create-btn pointer" @click="visible=true">新建文件夹</div>
   </template>
+  <div class="tree-content textScrollbar">
   <a-spin :spinning="firstLoading" tip="Loading...">
-    <a-directory-tree
+    <a-directory-tree 
       v-if="!firstLoading"
       v-model:expandedKeys="expandedKeys"
       v-model:selectedKeys="selectedKeys"
@@ -36,6 +37,7 @@
       </template>
     </a-directory-tree>
   </a-spin>
+  </div>
   <!-- 创建目录弹框 -->
   <a-modal v-model:visible="visible"  :title="(formState.id?'编辑':'新建')+`文件夹`" class="create-directory" :width="400" @cancel="cancel()">
     <a-form :layout="'vertical'" :rules="rules" :model="formState" ref="formRef">
@@ -398,5 +400,9 @@ interface ITreeList {
   color: var(--brightBtn);
   background-color: var(--brightBtn-14);
   border-radius: 12px;
+}
+.tree-content {
+  max-height: 500px;
+  overflow: auto;
 }
 </style>
