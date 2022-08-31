@@ -169,7 +169,9 @@ const searchInfo = reactive({
 const resetKeyword = ref<boolean>(false)  // 重置keyword
 const searchFn = (key?: string) => {
   // console.log(searchInfo)
-  searchInfo.keyWord = key ? key : ''
+  if (!props.inDrawer) {
+    searchInfo.keyWord = key ? key : ''
+  }
   pageInfo.page = 1
   initData();
 };

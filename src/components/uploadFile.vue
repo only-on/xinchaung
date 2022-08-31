@@ -6,7 +6,6 @@
       :multiple="isMultiple"
       @remove='removeDoc'
       @change="handleChange1"
-      @drop="handleDrop"
       :before-upload="beforeUpload"
       :customRequest="handleUpload"
     >
@@ -57,20 +56,16 @@ const props = withDefaults(defineProps<Props>(), {
 });
 const isMultiple = ref<boolean>(props.isMultiple)
 const fileList: any = props.uploadData.fileAllList?.length ? ref(props.uploadData.fileAllList) : ref([]);
-const infoList:any=ref([])
+const infoList:any= ref([])
 function handleChange1(info: any) {
-  const status = info.file.status;
-  if (status !== "uploading") {
-    console.log(info.file, info.fileList);
-  }
-  if (status === "done") {
-    message.success(`${info.file.name} file uploaded successfully.`);
-  } else if (status === "error") {
-    message.error(`${info.file.name} file upload failed.`);
-  }
-}
-function handleDrop(e: any) {
-
+  fileList.value = info.fileList
+  console.log(fileList.value)
+  // info.fileList.forEach((item:any) => {
+  //   if (item.status === 'done') {
+  //     fileList.value.push(item)
+  //   }
+  // })
+  // console.log(';info.fileList',fileList.value)
 }
 const emit = defineEmits<{
   (e: "update:fileInfo", val: any): void;
@@ -96,8 +91,6 @@ function beforeUpload(file: any) {
   }
 }
 const handleUpload= (file:any) => {
-  console.log(fileList.value)
-  console.log(file)
   let i = fileList.value.findIndex((item: any) => {
     return item.uid === file.file.uid;
   });
@@ -117,11 +110,13 @@ const handleUpload= (file:any) => {
         let suffix = res.data.name.slice(res.data.name.indexOf(".") + 1);
         const info = {
           file_name: res.data.name,
-          file_url: res.data.url,
+          file_url: res.data.full_url,
           size: res.data.size,
           suffix: suffix,
         };
         infoList.value.push(info);
+        console.log('infoList.value',info)
+        console.log('infoList.value',infoList.value)
         emit("update:fileInfo", infoList.value);
       } else {
         message.warn(res.msg);
@@ -151,7 +146,7 @@ function removeDoc(file:any){
     file.upload.abortUpload();
   }
   infoList.value.forEach((item:any,index:any) => {
-    if (file.url == item.file_url) {
+    if (file.url == item.file_url || file?.response?.data.url === item.file_url) {
       infoList.value.splice(index,1)
     }
   })
@@ -170,28 +165,6 @@ function cancelUpload() {
   })
   props.uploadData.loading = sign
 }
-// watch(
-//   () => {
-//     return props.fileInfo;
-//   },
-//   (val: any) => {
-//     // type.value = val;
-//     if(props.fileInfo!=='' && val){
-//       const list:any=[]
-//       props.fileInfo.forEach((item:any)=>{
-//         list.push({
-//           uid: '-1',
-//           name:item.file_name,
-//           status: 'done',
-//           url:item.file_url
-//         })
-//       })
-//     fileList.value=list;
-//     }
-//   },{
-//     immediate:true
-//   }
-// );
 watch(
   () => {
     return fileList.value;
@@ -213,6 +186,22 @@ watch(
     deep: true
   }
 );
+watch(()=>props.uploadData.fileAllList, newVal => {
+  if (newVal.length) {
+    infoList.value.length = 0
+    console.log(newVal)
+    newVal.forEach((item:any) => {
+      infoList.value.push({
+        file_name: item.file_name,
+        file_url: item.file_url,
+        size: item.size,
+        suffix: item.suffix,
+      })
+    })
+    console.log(infoList.value)
+  }
+    
+},{immediate:true})
 defineExpose({
   cancelUpload
 })
